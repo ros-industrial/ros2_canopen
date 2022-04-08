@@ -15,13 +15,13 @@ This is the documentation of the ROS2 CANopen stack.
   :maxdepth: 1
   :caption: Concepts and Design
 
-  ros1-ros2
+  design-objectives
   configuration
   device-manager
+  system-interface
   master
   proxy-device
   motion-controller
-  ros-control
 
 .. toctree::
   :maxdepth: 1
