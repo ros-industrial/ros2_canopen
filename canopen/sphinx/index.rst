@@ -41,5 +41,6 @@ This is the documentation of the ROS2 CANopen stack.
   :maxdepth: 1
   :caption: Tests and Benchmarks
 
+  alpha-test-description
   sil-tests
   tested-hardware

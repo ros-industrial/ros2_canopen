@@ -7,10 +7,9 @@ Setup
 Inorder to test the alpha with your CANopen device you need 
 to execute the following steps.
 
-1. Gather the EDS files for the CANopen devices that you want to test
-and have connected to your bus.
-2. Create a configuration package following the guide (:doc:`configuration-package`),
-an example configuration package can be found here (https://github.com/ipa-cmmmh/trinamic_pd42_can)
+1. Gather the EDS files for the CANopen devices that you want to test and have connected to your bus.
+
+2. Create a configuration package following the guide (:doc:`configuration-package`), an example configuration package can be found here (https://github.com/ipa-cmmmh/trinamic_pd42_can) 
 
 Tests
 -----
@@ -30,4 +29,4 @@ Documentation
 -------------
 
 1. If you have discovered a bug, please report it as an issue on GitHub.
-2. You should also document the tests you ran even if everything works. In order to do so, please use the Alpha Test Template provided in canopen/sphinx/templates
+2. You should also document the tests you ran even if everything works. In order to do so, please use the Alpha Test Template provided in canopen/sphinx/templates. Create a copy of the file with a good name in the folder hardware tests, add the information about your tests (you can also add entries to the table) and create a pull request with your additions.
