@@ -6,15 +6,30 @@ container node. This enables flexibly loading and unloading the driver nodes nec
 each device on the bus. The user can decide when the device should be activated. 
 
 
-.. figure:: images/device-manager-dynamic-driver-loading.png
-    :width: 600 px
-    :alt: Dynamic driver loading procedure
-    
-    ros2_canopen's driver loading procedure
+.. figure:: images/device-manager.png
+    :alt: Device Manager Concept
+
+    device manager concept
+
+The device manager will uses the bus description file to identify the correct drivers for each devices.
+On startup it will load the CANopen master node and pass the generated DCF files to configure the CANopen master
+correctly for you bus configuration. Once a CANopen Node comes online (i.e. sends the boot indication) the CANopen master
+will configure the node with the parameters and commands specified in the bus configuration for that device.
+
+The device manager will then go on loading the drivers specified in the bus configuration file if they are not
+marked as lazy loaded. If the driver is marked as lazy loaded it is not loaded on startup of the device manager but when the user call the component load service
+for that specific driver.
+
+All loaded nodes are added to the device manager's executor.
+
+.. figure:: images/device-manager-usage.png
+    :alt: Device Manager Usage
+
+    device manager usage
 
 Configuration
 -------------
-The device manager offers the following configuration parameters.
+The device manager has the following configuration parameters.
 
 .. csv-table:: Parameters
    :header: "Parameter", "Type", "Description"
