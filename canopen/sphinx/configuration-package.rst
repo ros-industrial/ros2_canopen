@@ -1,71 +1,29 @@
 Creating a Configuration Package
 ========================================
+In order to use the ros2_canopen stack for your robot, you need to
+create a configuration package, that holds the configuration of the
+bus as well as you launch script. The following sections detail the
+steps to create such a package.
 
-ROS2 package creation
+
+Package creation
 ------------------------------
+We need to create a package with dependencies for ros2_canopen and lely_core_libraries.
 
-1. **Create a configuration package**
-    .. code-block:: console
+.. code-block:: console
 
-      $ ros2 pkg create --dependencies ros2_canopen --build-type ament_cmake <package_name>
-      $ cd <package_name>
-      $ rm -rf inlcude src
-      $ mkdir config
-      $ mkdir launch
-
-2. **Adjust your CMAKELists.txt file**
-   We want colcon to install launch and configuration files that are stored
-   in launch and config folder.
-
-    .. code-block:: cmake
-
-      cmake_minimum_required(VERSION 3.8)
-      project(trinamic_pd42_can)
-
-      if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        add_compile_options(-Wall -Wextra -Wpedantic)
-      endif()
-
-      # find dependencies
-      find_package(ament_cmake REQUIRED)
-      find_package(ros2_canopen REQUIRED)
-      find_package(lely_core_libraries REQUIRED)
-
-      # generate master dcf
-      dcfgen(${CMAKE_CURRENT_SOURCE_DIR}/config/ bus.yml ${CMAKE_BINARY_DIR}/config/)
-
-      # install launch file
-      install(DIRECTORY
-        launch
-        DESTINATION share/${PROJECT_NAME}/
-      )
-
-      # install configuration files
-      install(DIRECTORY
-        config/
-        DESTINATION share/${PROJECT_NAME}/config/
-      )
-      install(
-        DIRECTORY ${CMAKE_BINARY_DIR}/config/
-        DESTINATION share/${PROJECT_NAME}/config/
-      )
-
-
-      if(BUILD_TESTING)
-        find_package(ament_lint_auto REQUIRED)
-      endif()
-
-      ament_package()
-
-3. **Adjust your package.xml as needed**
-
+  $ ros2 pkg create --dependencies ros2_canopen lely_core_libraries --build-type ament_cmake <package_name>
+  $ cd <package_name>
+  $ rm -rf inlcude src
+  $ mkdir config
+  $ mkdir launch
 
 CANopen configuration creation
 ------------------------------
 
 1. **Gather required information**
     Gather all EDS files of the devices connected to the bus and store them
-    in your configuration package in the conf directory.
+    in your configuration package in the conf/ directory.
 
 2. **Writing your bus.yml file** 
     First create the configuration yml file in the conf folder.
@@ -80,10 +38,10 @@ CANopen configuration creation
         node_id: [node id]
     
     And add other configuration data as necessary. A documentation of configuration options
-    available can be found here `here`_.
+    available can be found in the :doc:`configuration` documentation.
 
     Once you have defined the configuration of your master, add your slaves. The following
-    describes the mandatory data per slave. Further configuration options can be found `here`_.
+    describes the mandatory data per slave. Further configuration options can be found in the :doc:`configuration` documentation.
     The slave name is the node name that will be assigned to the driver.
 
     .. code-block:: 
@@ -93,10 +51,6 @@ CANopen configuration creation
         package: [ros2 package where to find the driver] 
         driver: [qualified name of the driver]
         enable_lazy_load: false
-
-.. _here: https://opensource.lely.com/canopen/docs/dcf-tools/
-
-
 
 
 Launch configuration creation
@@ -139,3 +93,56 @@ Add the following code and adjust to your needs:
         return ld
 
 By setting parameter enable_lazy_load to false, all drivers will be loaded on start-up.
+
+
+Adjust CMAKELists.txt file
+--------------------------
+We want colcon to install launch and configuration files that are stored
+in launch and config folder.
+
+.. code-block:: cmake
+
+  cmake_minimum_required(VERSION 3.8)
+  project(trinamic_pd42_can)
+
+  if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic)
+  endif()
+
+  # find dependencies
+  find_package(ament_cmake REQUIRED)
+  find_package(ros2_canopen REQUIRED)
+  find_package(lely_core_libraries REQUIRED)
+
+  # generate master dcf
+  dcfgen(${CMAKE_CURRENT_SOURCE_DIR}/config/ bus.yml ${CMAKE_BINARY_DIR}/config/)
+
+  # install launch file
+  install(DIRECTORY
+    launch
+    DESTINATION share/${PROJECT_NAME}/
+  )
+
+  # install configuration files
+  install(DIRECTORY
+    config/
+    DESTINATION share/${PROJECT_NAME}/config/
+  )
+  install(
+    DIRECTORY ${CMAKE_BINARY_DIR}/config/
+    DESTINATION share/${PROJECT_NAME}/config/
+  )
+
+
+  if(BUILD_TESTING)
+    find_package(ament_lint_auto REQUIRED)
+  endif()
+
+  ament_package()
+
+
+
+
+
+
+

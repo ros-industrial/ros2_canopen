@@ -99,4 +99,4 @@ device.
 
 Further references
 ------------------
-dcfgen documentation: https://opensource.lely.com/canopen/docs/dcf-tools/
+The dcfgen documentation gives more details on the usage of the dcfgen tool for generating DCF: https://opensource.lely.com/canopen/docs/dcf-tools/
