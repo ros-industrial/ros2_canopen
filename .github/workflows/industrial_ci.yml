@@ -3,7 +3,12 @@
 
 name: Industrial CI
 
-on: [push, pull_request]
+on: 
+  push:
+    branches: [ master ] 
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch: 
 
 jobs:
   industrial_ci:
@@ -12,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ROS_DISTRO: [foxy]
+        ROS_DISTRO: [foxy, galactic]
         ROS_REPO: [testing]
     env:
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
@@ -24,7 +29,7 @@ jobs:
           key: ccache-${{ matrix.ROS_DISTRO }}-${{ matrix.ROS_REPO }}-${{github.run_id}}
           restore-keys: |
             ccache-${{ matrix.ROS_DISTRO }}-${{ matrix.ROS_REPO }}-
-      - uses: 'ros-industrial/industrial_ci@master' # run industrial_ci
+      - uses: 'ros-industrial/industrial_ci@master'
         env:
           ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
           ROS_REPO: ${{ matrix.ROS_REPO }}
