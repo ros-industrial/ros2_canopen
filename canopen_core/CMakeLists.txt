@@ -24,8 +24,6 @@ find_package(rclcpp_components REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
-find_package(rclcpp_lifecycle REQUIRED)
-find_package(lifecycle_msgs REQUIRED)
 
 find_package(lely_core_libraries REQUIRED)
 find_package(canopen_interfaces REQUIRED)
@@ -37,8 +35,6 @@ set (dependencies
   rclcpp
   rclcpp_components
   yaml_cpp_vendor
-  rclcpp_lifecycle
-  lifecycle_msgs
   canopen_interfaces
 )
 
