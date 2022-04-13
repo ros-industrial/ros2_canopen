@@ -174,7 +174,7 @@ void MotionControllerDriver::init(ev::Executor &exec,
     register_services();
     timer_group = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     timer_ = this->create_wall_timer(
-        2000ms, std::bind(&MotionControllerDriver::run, this), timer_group);
+        10000ms, std::bind(&MotionControllerDriver::run, this), timer_group);
     driver->Boot();
     active.store(true);
     RCLCPP_INFO(this->get_logger(), "Intialised with nodeid %hhu.", node_id);

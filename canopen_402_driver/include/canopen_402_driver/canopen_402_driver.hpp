@@ -57,7 +57,7 @@ namespace ros2_canopen
                 timer_= this->create_wall_timer(
                         100ms, std::bind(&MotionControllerDriver::run, this), timer_group);
             }
-            
+
             motor_->handleRead();
             motor_->handleWrite();
             motor_->handleDiag();
