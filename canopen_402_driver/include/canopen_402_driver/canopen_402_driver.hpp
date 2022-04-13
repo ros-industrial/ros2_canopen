@@ -4,6 +4,7 @@
 
 #include "canopen_402_driver/visibility_control.h"
 #include "std_srvs/srv/trigger.hpp"
+#include "std_msgs/msg/float64.hpp"
 #include "canopen_interfaces/srv/co_target_double.hpp"
 #include "canopen_proxy_driver/canopen_proxy_driver.hpp"
 #include "canopen_402_driver/motor.hpp"
@@ -34,6 +35,8 @@ namespace ros2_canopen
         rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_velocity_service;
         rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_position_service;
         rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr handle_set_target_service;
+        rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr publish_actual_position;
+        rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr publish_actual_speed;
         rclcpp::CallbackGroup::SharedPtr timer_group;
         bool intialised;
         void register_services();
@@ -61,6 +64,7 @@ namespace ros2_canopen
             motor_->handleRead();
             motor_->handleWrite();
             motor_->handleDiag();
+            publish();
         }
 
         void init(ev::Executor &exec,
@@ -200,6 +204,12 @@ namespace ros2_canopen
         void handle_set_target(
             const canopen_interfaces::srv::COTargetDouble::Request::SharedPtr request,
             canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response);
+
+        /**
+         * @brief Publishes actual position and speed
+         * 
+         */
+        void publish();
     };
 
 }
