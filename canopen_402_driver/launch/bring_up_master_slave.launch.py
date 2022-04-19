@@ -16,8 +16,9 @@ import lifecycle_msgs.msg
 
 
 def generate_launch_description():
-    path_to_test = os.path.dirname(__file__)
-    print(os.path.join(path_to_test, ".." ,  "config" , "simple_mc.yml"))
+    launch_path = os.path.dirname(__file__)
+    config_path = os.path.join(launch_path, ".." ,  "config")
+    os.chdir(config_path)
     ld = launch.LaunchDescription()
 
     master_node = launch_ros.actions.Node(
@@ -27,8 +28,8 @@ def generate_launch_description():
         output="screen", 
         executable="device_manager_node",
         parameters= [{
-                    "bus_config": os.path.join(path_to_test, ".." ,  "config" , "simple_mc.yml"),
-                    "master_config": os.path.join(path_to_test, ".." , "config" , "master.dcf"),
+                    "bus_config": os.path.join(config_path, "simple_mc.yml"),
+                    "master_config": os.path.join(config_path, "master.dcf"),
                     "can_interface_name": "vcan0"
                 }
         ],
@@ -40,7 +41,7 @@ def generate_launch_description():
         output="screen", 
         executable="slave_node",
         parameters=[{
-                "eds": os.path.join(path_to_test, ".." , "config" , "technosoft.eds"),
+                "eds": os.path.join(config_path, ".." , "config" , "technosoft.eds"),
                 "slave_id": 2}
             ],
     )

@@ -35,6 +35,7 @@ namespace ros2_canopen
         rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_position_service;
         rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr handle_set_target_service;
         rclcpp::CallbackGroup::SharedPtr timer_group;
+        uint32_t period_ms_;
         bool intialised;
         void register_services();
 
@@ -55,7 +56,7 @@ namespace ros2_canopen
                 motor_->registerDefaultModes();
                 mc_driver_->validate_objs();
                 timer_= this->create_wall_timer(
-                        100ms, std::bind(&MotionControllerDriver::run, this), timer_group);
+                        std::chrono::milliseconds(period_ms_), std::bind(&MotionControllerDriver::run, this), timer_group);
             }
             
             motor_->handleRead();
@@ -65,7 +66,8 @@ namespace ros2_canopen
 
         void init(ev::Executor &exec,
                   canopen::AsyncMaster &master,
-                  uint8_t node_id) noexcept override;
+                  uint8_t node_id,
+                  std::shared_ptr<ros2_canopen::ConfigurationManager>  config) noexcept override;
 
     protected:
         virtual void on_rpdo(COData data) override
