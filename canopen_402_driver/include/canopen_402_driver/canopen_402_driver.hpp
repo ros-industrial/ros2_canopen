@@ -53,7 +53,7 @@ namespace ros2_canopen
         {
             if(!intialised)
             {
-                RCLCPP_INFO(this->get_logger(), "Intitialise");
+                RCLCPP_INFO(this->get_logger(), "Intitialising Device and Objects");
                 timer_->cancel();
                 intialised = true;
                 motor_->registerDefaultModes();
@@ -64,7 +64,7 @@ namespace ros2_canopen
 
             motor_->handleRead();
             motor_->handleWrite();
-            motor_->handleDiag();
+            //motor_->handleDiag();
             publish();
         }
 

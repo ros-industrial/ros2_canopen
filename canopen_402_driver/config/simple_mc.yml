@@ -1,6 +1,6 @@
 master:
   node_id: 1
-  sync_period: 100000
+  sync_period: 20000
   driver: "ros2_canopen::MasterNode"
   package: "canopen_core"
 
