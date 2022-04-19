@@ -3,7 +3,7 @@
 <package format="3">
   <name>canopen_utils</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Utils for working with ros2_canopen.</description>
   <maintainer email="christoph.hellmann.santos@ipa.fraunhofer.de">christoph</maintainer>
   <license>Apache-2.0</license>
 

@@ -4,7 +4,7 @@ master:
   driver: "ros2_canopen::MasterNode"
   package: "canopen_core"
 
-simple_mc:
+canopen_402_driver:
   node_id: 2
   dcf: "technosoft.eds"
   driver: "ros2_canopen::MotionControllerDriver"

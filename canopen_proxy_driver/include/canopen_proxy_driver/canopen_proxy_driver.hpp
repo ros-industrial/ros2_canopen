@@ -66,7 +66,6 @@ public:
     uint8_t node_id,
     std::shared_ptr<ros2_canopen::ConfigurationManager> config) noexcept override
   {
-    RCLCPP_INFO(this->get_logger(), "Intitialising ProxyDriver");
     BaseDriver::init(exec, master, node_id, config);
     nmt_state_publisher = this->create_publisher<std_msgs::msg::String>(
       std::string(

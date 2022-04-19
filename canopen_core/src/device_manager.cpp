@@ -24,7 +24,6 @@ void DeviceManager::set_executor(const std::weak_ptr<rclcpp::Executor> executor)
 
 void DeviceManager::add_node_to_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name)
 {
-    RCLCPP_INFO(this->get_logger(), "Initialising loaded %s", driver_name.c_str());
     if (auto exec = executor_.lock())
     {
         exec->add_node(node_wrappers_[node_id].get_node_base_interface(), true);
@@ -33,7 +32,7 @@ void DeviceManager::add_node_to_executor(const std::string &driver_name, const u
 
         active_drivers_.insert({node_name, std::make_pair(node_id, driver_name)});
 
-        RCLCPP_INFO(this->get_logger(), "Added %s of type %s to executor", node_name.c_str(), driver_name.c_str());
+        RCLCPP_INFO(this->get_logger(), "Added node of type %s with name \"%s\" for node_id %hhu to executor.", driver_name.c_str(), node_name.c_str(), node_id);
     }
     else
     {
@@ -41,10 +40,9 @@ void DeviceManager::add_node_to_executor(const std::string &driver_name, const u
     }
 }
 
-void DeviceManager::add_driver_to_master(uint8_t node_id)
+void DeviceManager::add_driver_to_master(std::string driver_name, uint8_t node_id)
 {
-    RCLCPP_INFO(this->get_logger(), "Adding driver for node id %u", node_id);
-
+    RCLCPP_INFO(this->get_logger(), "Adding %s for node id %u to master loop.", driver_name.c_str(), node_id);
     auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id].get_node_instance());
     can_master_->add_driver(node_instance, node_id);
 }
@@ -142,9 +140,9 @@ bool DeviceManager::init_devices_from_config()
 
     for (auto it = devices.begin(); it != devices.end(); it++)
     {
-        if (it->find("master") != std::string::npos)
+        if (it->find("master") != std::string::npos && !master_found)
         {
-            RCLCPP_INFO(this->get_logger(), "Found potential Master.");
+            RCLCPP_INFO(this->get_logger(), "Found Master.");
             auto node_id = config_->get_entry<uint32_t>(*it, "node_id");
             auto driver_name = config_->get_entry<std::string>(*it, "driver");
             auto package_name = config_->get_entry<std::string>(*it, "package");
@@ -160,7 +158,6 @@ bool DeviceManager::init_devices_from_config()
                 RCLCPP_ERROR(this->get_logger(), "Error: Loading master failed.");
                 return false;
             }
-            RCLCPP_INFO(this->get_logger(), "Found Master.");
             add_node_to_executor(driver_name.value(), node_id.value(), *it);
             add_master(node_id.value());
             master_found = true;
@@ -177,7 +174,6 @@ bool DeviceManager::init_devices_from_config()
     {
         if (it->find("master") == std::string::npos)
         {
-            RCLCPP_INFO(this->get_logger(), "Found potential Driver.");
             auto node_id = config_->get_entry<uint32_t>(*it, "node_id");
             auto driver_name = config_->get_entry<std::string>(*it, "driver");
             auto package_name = config_->get_entry<std::string>(*it, "package");
@@ -198,7 +194,7 @@ bool DeviceManager::init_devices_from_config()
             {
                 this->load_component(package_name.value(), driver_name.value(), node_id.value(), *it);
                 add_node_to_executor(driver_name.value(), node_id.value(), *it);
-                this->add_driver_to_master(node_id.value());
+                this->add_driver_to_master(driver_name.value(), node_id.value());
             }  
         }
     }
@@ -266,7 +262,7 @@ void DeviceManager::on_load_node(
     if (is_loaded)
     {
         add_node_to_executor(driver_name, node_id, node_name);
-        this->add_driver_to_master(node_id);
+        this->add_driver_to_master(driver_name, node_id);
         response->full_node_name = node_name;
         response->unique_id = node_id;
         response->success = true;

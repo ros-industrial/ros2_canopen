@@ -178,7 +178,6 @@ void MotionControllerDriver::init(ev::Executor &exec,
                                   std::shared_ptr<ros2_canopen::ConfigurationManager>  config) noexcept
 {
     ProxyDriver::init(exec, master, node_id, config);
-    RCLCPP_INFO(this->get_logger(), "Intitialising MotionControllerDriver");
     auto period = this->config_->get_entry<uint32_t>(std::string(this->get_name()), std::string("period"));
     if(!period.has_value())
     {
@@ -197,7 +196,6 @@ void MotionControllerDriver::init(ev::Executor &exec,
         2000ms, std::bind(&MotionControllerDriver::run, this), timer_group);
     driver->Boot();
     active.store(true);
-    RCLCPP_INFO(this->get_logger(), "Intialised with nodeid %hhu.", node_id);
 }
 
 #include "rclcpp_components/register_node_macro.hpp"

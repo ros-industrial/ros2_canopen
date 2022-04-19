@@ -112,9 +112,12 @@ private:
      * CANopen master loop, so that it has access to CANopen events
      * and can send messages. 
      * 
+     * @param driver_name   Name of the driver
      * @param node_id       CANopen Id of the device the driver targets
+     * 
+     * 
      */
-    void add_driver_to_master(uint8_t node_id);
+    void add_driver_to_master(std::string driver_name, uint8_t node_id);
 
     /**
      * @brief Removes driver from master
