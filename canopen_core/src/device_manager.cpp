@@ -22,22 +22,22 @@ void DeviceManager::set_executor(const std::weak_ptr<rclcpp::Executor> executor)
     executor_ = executor;
 }
 
-void DeviceManager::add_node_to_executor(const std::string &plugin_name, const uint8_t node_id, const std::string &node_name)
+void DeviceManager::add_node_to_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name)
 {
-    RCLCPP_INFO(this->get_logger(), "Initialising loaded %s", plugin_name.c_str());
+    RCLCPP_INFO(this->get_logger(), "Initialising loaded %s", driver_name.c_str());
     if (auto exec = executor_.lock())
     {
         exec->add_node(node_wrappers_[node_id].get_node_base_interface(), true);
 
         auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id].get_node_instance());
 
-        active_drivers_.insert({node_name, std::make_pair(node_id, plugin_name)});
+        active_drivers_.insert({node_name, std::make_pair(node_id, driver_name)});
 
-        RCLCPP_INFO(this->get_logger(), "Added %s of type %s to executor", node_name.c_str(), plugin_name.c_str());
+        RCLCPP_INFO(this->get_logger(), "Added %s of type %s to executor", node_name.c_str(), driver_name.c_str());
     }
     else
     {
-        RCLCPP_ERROR(this->get_logger(), "Failed to add %s of type %s to executor", node_name.c_str(), plugin_name.c_str());
+        RCLCPP_ERROR(this->get_logger(), "Failed to add %s of type %s to executor", node_name.c_str(), driver_name.c_str());
     }
 }
 
@@ -49,20 +49,20 @@ void DeviceManager::add_driver_to_master(uint8_t node_id)
     can_master_->add_driver(node_instance, node_id);
 }
 
-void DeviceManager::remove_node_from_executor(const std::string &plugin_name, const uint8_t node_id, const std::string &node_name)
+void DeviceManager::remove_node_from_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name)
 {
-    RCLCPP_INFO(this->get_logger(), "Removing %s", plugin_name.c_str());
+    RCLCPP_INFO(this->get_logger(), "Removing %s", driver_name.c_str());
     if (auto exec = executor_.lock())
     {
         exec->remove_node(node_wrappers_[node_id].get_node_base_interface());
 
         auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id].get_node_instance());
 
-        RCLCPP_INFO(this->get_logger(), "Removed %s of type %s from executor", node_name.c_str(), plugin_name.c_str());
+        RCLCPP_INFO(this->get_logger(), "Removed %s of type %s from executor", node_name.c_str(), driver_name.c_str());
     }
     else
     {
-        RCLCPP_ERROR(this->get_logger(), "Failed to remove %s of type %s from executor", node_name.c_str(), plugin_name.c_str());
+        RCLCPP_ERROR(this->get_logger(), "Failed to remove %s of type %s from executor", node_name.c_str(), driver_name.c_str());
     }
 }
 
@@ -72,13 +72,13 @@ void DeviceManager::remove_driver_from_master(uint8_t node_id)
     can_master_->remove_driver(node_instance, node_id);
 }
 
-bool DeviceManager::load_component(std::string &pkg_name, std::string &plugin_name, uint8_t node_id, std::string &node_name)
+bool DeviceManager::load_component(std::string &package_name, std::string &driver_name, uint8_t node_id, std::string &node_name)
 {
     ComponentResource component;
-    std::vector<ComponentResource> components = this->get_component_resources(pkg_name);
+    std::vector<ComponentResource> components = this->get_component_resources(package_name);
     for (auto it = components.begin(); it != components.end(); ++it)
     {
-        if (it->first.compare(plugin_name) == 0)
+        if (it->first.compare(driver_name) == 0)
         {
             auto factory_node = this->create_component_factory(*it);
             rclcpp::NodeOptions opts;
@@ -92,7 +92,6 @@ bool DeviceManager::load_component(std::string &pkg_name, std::string &plugin_na
             try
             {
                 node_wrappers_[node_id] = factory_node->create_node_instance(opts);
-                add_node_to_executor(plugin_name, node_id, node_name);
             }
             catch (const std::exception &ex)
             {
@@ -146,7 +145,7 @@ bool DeviceManager::init_devices_from_config()
         if (it->find("master") != std::string::npos)
         {
             RCLCPP_INFO(this->get_logger(), "Found potential Master.");
-            auto node_id = config_->get_entry<uint8_t>(*it, "node_id");
+            auto node_id = config_->get_entry<uint32_t>(*it, "node_id");
             auto driver_name = config_->get_entry<std::string>(*it, "driver");
             auto package_name = config_->get_entry<std::string>(*it, "package");
 
@@ -162,6 +161,7 @@ bool DeviceManager::init_devices_from_config()
                 return false;
             }
             RCLCPP_INFO(this->get_logger(), "Found Master.");
+            add_node_to_executor(driver_name.value(), node_id.value(), *it);
             add_master(node_id.value());
             master_found = true;
         }
@@ -178,7 +178,7 @@ bool DeviceManager::init_devices_from_config()
         if (it->find("master") == std::string::npos)
         {
             RCLCPP_INFO(this->get_logger(), "Found potential Driver.");
-            auto node_id = config_->get_entry<uint8_t>(*it, "node_id");
+            auto node_id = config_->get_entry<uint32_t>(*it, "node_id");
             auto driver_name = config_->get_entry<std::string>(*it, "driver");
             auto package_name = config_->get_entry<std::string>(*it, "package");
             auto enable_lazy_load = config_->get_entry<bool>(*it, "enable_lazy_load");
@@ -197,6 +197,7 @@ bool DeviceManager::init_devices_from_config()
             if (!enable_lazy_load.value())
             {
                 this->load_component(package_name.value(), driver_name.value(), node_id.value(), *it);
+                add_node_to_executor(driver_name.value(), node_id.value(), *it);
                 this->add_driver_to_master(node_id.value());
             }  
         }
@@ -232,7 +233,7 @@ void DeviceManager::on_load_node(
 {
     (void)request_header;
     std::string package_name = request->package_name;
-    std::string plugin_name = request->plugin_name;
+    std::string driver_name = request->plugin_name;
     std::string node_name = request->node_name;
 
     if (node_name.empty())
@@ -257,15 +258,17 @@ void DeviceManager::on_load_node(
         return;
     }
 
-    // pair of {node_id, plugin_name}
-    auto plugin_info = registered_drivers_[node_name];
+    // pair of {node_id, driver_name}
+    auto node_id = registered_drivers_[node_name].first;
 
-    bool is_loaded = this->load_component(package_name, plugin_name, plugin_info.first, node_name);
+    bool is_loaded = this->load_component(package_name, driver_name, node_id, node_name);
 
     if (is_loaded)
     {
+        add_node_to_executor(driver_name, node_id, node_name);
+        this->add_driver_to_master(node_id);
         response->full_node_name = node_name;
-        response->unique_id = plugin_info.first;
+        response->unique_id = node_id;
         response->success = true;
     }
     else
@@ -273,6 +276,7 @@ void DeviceManager::on_load_node(
         response->error_message = "Failed to find class with the requested plugin name.";
         response->success = false;
     }
+
 }
 
 void DeviceManager::on_unload_node(
@@ -303,7 +307,16 @@ int main(int argc, char const *argv[])
     auto exec = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
     auto device_manager = std::make_shared<DeviceManager>(exec);
     std::thread spinThread([&device_manager]()
-                           { std::cout << "Init success: " << device_manager->init() << std::endl; });
+                        { 
+                            if(device_manager->init())
+                            {
+                                RCLCPP_INFO(device_manager->get_logger(), "Initialisation successful.");
+                            }
+                            else
+                            {
+                                RCLCPP_INFO(device_manager->get_logger(), "Initialisation failed.");
+                            }
+                        });
     exec->add_node(device_manager);
     exec->spin();
     spinThread.join();

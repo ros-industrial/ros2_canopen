@@ -42,15 +42,12 @@ public:
 
     bool init();
 
-    RCLCPP_COMPONENTS_PUBLIC
     virtual void
     on_load_node(
         const std::shared_ptr<rmw_request_id_t> request_header,
         const std::shared_ptr<LoadNode::Request> request,
         std::shared_ptr<LoadNode::Response> response);
 
-    [[deprecated("Use on_load_node() instead")]]
-    RCLCPP_COMPONENTS_PUBLIC
     virtual void
     OnLoadNode(
         const std::shared_ptr<rmw_request_id_t> request_header,
@@ -60,15 +57,12 @@ public:
         on_load_node(request_header, request, response);
     }
 
-    RCLCPP_COMPONENTS_PUBLIC
     virtual void
     on_unload_node(
         const std::shared_ptr<rmw_request_id_t> request_header,
         const std::shared_ptr<UnloadNode::Request> request,
         std::shared_ptr<UnloadNode::Response> response);
 
-    [[deprecated("Use on_unload_node() instead")]]
-    RCLCPP_COMPONENTS_PUBLIC
     virtual void
     OnUnloadNode(
         const std::shared_ptr<rmw_request_id_t> request_header,
@@ -78,15 +72,12 @@ public:
         on_unload_node(request_header, request, response);
     }
 
-    RCLCPP_COMPONENTS_PUBLIC
     virtual void
     on_list_nodes(
         const std::shared_ptr<rmw_request_id_t> request_header,
         const std::shared_ptr<ListNodes::Request> request,
         std::shared_ptr<ListNodes::Response> response);
 
-    [[deprecated("Use on_list_nodes() instead")]]
-    RCLCPP_COMPONENTS_PUBLIC
     virtual void
     OnListNodes(
         const std::shared_ptr<rmw_request_id_t> request_header,
@@ -111,12 +102,33 @@ private:
     std::string can_interface_name_;
 
     void set_executor(const std::weak_ptr<rclcpp::Executor> executor);
-    void add_node_to_executor(const std::string &plugin_name, const uint8_t node_id, const std::string &node_name);
-    void remove_node_from_executor(const std::string &plugin_name, const uint8_t node_id, const std::string &node_name);
+    void add_node_to_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name);
+    void remove_node_from_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name);
+
+    /**
+     * @brief Adds driver to master
+     * 
+     * This function needs to be called to add the driver to the
+     * CANopen master loop, so that it has access to CANopen events
+     * and can send messages. 
+     * 
+     * @param node_id       CANopen Id of the device the driver targets
+     */
     void add_driver_to_master(uint8_t node_id);
+
+    /**
+     * @brief Removes driver from master
+     * 
+     * This function removes the driver with the specified id from
+     * the CANopen master loop. This needs to be done when unloading
+     * a driver. This function should be called before removing the driver
+     * from the ros2 executor.
+     * 
+     * @param node_id       CANopen Id of the device the driver targets
+     */
     void remove_driver_from_master(uint8_t node_id);
 
-    bool load_component(std::string& pkg_name, std::string& plugin_name, uint8_t node_id, std::string& node_name);
+    bool load_component(std::string& package_name, std::string& driver_name, uint8_t node_id, std::string& node_name);
     std::map<uint32_t, std::string> list_components();
 
     bool init_devices_from_config();
