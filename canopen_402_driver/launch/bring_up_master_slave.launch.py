@@ -7,6 +7,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'launch')
 import launch
 import launch.actions
 import launch.events
+from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.actions import DeclareLaunchArgument
 
 import launch_ros
 import launch_ros.events  
@@ -21,7 +23,14 @@ def generate_launch_description():
     os.chdir(config_path)
     ld = launch.LaunchDescription()
 
+    master_launch = LaunchConfiguration('master_launch')
+    arg1 = DeclareLaunchArgument(
+            'master_launch',
+            default_value='false',
+            description='Defines if master is launched')
+
     master_node = launch_ros.actions.Node(
+        condition=launch.conditions.IfCondition(master_launch),
         name="device_manager",
         namespace="", 
         package="canopen_core", 
@@ -66,9 +75,11 @@ def generate_launch_description():
             transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
         )
     )
+    ld.add_action(arg1)
+    ld.add_action(master_node)
     ld.add_action(slave_inactive_state_handler)
     ld.add_action(slave_node)
     ld.add_action(slave_configure)
-    ld.add_action(master_node)
+    
 
     return ld

@@ -1,6 +1,6 @@
 master:
   node_id: 1
-  sync_period: 10000
+  sync_period: 100000
   driver: "ros2_canopen::MasterNode"
   package: "canopen_core"
 
@@ -14,12 +14,14 @@ simple_mc:
   tpdo:
     1:
       enabled: true
+      transmission: 0x01
       mapping:
         - {index: 0x6041, sub_index: 0}
         - {index: 0x6061, sub_index: 0}
         - {index: 0x6064, sub_index: 0}
     2:
       enabled: true
+      transmission: 0x01
       mapping:
         - {index: 0x606b, sub_index: 0}
         - {index: 0x606c, sub_index: 0}
