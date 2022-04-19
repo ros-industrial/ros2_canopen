@@ -121,9 +121,20 @@ void MotionControllerDriver::handle_set_target(
     }
 }
 
+void MotionControllerDriver::publish(){
+    std_msgs::msg::Float64 pos_msg;
+    std_msgs::msg::Float64 speed_msg;
+    pos_msg.data = mc_driver_->get_position();
+    speed_msg.data = mc_driver_->get_speed();
+    publish_actual_position->publish(pos_msg);
+    publish_actual_speed->publish(speed_msg);
+}
+
 
 void MotionControllerDriver::register_services()
 {
+    publish_actual_position = this->create_publisher<std_msgs::msg::Float64>("~/actual_position", 10);;
+    publish_actual_speed = this->create_publisher<std_msgs::msg::Float64>("~/actual_speed", 10);
     handle_init_service = this->create_service<std_srvs::srv::Trigger>(
         std::string(this->get_name()).append("/init").c_str(),
         std::bind(&MotionControllerDriver::handle_init, this, _1, _2));
@@ -183,7 +194,7 @@ void MotionControllerDriver::init(ev::Executor &exec,
 
     timer_group = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     timer_ = this->create_wall_timer(
-        2000ms, std::bind(&MotionControllerDriver::run, this), timer_group);
+        10000ms, std::bind(&MotionControllerDriver::run, this), timer_group);
     driver->Boot();
     active.store(true);
     RCLCPP_INFO(this->get_logger(), "Intialised with nodeid %hhu.", node_id);
