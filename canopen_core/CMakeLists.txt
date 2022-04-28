@@ -74,6 +74,7 @@ ament_target_dependencies(
   "rclcpp_components"
   "canopen_interfaces"
   "lely_core_libraries"
+  "yaml_cpp_vendor"
 )
 rclcpp_components_register_nodes(master_node  "ros2_canopen::MasterNode")
 set(node_plugins "${node_plugins}ros2_canopen::MasterNode;$<TARGET_FILE:master_node >\n")
