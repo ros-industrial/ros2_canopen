@@ -42,16 +42,13 @@ set (dependencies
   canopen_interfaces
 )
 
-message(STATUS "${yaml_cpp_vendor_INCLUDE_DIRS}")
-#include_directories(${yaml_cpp_vendor_INCLUDE_DIRS})
 add_library(configuration_manager
   src/configuration_manager.cpp
 )
 target_compile_features(configuration_manager  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_include_directories(configuration_manager PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-  #${yaml_cpp_vendor_INCLUDE_DIRS}
+  $<INSTALL_INTERFACE:include>}
   )
 ament_target_dependencies(configuration_manager 
   rclcpp
