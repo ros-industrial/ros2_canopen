@@ -1,4 +1,4 @@
-name: Industrial CI
+name: galactic
 
 on: 
   push:
