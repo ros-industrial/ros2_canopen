@@ -144,8 +144,16 @@ in launch and config folder.
 
   ament_package()
 
+Launching
+---------
+If you want to launch the configuration package you created, make sure, that you have the indicated CAN device available.
+You might currently need to start the launch file as root.
 
-
+.. code-block:: console
+  
+  sudo su
+  source install/setup.bash
+  ros2 launch [package] [launchfile]
 
 
 
