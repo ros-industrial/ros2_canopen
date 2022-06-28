@@ -47,20 +47,21 @@ void DeviceManager::add_driver_to_master(std::string driver_name, uint8_t node_i
     can_master_->add_driver(node_instance, node_id);
 }
 
-void DeviceManager::remove_node_from_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name)
+void DeviceManager::remove_node_from_executor(const uint8_t node_id)
 {
-    RCLCPP_INFO(this->get_logger(), "Removing %s", driver_name.c_str());
+    std::string node_name = node_wrappers_[node_id].get_node_base_interface()->get_name();
+    RCLCPP_INFO(this->get_logger(), "Removing %s", node_name.c_str());
     if (auto exec = executor_.lock())
     {
         exec->remove_node(node_wrappers_[node_id].get_node_base_interface());
 
         auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id].get_node_instance());
 
-        RCLCPP_INFO(this->get_logger(), "Removed %s of type %s from executor", node_name.c_str(), driver_name.c_str());
+        RCLCPP_INFO(this->get_logger(), "Removed %s from executor", node_name.c_str());
     }
     else
     {
-        RCLCPP_ERROR(this->get_logger(), "Failed to remove %s of type %s from executor", node_name.c_str(), driver_name.c_str());
+        RCLCPP_ERROR(this->get_logger(), "Failed to remove %s from executor", node_name.c_str());
     }
 }
 
@@ -243,13 +244,16 @@ void DeviceManager::on_load_node(
     auto active_it = active_drivers_.find(node_name);
     if (registered_it == registered_drivers_.end())
     {
-        response->error_message = "No node registered with the name " + node_name + ".";
+        response->error_message =   "No node registered with the name " + node_name + 
+                                    ". You need to add it to your bus configuration file";
         response->success = false;
         return;
     }
     if (active_it != active_drivers_.end())
     {
-        response->error_message = node_name + " is already loaded.";
+        response->error_message =   node_name + 
+                                    " is already loaded. You may want to edit your bus" +
+                                    " configuration file and the enable_lazy_load feature.";
         response->success = false;
         return;
     }
@@ -280,6 +284,28 @@ void DeviceManager::on_unload_node(
     const std::shared_ptr<UnloadNode::Request> request,
     std::shared_ptr<UnloadNode::Response> response)
 {
+    auto components = list_components();
+    bool has_component = false;
+    for(auto it = components.begin(); it != components.end(); ++it)
+    {
+        if(it->first == request->unique_id)
+        {
+            has_component = true;
+            break;
+        }
+    }
+
+    if(has_component){
+        std::string node_name = node_wrappers_[request->unique_id].get_node_base_interface()->get_name();
+        // Remove driver from master
+        remove_driver_from_master(request->unique_id);
+        // Remove node from executor
+        remove_node_from_executor(request->unique_id);
+        // Remove driver from active drivers
+        active_drivers_.erase(node_name);
+        // Remove node from node_wrappers_
+        node_wrappers_.erase(request->unique_id);
+    }
 }
 
 void DeviceManager::on_list_nodes(
