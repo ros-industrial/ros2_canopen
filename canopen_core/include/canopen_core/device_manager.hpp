@@ -103,7 +103,7 @@ private:
 
     void set_executor(const std::weak_ptr<rclcpp::Executor> executor);
     void add_node_to_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name);
-    void remove_node_from_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name);
+    void remove_node_from_executor(const uint8_t node_id);
 
     /**
      * @brief Adds driver to master
