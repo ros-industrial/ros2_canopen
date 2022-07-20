@@ -22,12 +22,12 @@
 
 #include "device.hpp"
 
-class DeviceManager : public rclcpp_components::ComponentManager {
+class DeviceContainer : public rclcpp_components::ComponentManager {
 public:
-    DeviceManager(
+    DeviceContainer(
         std::weak_ptr<rclcpp::Executor> executor =
         std::weak_ptr<rclcpp::executors::MultiThreadedExecutor>(),
-        std::string node_name = "device_manager",
+        std::string node_name = "device_container",
         const rclcpp::NodeOptions & node_options = rclcpp::NodeOptions()
             .start_parameter_services(false)
             .start_parameter_event_publisher(false)) :

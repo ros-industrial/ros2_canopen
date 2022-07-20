@@ -31,11 +31,11 @@ def generate_launch_description():
 
     master_node = launch_ros.actions.Node(
         condition=launch.conditions.IfCondition(master_launch),
-        name="device_manager",
+        name="device_container",
         namespace="", 
         package="canopen_core", 
         output="screen", 
-        executable="device_manager_node",
+        executable="device_container_node",
         parameters= [{
                     "bus_config": os.path.join(config_path, "simple_mc.yml"),
                     "master_config": os.path.join(config_path, "master.dcf"),

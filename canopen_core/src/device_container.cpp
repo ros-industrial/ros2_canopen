@@ -13,16 +13,16 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-#include "canopen_core/device_manager.hpp"
+#include "canopen_core/device_container.hpp"
 
 using namespace ros2_canopen;
 
-void DeviceManager::set_executor(const std::weak_ptr<rclcpp::Executor> executor)
+void DeviceContainer::set_executor(const std::weak_ptr<rclcpp::Executor> executor)
 {
     executor_ = executor;
 }
 
-void DeviceManager::add_node_to_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name)
+void DeviceContainer::add_node_to_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name)
 {
     if (auto exec = executor_.lock())
     {
@@ -40,14 +40,14 @@ void DeviceManager::add_node_to_executor(const std::string &driver_name, const u
     }
 }
 
-void DeviceManager::add_driver_to_master(std::string driver_name, uint8_t node_id)
+void DeviceContainer::add_driver_to_master(std::string driver_name, uint8_t node_id)
 {
     RCLCPP_INFO(this->get_logger(), "Adding %s for node id %u to master loop.", driver_name.c_str(), node_id);
     auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id].get_node_instance());
     can_master_->add_driver(node_instance, node_id);
 }
 
-void DeviceManager::remove_node_from_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name)
+void DeviceContainer::remove_node_from_executor(const std::string &driver_name, const uint8_t node_id, const std::string &node_name)
 {
     RCLCPP_INFO(this->get_logger(), "Removing %s", driver_name.c_str());
     if (auto exec = executor_.lock())
@@ -64,13 +64,13 @@ void DeviceManager::remove_node_from_executor(const std::string &driver_name, co
     }
 }
 
-void DeviceManager::remove_driver_from_master(uint8_t node_id)
+void DeviceContainer::remove_driver_from_master(uint8_t node_id)
 {
     auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id].get_node_instance());
     can_master_->remove_driver(node_instance, node_id);
 }
 
-bool DeviceManager::load_component(std::string &package_name, std::string &driver_name, uint8_t node_id, std::string &node_name)
+bool DeviceContainer::load_component(std::string &package_name, std::string &driver_name, uint8_t node_id, std::string &node_name)
 {
     ComponentResource component;
     std::vector<ComponentResource> components = this->get_component_resources(package_name);
@@ -111,7 +111,7 @@ bool DeviceManager::load_component(std::string &package_name, std::string &drive
     return false;
 }
 
-std::map<uint32_t, std::string> DeviceManager::list_components()
+std::map<uint32_t, std::string> DeviceContainer::list_components()
 {
     std::map<uint32_t, std::string> components;
     for (auto &wrapper : node_wrappers_)
@@ -122,16 +122,18 @@ std::map<uint32_t, std::string> DeviceManager::list_components()
     return components;
 }
 
-bool DeviceManager::add_master(uint8_t node_id)
+bool DeviceContainer::add_master(uint8_t node_id)
 {
     RCLCPP_INFO(this->get_logger(), "Adding master with node id %u", node_id);
 
     can_master_ = std::static_pointer_cast<ros2_canopen::MasterInterface>(node_wrappers_[node_id].get_node_instance());
-    can_master_->init(dcf_txt_, dcf_bin_, can_interface_name_, node_id, config_);
+    can_master_->init();
+    this->
+    can_master_->set_parameter(rclcpp::Parameter<std::string(""))
     return true;
 }
 
-bool DeviceManager::init_devices_from_config()
+bool DeviceContainer::init_devices_from_config()
 {
     std::vector<std::string> devices;
     uint32_t count = this->config_->get_all_devices(devices);
@@ -209,7 +211,7 @@ bool DeviceManager::init_devices_from_config()
     return true;
 }
 
-bool DeviceManager::init()
+bool DeviceContainer::init()
 {
     this->get_parameter("can_interface_name", can_interface_name_);
     this->get_parameter("master_config", dcf_txt_);
@@ -222,7 +224,7 @@ bool DeviceManager::init()
     return true;
 }
 
-void DeviceManager::on_load_node(
+void DeviceContainer::on_load_node(
     const std::shared_ptr<rmw_request_id_t> request_header,
     const std::shared_ptr<LoadNode::Request> request,
     std::shared_ptr<LoadNode::Response> response)
@@ -275,14 +277,14 @@ void DeviceManager::on_load_node(
 
 }
 
-void DeviceManager::on_unload_node(
+void DeviceContainer::on_unload_node(
     const std::shared_ptr<rmw_request_id_t> request_header,
     const std::shared_ptr<UnloadNode::Request> request,
     std::shared_ptr<UnloadNode::Response> response)
 {
 }
 
-void DeviceManager::on_list_nodes(
+void DeviceContainer::on_list_nodes(
     const std::shared_ptr<rmw_request_id_t> request_header,
     const std::shared_ptr<ListNodes::Request> request,
     std::shared_ptr<ListNodes::Response> response)
@@ -301,19 +303,19 @@ int main(int argc, char const *argv[])
 {
     rclcpp::init(argc, argv);
     auto exec = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
-    auto device_manager = std::make_shared<DeviceManager>(exec);
-    std::thread spinThread([&device_manager]()
+    auto device_container = std::make_shared<DeviceContainer>(exec);
+    std::thread spinThread([&device_container]()
                         { 
-                            if(device_manager->init())
+                            if(device_container->init())
                             {
-                                RCLCPP_INFO(device_manager->get_logger(), "Initialisation successful.");
+                                RCLCPP_INFO(device_container->get_logger(), "Initialisation successful.");
                             }
                             else
                             {
-                                RCLCPP_INFO(device_manager->get_logger(), "Initialisation failed.");
+                                RCLCPP_INFO(device_container->get_logger(), "Initialisation failed.");
                             }
                         });
-    exec->add_node(device_manager);
+    exec->add_node(device_container);
     exec->spin();
     spinThread.join();
     return 0;

@@ -18,12 +18,14 @@
 #include <memory>
 #include <thread>
 
+#include <lifecycle_msgs/msg/state.hpp>
 
 #include "canopen_core/exchange.hpp"
 #include "canopen_core/device.hpp"
 #include "canopen_core/lely_master_bridge.hpp"
 #include "canopen_interfaces/srv/co_write_id.hpp"
 #include "canopen_interfaces/srv/co_read_id.hpp"
+
 namespace ros2_canopen
 {
     class MasterNode : public MasterInterface
@@ -51,15 +53,50 @@ namespace ros2_canopen
         {
         }
 
-        void init(std::string dcf_txt, std::string dcf_bin, std::string can_interface_name, uint8_t nodeid, 
-                    std::shared_ptr<ConfigurationManager> config) override;
+        /**
+         * @brief Initialises the MasterNode
+         * 
+         * As MasterNode is a component this function enables passing data  to the
+         * node that would usually be passed via the constructor.
+         * 
+         */
+        void init() override;
 
-        void add_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
+        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+        on_configure(const rclcpp_lifecycle::State &);
 
-        void remove_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
+        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+        on_activate(const rclcpp_lifecycle::State & state);
+
+        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+        on_deactivate(const rclcpp_lifecycle::State & state);
+        
+        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+        on_cleanup(const rclcpp_lifecycle::State &);
+
+        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+        on_shutdown(const rclcpp_lifecycle::State & state);
 
         /**
-         * @brief on_sdo_read
+         * @brief Add a device driver
+         * 
+         * This function only has an effect if the MasterNode is in active state.
+         * The function will add a driver for a specific node id to the CANopen
+         * event loop.
+         * 
+         * @param node_instance 
+         * @param node_id 
+         */
+        bool add_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
+
+        bool remove_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
+
+        /**
+         * @brief Read Service Data Object
+         * 
+         * This Service is only available when the node is in active lifecycle state.
+         * It will return with success false in any other lifecycle state and log an
+         * RCLCPP_ERROR.
          * 
          * @param request 
          * @param response 
@@ -69,7 +106,11 @@ namespace ros2_canopen
             std::shared_ptr<canopen_interfaces::srv::COReadID::Response> response);
 
         /**
-         * @brief on_sdo_write
+         * @brief Write Service Data Object
+         * 
+         * This service is only available when the node is in active lifecycle state.
+         * It will return with success false in any other lifecycle state and log an
+         * RCLCPP_ERROR.
          * 
          * @param request 
          * @param response 

@@ -33,11 +33,11 @@ def generate_test_description():
     ld = launch.LaunchDescription()
 
     master_node = launch_ros.actions.Node(
-        name="device_manager_node",
+        name="device_container_node",
         namespace="",
         package="canopen_core",
         output="screen",
-        executable="device_manager_node",
+        executable="device_container_node",
         parameters=[{
             "bus_config": os.path.join(path_to_test, "../config/concurrency_test","concurrency.yml"),
             "master_config": os.path.join(path_to_test, "../config/concurrency_test" ,"master.dcf"),

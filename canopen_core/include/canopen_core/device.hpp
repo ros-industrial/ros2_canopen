@@ -24,6 +24,7 @@
 #include <lely/io2/sys/sigset.hpp>
 #include <lely/io2/sys/timer.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
 #include "canopen_core/configuration_manager.hpp"
 
 using namespace lely;
@@ -69,7 +70,7 @@ namespace ros2_canopen
                             uint8_t node_id) noexcept = 0;
     };
 
-    class MasterInterface : public rclcpp::Node
+    class MasterInterface : public rclcpp_lifecycle::LifecycleNode
     {
     protected:
         std::string dcf_txt_;
@@ -91,23 +92,12 @@ namespace ros2_canopen
          */
         MasterInterface(
             const std::string &node_name,
-            const rclcpp::NodeOptions &node_options) : rclcpp::Node(node_name, node_options)
+            const rclcpp::NodeOptions &node_options) : rclcpp_lifecycle::LifecycleNode(node_name, node_options)
         {
 
         }
-        virtual void init(
-            std::string dcf_txt,
-            std::string dcf_bin,
-            std::string can_interface_name,
-            uint8_t nodeid,
-            std::shared_ptr<ros2_canopen::ConfigurationManager> config
-        )
+        virtual void init()
         {
-            dcf_txt_ = dcf_txt;
-            dcf_bin_ = dcf_bin;
-            can_interface_name_ = can_interface_name;
-            node_id_ = nodeid;
-            config_ = config;
         }
 
         /**
@@ -115,14 +105,14 @@ namespace ros2_canopen
          * 
          * @param node_id 
          */
-        virtual void add_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
+        virtual bool add_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
 
         /**
          * @brief Removes a driver
          * 
          * @param node_id 
          */
-        virtual void remove_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
+        virtual bool remove_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
     };
 
     class SlaveDevice : public rclcpp::Node, public canopen::BasicSlave

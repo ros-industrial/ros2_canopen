@@ -53,11 +53,11 @@ from rclpy.node import Node
 def generate_test_description():
     test_dir_path = os.path.dirname(__file__)
     master_node = launch_ros.actions.Node(
-        name="device_manager_node",
+        name="device_container_node",
         namespace="", 
         package="canopen_core", 
         output="screen", 
-        executable="device_manager_node",
+        executable="device_container_node",
         parameters= [{
             "bus_config": os.path.join(test_dir_path, ".." ,  "config/nmt_test" , "simple.yml"),
             "master_config": os.path.join(test_dir_path, ".." , "config/nmt_test" , "master.dcf"),

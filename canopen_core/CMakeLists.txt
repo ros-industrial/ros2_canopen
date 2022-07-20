@@ -72,23 +72,25 @@ ament_target_dependencies(
   "canopen_interfaces"
   "lely_core_libraries"
   "yaml_cpp_vendor"
+  "rclcpp_lifecycle"
+  "lifecycle_msgs"
 )
 rclcpp_components_register_nodes(master_node  "ros2_canopen::MasterNode")
 set(node_plugins "${node_plugins}ros2_canopen::MasterNode;$<TARGET_FILE:master_node >\n")
 
 # device manager node
-add_executable(device_manager_node 
-  src/device_manager.cpp
+add_executable(device_container_node 
+  src/device_container.cpp
   src/lely_master_bridge.cpp
   )
-target_link_libraries(device_manager_node
+target_link_libraries(device_container_node
   configuration_manager
 )
-ament_target_dependencies(device_manager_node 
+ament_target_dependencies(device_container_node 
   ${dependencies}
 )
 
-target_include_directories(device_manager_node PUBLIC
+target_include_directories(device_container_node PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>"
   ${rclcpp_INCLUDE_DIRS}
@@ -129,7 +131,7 @@ install(
   RUNTIME DESTINATION bin
 )
 
-install(TARGETS device_manager_node
+install(TARGETS device_container_node
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS slave_node
