@@ -55,7 +55,7 @@ namespace ros2_canopen
     {
     public:
         DeviceManagerNode(const rclcpp::NodeOptions &node_options)
-            : Node("DeviceManager", node_options)
+            : rclcpp_lifecycle::LifecycleNode("DeviceManager", node_options)
         {
         }
 
@@ -175,7 +175,7 @@ namespace ros2_canopen
          * @return false
          */
         bool
-        bring_up_master();
+        bring_down_master();
 
         /**
          * @brief Brings up the drivers with specified node_id

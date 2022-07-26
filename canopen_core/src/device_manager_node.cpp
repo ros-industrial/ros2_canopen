@@ -11,7 +11,7 @@ namespace ros2_canopen
             this->declare_parameter<std::string>("container_name");
         }
 
-        this->container_name_ = this->get_parameter<std::string>("container_name");
+        this->get_parameter<std::string>("container_name", this->container_name_);
 
         std::string add_client_name = this->container_name_ + "/add_driver_to_master";
         this->add_driver_client_ = this->create_client<canopen_interfaces::srv::CONode>(add_client_name);
@@ -53,7 +53,7 @@ namespace ros2_canopen
     }
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    DeviceManagerNode::on_shutdown(const rclcpp_lifecycle::State &state);
+    DeviceManagerNode::on_shutdown(const rclcpp_lifecycle::State &state)
     {
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
@@ -76,9 +76,9 @@ namespace ros2_canopen
         {
             rclcpp::Client<lifecycle_msgs::srv::GetState>::SharedPtr driver_get_state_clients;
             rclcpp::Client<lifecycle_msgs::srv::ChangeState>::SharedPtr driver_change_state_clients;
-            uint8_t node_id = config_->get_entry<uint8_t>(*it, "node_id");
-            std::string change_state_client_name = it;
-            std::string get_state_client_name = it;
+            uint8_t node_id = config_->get_entry<uint8_t>(*it, "node_id").value();
+            std::string change_state_client_name = *it;
+            std::string get_state_client_name = *it;
             get_state_client_name += "/get_state";
             change_state_client_name += "/change_state";
 
@@ -97,7 +97,7 @@ namespace ros2_canopen
     }
 
     unsigned int
-    DeviceManagerNode::get_state(uint8_t node_id, std::chrono::seconds time_out = 3s)
+    DeviceManagerNode::get_state(uint8_t node_id, std::chrono::seconds time_out)
     {
         auto request = std::make_shared<lifecycle_msgs::srv::GetState::Request>();
         auto client = this->drivers_get_state_clients[node_id];
@@ -112,7 +112,7 @@ namespace ros2_canopen
 
         // We send the service request for asking the current
         // state of the lc_talker node.
-        auto future_result = client->async_send_request(request).future.share();
+        auto future_result = client->async_send_request(request);
 
         // Let's wait until we have the answer from the node.
         // If the request times out, we return an unknown state.
@@ -121,7 +121,7 @@ namespace ros2_canopen
         if (future_status != std::future_status::ready)
         {
             RCLCPP_ERROR(
-                get_logger(), "Server time out while getting current state for node %s", lifecycle_node);
+                get_logger(), "Server time out while getting current state for node %hhu", node_id);
             return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
         }
 
@@ -129,20 +129,20 @@ namespace ros2_canopen
         if (future_result.get())
         {
             RCLCPP_INFO(
-                get_logger(), "Node %s has current state %s.",
-                lifecycle_node, future_result.get()->current_state.label.c_str());
+                get_logger(), "Node %hhu has current state %s.",
+                node_id, future_result.get()->current_state.label.c_str());
             return future_result.get()->current_state.id;
         }
         else
         {
             RCLCPP_ERROR(
-                get_logger(), "Failed to get current state for node %s", lifecycle_node);
+                get_logger(), "Failed to get current state for node %hhu", node_id);
             return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
         }
     }
 
     bool
-    DeviceManagerNode::change_state(uint8_t node_id, uint8_t transition, std::chrono::seconds time_out = 3s)
+    DeviceManagerNode::change_state(uint8_t node_id, uint8_t transition, std::chrono::seconds time_out)
     {
         auto client = this->drivers_change_state_clients[node_id];
         auto request = std::make_shared<lifecycle_msgs::srv::ChangeState::Request>();
@@ -157,7 +157,7 @@ namespace ros2_canopen
         }
 
         // We send the request with the transition we want to invoke.
-        auto future_result = client->async_send_request(request).future.share();
+        auto future_result = client->async_send_request(request);
 
         // Let's wait until we have the answer from the node.
         // If the request times out, we return an unknown state.
@@ -166,7 +166,7 @@ namespace ros2_canopen
         if (future_status != std::future_status::ready)
         {
             RCLCPP_ERROR(
-                get_logger(), "Server time out while getting current state for node %s", lifecycle_node);
+                get_logger(), "Server time out while getting current state for node %hhu", node_id);
             return false;
         }
 
@@ -183,25 +183,23 @@ namespace ros2_canopen
                 get_logger(), "Failed to trigger transition %u", static_cast<unsigned int>(transition));
             return false;
         }
+        return false;
     }
 
     bool
-    DeviceManagerNode::add_driver_to_master(uint8_t node_id, std::chrono::seconds time_out = 3s)
+    DeviceManagerNode::add_driver_to_master(uint8_t node_id, std::chrono::seconds time_out)
     {
         while (!add_driver_client_->wait_for_service(time_out))
         {
             if (!rclcpp::ok())
             {
                 RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
-                return;
+                return false;
             }
             RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
         }
         auto request = std::make_shared<canopen_interfaces::srv::CONode::Request>();
         request->nodeid = node_id;
-
-        using ServiceResponseFuture =
-            rclcpp::Client<canopen_interfaces::srv::CONode::Request>::SharedFuture;
 
         auto future_result = add_driver_client_->async_send_request(request);
 
@@ -222,24 +220,22 @@ namespace ros2_canopen
     }
 
     bool
-    DeviceManagerNode::remove_driver_from_master(uint8_t node_id, std::chrono::seconds time_out = 3s)
+    DeviceManagerNode::remove_driver_from_master(uint8_t node_id, std::chrono::seconds time_out)
     {
-        while (!remove_driver_from_master->wait_for_service(time_out))
+        while (!remove_driver_client_->wait_for_service(time_out))
         {
             if (!rclcpp::ok())
             {
                 RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
-                return;
+                return false;
             }
             RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
         }
         auto request = std::make_shared<canopen_interfaces::srv::CONode::Request>();
         request->nodeid = node_id;
 
-        using ServiceResponseFuture =
-            rclcpp::Client<canopen_interfaces::srv::CONode::Request>::SharedFuture;
 
-        auto future_result = remove_driver_from_master->async_send_request(request);
+        auto future_result = remove_driver_client_->async_send_request(request);
 
         auto future_status = this->wait_for_result(future_result, time_out);
 
@@ -364,7 +360,7 @@ namespace ros2_canopen
     }
 
     bool
-    DeviceManagerNode::bring_up_all(std::string device_name)
+    DeviceManagerNode::bring_up_all()
     {
         if (!this->bring_up_master())
         {
@@ -372,7 +368,7 @@ namespace ros2_canopen
         }
         for (auto it = this->device_names_to_ids.begin(); it != this->device_names_to_ids.end(); ++it)
         {
-            if (it->first.find("master") != std::npos)
+            if (it->first.find("master") != std::string::npos)
             {
                 if (!this->bring_up_driver(it->first))
                 {
@@ -384,11 +380,11 @@ namespace ros2_canopen
     }
 
     bool
-    DeviceManagerNode::bring_down_all(std::string device_name)
+    DeviceManagerNode::bring_down_all()
     {
         for (auto it = this->device_names_to_ids.begin(); it != this->device_names_to_ids.end(); ++it)
         {
-            if (it->first.find("master") != std::npos)
+            if (it->first.find("master") != std::string::npos)
             {
                 if (!this->bring_down_driver(it->first))
                 {

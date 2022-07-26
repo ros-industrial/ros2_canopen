@@ -43,6 +43,7 @@ set (dependencies
 )
 
 add_library(configuration_manager
+  SHARED
   src/configuration_manager.cpp
 )
 target_compile_features(configuration_manager  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
