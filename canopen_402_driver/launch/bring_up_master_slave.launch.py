@@ -31,7 +31,7 @@ def generate_launch_description():
 
     master_node = launch_ros.actions.Node(
         condition=launch.conditions.IfCondition(master_launch),
-        name="device_container",
+        name="device_container_node",
         namespace="", 
         package="canopen_core", 
         output="screen", 

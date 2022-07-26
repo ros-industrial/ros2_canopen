@@ -78,10 +78,36 @@ ament_target_dependencies(
 rclcpp_components_register_nodes(master_node  "ros2_canopen::MasterNode")
 set(node_plugins "${node_plugins}ros2_canopen::MasterNode;$<TARGET_FILE:master_node >\n")
 
+
 # device manager node
+add_library(device_manager_node
+  SHARED
+  src/device_manager_node.cpp
+  )
+
+target_compile_features(device_manager_node  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(device_manager_node  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_link_libraries(device_manager_node
+  configuration_manager)
+
+ament_target_dependencies(
+  device_manager_node
+  "rclcpp"
+  "rclcpp_components"
+  "canopen_interfaces"
+  "rclcpp_lifecycle"
+  "lifecycle_msgs"
+)
+rclcpp_components_register_nodes(device_manager_node  "ros2_canopen::DeviceManagerNode")
+set(node_plugins "${node_plugins}ros2_canopen::DeviceManagerNode;$<TARGET_FILE:device_manager_node >\n")
+
+
+# device container node
 add_executable(device_container_node 
-  src/device_container.cpp
-  src/lely_master_bridge.cpp
+  src/device_container_node.cpp
   )
 target_link_libraries(device_container_node
   configuration_manager
@@ -131,6 +157,14 @@ install(
   RUNTIME DESTINATION bin
 )
 
+install(
+  TARGETS device_manager_node
+  EXPORT export_device_manager_node
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
 install(TARGETS device_container_node
   DESTINATION lib/${PROJECT_NAME})
 
@@ -161,10 +195,12 @@ ament_export_include_directories(
 ament_export_libraries(
   configuration_manager
   master_node
+  device_manager_node
 )
 ament_export_targets(
   export_configuration_manager
   export_master_node
+  export_device_manager_node
 )
 
 ament_export_dependencies(

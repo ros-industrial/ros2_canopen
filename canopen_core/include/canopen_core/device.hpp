@@ -33,7 +33,7 @@ namespace ros2_canopen
 {
     // Base class for driver plugin
     // Pluginlib API does allows only default constructors
-    class DriverInterface : public rclcpp::Node
+    class DriverInterface : public rclcpp_lifecycle::LifecycleNode
     {
     public:
         /**
@@ -43,7 +43,8 @@ namespace ros2_canopen
          * @param [in] node_options
          */
         DriverInterface(const std::string &node_name,
-                             const rclcpp::NodeOptions &node_options = rclcpp::NodeOptions()) : rclcpp::Node(node_name, node_options) {}
+                        const rclcpp::NodeOptions &node_options = rclcpp::NodeOptions()) 
+                        : rclcpp_lifecycle::LifecycleNode(node_name, node_options) {}
 
         /**
          * @brief Init driver with Master
@@ -55,13 +56,12 @@ namespace ros2_canopen
         virtual void init(ev::Executor &exec,
                           canopen::AsyncMaster &master,
                           uint8_t node_id,
-                          std::shared_ptr<ros2_canopen::ConfigurationManager> config
-                          ) noexcept = 0;
+                          std::shared_ptr<ros2_canopen::ConfigurationManager> config) noexcept = 0;
 
         /**
          * @brief Remove driver from Master
          *
-         * @param [in] exec               
+         * @param [in] exec
          * @param [in] master
          * @param [in] node_id
          */
@@ -82,19 +82,18 @@ namespace ros2_canopen
     public:
         /**
          * @brief Construct a new Master Interface object
-         * 
-         * @param node_name 
-         * @param node_options 
-         * @param dcf_txt 
-         * @param dcf_bin 
-         * @param can_interface_name 
-         * @param nodeid 
+         *
+         * @param node_name
+         * @param node_options
+         * @param dcf_txt
+         * @param dcf_bin
+         * @param can_interface_name
+         * @param nodeid
          */
         MasterInterface(
             const std::string &node_name,
             const rclcpp::NodeOptions &node_options) : rclcpp_lifecycle::LifecycleNode(node_name, node_options)
         {
-
         }
         virtual void init()
         {
@@ -102,15 +101,15 @@ namespace ros2_canopen
 
         /**
          * @brief Adds a driver
-         * 
-         * @param node_id 
+         *
+         * @param node_id
          */
         virtual bool add_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
 
         /**
          * @brief Removes a driver
-         * 
-         * @param node_id 
+         *
+         * @param node_id
          */
         virtual bool remove_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
     };
