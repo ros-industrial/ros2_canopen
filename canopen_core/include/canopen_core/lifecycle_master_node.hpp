@@ -29,7 +29,7 @@
 
 namespace ros2_canopen
 {
-    class MasterNode : public MasterInterface
+    class LifecycleMasterNode : public LifecycleMasterInterface
     {
     protected:
         std::atomic<bool> activated;
@@ -49,16 +49,16 @@ namespace ros2_canopen
         rclcpp::Service<canopen_interfaces::srv::COWriteID>::SharedPtr sdo_write_service;
 
     public:
-        MasterNode(
+        LifecycleMasterNode(
             const rclcpp::NodeOptions &node_options
-            ) : MasterInterface("master", node_options)
+            ) : LifecycleMasterInterface("master", node_options)
         {
         }
 
         /**
-         * @brief Initialises the MasterNode
+         * @brief Initialises the LifecycleMasterNode
          * 
-         * As MasterNode is a component this function enables passing data  to the
+         * As LifecycleMasterNode is a component this function enables passing data  to the
          * node that would usually be passed via the constructor.
          * 
          */
@@ -82,14 +82,14 @@ namespace ros2_canopen
         /**
          * @brief Add a device driver
          * 
-         * This function only has an effect if the MasterNode is in active state.
+         * This function only has an effect if the LifecycleMasterNode is in active state.
          * The function will add a driver for a specific node id to the CANopen
          * event loop.
          * 
          * @param node_instance 
          * @param node_id 
          */
-        void init_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
+        void init_driver(std::shared_ptr<ros2_canopen::LifecycleDriverInterface> node_instance, uint8_t node_id) override;
 
         /**
          * @brief Read Service Data Object

@@ -56,18 +56,18 @@ ament_target_dependencies(configuration_manager
   yaml_cpp_vendor
 )
 
-add_library(master_node
+add_library(lifecycle_master_node
   SHARED
-  src/master_node.cpp
+  src/lifecycle_master_node.cpp
   src/lely_master_bridge.cpp
   )
 
-target_compile_features(master_node  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-target_include_directories(master_node  PUBLIC
+target_compile_features(lifecycle_master_node  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(lifecycle_master_node  PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(
-  master_node
+  lifecycle_master_node
   "rclcpp"
   "rclcpp_components"
   "canopen_interfaces"
@@ -76,8 +76,8 @@ ament_target_dependencies(
   "rclcpp_lifecycle"
   "lifecycle_msgs"
 )
-rclcpp_components_register_nodes(master_node  "ros2_canopen::MasterNode")
-set(node_plugins "${node_plugins}ros2_canopen::MasterNode;$<TARGET_FILE:master_node >\n")
+rclcpp_components_register_nodes(lifecycle_master_node  "ros2_canopen::LifecycleMasterNode")
+set(node_plugins "${node_plugins}ros2_canopen::LifecycleMasterNode;$<TARGET_FILE:lifecycle_master_node >\n")
 
 
 # device manager node
@@ -114,27 +114,13 @@ add_executable(device_container_node
 target_link_libraries(device_container_node
   configuration_manager
   device_manager_node
-  master_node
+  lifecycle_master_node
 )
 ament_target_dependencies(device_container_node 
   ${dependencies}
 )
 
 target_include_directories(device_container_node PUBLIC
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:include>"
-  ${rclcpp_INCLUDE_DIRS}
-)
-
-# slave node
-add_executable(slave_node 
-  src/slave.cpp)
-
-ament_target_dependencies(slave_node 
-  ${dependencies}
-)
-
-target_include_directories(slave_node PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>"
   ${rclcpp_INCLUDE_DIRS}
@@ -154,8 +140,8 @@ install(
 )
 
 install(
-  TARGETS master_node
-  EXPORT export_master_node
+  TARGETS lifecycle_master_node
+  EXPORT export_lifecycle_master_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -170,9 +156,6 @@ install(
 )
 
 install(TARGETS device_container_node
-  DESTINATION lib/${PROJECT_NAME})
-
-install(TARGETS slave_node
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY
@@ -202,12 +185,12 @@ ament_export_include_directories(
 
 ament_export_libraries(
   configuration_manager
-  master_node
+  lifecycle_master_node
   device_manager_node
 )
 ament_export_targets(
   export_configuration_manager
-  export_master_node
+  export_lifecycle_master_node
   export_device_manager_node
 )
 

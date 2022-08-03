@@ -17,7 +17,7 @@
 #include <vector>
 #include <rclcpp/executors.hpp>
 #include <rclcpp_components/component_manager.hpp>
-#include "canopen_core/master_node.hpp"
+#include "canopen_core/lifecycle_master_node.hpp"
 #include "canopen_core/configuration_manager.hpp"
 #include "canopen_core/device_manager_node.hpp"
 #include "canopen_interfaces/srv/co_node.hpp"
@@ -103,7 +103,7 @@ private:
     std::map<std::string, std::pair<uint16_t, std::string>> active_drivers_;
     // Stores componentes as node_id and wrapper_object
     std::map<uint16_t, rclcpp_components::NodeInstanceWrapper> node_wrappers_;
-    std::shared_ptr<ros2_canopen::MasterInterface> can_master_;
+    std::shared_ptr<ros2_canopen::LifecycleMasterInterface> can_master_;
     std::shared_ptr<ev::Executor> exec_;
     std::weak_ptr<rclcpp::Executor> executor_;
     std::shared_ptr<ros2_canopen::ConfigurationManager> config_;

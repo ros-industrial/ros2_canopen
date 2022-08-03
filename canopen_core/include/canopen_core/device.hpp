@@ -33,16 +33,16 @@ namespace ros2_canopen
 {
     // Base class for driver plugin
     // Pluginlib API does allows only default constructors
-    class DriverInterface : public rclcpp_lifecycle::LifecycleNode
+    class LifecycleDriverInterface : public rclcpp_lifecycle::LifecycleNode
     {
     public:
         /**
-         * @brief Construct a new DriverInterface object
+         * @brief Construct a new LifecycleDriverInterface object
          *
          * @param [in] node_name
          * @param [in] node_options
          */
-        DriverInterface(const std::string &node_name,
+        LifecycleDriverInterface(const std::string &node_name,
                         const rclcpp::NodeOptions &node_options = rclcpp::NodeOptions()) 
                         : rclcpp_lifecycle::LifecycleNode(node_name, node_options) {}
 
@@ -68,7 +68,7 @@ namespace ros2_canopen
         std::shared_ptr<ros2_canopen::ConfigurationManager> config_;
     };
 
-    class MasterInterface : public rclcpp_lifecycle::LifecycleNode
+    class LifecycleMasterInterface : public rclcpp_lifecycle::LifecycleNode
     {
     protected:
         std::string dcf_txt_;
@@ -88,7 +88,7 @@ namespace ros2_canopen
          * @param can_interface_name
          * @param nodeid
          */
-        MasterInterface(
+        LifecycleMasterInterface(
             const std::string &node_name,
             const rclcpp::NodeOptions &node_options) : rclcpp_lifecycle::LifecycleNode(node_name, node_options)
         {
@@ -102,7 +102,7 @@ namespace ros2_canopen
          *
          * @param node_id
          */
-        virtual void init_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
+        virtual void init_driver(std::shared_ptr<ros2_canopen::LifecycleDriverInterface>, uint8_t node_id) = 0;
 
     };
 

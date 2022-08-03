@@ -1,8 +1,8 @@
-#include "canopen_core/master_node.hpp"
+#include "canopen_core/lifecycle_master_node.hpp"
 
 namespace ros2_canopen
 {
-    void MasterNode::init()
+    void LifecycleMasterNode::init()
     {
         this->activated.store(false);
         //declare parameters
@@ -13,7 +13,7 @@ namespace ros2_canopen
     }
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    MasterNode::on_configure(const rclcpp_lifecycle::State &)
+    LifecycleMasterNode::on_configure(const rclcpp_lifecycle::State &)
     {
         this->activated.store(false);
         // Fetch parameters
@@ -26,7 +26,7 @@ namespace ros2_canopen
         sdo_read_service = this->create_service<canopen_interfaces::srv::COReadID>(
             std::string(this->get_name()).append("/sdo_read").c_str(),
             std::bind(
-                &ros2_canopen::MasterNode::on_sdo_read,
+                &ros2_canopen::LifecycleMasterNode::on_sdo_read,
                 this,
                 std::placeholders::_1,
                 std::placeholders::_2));
@@ -34,7 +34,7 @@ namespace ros2_canopen
         sdo_write_service = this->create_service<canopen_interfaces::srv::COWriteID>(
             std::string(this->get_name()).append("/sdo_write").c_str(),
             std::bind(
-                &ros2_canopen::MasterNode::on_sdo_write,
+                &ros2_canopen::LifecycleMasterNode::on_sdo_write,
                 this,
                 std::placeholders::_1,
                 std::placeholders::_2));
@@ -43,7 +43,7 @@ namespace ros2_canopen
     }
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    MasterNode::on_activate(const rclcpp_lifecycle::State &state)
+    LifecycleMasterNode::on_activate(const rclcpp_lifecycle::State &state)
     {
         this->activated.store(true);
         io_guard_ = std::make_unique<lely::io::IoGuard>();
@@ -88,7 +88,7 @@ namespace ros2_canopen
     }
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    MasterNode::on_deactivate(const rclcpp_lifecycle::State &state)
+    LifecycleMasterNode::on_deactivate(const rclcpp_lifecycle::State &state)
     {
         this->activated.store(false);
         exec_->post(
@@ -103,25 +103,25 @@ namespace ros2_canopen
     }
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    MasterNode::on_cleanup(const rclcpp_lifecycle::State &state)
+    LifecycleMasterNode::on_cleanup(const rclcpp_lifecycle::State &state)
     {
         this->activated.store(false);
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    MasterNode::on_shutdown(const rclcpp_lifecycle::State &state)
+    LifecycleMasterNode::on_shutdown(const rclcpp_lifecycle::State &state)
     {
         this->activated.store(false);
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
 
-    void MasterNode::init_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id)
+    void LifecycleMasterNode::init_driver(std::shared_ptr<ros2_canopen::LifecycleDriverInterface> node_instance, uint8_t node_id)
     {
         node_instance->init_from_master(exec_, master_, config_);
     }
 
-    void MasterNode::on_sdo_read(
+    void LifecycleMasterNode::on_sdo_read(
         const std::shared_ptr<canopen_interfaces::srv::COReadID::Request> request,
         std::shared_ptr<canopen_interfaces::srv::COReadID::Response> response)
     {
@@ -144,12 +144,12 @@ namespace ros2_canopen
         }
         else
         {
-            RCLCPP_ERROR(this->get_logger(), "MasterNode is not in active state. SDO read service is not available.");
+            RCLCPP_ERROR(this->get_logger(), "LifecycleMasterNode is not in active state. SDO read service is not available.");
             response->success = false;
         }
     }
 
-    void MasterNode::on_sdo_write(
+    void LifecycleMasterNode::on_sdo_write(
         const std::shared_ptr<canopen_interfaces::srv::COWriteID::Request> request,
         std::shared_ptr<canopen_interfaces::srv::COWriteID::Response> response)
     {
@@ -171,11 +171,11 @@ namespace ros2_canopen
         }
         else
         {
-            RCLCPP_ERROR(this->get_logger(), "MasterNode is not in active state. SDO write service is not available.");
+            RCLCPP_ERROR(this->get_logger(), "LifecycleMasterNode is not in active state. SDO write service is not available.");
             response->success = false;
         }
     }
 }
 
 #include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(ros2_canopen::MasterNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(ros2_canopen::LifecycleMasterNode)

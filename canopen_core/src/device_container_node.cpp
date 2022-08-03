@@ -28,7 +28,7 @@ void DeviceContainerNode::add_node_to_executor(const std::string &driver_name, c
     {
         exec->add_node(node_wrappers_[node_id].get_node_base_interface(), true);
 
-        auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id].get_node_instance());
+        auto node_instance = std::static_pointer_cast<ros2_canopen::LifecycleDriverInterface>(node_wrappers_[node_id].get_node_instance());
 
         active_drivers_.insert({node_name, std::make_pair(node_id, driver_name)});
 
@@ -47,7 +47,7 @@ void DeviceContainerNode::remove_node_from_executor(const std::string &driver_na
     {
         exec->remove_node(node_wrappers_[node_id].get_node_base_interface());
 
-        auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id].get_node_instance());
+        auto node_instance = std::static_pointer_cast<ros2_canopen::LifecycleDriverInterface>(node_wrappers_[node_id].get_node_instance());
 
         RCLCPP_INFO(this->get_logger(), "Removed %s of type %s from executor", node_name.c_str(), driver_name.c_str());
     }
@@ -59,7 +59,7 @@ void DeviceContainerNode::remove_node_from_executor(const std::string &driver_na
 
 bool DeviceContainerNode::init_driver(uint16_t node_id)
 {
-    auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id].get_node_instance());
+    auto node_instance = std::static_pointer_cast<ros2_canopen::LifecycleDriverInterface>(node_wrappers_[node_id].get_node_instance());
     can_master_->init_driver(node_instance, node_id);
     return true;
 }
@@ -119,7 +119,7 @@ std::map<uint16_t, std::string> DeviceContainerNode::list_components()
 bool DeviceContainerNode::init_master(uint16_t node_id)
 {
     RCLCPP_INFO(this->get_logger(), "Adding master with node id %u", node_id);
-    can_master_ = std::static_pointer_cast<ros2_canopen::MasterInterface>(node_wrappers_[node_id].get_node_instance());
+    can_master_ = std::static_pointer_cast<ros2_canopen::LifecycleMasterInterface>(node_wrappers_[node_id].get_node_instance());
     can_master_->init();
     can_master_->set_parameter(rclcpp::Parameter("master_config", this->dcf_txt_));
     can_master_->set_parameter(rclcpp::Parameter("master_bin", this->dcf_bin_));
@@ -216,7 +216,7 @@ bool DeviceContainerNode::load_drivers_from_config()
             }
 
             add_node_to_executor(driver_name.value(), node_id.value(), *it);
-            auto node_instance = std::static_pointer_cast<ros2_canopen::DriverInterface>(node_wrappers_[node_id.value()].get_node_instance());
+            auto node_instance = std::static_pointer_cast<ros2_canopen::LifecycleDriverInterface>(node_wrappers_[node_id.value()].get_node_instance());
             node_instance->init();
             node_instance->set_parameter(rclcpp::Parameter("node_id", node_id.value()));
             node_instance->set_parameter(rclcpp::Parameter("container_name", this->get_fully_qualified_name()));
