@@ -12,27 +12,23 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
-#ifndef LIFECYCLE_MASTER_NODE_HPP
-#define LIFECYCLE_MASTER_NODE_HPP
+#ifndef MASTER_NODE_HPP
+#define MASTER_NODE_HPP
 
 #include <memory>
 #include <thread>
-#include <atomic>
 
-#include <lifecycle_msgs/msg/state.hpp>
 
 #include "canopen_core/exchange.hpp"
 #include "canopen_core/device.hpp"
 #include "canopen_core/lely_master_bridge.hpp"
 #include "canopen_interfaces/srv/co_write_id.hpp"
 #include "canopen_interfaces/srv/co_read_id.hpp"
-
 namespace ros2_canopen
 {
-    class LifecycleMasterNode : public LifecycleMasterInterface
+    class MasterNode : public MasterInterface
     {
     protected:
-        std::atomic<bool> activated;
         std::shared_ptr<LelyMasterBridge> master_;
         std::unique_ptr<lely::io::IoGuard> io_guard_;
         std::unique_ptr<lely::io::Context> ctx_;
@@ -49,54 +45,21 @@ namespace ros2_canopen
         rclcpp::Service<canopen_interfaces::srv::COWriteID>::SharedPtr sdo_write_service;
 
     public:
-        LifecycleMasterNode(
+        MasterNode(
             const rclcpp::NodeOptions &node_options
-            ) : LifecycleMasterInterface("master", node_options)
+            ) : MasterInterface("master", node_options)
         {
         }
 
-        /**
-         * @brief Initialises the LifecycleMasterNode
-         * 
-         * As LifecycleMasterNode is a component this function enables passing data  to the
-         * node that would usually be passed via the constructor.
-         * 
-         */
-        void init() override;
+        void init(std::string dcf_txt, std::string dcf_bin, std::string can_interface_name, uint8_t nodeid, 
+                    std::shared_ptr<ConfigurationManager> config) override;
 
-        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-        on_configure(const rclcpp_lifecycle::State &);
+        void add_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
 
-        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-        on_activate(const rclcpp_lifecycle::State & state);
-
-        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-        on_deactivate(const rclcpp_lifecycle::State & state);
-        
-        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-        on_cleanup(const rclcpp_lifecycle::State &);
-
-        rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-        on_shutdown(const rclcpp_lifecycle::State & state);
+        void remove_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
 
         /**
-         * @brief Add a device driver
-         * 
-         * This function only has an effect if the LifecycleMasterNode is in active state.
-         * The function will add a driver for a specific node id to the CANopen
-         * event loop.
-         * 
-         * @param node_instance 
-         * @param node_id 
-         */
-        void init_driver(std::shared_ptr<ros2_canopen::LifecycleDriverInterface> node_instance, uint8_t node_id) override;
-
-        /**
-         * @brief Read Service Data Object
-         * 
-         * This Service is only available when the node is in active lifecycle state.
-         * It will return with success false in any other lifecycle state and log an
-         * RCLCPP_ERROR.
+         * @brief on_sdo_read
          * 
          * @param request 
          * @param response 
@@ -106,11 +69,7 @@ namespace ros2_canopen
             std::shared_ptr<canopen_interfaces::srv::COReadID::Response> response);
 
         /**
-         * @brief Write Service Data Object
-         * 
-         * This service is only available when the node is in active lifecycle state.
-         * It will return with success false in any other lifecycle state and log an
-         * RCLCPP_ERROR.
+         * @brief on_sdo_write
          * 
          * @param request 
          * @param response 

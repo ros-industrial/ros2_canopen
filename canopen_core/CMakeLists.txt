@@ -56,6 +56,30 @@ ament_target_dependencies(configuration_manager
   yaml_cpp_vendor
 )
 
+add_library(master_node
+  SHARED
+  src/master_node.cpp
+  src/lely_master_bridge.cpp
+  )
+
+target_compile_features(master_node  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(master_node  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(
+  master_node
+  "rclcpp"
+  "rclcpp_components"
+  "canopen_interfaces"
+  "lely_core_libraries"
+  "yaml_cpp_vendor"
+  "rclcpp_lifecycle"
+  "lifecycle_msgs"
+)
+rclcpp_components_register_nodes(master_node  "ros2_canopen::MasterNode")
+set(node_plugins "${node_plugins}ros2_canopen::MasterNode;$<TARGET_FILE:master_node >\n")
+
+
 add_library(lifecycle_master_node
   SHARED
   src/lifecycle_master_node.cpp
@@ -81,21 +105,21 @@ set(node_plugins "${node_plugins}ros2_canopen::LifecycleMasterNode;$<TARGET_FILE
 
 
 # device manager node
-add_library(device_manager_node
+add_library(lifecycle_device_manager_node
   SHARED
-  src/device_manager_node.cpp
+  src/lifecycle_device_manager_node.cpp
   )
 
-target_compile_features(device_manager_node  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-target_include_directories(device_manager_node  PUBLIC
+target_compile_features(lifecycle_device_manager_node  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(lifecycle_device_manager_node  PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(device_manager_node
+target_link_libraries(lifecycle_device_manager_node
   configuration_manager)
 
 ament_target_dependencies(
-  device_manager_node
+  lifecycle_device_manager_node
   "rclcpp"
   "rclcpp_components"
   "canopen_interfaces"
@@ -103,9 +127,28 @@ ament_target_dependencies(
   "lifecycle_msgs"
   "std_srvs"
 )
-rclcpp_components_register_nodes(device_manager_node  "ros2_canopen::DeviceManagerNode")
-set(node_plugins "${node_plugins}ros2_canopen::DeviceManagerNode;$<TARGET_FILE:device_manager_node >\n")
+rclcpp_components_register_nodes(lifecycle_device_manager_node  "ros2_canopen::LifecycleDeviceManagerNode")
+set(node_plugins "${node_plugins}ros2_canopen::LifecycleDeviceManagerNode;$<TARGET_FILE:lifecycle_device_manager_node >\n")
 
+
+# device container node
+add_executable(lifecycle_device_container_node 
+  src/lifecycle_device_container_node.cpp
+  )
+target_link_libraries(lifecycle_device_container_node
+  configuration_manager
+  lifecycle_device_manager_node
+  lifecycle_master_node
+)
+ament_target_dependencies(lifecycle_device_container_node 
+  ${dependencies}
+)
+
+target_include_directories(lifecycle_device_container_node PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include>"
+  ${rclcpp_INCLUDE_DIRS}
+)
 
 # device container node
 add_executable(device_container_node 
@@ -113,7 +156,6 @@ add_executable(device_container_node
   )
 target_link_libraries(device_container_node
   configuration_manager
-  device_manager_node
   lifecycle_master_node
 )
 ament_target_dependencies(device_container_node 
@@ -140,6 +182,14 @@ install(
 )
 
 install(
+  TARGETS master_node
+  EXPORT export_master_node
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+install(
   TARGETS lifecycle_master_node
   EXPORT export_lifecycle_master_node
   ARCHIVE DESTINATION lib
@@ -148,12 +198,15 @@ install(
 )
 
 install(
-  TARGETS device_manager_node
-  EXPORT export_device_manager_node
+  TARGETS lifecycle_device_manager_node
+  EXPORT export_lifecycle_device_manager_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
+
+install(TARGETS lifecycle_device_container_node
+  DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS device_container_node
   DESTINATION lib/${PROJECT_NAME})
@@ -185,13 +238,15 @@ ament_export_include_directories(
 
 ament_export_libraries(
   configuration_manager
+  master_node
   lifecycle_master_node
-  device_manager_node
+  lifecycle_device_manager_node
 )
 ament_export_targets(
   export_configuration_manager
+  export_master_node
   export_lifecycle_master_node
-  export_device_manager_node
+  export_lifecycle_device_manager_node
 )
 
 ament_export_dependencies(

@@ -51,12 +51,12 @@ def generate_launch_description():
         launch.actions.LogInfo(msg=LaunchConfiguration("can_interface_name")),
       ]
     )
-    device_container_node = launch_ros.actions.LifecycleNode(
-        name="device_container_node",
+    lifecycle_device_container_node = launch_ros.actions.LifecycleNode(
+        name="lifecycle_device_container_node",
         namespace="", 
         package="canopen_core", 
         output="screen", 
-        executable="device_container_node",
+        executable="lifecycle_device_container_node",
         parameters=[ 
             {
                 "bus_config": LaunchConfiguration("bus_config")
@@ -78,6 +78,6 @@ def generate_launch_description():
     ld.add_action(master_bin_arg)
     ld.add_action(can_interface_arg)
     ld.add_action(logging)
-    ld.add_action(device_container_node)
+    ld.add_action(lifecycle_device_container_node)
 
     return ld

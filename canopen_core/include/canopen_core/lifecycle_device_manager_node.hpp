@@ -12,8 +12,9 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
-#ifndef DEVICE_MANAGER_NODE_HPP
-#define DEVICE_MANAGER_NODE_HPP
+#ifndef LIFECYCLE_DEVICE_MANAGER_NODE_HPP
+#define LIFECYCLE_DEVICE_MANAGER_NODE_HPP
+
 
 #include <chrono>
 #include <memory>
@@ -51,11 +52,11 @@ driv2  | unconfigured | x | x | x | x | x |
 */
 namespace ros2_canopen
 {
-    class DeviceManagerNode : public rclcpp_lifecycle::LifecycleNode
+    class LifecycleDeviceManagerNode : public rclcpp_lifecycle::LifecycleNode
     {
     public:
-        DeviceManagerNode(const rclcpp::NodeOptions &node_options)
-            : rclcpp_lifecycle::LifecycleNode("DeviceManager", node_options)
+        LifecycleDeviceManagerNode(const rclcpp::NodeOptions &node_options)
+            : rclcpp_lifecycle::LifecycleNode("LifecycleDeviceManagerNode", node_options)
         {
             this->declare_parameter("container_name", "");
             cbg_clients = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
