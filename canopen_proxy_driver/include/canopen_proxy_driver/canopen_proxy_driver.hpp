@@ -21,94 +21,96 @@
 
 namespace ros2_canopen
 {
-  class ProxyDriver : public BaseDriver
+class ProxyDriver : public BaseDriver
+{
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr nmt_state_publisher;
+  rclcpp::Publisher<canopen_interfaces::msg::COData>::SharedPtr rpdo_publisher;
+  rclcpp::Subscription<canopen_interfaces::msg::COData>::SharedPtr tpdo_subscriber;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_reset_service;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_start_service;
+  rclcpp::Service<canopen_interfaces::srv::CORead>::SharedPtr sdo_read_service;
+  rclcpp::Service<canopen_interfaces::srv::COWrite>::SharedPtr sdo_write_service;
+
+  std::mutex sdo_mtex;
+
+protected:
+  void on_nmt(canopen::NmtState nmt_state);
+
+  void on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg);
+
+  void on_rpdo(COData d);
+
+  void on_nmt_state_reset(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
+
+  void on_nmt_state_start(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
+
+  void on_sdo_read(
+    const canopen_interfaces::srv::CORead::Request::SharedPtr request,
+    canopen_interfaces::srv::CORead::Response::SharedPtr response);
+
+  void on_sdo_write(
+    const canopen_interfaces::srv::COWrite::Request::SharedPtr request,
+    canopen_interfaces::srv::COWrite::Response::SharedPtr response);
+
+public:
+  explicit ProxyDriver(const rclcpp::NodeOptions & options)
+  : BaseDriver(options) {}
+
+  void init(
+    ev::Executor & exec,
+    canopen::AsyncMaster & master,
+    uint8_t node_id,
+    std::shared_ptr<ros2_canopen::ConfigurationManager> config) noexcept override
   {
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr nmt_state_publisher;
-    rclcpp::Publisher<canopen_interfaces::msg::COData>::SharedPtr rpdo_publisher;
-    rclcpp::Subscription<canopen_interfaces::msg::COData>::SharedPtr tpdo_subscriber;
-    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_reset_service;
-    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_start_service;
-    rclcpp::Service<canopen_interfaces::srv::CORead>::SharedPtr sdo_read_service;
-    rclcpp::Service<canopen_interfaces::srv::COWrite>::SharedPtr sdo_write_service;
+    BaseDriver::init(exec, master, node_id, config);
+    nmt_state_publisher = this->create_publisher<std_msgs::msg::String>(
+      std::string(
+        this->get_name()).append("/nmt_state").c_str(), 10);
+    tpdo_subscriber = this->create_subscription<canopen_interfaces::msg::COData>(
+      std::string(this->get_name()).append("/tpdo").c_str(),
+      10,
+      std::bind(&ProxyDriver::on_tpdo, this, std::placeholders::_1));
 
-    std::mutex sdo_mtex;
+    rpdo_publisher = this->create_publisher<canopen_interfaces::msg::COData>(
+      std::string(this->get_name()).append("/rpdo").c_str(), 10);
 
-  protected:
-    void on_nmt(canopen::NmtState nmt_state);
+    nmt_state_reset_service = this->create_service<std_srvs::srv::Trigger>(
+      std::string(this->get_name()).append("/nmt_reset_node").c_str(),
+      std::bind(
+        &ros2_canopen::ProxyDriver::on_nmt_state_reset,
+        this,
+        std::placeholders::_1,
+        std::placeholders::_2));
 
-    void on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg);
+    nmt_state_start_service = this->create_service<std_srvs::srv::Trigger>(
+      std::string(this->get_name()).append("/nmt_start_node").c_str(),
+      std::bind(
+        &ros2_canopen::ProxyDriver::on_nmt_state_start,
+        this,
+        std::placeholders::_1,
+        std::placeholders::_2));
 
-    void on_rpdo(COData d);
+    sdo_read_service = this->create_service<canopen_interfaces::srv::CORead>(
+      std::string(this->get_name()).append("/sdo_read").c_str(),
+      std::bind(
+        &ros2_canopen::ProxyDriver::on_sdo_read,
+        this,
+        std::placeholders::_1,
+        std::placeholders::_2));
 
-    void on_nmt_state_reset(
-        const std_srvs::srv::Trigger::Request::SharedPtr request,
-        std_srvs::srv::Trigger::Response::SharedPtr response);
+    sdo_write_service = this->create_service<canopen_interfaces::srv::COWrite>(
+      std::string(this->get_name()).append("/sdo_write").c_str(),
+      std::bind(
+        &ros2_canopen::ProxyDriver::on_sdo_write,
+        this,
+        std::placeholders::_1,
+        std::placeholders::_2));
+  }
+};
+}  // namespace ros2_canopen
 
-    void on_nmt_state_start(
-        const std_srvs::srv::Trigger::Request::SharedPtr request,
-        std_srvs::srv::Trigger::Response::SharedPtr response);
-
-    void on_sdo_read(
-        const canopen_interfaces::srv::CORead::Request::SharedPtr request,
-        canopen_interfaces::srv::CORead::Response::SharedPtr response);
-
-    void on_sdo_write(
-        const canopen_interfaces::srv::COWrite::Request::SharedPtr request,
-        canopen_interfaces::srv::COWrite::Response::SharedPtr response);
-
-    /**
-     * @brief Configures the driver
-     *
-     * Read parameters
-     * Initialise objects
-     *
-     * @param state
-     * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-     */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_configure(const rclcpp_lifecycle::State &state);
-
-    /**
-     * @brief Activates the driver
-     *
-     * Add driver to masters event loop
-     *
-     * @param state
-     * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-     */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_activate(const rclcpp_lifecycle::State &state);
-
-    /**
-     * @brief Deactivates the driver
-     *
-     * Remove driver from masters event loop
-     *
-     * @param state
-     * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-     */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_deactivate(const rclcpp_lifecycle::State &state);
-
-    /**
-     * @brief Cleanup the driver
-     *
-     * Delete objects
-     *
-     * @param state
-     * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-     */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_cleanup(const rclcpp_lifecycle::State &state);
-
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_shutdown(const rclcpp_lifecycle::State &state);
-
-  public:
-    explicit ProxyDriver(const rclcpp::NodeOptions &options)
-        : BaseDriver(options) {}
-        
-  };
-} // namespace ros2_canopen
-
-#endif // CANOPEN_PROXY_DRIVER__CANOPEN_PROXY_DRIVER_HPP_
+#endif  // CANOPEN_PROXY_DRIVER__CANOPEN_PROXY_DRIVER_HPP_
