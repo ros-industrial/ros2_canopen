@@ -13,6 +13,7 @@ find_package(rclcpp_components REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(canopen_base_driver REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 
 set(node_plugins "")
 
@@ -35,6 +36,7 @@ ament_target_dependencies(
   lely_core_libraries
   canopen_core
   canopen_base_driver
+  rclcpp_lifecycle
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,

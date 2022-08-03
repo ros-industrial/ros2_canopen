@@ -15,6 +15,7 @@ find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(lely_core_libraries REQUIRED)
 find_package(canopen_core REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 
 add_library(${PROJECT_NAME}
   SHARED
@@ -34,6 +35,7 @@ ament_target_dependencies(
   "std_srvs"
   "lely_core_libraries"
   "canopen_core"
+  "rclcpp_lifecycle"
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,

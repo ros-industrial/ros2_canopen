@@ -17,6 +17,7 @@
 
 #include <memory>
 #include <thread>
+#include <atomic>
 
 #include <lifecycle_msgs/msg/state.hpp>
 
@@ -31,6 +32,7 @@ namespace ros2_canopen
     class MasterNode : public MasterInterface
     {
     protected:
+        std::atomic<bool> activated;
         std::shared_ptr<LelyMasterBridge> master_;
         std::unique_ptr<lely::io::IoGuard> io_guard_;
         std::unique_ptr<lely::io::Context> ctx_;
@@ -87,9 +89,7 @@ namespace ros2_canopen
          * @param node_instance 
          * @param node_id 
          */
-        bool add_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
-
-        bool remove_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
+        void init_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id) override;
 
         /**
          * @brief Read Service Data Object

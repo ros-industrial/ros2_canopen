@@ -4,11 +4,23 @@ namespace ros2_canopen
 {
     void MasterNode::init()
     {
+        this->activated.store(false);
         //declare parameters
-        this->declare_parameter<std::string>("dcf_txt");
-        this->declare_parameter<std::string>("dcf_bin");
-        this->declare_parameter<std::string>("can_interface");
-        this->declare_parameter<uint8_t>("nodeid");
+        this->declare_parameter("master_config", "");
+        this->declare_parameter("master_bin", "");
+        this->declare_parameter("can_interface_name", "");
+        this->declare_parameter("node_id", 1);
+    }
+
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+    MasterNode::on_configure(const rclcpp_lifecycle::State &)
+    {
+        this->activated.store(false);
+        // Fetch parameters
+        this->get_parameter<std::string>("master_config", dcf_txt_);
+        this->get_parameter<std::string>("master_bin", dcf_bin_); 
+        this->get_parameter<std::string>("can_interface_name", can_interface_name_);
+        this->get_parameter<uint8_t>("node_id", node_id_);
 
         //declare services
         sdo_read_service = this->create_service<canopen_interfaces::srv::COReadID>(
@@ -26,23 +38,14 @@ namespace ros2_canopen
                 this,
                 std::placeholders::_1,
                 std::placeholders::_2));
-    }
-
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    MasterNode::on_configure(const rclcpp_lifecycle::State &)
-    {
-        // Fetch parameters
-        this->get_parameter<std::string>("dcf_txt", dcf_txt_);
-        this->get_parameter<std::string>("dcf_bin", dcf_bin_); 
-        this->get_parameter<std::string>("can_interface", can_interface_name_);
-        this->get_parameter<uint8_t>("nodeid", node_id_);
-
+                
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
     MasterNode::on_activate(const rclcpp_lifecycle::State &state)
     {
+        this->activated.store(true);
         io_guard_ = std::make_unique<lely::io::IoGuard>();
         ctx_ = std::make_unique<lely::io::Context>();
         poll_ = std::make_unique<lely::io::Poll>(*ctx_);
@@ -87,6 +90,7 @@ namespace ros2_canopen
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
     MasterNode::on_deactivate(const rclcpp_lifecycle::State &state)
     {
+        this->activated.store(false);
         exec_->post(
             [&](){
                 ctx_->shutdown();
@@ -98,51 +102,30 @@ namespace ros2_canopen
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
 
-    bool MasterNode::add_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id)
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+    MasterNode::on_cleanup(const rclcpp_lifecycle::State &state)
     {
-        if (this->get_current_state().id() == lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE)
-        {
-            std::shared_ptr<std::promise<void>> prom = std::make_shared<std::promise<void>>();
-            auto f = prom->get_future();
-            exec_->post([this, node_id, node_instance, prom]()
-                        {
-                                node_instance->init(*this->exec_, *(this->master_), node_id, config_);
-                                prom->set_value(); });
-            f.wait();
-            return true;
-        }
-        else
-        {
-            RCLCPP_ERROR(this->get_logger(), "Failed to add driver for node id %hhu, because master is not active.", node_id);
-        }
-        return false;
+        this->activated.store(false);
+        return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
 
-    bool MasterNode::remove_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id)
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+    MasterNode::on_shutdown(const rclcpp_lifecycle::State &state)
     {
-        if (this->get_current_state().id() == lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE)
-        {
-            std::shared_ptr<std::promise<void>> prom = std::make_shared<std::promise<void>>();
-            auto f = prom->get_future();
-            exec_->post([this, node_id, node_instance, prom]()
-                        { 
-                                node_instance->remove(*this->exec_, *(this->master_), node_id); 
-                                prom->set_value(); });
-            f.wait();
-            return true;
-        }
-        else
-        {
-            RCLCPP_ERROR(this->get_logger(), "Failed to remove driver for node id %hhu, because master is not active.", node_id);
-        }
-        return false;
+        this->activated.store(false);
+        return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+    }
+
+    void MasterNode::init_driver(std::shared_ptr<ros2_canopen::DriverInterface> node_instance, uint8_t node_id)
+    {
+        node_instance->init_from_master(exec_, master_, config_);
     }
 
     void MasterNode::on_sdo_read(
         const std::shared_ptr<canopen_interfaces::srv::COReadID::Request> request,
         std::shared_ptr<canopen_interfaces::srv::COReadID::Response> response)
     {
-        if (this->get_current_state().id() == lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE)
+        if (this->activated.load())
         {
             ros2_canopen::CODataTypes datatype = static_cast<ros2_canopen::CODataTypes>(request->type);
             ros2_canopen::COData data = {request->index, request->subindex, 0U, datatype};
@@ -170,7 +153,7 @@ namespace ros2_canopen
         const std::shared_ptr<canopen_interfaces::srv::COWriteID::Request> request,
         std::shared_ptr<canopen_interfaces::srv::COWriteID::Response> response)
     {
-        if (this->get_current_state().id() == lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE)
+        if (this->activated.load())
         {
             ros2_canopen::CODataTypes datatype = static_cast<ros2_canopen::CODataTypes>(request->type);
             ros2_canopen::COData data = {request->index, request->subindex, request->data, datatype};

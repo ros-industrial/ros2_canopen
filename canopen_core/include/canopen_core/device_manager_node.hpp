@@ -57,11 +57,14 @@ namespace ros2_canopen
         DeviceManagerNode(const rclcpp::NodeOptions &node_options)
             : rclcpp_lifecycle::LifecycleNode("DeviceManager", node_options)
         {
+            this->declare_parameter("container_name", "");
+            cbg_clients = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
         }
 
         void init(std::shared_ptr<ros2_canopen::ConfigurationManager> config);
 
     protected:
+        rclcpp::CallbackGroup::SharedPtr cbg_clients;
         std::shared_ptr<ros2_canopen::ConfigurationManager> config_;
 
         rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
@@ -120,12 +123,6 @@ namespace ros2_canopen
 
         bool
         change_state(uint8_t node_id, uint8_t transition, std::chrono::seconds time_out = 3s);
-
-        bool
-        add_driver_to_master(uint8_t node_id, std::chrono::seconds time_out = 3s);
-
-        bool
-        remove_driver_from_master(uint8_t node_id, std::chrono::seconds time_out = 3s);
 
         /**
          * @brief Brings up master and all drivers

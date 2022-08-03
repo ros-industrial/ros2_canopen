@@ -67,7 +67,9 @@ def generate_launch_description():
     )
     slave_inactive_state_handler = launch.actions.RegisterEventHandler(
         launch_ros.event_handlers.OnStateTransition(
-            target_lifecycle_node=slave_node, goal_state='inactive',
+            target_lifecycle_node=slave_node, 
+            goal_state='inactive',
+            handle_once=True,
             entities=[
                 launch.actions.LogInfo(
                     msg="node 'slave_node_{}' reached the 'inactive' state, 'activating'.".format(2)),

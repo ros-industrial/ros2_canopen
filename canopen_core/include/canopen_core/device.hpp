@@ -53,21 +53,19 @@ namespace ros2_canopen
          * @param [in] master       Master that controls the driver
          * @param [in] node_id      Node ID of the driver
          */
-        virtual void init(ev::Executor &exec,
-                          canopen::AsyncMaster &master,
-                          uint8_t node_id,
-                          std::shared_ptr<ros2_canopen::ConfigurationManager> config) noexcept = 0;
+        virtual void init_from_master(std::shared_ptr<ev::Executor> exec,
+                          std::shared_ptr<canopen::AsyncMaster> master,
+                          std::shared_ptr<ros2_canopen::ConfigurationManager> config) = 0;
+        
+        virtual void init() = 0;
 
-        /**
-         * @brief Remove driver from Master
-         *
-         * @param [in] exec
-         * @param [in] master
-         * @param [in] node_id
-         */
-        virtual void remove(ev::Executor &exec,
-                            canopen::AsyncMaster &master,
-                            uint8_t node_id) noexcept = 0;
+        virtual bool add() = 0;
+        virtual bool remove() = 0;
+    protected:
+        std::shared_ptr<ev::Executor> exec_;
+        std::shared_ptr<canopen::AsyncMaster> master_;
+        uint8_t node_id_;
+        std::shared_ptr<ros2_canopen::ConfigurationManager> config_;
     };
 
     class MasterInterface : public rclcpp_lifecycle::LifecycleNode
@@ -100,33 +98,14 @@ namespace ros2_canopen
         }
 
         /**
-         * @brief Adds a driver
+         * @brief Initialises a driver
          *
          * @param node_id
          */
-        virtual bool add_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
+        virtual void init_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
 
-        /**
-         * @brief Removes a driver
-         *
-         * @param node_id
-         */
-        virtual bool remove_driver(std::shared_ptr<ros2_canopen::DriverInterface>, uint8_t node_id) = 0;
     };
 
-    class SlaveDevice : public rclcpp::Node, public canopen::BasicSlave
-    {
-    public:
-        SlaveDevice(io::Timer &timer,
-                    io::CanChannel &chan,
-                    std::string &dcf_txt,
-                    u_int32_t id,
-                    const std::string &devName)
-            : rclcpp::Node(devName),
-              canopen::BasicSlave(timer, chan, dcf_txt, "", id) {}
-
-        // ROS interfaces
-    };
 } // end ros2_canopen namespace
 
 #endif // DEVICE_HPP_

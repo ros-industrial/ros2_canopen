@@ -14,18 +14,23 @@
 #ifndef CANOPEN_BASE_DRIVER__CANOPEN_BASE_DRIVER_HPP_
 #define CANOPEN_BASE_DRIVER__CANOPEN_BASE_DRIVER_HPP_
 #include <memory>
+#include <mutex>
+#include <atomic>
 
 #include "canopen_base_driver/visibility_control.h"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/publisher.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "std_srvs/srv/trigger.hpp"
+#include "lifecycle_msgs/msg/state.hpp"
 
 #include "canopen_base_driver/lely_bridge.hpp"
 #include "canopen_core/device.hpp"
 #include "canopen_interfaces/msg/co_data.hpp"
 #include "canopen_interfaces/srv/co_read.hpp"
 #include "canopen_interfaces/srv/co_write.hpp"
+#include "canopen_interfaces/srv/co_node.hpp"
+
 
 namespace ros2_canopen
 {
@@ -38,15 +43,74 @@ namespace ros2_canopen
   class BaseDriver : public DriverInterface
   {
   private:
-    std::future<void> nmt_state_publisher_future;
-    std::future<void> rpdo_publisher_future;
+    std::thread nmt_state_publisher_thread_;
+    std::thread rpdo_publisher_thread_;
+    bool initialised_;
+    std::chrono::milliseconds non_transmit_timeout_;
+    std::string container_name_;
+    
+    rclcpp::CallbackGroup::SharedPtr client_cbg_;
+    rclcpp::Client<canopen_interfaces::srv::CONode>::SharedPtr demand_init_from_master_client_;
 
     void nmt_listener();
     void rdpo_listener();
 
+    
+
+
   protected:
-    std::shared_ptr<ros2_canopen::LelyBridge> driver;
-    std::shared_ptr<ros2_canopen::ConfigurationManager> config_;
+    std::atomic<bool> activated;
+    std::mutex driver_mutex_;
+    std::shared_ptr<ros2_canopen::LelyBridge> driver_;
+    bool demand_init_from_master(uint8_t node_id, std::chrono::seconds time_out);
+
+    /**
+     * @brief Configures the driver
+     *
+     * Read parameters
+     * Initialise objects
+     *
+     * @param state
+     * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+     */
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+    on_configure(const rclcpp_lifecycle::State &state);
+
+    /**
+     * @brief Activates the driver
+     *
+     * Add driver to masters event loop
+     *
+     * @param state
+     * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+     */
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+    on_activate(const rclcpp_lifecycle::State &state);
+
+    /**
+     * @brief Deactivates the driver
+     *
+     * Remove driver from masters event loop
+     *
+     * @param state
+     * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+     */
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+    on_deactivate(const rclcpp_lifecycle::State &state);
+
+    /**
+     * @brief Cleanup the driver
+     *
+     * Delete objects
+     *
+     * @param state
+     * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+     */
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+    on_cleanup(const rclcpp_lifecycle::State &state);
+
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+    on_shutdown(const rclcpp_lifecycle::State &state);
 
     /**
      * @brief NMT State Change Callback
@@ -82,38 +146,37 @@ namespace ros2_canopen
 
     explicit BaseDriver(
         const rclcpp::NodeOptions &options)
-        : DriverInterface("base_driver", options) {}
+        : DriverInterface("base_driver", options) {          
+        }
 
   public:
     /**
      * @brief Initializer for the driver
-     * 
+     *
      * Initializes the driver, adds it to the CANopen Master.
      * This function needs to be executed inside the masters
      * event loop or the masters thread!
-     * 
+     *
      * @param [in] exec       The executor to be used for the driver
      * @param [in] master     The master the driver should be added to
      * @param [in] node_id    The nodeid of the device the driver commands
      */
-    void init(
-        ev::Executor &exec,
-        canopen::AsyncMaster &master,
-        uint8_t node_id,
-        std::shared_ptr<ConfigurationManager> config) noexcept override;
-    /**
-     * @brief Removes the driver from master
-     * 
-     * @todo Check interface!
-     * 
-     * @param [in] exec     
-     * @param [in] master 
-     * @param [in] node_id 
-     */
-    void remove(
-      ev::Executor &exec,
-      canopen::AsyncMaster &master,
-      uint8_t node_id) noexcept override;
+    void init_from_master(
+        std::shared_ptr<ev::Executor> exec,
+        std::shared_ptr<canopen::AsyncMaster> master,
+        std::shared_ptr<ConfigurationManager> config) override;
+
+    void init() override
+    {
+          initialised_ = false;
+          this->declare_parameter("container_name", "");
+          this->declare_parameter("node_id", 0);
+          this->declare_parameter("non_transmit_timeout", 100);
+          this->activated.store(false);
+          client_cbg_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    }
+    bool add() override;
+    bool remove() override;
   };
 } // namespace ros2_canopen
 

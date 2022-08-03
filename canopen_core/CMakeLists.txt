@@ -101,6 +101,7 @@ ament_target_dependencies(
   "canopen_interfaces"
   "rclcpp_lifecycle"
   "lifecycle_msgs"
+  "std_srvs"
 )
 rclcpp_components_register_nodes(device_manager_node  "ros2_canopen::DeviceManagerNode")
 set(node_plugins "${node_plugins}ros2_canopen::DeviceManagerNode;$<TARGET_FILE:device_manager_node >\n")
@@ -112,6 +113,8 @@ add_executable(device_container_node
   )
 target_link_libraries(device_container_node
   configuration_manager
+  device_manager_node
+  master_node
 )
 ament_target_dependencies(device_container_node 
   ${dependencies}
@@ -172,6 +175,10 @@ install(TARGETS device_container_node
 install(TARGETS slave_node
   DESTINATION lib/${PROJECT_NAME})
 
+install(DIRECTORY
+  launch/
+  DESTINATION share/${PROJECT_NAME}/launch/
+)
 
 
 

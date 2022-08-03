@@ -68,7 +68,7 @@ namespace ros2_canopen
             publish();
         }
 
-        void init(ev::Executor &exec,
+        void add(ev::Executor &exec,
                   canopen::AsyncMaster &master,
                   uint8_t node_id,
                   std::shared_ptr<ros2_canopen::ConfigurationManager>  config) noexcept override;
