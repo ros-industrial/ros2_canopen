@@ -127,7 +127,7 @@ void LifecycleMotionControllerDriver::publish()
     js_msg.name[0] = this->get_name();
     js_msg.position[0] = mc_driver_->get_position();
     js_msg.velocity[0] = mc_driver_->get_speed();
-    publish_joint_state->publish(pos_msg);
+    publish_joint_state->publish(js_msg);
 }
 
 void LifecycleMotionControllerDriver::register_ros_interface()
