@@ -52,11 +52,11 @@ def generate_launch_description():
       ]
     )
     lifecycle_device_container_node = launch_ros.actions.LifecycleNode(
-        name="device_container_node",
+        name="lifecycle_device_container_node",
         namespace="", 
         package="canopen_core", 
         output="screen", 
-        executable="device_container_node",
+        executable="lifecycle_device_container_node",
         parameters=[ 
             {
                 "bus_config": LaunchConfiguration("bus_config")

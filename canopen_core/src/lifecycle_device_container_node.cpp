@@ -125,6 +125,7 @@ bool LifecycleDeviceContainerNode::init_master(uint16_t node_id)
     can_master_->set_parameter(rclcpp::Parameter("master_bin", this->dcf_bin_));
     can_master_->set_parameter(rclcpp::Parameter("can_interface_name", this->can_interface_name_));
     can_master_->set_parameter(rclcpp::Parameter("node_id", node_id));
+    RCLCPP_INFO(this->get_logger(), "Added master with node id %u", node_id);
     return true;
 }
 
@@ -139,6 +140,7 @@ bool LifecycleDeviceContainerNode::init_device_manager(uint16_t node_id)
 
 bool LifecycleDeviceContainerNode::load_master_from_config()
 {
+    RCLCPP_INFO(this->get_logger(), "Loading Master Configuration.");
     std::vector<std::string> devices;
     uint32_t count = this->config_->get_all_devices(devices);
     bool master_found = false;
@@ -148,7 +150,6 @@ bool LifecycleDeviceContainerNode::load_master_from_config()
     {
         if (it->find("master") != std::string::npos && !master_found)
         {
-            RCLCPP_INFO(this->get_logger(), "Found Master.");
             auto node_id = config_->get_entry<uint16_t>(*it, "node_id");
             auto driver_name = config_->get_entry<std::string>(*it, "driver");
             auto package_name = config_->get_entry<std::string>(*it, "package");
@@ -186,6 +187,7 @@ bool LifecycleDeviceContainerNode::load_master_from_config()
 
 bool LifecycleDeviceContainerNode::load_drivers_from_config()
 {
+    RCLCPP_INFO(this->get_logger(), "Loading Driver Configuration.");
     std::vector<std::string> devices;
     uint32_t count = this->config_->get_all_devices(devices);
     for (auto it = devices.begin(); it != devices.end(); it++)
@@ -228,6 +230,7 @@ bool LifecycleDeviceContainerNode::load_drivers_from_config()
 
 bool LifecycleDeviceContainerNode::load_manager()
 {
+    RCLCPP_INFO(this->get_logger(), "Loading Manager Configuration.");
     std::string package = "canopen_core";
     std::string driver = "ros2_canopen::LifecycleDeviceManagerNode";
     uint16_t id = 256;
