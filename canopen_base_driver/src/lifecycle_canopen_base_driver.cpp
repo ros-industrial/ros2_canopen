@@ -29,7 +29,7 @@ void LifecycleBaseDriver::nmt_listener()
     }
     while (f.wait_for(non_transmit_timeout_) != std::future_status::ready)
     {
-      if (!this->activated.load())
+      if (!this->activated_.load())
         return;
     }
     on_nmt(f.get());
@@ -48,7 +48,7 @@ void LifecycleBaseDriver::rdpo_listener()
 
     while (f.wait_for(non_transmit_timeout_) != std::future_status::ready)
     {
-      if (!this->activated.load())
+      if (!this->activated_.load())
         return;
     }
 
@@ -56,16 +56,6 @@ void LifecycleBaseDriver::rdpo_listener()
   }
 }
 
-void LifecycleBaseDriver::init_from_master(
-    std::shared_ptr<ev::Executor> exec,
-    std::shared_ptr<canopen::AsyncMaster> master,
-    std::shared_ptr<ConfigurationManager> config)
-{
-  this->exec_ = exec;
-  this->master_ = master;
-  this->config_ = config;
-  this->initialised_ = true;
-}
 
 bool LifecycleBaseDriver::add()
 {
@@ -105,105 +95,31 @@ bool LifecycleBaseDriver::remove()
   return true;
 }
 
-bool LifecycleBaseDriver::demand_init_from_master(uint8_t node_id, std::chrono::seconds time_out)
-{
-  while (!demand_init_from_master_client_->wait_for_service(time_out))
-  {
-    if (!rclcpp::ok())
-    {
-      RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for init_driver service. Exiting.");
-      return false;
-    }
-    RCLCPP_INFO(this->get_logger(), "init_driver service not available, waiting again...");
-  }
-  auto request = std::make_shared<canopen_interfaces::srv::CONode::Request>();
-  request->nodeid = node_id;
-
-  auto future_result = demand_init_from_master_client_->async_send_request(request);
-
-  auto future_status = future_result.wait_for(time_out);
-
-  if (future_status == std::future_status::ready)
-  {
-    try
-    {
-      return future_result.get()->success;
-    }
-    catch (...)
-    {
-      return false;
-    }
-  }
-  return false;
-}
-
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 LifecycleBaseDriver::on_configure(const rclcpp_lifecycle::State &state)
 {
-  this->activated.store(false);
-  int millis;
-  std::string init_service_name;
-  this->get_parameter("container_name", container_name_);
-  this->get_parameter("non_transmit_timeout", millis);
-  this->get_parameter("node_id", this->node_id_);
-
-  this->non_transmit_timeout_ = std::chrono::milliseconds(millis);
-  init_service_name = container_name_ + "/init_driver";
-
-  demand_init_from_master_client_ =
-      this->create_client<canopen_interfaces::srv::CONode>(
-          init_service_name,
-          rmw_qos_profile_services_default,
-          client_cbg_);
-  demand_init_from_master(this->node_id_, 3s);
-  if (!this->initialised_)
-  {
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::FAILURE;
-  }
-  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  return LifecycleDriverInterface::on_configure(state);
 }
 
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 LifecycleBaseDriver::on_activate(const rclcpp_lifecycle::State &state)
 {
-  this->activated.store(true);
-  if (!this->add())
-  {
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::FAILURE;
-  }
-  std::this_thread::sleep_for(100ms);
-  nmt_state_publisher_thread_ =
-       std::thread(std::bind(&ros2_canopen::LifecycleBaseDriver::nmt_listener, this));
-
-  rpdo_publisher_thread_ =
-      std::thread(std::bind(&ros2_canopen::LifecycleBaseDriver::rdpo_listener, this));
-  
-  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  return LifecycleDriverInterface::on_activate(state);
 }
 
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 LifecycleBaseDriver::on_deactivate(const rclcpp_lifecycle::State &state)
 {
-  this->activated.store(false);
-  nmt_state_publisher_thread_.join();
-  rpdo_publisher_thread_.join();
-  if (!this->remove())
-  {
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::FAILURE;
-  }
-  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  return LifecycleDriverInterface::on_deactivate(state);
 }
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 LifecycleBaseDriver::on_cleanup(const rclcpp_lifecycle::State &state)
 {
-  this->activated.store(false);
-  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  return LifecycleDriverInterface::on_cleanup(state);
 }
 
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 LifecycleBaseDriver::on_shutdown(const rclcpp_lifecycle::State &state)
 {
-  this->activated.store(false);
-  RCLCPP_INFO(this->get_logger(), "Shutting down.");
-  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  return LifecycleDriverInterface::on_shutdown(state);
 }

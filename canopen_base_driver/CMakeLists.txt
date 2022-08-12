@@ -23,6 +23,7 @@ add_library(${PROJECT_NAME}
   src/lely_bridge.cpp
 )
 target_compile_features(${PROJECT_NAME} PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_options(${PROJECT_NAME} PUBLIC -Wno-unused-parameter)
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
@@ -51,6 +52,7 @@ add_library(lifecycle_canopen_base_driver
   src/lely_bridge.cpp
 )
 target_compile_features(lifecycle_canopen_base_driver PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_options(${PROJECT_NAME} PUBLIC -Wno-unused-parameter)
 target_include_directories(lifecycle_canopen_base_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)

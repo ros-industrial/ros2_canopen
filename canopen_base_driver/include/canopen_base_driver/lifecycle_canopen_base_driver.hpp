@@ -31,7 +31,6 @@
 #include "canopen_interfaces/srv/co_write.hpp"
 #include "canopen_interfaces/srv/co_node.hpp"
 
-
 namespace ros2_canopen
 {
   /**
@@ -42,27 +41,31 @@ namespace ros2_canopen
    */
   class LifecycleBaseDriver : public LifecycleDriverInterface
   {
-  private:
+  protected:
     std::thread nmt_state_publisher_thread_;
     std::thread rpdo_publisher_thread_;
-    bool initialised_;
-    std::chrono::milliseconds non_transmit_timeout_;
-    std::string container_name_;
     
-    rclcpp::CallbackGroup::SharedPtr client_cbg_;
-    rclcpp::Client<canopen_interfaces::srv::CONode>::SharedPtr demand_init_from_master_client_;
 
     void nmt_listener();
     void rdpo_listener();
 
-    
-
-
-  protected:
-    std::atomic<bool> activated;
     std::mutex driver_mutex_;
     std::shared_ptr<ros2_canopen::LelyBridge> driver_;
-    bool demand_init_from_master(uint8_t node_id, std::chrono::seconds time_out);
+
+    virtual void start_threads() override
+    {
+      nmt_state_publisher_thread_ =
+          std::thread(std::bind(&ros2_canopen::LifecycleBaseDriver::nmt_listener, this));
+
+      rpdo_publisher_thread_ =
+          std::thread(std::bind(&ros2_canopen::LifecycleBaseDriver::rdpo_listener, this));
+    }
+
+    virtual void join_threads() override
+    {
+      nmt_state_publisher_thread_.join();
+      rpdo_publisher_thread_.join();
+    }
 
     /**
      * @brief Configures the driver
@@ -115,68 +118,33 @@ namespace ros2_canopen
     /**
      * @brief NMT State Change Callback
      *
-     * This function is called, when the NMT State of the
-     * associated LelyBridge changes,
+     * Drivers that use the BaseDriver should implement this
+     * function to handle NMT State changes signaled by the
+     * device.
      *
      * @param [in] nmt_state New NMT state
      */
-    virtual void on_nmt(canopen::NmtState nmt_state)
-    {
-      RCLCPP_INFO(this->get_logger(), "New NMT state %d", (int)nmt_state);
-    }
+    virtual void on_nmt(canopen::NmtState nmt_state) = 0;
 
     /**
      * @brief RPDO Callback
      *
-     * This funciton is called when the associated
-     * LelyBridge detects a change
-     * on a specific object, due to an RPDO event.
+     * Drivers that use the BaseDriver should implement this
+     * function to handle PDOs sent from the device.
      *
      * @param [in] data Changed object
      */
-    virtual void on_rpdo(COData data)
-    {
-      RCLCPP_INFO(
-          this->get_logger(),
-          "Received PDO index %hu subindex %hhu data %u",
-          data.index_,
-          data.subindex_,
-          data.data_);
-    }
+    virtual void on_rpdo(COData data) = 0;
 
     explicit LifecycleBaseDriver(
         const rclcpp::NodeOptions &options)
-        : LifecycleDriverInterface("base_driver", options) {          
-        }
+        : LifecycleDriverInterface("base_driver", options)
+    {
+    }
 
   public:
-    /**
-     * @brief Initializer for the driver
-     *
-     * Initializes the driver, adds it to the CANopen Master.
-     * This function needs to be executed inside the masters
-     * event loop or the masters thread!
-     *
-     * @param [in] exec       The executor to be used for the driver
-     * @param [in] master     The master the driver should be added to
-     * @param [in] node_id    The nodeid of the device the driver commands
-     */
-    void init_from_master(
-        std::shared_ptr<ev::Executor> exec,
-        std::shared_ptr<canopen::AsyncMaster> master,
-        std::shared_ptr<ConfigurationManager> config) override;
-
-    void init() override
-    {
-          initialised_ = false;
-          this->declare_parameter("container_name", "");
-          this->declare_parameter("node_id", 0);
-          this->declare_parameter("non_transmit_timeout", 100);
-          this->activated.store(false);
-          client_cbg_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
-    }
-    bool add() override;
-    bool remove() override;
+    virtual bool add() override;
+    virtual bool remove() override;
   };
 } // namespace ros2_canopen
 
