@@ -8,7 +8,7 @@ namespace ros2_canopen
     {
         if (!this->has_parameter("container_name"))
         {
-            this->declare_parameter<std::string>("container_name");
+            this->declare_parameter("container_name", "lifecycle_device_container_node");
         }
 
         this->get_parameter<std::string>("container_name", this->container_name_);
