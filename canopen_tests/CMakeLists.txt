@@ -13,7 +13,8 @@ find_package(canopen_base_driver REQUIRED)
 find_package(canopen_proxy_driver REQUIRED)
 find_package(lely_core_libraries REQUIRED)
 
-dcfgen(${CMAKE_CURRENT_SOURCE_DIR}/config/ proxy_write_sdo.yml ${CMAKE_BINARY_DIR}/config/proxy_write_sdo/)
+dcfgen(${CMAKE_CURRENT_SOURCE_DIR}/config/simple/ simple.yml ${CMAKE_BINARY_DIR}/config/simple/)
+dcfgen(${CMAKE_CURRENT_SOURCE_DIR}/config/cia402/ cia402.yml ${CMAKE_BINARY_DIR}/config/cia402/)
 
 install(DIRECTORY
   launch/
