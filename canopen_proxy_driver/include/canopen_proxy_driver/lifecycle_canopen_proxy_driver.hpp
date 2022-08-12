@@ -56,6 +56,9 @@ namespace ros2_canopen
         const canopen_interfaces::srv::COWrite::Request::SharedPtr request,
         canopen_interfaces::srv::COWrite::Response::SharedPtr response);
 
+    virtual void register_ros_interface() override;
+
+
     /**
      * @brief Configures the driver
      *

@@ -17,7 +17,7 @@ namespace ros2_canopen
 {
   void LifecycleProxyDriver::on_nmt(canopen::NmtState nmt_state)
   {
-    if (this->activated.load())
+    if (this->activated_.load())
     {
       auto message = std_msgs::msg::String();
 
@@ -61,7 +61,7 @@ namespace ros2_canopen
 
   void LifecycleProxyDriver::on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg)
   {
-    if (this->activated.load())
+    if (this->activated_.load())
     {
       COData data = {msg->index, msg->subindex, msg->data, static_cast<CODataTypes>(msg->type)};
       driver_->tpdo_transmit(data);
@@ -72,7 +72,7 @@ namespace ros2_canopen
 
   void LifecycleProxyDriver::on_rpdo(COData d)
   {
-    if (this->activated.load())
+    if (this->activated_.load())
     {
       RCLCPP_INFO(
           this->get_logger(),
@@ -94,7 +94,7 @@ namespace ros2_canopen
       const std_srvs::srv::Trigger::Request::SharedPtr request,
       std_srvs::srv::Trigger::Response::SharedPtr response)
   {
-    if (this->activated.load())
+    if (this->activated_.load())
     {
       driver_->nmt_command(canopen::NmtCommand::RESET_NODE);
       response->success = true;
@@ -108,7 +108,7 @@ namespace ros2_canopen
       const std_srvs::srv::Trigger::Request::SharedPtr request,
       std_srvs::srv::Trigger::Response::SharedPtr response)
   {
-    if (this->activated.load())
+    if (this->activated_.load())
     {
       driver_->nmt_command(canopen::NmtCommand::START);
       response->success = true;
@@ -122,7 +122,7 @@ namespace ros2_canopen
       const canopen_interfaces::srv::CORead::Request::SharedPtr request,
       canopen_interfaces::srv::CORead::Response::SharedPtr response)
   {
-    if (this->activated.load())
+    if (this->activated_.load())
     {
       RCLCPP_INFO(
           this->get_logger(), "Slave %hhu: SDO Read Call index=0x%x subindex=%hhu bits=%hhu",
@@ -157,10 +157,10 @@ namespace ros2_canopen
       const canopen_interfaces::srv::COWrite::Request::SharedPtr request,
       canopen_interfaces::srv::COWrite::Response::SharedPtr response)
   {
-    if (this->activated.load())
+    if (this->activated_.load())
     {
       RCLCPP_INFO(
-          this->get_logger(), "Slave %hhu: SDO Read Call index=0x%x subindex=%hhu bits=%hhu data=%u",
+          this->get_logger(), "Slave %hhu: SDO Write Call index=0x%x subindex=%hhu bits=%hhu data=%u",
           this->driver_->get_id(), request->index, request->subindex, request->type, request->data);
 
       // Only allow one SDO request concurrently
@@ -190,15 +190,9 @@ namespace ros2_canopen
     response->success = false;
   }
 
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  LifecycleProxyDriver::on_configure(const rclcpp_lifecycle::State &state)
+  void LifecycleProxyDriver::register_ros_interface()
   {
-    if (LifecycleBaseDriver::on_configure(state) != rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS)
-    {
-      return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::FAILURE;
-    }
-
-    
+    ros2_canopen::LifecycleDriverInterface::register_ros_interface();
     nmt_state_publisher = this->create_publisher<std_msgs::msg::String>(
         std::string(
             this->get_name())
@@ -244,7 +238,12 @@ namespace ros2_canopen
             this,
             std::placeholders::_1,
             std::placeholders::_2));
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  }
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  LifecycleProxyDriver::on_configure(const rclcpp_lifecycle::State &state)
+  {
+    return LifecycleBaseDriver::on_configure(state);
   }
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
