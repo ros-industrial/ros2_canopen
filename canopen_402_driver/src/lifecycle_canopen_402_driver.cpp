@@ -123,21 +123,18 @@ void LifecycleMotionControllerDriver::handle_set_target(
 
 void LifecycleMotionControllerDriver::publish()
 {
-    std_msgs::msg::Float64 pos_msg;
-    std_msgs::msg::Float64 speed_msg;
-    pos_msg.data = mc_driver_->get_position();
-    speed_msg.data = mc_driver_->get_speed();
-    publish_actual_position->publish(pos_msg);
-    publish_actual_speed->publish(speed_msg);
+    sensor_msgs::msg::JointState js_msg;
+    js_msg.name[0] = this->get_name();
+    js_msg.position[0] = mc_driver_->get_position();
+    js_msg.velocity[0] = mc_driver_->get_speed();
+    publish_joint_state->publish(pos_msg);
 }
 
 void LifecycleMotionControllerDriver::register_ros_interface()
 {
     RCLCPP_INFO(this->get_logger(), "register_ros_interface");
     LifecycleProxyDriver::register_ros_interface();
-    publish_actual_position = this->create_publisher<std_msgs::msg::Float64>("~/actual_position", 10);
-
-    publish_actual_speed = this->create_publisher<std_msgs::msg::Float64>("~/actual_speed", 10);
+    publish_joint_state = this->create_publisher<sensor_msgs::msg::JointState>("~/joint_state", 10);
     handle_init_service = this->create_service<std_srvs::srv::Trigger>(
         std::string(this->get_name()).append("/init").c_str(),
         std::bind(&LifecycleMotionControllerDriver::handle_init, this, _1, _2));
