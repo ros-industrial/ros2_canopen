@@ -172,12 +172,12 @@ void MotionControllerDriver::register_services()
         std::bind(&MotionControllerDriver::handle_set_target, this, _1, _2));
 }
 
-void MotionControllerDriver::add(ev::Executor &exec,
+void MotionControllerDriver::init(ev::Executor &exec,
                                   canopen::AsyncMaster &master,
                                   uint8_t node_id,
                                   std::shared_ptr<ros2_canopen::ConfigurationManager>  config) noexcept
 {
-    ProxyDriver::add(exec, master, node_id, config);
+    ProxyDriver::init(exec, master, node_id, config);
     auto period = this->config_->get_entry<uint32_t>(std::string(this->get_name()), std::string("period"));
     if(!period.has_value())
     {
@@ -185,16 +185,16 @@ void MotionControllerDriver::add(ev::Executor &exec,
         return;
     }
     period_ms_ = period.value();
-    driver_.reset();
+    driver.reset();
     mc_driver_ = std::make_shared<MCDeviceDriver>(exec, master, node_id);
-    driver_ = std::static_pointer_cast<LelyBridge>(mc_driver_);
-    motor_ = std::make_shared<Motor402>(std::string("motor"), mc_driver_);
+    driver = std::static_pointer_cast<LelyBridge>(mc_driver_);
+    motor_ = std::make_shared<Motor402>(mc_driver_);
     register_services();
 
     timer_group = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     timer_ = this->create_wall_timer(
         2000ms, std::bind(&MotionControllerDriver::run, this), timer_group);
-    driver_->Boot();
+    driver->Boot();
     active.store(true);
 }
 
