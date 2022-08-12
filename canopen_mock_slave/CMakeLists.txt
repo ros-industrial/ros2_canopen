@@ -31,8 +31,29 @@ ament_target_dependencies(
 )
 
 
+add_executable(
+  cia402_slave_node
+  "src/cia402_slave.cpp"
+)
+target_compile_features(cia402_slave_node  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(cia402_slave_node  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+ament_target_dependencies(
+  cia402_slave_node
+  "rclcpp"
+  "lely_core_libraries"
+  "rclcpp_lifecycle"
+  "lifecycle_msgs"
+)
+
+
 
 install(TARGETS basic_slave_node
+  DESTINATION lib/${PROJECT_NAME})
+
+  install(TARGETS cia402_slave_node
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY
