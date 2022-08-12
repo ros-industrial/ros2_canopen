@@ -35,10 +35,10 @@ public:
     {
 
         executor_ = executor;
-        this->declare_parameter<std::string>("can_interface_name");
-        this->declare_parameter<std::string>("master_config");
-        this->declare_parameter<std::string>("bus_config");
-        this->declare_parameter<std::string>("master_bin");
+        this->declare_parameter<std::string>("can_interface_name", "");
+        this->declare_parameter<std::string>("master_config", "");
+        this->declare_parameter<std::string>("bus_config", "");
+        this->declare_parameter<std::string>("master_bin", "");
 
         init_driver_service_ = this->create_service<canopen_interfaces::srv::CONode>(
             "~/init_driver",
