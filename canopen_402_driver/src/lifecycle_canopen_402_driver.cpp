@@ -117,16 +117,18 @@ void LifecycleMotionControllerDriver::handle_set_target(
 {
     if (activated_.load())
     {
-        response->success = motor_->setTarget(request->target);
+        double target = request->target * 1000;
+        response->success = motor_->setTarget(target);
     }
 }
 
 void LifecycleMotionControllerDriver::publish()
 {
     sensor_msgs::msg::JointState js_msg;
-    js_msg.name[0] = this->get_name();
-    js_msg.position[0] = mc_driver_->get_position();
-    js_msg.velocity[0] = mc_driver_->get_speed();
+    js_msg.name.push_back(this->get_name());
+    js_msg.position.push_back(mc_driver_->get_position()/1000);
+    js_msg.velocity.push_back(mc_driver_->get_speed()/1000);
+    js_msg.effort.push_back(0.0);
     publish_joint_state->publish(js_msg);
 }
 

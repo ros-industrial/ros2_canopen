@@ -1,0 +1,89 @@
+master:
+  node_id: 1
+  driver: "ros2_canopen::LifecycleMasterNode"
+  package: "canopen_core"
+  sync_period: 20000
+
+panda_joint1:
+  node_id: 2
+  dcf: "cia402_slave.eds"
+  dcf_path: "install/canopen_tests/share/canopen_tests/config/franka"
+  driver: "ros2_canopen::LifecycleMotionControllerDriver"
+  package: "canopen_402_driver"
+  period: 20
+  enable_lazy_load: false
+  sdo:
+    - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
+    - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
+
+panda_joint2:
+  node_id: 3
+  dcf: "cia402_slave.eds"
+  dcf_path: "install/canopen_tests/share/canopen_tests/config/franka"
+  driver: "ros2_canopen::LifecycleMotionControllerDriver"
+  package: "canopen_402_driver"
+  period: 20
+  enable_lazy_load: false
+  sdo:
+    - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
+    - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
+
+panda_joint3:
+  node_id: 4
+  dcf: "cia402_slave.eds"
+  dcf_path: "install/canopen_tests/share/canopen_tests/config/franka"
+  driver: "ros2_canopen::LifecycleMotionControllerDriver"
+  package: "canopen_402_driver"
+  period: 20
+  enable_lazy_load: false
+  sdo:
+    - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
+    - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
+
+panda_joint4:
+  node_id: 5
+  dcf: "cia402_slave.eds"
+  dcf_path: "install/canopen_tests/share/canopen_tests/config/franka"
+  driver: "ros2_canopen::LifecycleMotionControllerDriver"
+  package: "canopen_402_driver"
+  period: 20
+  enable_lazy_load: false
+  sdo:
+    - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
+    - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
+
+panda_joint5:
+  node_id: 6
+  dcf: "cia402_slave.eds"
+  dcf_path: "install/canopen_tests/share/canopen_tests/config/franka"
+  driver: "ros2_canopen::LifecycleMotionControllerDriver"
+  package: "canopen_402_driver"
+  period: 20
+  enable_lazy_load: false
+  sdo:
+    - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
+    - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
+
+panda_joint6:
+  node_id: 7
+  dcf: "cia402_slave.eds"
+  dcf_path: "install/canopen_tests/share/canopen_tests/config/franka"
+  driver: "ros2_canopen::LifecycleMotionControllerDriver"
+  package: "canopen_402_driver"
+  period: 20
+  enable_lazy_load: false
+  sdo:
+    - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
+    - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
+
+panda_joint7:
+  node_id: 8
+  dcf: "cia402_slave.eds"
+  dcf_path: "install/canopen_tests/share/canopen_tests/config/franka"
+  driver: "ros2_canopen::LifecycleMotionControllerDriver"
+  package: "canopen_402_driver"
+  period: 20
+  enable_lazy_load: false
+  sdo:
+    - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
+    - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
