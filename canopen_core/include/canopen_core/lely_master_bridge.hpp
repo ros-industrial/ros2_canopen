@@ -49,8 +49,9 @@ namespace ros2_canopen
             lely::io::CanChannelBase &chan,
             const std::string &dcf_txt,
             const std::string &dcf_bin = "",
-            uint8_t id = (uint8_t)255U) : lely::canopen::AsyncMaster(exec, timer, chan, dcf_txt, dcf_bin, id)
+            uint8_t id = (uint8_t)255U) : lely::canopen::AsyncMaster(exec, timer, chan, dcf_txt, "", id)
         {
+            this->AsyncWriteDcf(exec, id, dcf_bin.c_str());
         }
 
         std::future<bool> async_write_sdo(uint8_t id, COData data);
