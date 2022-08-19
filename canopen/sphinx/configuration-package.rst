@@ -151,6 +151,7 @@ Add the following code:
 
         ld = launch.LaunchDescription()
 
+
         device_container = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 [
@@ -179,6 +180,7 @@ Add the following code:
                 ),
                 "can_interface_name": "{can_interface i.e. can0}",
             }.items(),
+
         )
 
         ld.add_action(device_container)
