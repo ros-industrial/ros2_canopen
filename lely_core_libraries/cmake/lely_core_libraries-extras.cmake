@@ -40,7 +40,7 @@ macro(dcfgen INPUT_DIR FILE OUTPUT_DIR)
     message(DEPRECATION "dcfgen macro is depreciated and will be remove in beta version. Use generate_dcf instead.")
     make_directory(${OUTPUT_DIR})
     add_custom_target(
-        ${INPUT_DIR}${FILE} ALL
+        ${FILE} ALL
         COMMAND "dcfgen" "-d" ${OUTPUT_DIR} "-rS" ${INPUT_DIR}${FILE}
         WORKING_DIRECTORY ${INPUT_DIR}
         )
