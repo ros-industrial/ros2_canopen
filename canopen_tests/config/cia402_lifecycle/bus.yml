@@ -12,6 +12,7 @@ cia402_device_1:
   package: "canopen_402_driver"
   period: 20
   enable_lazy_load: false
+  revision_number: 0
   sdo:
     - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
     - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s

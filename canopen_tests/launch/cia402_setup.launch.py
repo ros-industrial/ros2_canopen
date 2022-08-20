@@ -26,7 +26,14 @@ def generate_launch_description():
             "slave_config": slave_eds_path,
             }.items(),
     )
-                
+    master_bin_path = os.path.join(
+                get_package_share_directory("canopen_tests"),
+                "config",
+                "cia402_lifecycle",
+                "master.bin",
+            )     
+    if not os.path.exists(master_bin_path):
+        master_bin_path = ""            
     device_container = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -41,12 +48,7 @@ def generate_launch_description():
                 "cia402",
                 "master.dcf",
             ),
-            "master_bin": os.path.join(
-                get_package_share_directory("canopen_tests"),
-                "config",
-                "cia402",
-                "master.bin",
-            ),
+            "master_bin": master_bin_path,
             "bus_config": os.path.join(
                 get_package_share_directory("canopen_tests"),
                 "config",

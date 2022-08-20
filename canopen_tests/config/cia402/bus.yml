@@ -1,6 +1,6 @@
 master:
   node_id: 1
-  driver: "ros2_canopen::LifecycleMasterNode"
+  driver: "ros2_canopen::MasterNode"
   package: "canopen_core"
   sync_period: 20000
 
@@ -8,10 +8,11 @@ cia402_device_1:
   node_id: 2
   dcf: "cia402_slave.eds"
   dcf_path: "install/canopen_tests/share/canopen_tests/config/cia402"
-  driver: "ros2_canopen::LifecycleMotionControllerDriver"
+  driver: "ros2_canopen::MotionControllerDriver"
   package: "canopen_402_driver"
   period: 20
   enable_lazy_load: false
+  revision_number: 0
   sdo:
     - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
     - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
