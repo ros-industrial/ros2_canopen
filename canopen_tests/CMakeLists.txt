@@ -14,8 +14,8 @@ find_package(canopen_proxy_driver REQUIRED)
 find_package(lely_core_libraries REQUIRED)
 
 
-dcfgen(simple)
-dcfgen(cia402)
+generate_dcf(simple)
+generate_dcf(cia402)
 
 install(DIRECTORY
   launch/

@@ -3,16 +3,19 @@
 # in your package. Inside that folder there needs to be the bus.yml
 # file to use for generation.
 macro(
-    dcfgen 
+    generate_dcf 
     TARGET)
+    add_custom_target(
+        ${TARGET}_prepare ALL 
+        COMMAND rm -rf ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/*
+        COMMAND rm -rf ${CMAKE_BINARY_DIR}/config/${TARGET}/*
+        COMMAND mkdir -p ${CMAKE_BINARY_DIR}/config/${TARGET}
+        COMMAND mkdir -p ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/
+    )
 
     add_custom_target(
-        ${TARGET} ALL    
-    )
-    
-    add_custom_command(
-        TARGET ${TARGET} PRE_BUILD
-        COMMAND mkdir -p ${CMAKE_BINARY_DIR}/config/${TARGET}/
+        ${TARGET} ALL 
+        DEPENDS ${TARGET}_prepare
     )
 
     add_custom_command(
@@ -22,7 +25,7 @@ macro(
     )
 
     install(DIRECTORY
-        config/${TARGET}/
+        ${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}/
         DESTINATION share/${PROJECT_NAME}/config/${TARGET}/
     )
   
@@ -31,4 +34,14 @@ macro(
         DESTINATION share/${PROJECT_NAME}/config/${TARGET}/
     )
 
+endmacro()
+
+macro(dcfgen INPUT_DIR FILE OUTPUT_DIR)
+    message(DEPRECATION "dcfgen macro is depreciated and will be remove in beta version. Use generate_dcf instead.")
+    make_directory(${OUTPUT_DIR})
+    add_custom_target(
+        ${INPUT_DIR}${FILE} ALL
+        COMMAND "dcfgen" "-d" ${OUTPUT_DIR} "-rS" ${INPUT_DIR}${FILE}
+        WORKING_DIRECTORY ${INPUT_DIR}
+        )
 endmacro()
