@@ -210,7 +210,7 @@ Finally we need to adjust the CMakeLists.txt file to pick everything up correctl
   find_package(lely_core_libraries REQUIRED)
 
 
-  dcfgen({bus_config_name})
+  generate_dcf({bus_config_name})
 
   install(DIRECTORY
     launch/
