@@ -34,7 +34,14 @@ def generate_launch_description():
                 }.items(),
         )
         ld.add_action(slave_node)
-                
+    master_bin_path = os.path.join(
+                get_package_share_directory("canopen_tests"),
+                "config",
+                "cia402_lifecycle",
+                "master.bin",
+            )     
+    if not os.path.exists(master_bin_path):
+        master_bin_path = ""        
     device_container = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -49,12 +56,12 @@ def generate_launch_description():
                 "franka",
                 "master.dcf",
             ),
-            "master_bin": "",
+            "master_bin": master_bin_path,
             "bus_config": os.path.join(
                 get_package_share_directory("canopen_tests"),
                 "config",
                 "franka",
-                "franka.yml",
+                "bus.yml",
             ),
             "can_interface_name": "vcan0",
         }.items(),
