@@ -253,3 +253,6 @@ void DeviceContainerNode::on_list_nodes(
         response->full_node_names.push_back(it->second);
     }
 }
+
+
+>>>>>>> ec93cc5 (Remove artifacts)
