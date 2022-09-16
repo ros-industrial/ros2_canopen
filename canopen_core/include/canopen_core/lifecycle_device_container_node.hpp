@@ -46,7 +46,6 @@ public:
      * @param [in] node_name    The name of the node    
      * @param [in] node_options Passed to the device_container node
      */
-     */
     LifecycleDeviceContainerNode(
         std::weak_ptr<rclcpp::Executor> executor =
             std::weak_ptr<rclcpp::executors::MultiThreadedExecutor>(),
