@@ -254,5 +254,3 @@ void DeviceContainerNode::on_list_nodes(
     }
 }
 
-
->>>>>>> ec93cc5 (Remove artifacts)
