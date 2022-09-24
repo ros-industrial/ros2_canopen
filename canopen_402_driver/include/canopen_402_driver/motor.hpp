@@ -463,10 +463,15 @@ namespace canopen_402
         template <typename T, typename... Args>
         bool registerMode(uint16_t mode, Args &&...args)
         {
-            return mode_allocators_.insert(std::make_pair(mode, [args..., mode, this]()
-                                                          {
-             if(isModeSupportedByDevice(mode)) registerMode(mode, ModeSharedPtr(new T(args...))); }))
-                .second;
+            return mode_allocators_.insert(std::make_pair(mode,
+                [args..., mode, this]()
+                {
+                if(isModeSupportedByDevice(mode))
+                {
+                    registerMode(mode, ModeSharedPtr(new T(args...)));
+                }
+               }
+               )).second;
         }
 
         /**
