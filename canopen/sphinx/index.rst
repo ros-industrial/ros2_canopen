@@ -1,9 +1,9 @@
 ROS2 CANopen Stack
 ==================
 
-This is the documentation of the ROS2 CANopen stack. 
+This is the documentation of the ROS2 CANopen stack.
 
-.. toctree:: 
+.. toctree::
   :maxdepth: 1
   :caption: Quickstart
   :glob:
@@ -12,7 +12,7 @@ This is the documentation of the ROS2 CANopen stack.
   quickstart/configuration
   quickstart/operation
 
-.. toctree:: 
+.. toctree::
   :maxdepth: 1
   :caption: User Guide
   :glob:
@@ -21,12 +21,12 @@ This is the documentation of the ROS2 CANopen stack.
   user-guide/service-based/overview
   user-guide/lifecycle-service-based/overview
   user-guide/ros2-control/overview
-  user-guide/master 
+  user-guide/master
   user-guide/proxy-driver
   user-guide/motion-controller-driver
 
 
-.. toctree:: 
+.. toctree::
   :maxdepth: 1
   :caption: Developer Guide
   :glob:
@@ -40,7 +40,7 @@ This is the documentation of the ROS2 CANopen stack.
   developers-guide/canopen_proxy_driver/*
   developers-guide/canopen_402_driver/*
 
-.. toctree:: 
+.. toctree::
   :maxdepth: 1
   :caption: Software Tests
   :glob:

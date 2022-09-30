@@ -47,15 +47,13 @@ void ProxyDriver::on_nmt(canopen::NmtState nmt_state)
       break;
   }
   RCLCPP_INFO(
-    this->get_logger(),
-    "Slave %hhu: Switched NMT state to %s",
-    this->driver->get_id(),
+    this->get_logger(), "Slave %hhu: Switched NMT state to %s", this->driver->get_id(),
     message.data.c_str());
 
   nmt_state_publisher->publish(message);
 
   // callback
-  if(nmt_state_cb_){
+  if (nmt_state_cb_) {
     nmt_state_cb_(nmt_state, this->driver->get_id());
   }
 }
@@ -69,12 +67,8 @@ void ProxyDriver::on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg)
 void ProxyDriver::on_rpdo(COData d)
 {
   RCLCPP_INFO(
-    this->get_logger(),
-    "Slave %hhu: Sent PDO index %hu, subindex %hhu, data %x",
-    this->driver->get_id(),
-    d.index_,
-    d.subindex_,
-    d.data_);
+    this->get_logger(), "Slave %hhu: Sent PDO index %hu, subindex %hhu, data %x",
+    this->driver->get_id(), d.index_, d.subindex_, d.data_);
   auto message = canopen_interfaces::msg::COData();
   message.index = d.index_;
   message.subindex = d.subindex_;
@@ -83,10 +77,9 @@ void ProxyDriver::on_rpdo(COData d)
   rpdo_publisher->publish(message);
 
   // callback
-  if(rpdo_cb_) {
+  if (rpdo_cb_) {
     rpdo_cb_(d, this->driver->get_id());
   }
-
 }
 
 void ProxyDriver::on_nmt_state_reset(
@@ -143,8 +136,8 @@ void ProxyDriver::on_sdo_write(
   std::scoped_lock<std::mutex> lk(sdo_mtex);
 
   // Prepare Data
-  COData d =
-  {request->index, request->subindex, request->data, static_cast<CODataTypes>(request->type)};
+  COData d = {
+    request->index, request->subindex, request->data, static_cast<CODataTypes>(request->type)};
   // Send write request
   auto f = driver->async_sdo_write(d);
   // Wait for request to complete

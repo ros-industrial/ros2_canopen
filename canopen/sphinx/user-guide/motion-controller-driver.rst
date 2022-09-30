@@ -8,7 +8,7 @@ the drive status, operation mode and sending target values to the motion control
 Services
 --------
 
-.. list-table:: 
+.. list-table::
   :widths: 30 20 50
   :header-rows: 1
   :align: left
@@ -16,12 +16,12 @@ Services
   * - Services
     - Type
     - Description
-  * - ~/nmt_reset_node  
+  * - ~/nmt_reset_node
     - Trigger
     - Resets CANopen Device the Proxy Device Node manages.
-  * - ~/sdo_read 
+  * - ~/sdo_read
     - CORead
-    - Reads an SDO object from the specified index, subindex and datatype of the remote device. 
+    - Reads an SDO object from the specified index, subindex and datatype of the remote device.
   * - ~/sdo_write
     - COWrite
     - Writes data to an SDO object on the specified index, subindex and datatype of the remote device.
@@ -55,7 +55,7 @@ Services
 
 Publishers
 ----------
-.. list-table:: 
+.. list-table::
   :widths: 30 20 50
   :header-rows: 1
   :align: left
@@ -63,7 +63,7 @@ Publishers
   * - Publishers
     - Type
     - Description
-  * - ~/actual_position 
+  * - ~/actual_position
     - Float64
     - Actual position received from motion controller. Units are the units defined on the device.
   * - ~/actual_speed
@@ -74,7 +74,7 @@ Publishers
 Subscribers
 -----------
 
-.. list-table:: 
+.. list-table::
   :widths: 30 20 50
   :header-rows: 1
 
@@ -88,7 +88,7 @@ Subscribers
 Bus Configuration Parameters
 ----------------------------
 
-.. list-table:: 
+.. list-table::
   :widths: 30 20 50
   :header-rows: 1
 

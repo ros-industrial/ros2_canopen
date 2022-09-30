@@ -18,7 +18,7 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(sensor_msgs)
 
-add_library(${PROJECT_NAME} 
+add_library(${PROJECT_NAME}
   src/canopen_402_driver.cpp
   src/motor.cpp
   )
@@ -50,7 +50,7 @@ rclcpp_components_register_nodes(canopen_402_driver  "ros2_canopen::MotionContro
 set(node_plugins "${node_plugins}ros2_canopen::MotionControllerDriver;$<TARGET_FILE:canopen_402_driver >\n")
 
 
-add_library(lifecycle_canopen_402_driver 
+add_library(lifecycle_canopen_402_driver
   src/lifecycle_canopen_402_driver.cpp
   src/motor.cpp
   )

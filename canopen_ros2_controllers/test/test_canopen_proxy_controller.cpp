@@ -20,7 +20,8 @@
 #include <utility>
 #include <vector>
 
-class CanopenProxyControllerTest : public CanopenProxyControllerFixture<TestableCanopenProxyController>
+class CanopenProxyControllerTest
+: public CanopenProxyControllerFixture<TestableCanopenProxyController>
 {
 };
 
@@ -93,7 +94,6 @@ TEST_F(CanopenProxyControllerTest, activate_success)
   EXPECT_EQ((*msg)->subindex, 0u);
   EXPECT_EQ((*msg)->type, 0u);
   EXPECT_EQ((*msg)->data, 0u);
-
 }
 
 TEST_F(CanopenProxyControllerTest, update_success)
@@ -125,9 +125,11 @@ TEST_F(CanopenProxyControllerTest, reactivate_success)
   ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), NODE_SUCCESS);
   ASSERT_EQ(controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_value(), 101.101);
   ASSERT_EQ(controller_->on_deactivate(rclcpp_lifecycle::State()), NODE_SUCCESS);
-  ASSERT_TRUE(std::isnan(controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_value()));
+  ASSERT_TRUE(
+    std::isnan(controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_value()));
   ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), NODE_SUCCESS);
-  ASSERT_TRUE(std::isnan(controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_value()));
+  ASSERT_TRUE(
+    std::isnan(controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_value()));
 
   ASSERT_EQ(
     controller_->update(rclcpp::Time(0), rclcpp::Duration::from_seconds(0.01)),
@@ -171,6 +173,7 @@ TEST_F(CanopenProxyControllerTest, test_update_logic_fast)
     controller_interface::return_type::OK);
 
   EXPECT_EQ(
-    static_cast<uint32_t>(controller_->command_interfaces_[CommandInterfaces::TPDO_TYPE].get_value()),
+    static_cast<uint32_t>(
+      controller_->command_interfaces_[CommandInterfaces::TPDO_TYPE].get_value()),
     TEST_GOOD_TYPE);
 }

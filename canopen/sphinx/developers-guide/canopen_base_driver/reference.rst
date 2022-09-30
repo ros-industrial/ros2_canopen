@@ -1,5 +1,5 @@
 Base Driver API Reference
 =========================
 
-.. autodoxygenindex:: 
+.. autodoxygenindex::
     :project: canopen_base_driver

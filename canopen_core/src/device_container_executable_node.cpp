@@ -17,24 +17,20 @@
 
 using namespace ros2_canopen;
 
-int main(int argc, char const *argv[])
+int main(int argc, char const * argv[])
 {
-    rclcpp::init(argc, argv);
-    auto exec = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
-    auto device_container = std::make_shared<DeviceContainerNode>(exec);
-    std::thread spinThread([&device_container]()
-                        { 
-                            if(device_container->init())
-                            {
-                                RCLCPP_INFO(device_container->get_logger(), "Initialisation successful.");
-                            }
-                            else
-                            {
-                                RCLCPP_INFO(device_container->get_logger(), "Initialisation failed.");
-                            }
-                        });
-    exec->add_node(device_container);
-    exec->spin();
-    spinThread.join();
-    return 0;
+  rclcpp::init(argc, argv);
+  auto exec = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
+  auto device_container = std::make_shared<DeviceContainerNode>(exec);
+  std::thread spinThread([&device_container]() {
+    if (device_container->init()) {
+      RCLCPP_INFO(device_container->get_logger(), "Initialisation successful.");
+    } else {
+      RCLCPP_INFO(device_container->get_logger(), "Initialisation failed.");
+    }
+  });
+  exec->add_node(device_container);
+  exec->spin();
+  spinThread.join();
+  return 0;
 }

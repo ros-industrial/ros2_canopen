@@ -37,9 +37,8 @@ able to load using plugin lib.
 
 
 For implementation of your driver you can use the LelyBridge Class which implements a lely-driver that
-is easy to use from a ROS node. Or write a similar Class yourself, for example using lely's LoopDriver. 
+is easy to use from a ROS node. Or write a similar Class yourself, for example using lely's LoopDriver.
 
 .. doxygenclass:: ros2_canopen::LelyBridge
    :project: ros2_canopen
    :members:
-

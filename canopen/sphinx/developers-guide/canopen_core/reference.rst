@@ -1,5 +1,5 @@
 Core API Reference
 ==================
 
-.. autodoxygenindex:: 
+.. autodoxygenindex::
     :project: canopen_core

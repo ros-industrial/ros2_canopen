@@ -30,7 +30,7 @@ find_package(lifecycle_msgs REQUIRED)
 find_package(lely_core_libraries REQUIRED)
 find_package(canopen_interfaces REQUIRED)
 
-set (dependencies 
+set (dependencies
   lely_core_libraries
   rclcpp
   rclcpp_components
@@ -49,7 +49,7 @@ target_include_directories(configuration_manager PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
   )
-ament_target_dependencies(configuration_manager 
+ament_target_dependencies(configuration_manager
   rclcpp
   yaml_cpp_vendor
 )
@@ -128,7 +128,7 @@ rclcpp_components_register_nodes(lifecycle_device_manager_node  "ros2_canopen::L
 set(node_plugins "${node_plugins}ros2_canopen::LifecycleDeviceManagerNode;$<TARGET_FILE:lifecycle_device_manager_node >\n")
 
 # device container node
-add_executable(lifecycle_device_container_node 
+add_executable(lifecycle_device_container_node
   src/lifecycle_device_container_node.cpp
   )
 target_link_libraries(lifecycle_device_container_node

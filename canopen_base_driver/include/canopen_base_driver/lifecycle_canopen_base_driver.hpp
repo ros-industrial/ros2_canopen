@@ -13,75 +13,74 @@
 //    limitations under the License.
 #ifndef CANOPEN_BASE_DRIVER__CANOPEN_BASE_DRIVER_HPP_
 #define CANOPEN_BASE_DRIVER__CANOPEN_BASE_DRIVER_HPP_
+#include <atomic>
 #include <memory>
 #include <mutex>
-#include <atomic>
 
 #include "canopen_base_driver/visibility_control.h"
-#include "rclcpp/rclcpp.hpp"
+#include "lifecycle_msgs/msg/state.hpp"
 #include "rclcpp/publisher.hpp"
+#include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "std_srvs/srv/trigger.hpp"
-#include "lifecycle_msgs/msg/state.hpp"
 
 #include "canopen_base_driver/lely_bridge.hpp"
 #include "canopen_core/device.hpp"
 #include "canopen_interfaces/msg/co_data.hpp"
+#include "canopen_interfaces/srv/co_node.hpp"
 #include "canopen_interfaces/srv/co_read.hpp"
 #include "canopen_interfaces/srv/co_write.hpp"
-#include "canopen_interfaces/srv/co_node.hpp"
 
 namespace ros2_canopen
 {
-  /**
+/**
    * @brief Abstract Class for a CANopen Device Node
    *
    * This class provides the base functionality for creating a
    * CANopen device node. It provides callbacks for nmt and rpdo.
    */
-  class LifecycleBaseDriver : public LifecycleDriverInterface
-  {
-  protected:
-    std::thread nmt_state_publisher_thread_;
-    std::thread rpdo_publisher_thread_;
-    
-    
-    void nmt_listener();
-    void rdpo_listener();
+class LifecycleBaseDriver : public LifecycleDriverInterface
+{
+protected:
+  std::thread nmt_state_publisher_thread_;
+  std::thread rpdo_publisher_thread_;
 
-    std::mutex driver_mutex_;
-    std::shared_ptr<ros2_canopen::LelyBridge> driver_;
+  void nmt_listener();
+  void rdpo_listener();
 
-    /**
+  std::mutex driver_mutex_;
+  std::shared_ptr<ros2_canopen::LelyBridge> driver_;
+
+  /**
      * @brief Start Threads
-     * 
-     * This funciton will start the nt and rpdo
+     *
+     * This function will start the nt and rpdo
      * publisher threads.
-     * 
+     *
      */
-    virtual void start_threads() override
-    {
-      nmt_state_publisher_thread_ =
-          std::thread(std::bind(&ros2_canopen::LifecycleBaseDriver::nmt_listener, this));
+  virtual void start_threads() override
+  {
+    nmt_state_publisher_thread_ =
+      std::thread(std::bind(&ros2_canopen::LifecycleBaseDriver::nmt_listener, this));
 
-      rpdo_publisher_thread_ =
-          std::thread(std::bind(&ros2_canopen::LifecycleBaseDriver::rdpo_listener, this));
-    }
+    rpdo_publisher_thread_ =
+      std::thread(std::bind(&ros2_canopen::LifecycleBaseDriver::rdpo_listener, this));
+  }
 
-    /**
+  /**
      * @brief Join worker threads
-     * 
+     *
      * This function will wait for the nmt and rpdo
      * publisher threads to finish.
-     * 
+     *
      */
-    virtual void join_threads() override
-    {
-      nmt_state_publisher_thread_.join();
-      rpdo_publisher_thread_.join();
-    }
+  virtual void join_threads() override
+  {
+    nmt_state_publisher_thread_.join();
+    rpdo_publisher_thread_.join();
+  }
 
-    /**
+  /**
      * @brief Configures the driver
      *
      * Read parameters
@@ -90,10 +89,10 @@ namespace ros2_canopen
      * @param state
      * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
      */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_configure(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_configure(
+    const rclcpp_lifecycle::State & state);
 
-    /**
+  /**
      * @brief Activates the driver
      *
      * Add driver to masters event loop
@@ -101,10 +100,10 @@ namespace ros2_canopen
      * @param state
      * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
      */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_activate(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_activate(
+    const rclcpp_lifecycle::State & state);
 
-    /**
+  /**
      * @brief Deactivates the driver
      *
      * Remove driver from masters event loop
@@ -112,10 +111,10 @@ namespace ros2_canopen
      * @param state
      * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
      */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_deactivate(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_deactivate(
+    const rclcpp_lifecycle::State & state);
 
-    /**
+  /**
      * @brief Cleanup the driver
      *
      * Delete objects
@@ -123,13 +122,13 @@ namespace ros2_canopen
      * @param state
      * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
      */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_cleanup(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_cleanup(
+    const rclcpp_lifecycle::State & state);
 
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_shutdown(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_shutdown(
+    const rclcpp_lifecycle::State & state);
 
-    /**
+  /**
      * @brief NMT State Change Callback
      *
      * Drivers that use the BaseDriver should implement this
@@ -138,9 +137,9 @@ namespace ros2_canopen
      *
      * @param [in] nmt_state New NMT state
      */
-    virtual void on_nmt(canopen::NmtState nmt_state) = 0;
+  virtual void on_nmt(canopen::NmtState nmt_state) = 0;
 
-    /**
+  /**
      * @brief RPDO Callback
      *
      * Drivers that use the BaseDriver should implement this
@@ -148,36 +147,35 @@ namespace ros2_canopen
      *
      * @param [in] data Changed object
      */
-    virtual void on_rpdo(COData data) = 0;
+  virtual void on_rpdo(COData data) = 0;
 
-    explicit LifecycleBaseDriver(
-        const rclcpp::NodeOptions &options)
-        : LifecycleDriverInterface("base_driver", options)
-    {
-    }
+  explicit LifecycleBaseDriver(const rclcpp::NodeOptions & options)
+  : LifecycleDriverInterface("base_driver", options)
+  {
+  }
 
-  public:
-    /**
+public:
+  /**
      * @brief Adds the driver to the master event loop.
-     * 
+     *
      * Driver needs to be initialised before calling this
      * function.
-     * 
-     * @return true 
-     * @return false 
+     *
+     * @return true
+     * @return false
      */
-    virtual bool add() override;
+  virtual bool add() override;
 
-    /**
+  /**
      * @brief Removes the driver from the masters event loop.
-     * 
-     * Driver needs to be intialised before calling this funciton.
-     * 
-     * @return true 
-     * @return false 
+     *
+     * Driver needs to be initialised before calling this function.
+     *
+     * @return true
+     * @return false
      */
-    virtual bool remove() override;
-  };
-} // namespace ros2_canopen
+  virtual bool remove() override;
+};
+}  // namespace ros2_canopen
 
-#endif // CANOPEN_BASE_DRIVER__CANOPEN_BASE_DRIVER_HPP_
+#endif  // CANOPEN_BASE_DRIVER__CANOPEN_BASE_DRIVER_HPP_

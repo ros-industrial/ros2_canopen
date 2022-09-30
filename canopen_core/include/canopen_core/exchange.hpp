@@ -1,6 +1,6 @@
 //    Copyright 2022 Harshavadan Deshpande
 //                   Christoph Hellmann Santos
-// 
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
@@ -15,14 +15,9 @@
 #ifndef EXCHANGE_HPP
 #define EXCHANGE_HPP
 
-namespace ros2_canopen {
-enum CODataTypes
+namespace ros2_canopen
 {
-  CODataUnkown = 0,
-  COData8 = 8,
-  COData16 = 16,
-  COData32 = 32
-};
+enum CODataTypes { CODataUnkown = 0, COData8 = 8, COData16 = 16, COData32 = 32 };
 
 struct COData
 {
@@ -32,6 +27,6 @@ public:
   uint32_t data_;
   CODataTypes type_;
 };
-}
+}  // namespace ros2_canopen
 
 #endif  // EXCHANGE_HPP

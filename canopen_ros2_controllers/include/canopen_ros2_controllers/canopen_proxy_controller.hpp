@@ -20,10 +20,10 @@
 #include <vector>
 
 #include "canopen_interfaces/msg/co_data.hpp"
-#include "canopen_interfaces/srv/co_write.hpp"
 #include "canopen_interfaces/srv/co_read.hpp"
-#include "controller_interface/controller_interface.hpp"
+#include "canopen_interfaces/srv/co_write.hpp"
 #include "canopen_ros2_controllers/visibility_control.h"
+#include "controller_interface/controller_interface.hpp"
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 #include "realtime_tools/realtime_buffer.h"
@@ -34,8 +34,7 @@
 
 namespace
 {
-enum CommandInterfaces
-{
+enum CommandInterfaces {
   TPDO_INDEX,
   TPDO_SUBINDEX,
   TPDO_TYPE,
@@ -45,8 +44,7 @@ enum CommandInterfaces
   NMT_START,
 };
 
-enum StateInterfaces
-{
+enum StateInterfaces {
   RPDO_INDEX,
   RPDO_SUBINDEX,
   RPDO_TYPE,
@@ -58,7 +56,6 @@ enum StateInterfaces
 
 namespace canopen_ros2_controllers
 {
-
 class CanopenProxyController : public controller_interface::ControllerInterface
 {
 public:

@@ -11,8 +11,8 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
-#include <memory>
 #include "canopen_base_driver/canopen_base_driver.hpp"
+#include <memory>
 
 using namespace lely;
 using namespace ros2_canopen;
@@ -36,31 +36,20 @@ void BaseDriver::rdpo_listener()
 }
 
 void BaseDriver::init(
-  ev::Executor & exec,
-  canopen::AsyncMaster & master,
-  uint8_t node_id,
+  ev::Executor & exec, canopen::AsyncMaster & master, uint8_t node_id,
   std::shared_ptr<ConfigurationManager> config) noexcept
 {
   config_ = config;
-  driver =
-    std::make_shared<ros2_canopen::LelyBridge>(exec, master, node_id);
+  driver = std::make_shared<ros2_canopen::LelyBridge>(exec, master, node_id);
   nmt_state_publisher_future =
-    std::async(
-    std::launch::async,
-    std::bind(&ros2_canopen::BaseDriver::nmt_listener, this)
-    );
+    std::async(std::launch::async, std::bind(&ros2_canopen::BaseDriver::nmt_listener, this));
   rpdo_publisher_future =
-    std::async(
-    std::launch::async,
-    std::bind(&ros2_canopen::BaseDriver::rdpo_listener, this)
-    );
+    std::async(std::launch::async, std::bind(&ros2_canopen::BaseDriver::rdpo_listener, this));
   driver->Boot();
 }
 
 void BaseDriver::remove(
-  ev::Executor & exec,
-  canopen::AsyncMaster & master,
-  uint8_t node_id) noexcept
+  ev::Executor & exec, canopen::AsyncMaster & master, uint8_t node_id) noexcept
 {
   driver.reset();
 }

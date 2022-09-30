@@ -1,5 +1,5 @@
 Proxy Driver API Reference
 ==========================
 
-.. autodoxygenindex:: 
+.. autodoxygenindex::
     :project: canopen_proxy_driver

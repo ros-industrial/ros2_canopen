@@ -16,50 +16,49 @@
 #define CANOPEN_PROXY_DRIVER__CANOPEN_PROXY_DRIVER_HPP_
 #include <string>
 
-#include "canopen_proxy_driver/visibility_control.h"
 #include "canopen_base_driver/lifecycle_canopen_base_driver.hpp"
+#include "canopen_proxy_driver/visibility_control.h"
 
 namespace ros2_canopen
 {
-  class LifecycleProxyDriver : public LifecycleBaseDriver
-  {
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr nmt_state_publisher;
-    rclcpp::Publisher<canopen_interfaces::msg::COData>::SharedPtr rpdo_publisher;
-    rclcpp::Subscription<canopen_interfaces::msg::COData>::SharedPtr tpdo_subscriber;
-    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_reset_service;
-    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_start_service;
-    rclcpp::Service<canopen_interfaces::srv::CORead>::SharedPtr sdo_read_service;
-    rclcpp::Service<canopen_interfaces::srv::COWrite>::SharedPtr sdo_write_service;
+class LifecycleProxyDriver : public LifecycleBaseDriver
+{
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr nmt_state_publisher;
+  rclcpp::Publisher<canopen_interfaces::msg::COData>::SharedPtr rpdo_publisher;
+  rclcpp::Subscription<canopen_interfaces::msg::COData>::SharedPtr tpdo_subscriber;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_reset_service;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_start_service;
+  rclcpp::Service<canopen_interfaces::srv::CORead>::SharedPtr sdo_read_service;
+  rclcpp::Service<canopen_interfaces::srv::COWrite>::SharedPtr sdo_write_service;
 
-    std::mutex sdo_mtex;
+  std::mutex sdo_mtex;
 
-  protected:
-    void on_nmt(canopen::NmtState nmt_state);
+protected:
+  void on_nmt(canopen::NmtState nmt_state);
 
-    void on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg);
+  void on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg);
 
-    void on_rpdo(COData d);
+  void on_rpdo(COData d);
 
-    void on_nmt_state_reset(
-        const std_srvs::srv::Trigger::Request::SharedPtr request,
-        std_srvs::srv::Trigger::Response::SharedPtr response);
+  void on_nmt_state_reset(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
 
-    void on_nmt_state_start(
-        const std_srvs::srv::Trigger::Request::SharedPtr request,
-        std_srvs::srv::Trigger::Response::SharedPtr response);
+  void on_nmt_state_start(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
 
-    void on_sdo_read(
-        const canopen_interfaces::srv::CORead::Request::SharedPtr request,
-        canopen_interfaces::srv::CORead::Response::SharedPtr response);
+  void on_sdo_read(
+    const canopen_interfaces::srv::CORead::Request::SharedPtr request,
+    canopen_interfaces::srv::CORead::Response::SharedPtr response);
 
-    void on_sdo_write(
-        const canopen_interfaces::srv::COWrite::Request::SharedPtr request,
-        canopen_interfaces::srv::COWrite::Response::SharedPtr response);
+  void on_sdo_write(
+    const canopen_interfaces::srv::COWrite::Request::SharedPtr request,
+    canopen_interfaces::srv::COWrite::Response::SharedPtr response);
 
-    virtual void register_ros_interface() override;
+  virtual void register_ros_interface() override;
 
-
-    /**
+  /**
      * @brief Configures the driver
      *
      * Read parameters
@@ -68,10 +67,10 @@ namespace ros2_canopen
      * @param state
      * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
      */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_configure(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_configure(
+    const rclcpp_lifecycle::State & state);
 
-    /**
+  /**
      * @brief Activates the driver
      *
      * Add driver to masters event loop
@@ -79,10 +78,10 @@ namespace ros2_canopen
      * @param state
      * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
      */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_activate(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_activate(
+    const rclcpp_lifecycle::State & state);
 
-    /**
+  /**
      * @brief Deactivates the driver
      *
      * Remove driver from masters event loop
@@ -90,10 +89,10 @@ namespace ros2_canopen
      * @param state
      * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
      */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_deactivate(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_deactivate(
+    const rclcpp_lifecycle::State & state);
 
-    /**
+  /**
      * @brief Cleanup the driver
      *
      * Delete objects
@@ -101,17 +100,17 @@ namespace ros2_canopen
      * @param state
      * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
      */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_cleanup(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_cleanup(
+    const rclcpp_lifecycle::State & state);
 
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-    on_shutdown(const rclcpp_lifecycle::State &state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_shutdown(
+    const rclcpp_lifecycle::State & state);
 
-  public:
-    explicit LifecycleProxyDriver(const rclcpp::NodeOptions &options)
-        : LifecycleBaseDriver(options) {}
-        
-  };
-} // namespace ros2_canopen
+public:
+  explicit LifecycleProxyDriver(const rclcpp::NodeOptions & options) : LifecycleBaseDriver(options)
+  {
+  }
+};
+}  // namespace ros2_canopen
 
-#endif // CANOPEN_PROXY_DRIVER__CANOPEN_PROXY_DRIVER_HPP_
+#endif  // CANOPEN_PROXY_DRIVER__CANOPEN_PROXY_DRIVER_HPP_

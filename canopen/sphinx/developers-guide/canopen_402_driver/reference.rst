@@ -1,5 +1,5 @@
 CIA402 Driver API Reference
 ===========================
 
-.. autodoxygenindex:: 
+.. autodoxygenindex::
     :project: canopen_402_driver
