@@ -82,11 +82,11 @@ namespace ros2_canopen
                 RCLCPP_DEBUG(node_->get_logger(), "init_start");
                 if (configured_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterAlreadyConfigured, "Init");
+                    throw MasterException("Init: Master is already configured.");
                 }
                 if (activated_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterAlreadyActivated, "Init");
+                    throw MasterException("Init: Master is already activated.");
                 }
                 client_cbg_ = node_->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
                 timer_cbg_ = node_->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
@@ -117,15 +117,15 @@ namespace ros2_canopen
             {
                 if (!initialised_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotInitialised, "Configure");
+                    throw MasterException("Configure: Master is not intialised.");
                 }
                 if (configured_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterAlreadyConfigured, "Configure");
+                    throw MasterException("Configure: Master is already configured.");
                 }
                 if (activated_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterAlreadyActivated, "Configure");
+                    throw MasterException("Configure: Master is already activated.");
                 }
 
                 int non_transmit_timeout;
@@ -162,15 +162,15 @@ namespace ros2_canopen
                 RCLCPP_DEBUG(this->node_->get_logger(), "NodeCanopenMaster activate start");
                 if (!initialised_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotInitialised, "Activate");
+                    throw MasterException("Activate: master is not initialised");
                 }
                 if (!configured_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotConfigured, "Activate");
+                    throw MasterException("Activate: master is not configured");
                 }
                 if (activated_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterAlreadyActivated, "Activate");
+                    throw MasterException("Activate: master is already activated");
                 }
 
                 io_guard_ = std::make_unique<lely::io::IoGuard>();
@@ -203,7 +203,7 @@ namespace ros2_canopen
                 this->activate(true);
                 if (!master_)
                 {
-                    throw MasterException(MasterErrorCode::MasterNotMasterSet, "activate");
+                    throw MasterException("Activate: master not set");
                 }
                 this->master_set_.store(true);
                 this->master_->Reset();
@@ -240,15 +240,15 @@ namespace ros2_canopen
             {
                 if (!initialised_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotInitialised, "Deactivate");
+                    throw MasterException("Deactivate: master is not intialised");
                 }
                 if (!configured_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotConfigured, "Deactivate");
+                    throw MasterException("Deactivate: master is not configured");
                 }
                 if (!activated_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotActivated, "Deactivate");
+                    throw MasterException("Deactivate: master is not activated");
                 }
 
                 exec_->post(
@@ -286,15 +286,15 @@ namespace ros2_canopen
             {
                 if (!initialised_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotInitialised, "Cleanup");
+                    throw MasterException("Cleanup: master is not intialised.");
                 }
                 if (!configured_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotConfigured, "Cleanup");
+                    throw MasterException("Cleanup: master is not configured");
                 }
                 if (activated_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterAlreadyActivated, "Cleanup");
+                    throw MasterException("Cleanup: master is still active");
                 }
                 this->cleanup(true);
                 this->configured_.store(false);
@@ -341,7 +341,7 @@ namespace ros2_canopen
             {
                 if (!master_set_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotMasterSet, "get_master");
+                    throw MasterException("Get Master: Master is not set.");
                 }
                 return master_;
             }
@@ -354,7 +354,7 @@ namespace ros2_canopen
             {
                 if (!master_set_.load())
                 {
-                    throw MasterException(MasterErrorCode::MasterNotMasterSet, "get_executor");
+                    throw MasterException("Get Executor: master is not set");
                 }
                 return exec_;
             }
