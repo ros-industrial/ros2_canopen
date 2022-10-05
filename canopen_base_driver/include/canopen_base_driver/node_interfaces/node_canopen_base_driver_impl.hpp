@@ -65,7 +65,7 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
 	if (future_status != std::future_status::ready)
 	{
 		RCLCPP_ERROR(this->node_->get_logger(), "Adding timed out.");
-		throw DriverException(DriverErrorCode::DriverFailedAddingToMaster, "add_to_master");
+		throw DriverException("add_to_master: adding timed out");
 	}
 	this->lely_driver_ = f.get();
 	this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(this->lely_driver_);
@@ -98,7 +98,7 @@ void NodeCanopenBaseDriver<NODETYPE>::remove_from_master()
 	auto future_status = f.wait_for(this->non_transmit_timeout_);
 	if (future_status != std::future_status::ready)
 	{
-		throw DriverException(DriverErrorCode::DriverFailedRemovnigFromMaster, "remove_from_master");
+		throw DriverException("remove_from_master: removing timed out");
 	}
 }
 template <class NODETYPE>
