@@ -191,7 +191,10 @@ void NodeCanopen402Driver<NODETYPE>::add_to_master()
 		catch (const std::exception &e)
 		{
 			RCLCPP_ERROR(this->node_->get_logger(), e.what());
-			throw DriverException("add_to_master: %s", e.what());
+			std::string msg;
+			msg.append("add_to_master: ");
+			msg.append(e.what());
+			throw DriverException(msg);
 		}
 	}
 	RCLCPP_INFO(this->node_->get_logger(), "Driver booted and ready.");
