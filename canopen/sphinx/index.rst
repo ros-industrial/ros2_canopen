@@ -37,10 +37,7 @@ This is the documentation of the ROS2 CANopen stack.
   developers-guide/architecture
   developers-guide/new-driver
   developers-guide/new-master
-  developers-guide/canopen_core/*
-  developers-guide/canopen_base_driver/*
-  developers-guide/canopen_proxy_driver/*
-  developers-guide/canopen_402_driver/*
+  API Reference <https://ros-industrial.github.io/ros2_canopen/api/>
 
 .. toctree:: 
   :maxdepth: 1

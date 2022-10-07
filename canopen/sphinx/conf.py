@@ -37,7 +37,7 @@ extensions = [
  'breathe'
 ]
 
-breathe_default_project = "canopen_core"
+breathe_default_project = "ros2_canopen"
 
 def get_package(package: str):
     path = Path(__file__).parent.parent.parent.joinpath("{}/include/{}".format(package, package))
@@ -48,11 +48,8 @@ def get_package(package: str):
     return (path, files)
 
 
-breathe_projects_source = {
-    "canopen_core": get_package("canopen_core"),
-    "canopen_base_driver": get_package("canopen_base_driver"),
-    "canopen_proxy_driver": get_package("canopen_proxy_driver"),
-    "canopen_402_driver": get_package("canopen_402_driver"),
+breathe_projects = {
+    "ros2_canopen": "../doxygen/_build/xml/",
 }
 
 
