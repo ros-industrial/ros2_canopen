@@ -192,8 +192,8 @@ namespace ros2_canopen
     bool
     LifecycleManager::bring_down_master()
     {
-        this->change_state(master_id_, lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE, 3s);
-        this->change_state(master_id_, lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE, 3s);
+        this->change_state(master_id_, lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE, 3s);
+        this->change_state(master_id_, lifecycle_msgs::msg::Transition::TRANSITION_CLEANUP, 3s);
 
         auto state = this->get_state(master_id_, 3s);
 
@@ -280,6 +280,7 @@ namespace ros2_canopen
     bool
     LifecycleManager::bring_down_all()
     {
+        RCLCPP_INFO(this->get_logger(), "Bring Down all");
         for (auto it = this->device_names_to_ids.begin(); it != this->device_names_to_ids.end(); ++it)
         {
             if (it->first.compare("master") != 0)

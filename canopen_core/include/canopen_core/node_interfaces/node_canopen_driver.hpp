@@ -229,9 +229,9 @@ namespace ros2_canopen
                 {
                     throw DriverException("Deactivate: driver is not activated");
                 }
+                this->activated_.store(false);
                 this->remove_from_master();
                 this->deactivate(true);
-                this->activated_.store(false);
                 RCLCPP_DEBUG(node_->get_logger(), "deactivate_end");
             }
 
