@@ -33,6 +33,7 @@ extensions = [
  'sphinx.ext.imgmath',
  'sphinx.ext.todo',
  'sphinx.ext.graphviz',
+ 'sphinxcontrib.plantuml',
  'breathe'
 ]
 

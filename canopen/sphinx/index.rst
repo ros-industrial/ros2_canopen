@@ -18,9 +18,10 @@ This is the documentation of the ROS2 CANopen stack.
   :glob:
 
   user-guide/configuration/configuration
-  user-guide/service-based/overview
-  user-guide/lifecycle-service-based/overview
-  user-guide/ros2-control/overview
+  user-guide/operation/operation
+  user-guide/operation/service-interface
+  user-guide/operation/managed-service-interface
+  user-guide/operation/ros2-control-interface
   user-guide/master 
   user-guide/proxy-driver
   user-guide/motion-controller-driver
@@ -33,6 +34,7 @@ This is the documentation of the ROS2 CANopen stack.
 
   developers-guide/design-objectives
   developers-guide/overview
+  developers-guide/architecture
   developers-guide/new-driver
   developers-guide/new-master
   developers-guide/canopen_core/*
