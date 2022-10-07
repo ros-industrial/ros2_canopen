@@ -116,12 +116,18 @@ void NodeCanopenBaseDriver<NODETYPE>::nmt_listener()
 			if (!this->activated_.load())
 				return;
 		}
-		auto state = f.get();
-		if (nmt_state_cb_)
-		{
-			nmt_state_cb_(state, this->lely_driver_->get_id());
+		try{
+			auto state = f.get();
+			if (nmt_state_cb_)
+			{
+				nmt_state_cb_(state, this->lely_driver_->get_id());
+			}
+			on_nmt(state);
 		}
-		on_nmt(state);
+		catch (const std::future_error &e)
+		{
+			break;
+		}
 	}
 }
 template <class NODETYPE>
@@ -150,12 +156,21 @@ void NodeCanopenBaseDriver<NODETYPE>::rdpo_listener()
 			if (!this->activated_.load())
 				return;
 		}
-		auto rpdo = f.get();
-		if (rpdo_cb_)
+		try
 		{
-			rpdo_cb_(rpdo, this->lely_driver_->get_id());
+			auto rpdo = f.get();
+			if (rpdo_cb_)
+			{
+				rpdo_cb_(rpdo, this->lely_driver_->get_id());
+			}
+			on_rpdo(f.get());
 		}
-		on_rpdo(f.get());
+		catch(const std::future_error& e)
+		{
+			break;
+		}
+		
+
 	}
 }
 
