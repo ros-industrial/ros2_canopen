@@ -31,9 +31,11 @@ install(DIRECTORY
 
 
 if(BUILD_TESTING)
-  find_package(launch_testing_ament_cmake REQUIRED)
-  add_launch_test(launch_tests/test_proxy_driver.py)
-  add_launch_test(launch_tests/test_proxy_lifecycle_driver.py)
+  if(CANOPEN_ENABLED)
+    find_package(launch_testing_ament_cmake REQUIRED)
+    add_launch_test(launch_tests/test_proxy_driver.py)
+    add_launch_test(launch_tests/test_proxy_lifecycle_driver.py)
+  endif()
 endif()
 
 ament_package()
