@@ -144,9 +144,25 @@ namespace ros2_canopen
         {
             for (auto it = registered_drivers_.begin(); it != registered_drivers_.end(); ++it)
             {
-                it->second->shutdown();
+                try
+                {
+                    it->second->shutdown();
+                }
+                catch(const std::exception& e)
+                {
+                    std::cerr << e.what() << '\n';
+                }
             }
-            can_master_->shutdown();
+            try
+            {
+                can_master_->shutdown();
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+            
+            
         }
         /**
          * @brief Callback for the listing service

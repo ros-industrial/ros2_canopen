@@ -184,22 +184,6 @@ namespace ros2_canopen
                 chan_ = std::make_unique<lely::io::CanChannel>(*poll_, *exec_);
                 chan_->open(*ctrl_);
 
-                sigset_ = std::make_unique<lely::io::SignalSet>(*poll_, *exec_);
-                // Watch for Ctrl+C or process termination.
-                sigset_->insert(SIGHUP);
-                sigset_->insert(SIGINT);
-                sigset_->insert(SIGTERM);
-
-                sigset_->submit_wait(
-                    [&](int /*signo*/)
-                    {
-                        // If the signal is raised again, terminate immediately.
-                        sigset_->clear();
-
-                        // Perform a clean shutdown.
-                        ctx_->shutdown();
-                    });
-
                 this->activate(true);
                 if (!master_)
                 {
@@ -210,7 +194,14 @@ namespace ros2_canopen
                 this->spinner_ = std::thread(
                     [this]()
                     {
-                        loop_->run();
+                        try
+                        {
+                            loop_->run();
+                        }
+                        catch(const std::exception& e)
+                        {
+                            RCLCPP_INFO(this->node_->get_logger(), e.what());
+                        }
                         RCLCPP_INFO(this->node_->get_logger(), "Canopen master loop stopped");
                     });
                 this->activated_.store(true);
@@ -250,13 +241,12 @@ namespace ros2_canopen
                 {
                     throw MasterException("Deactivate: master is not activated");
                 }
-
                 exec_->post(
-                    [&]()
+                    [this]()
                     {
+                        RCLCPP_INFO(node_->get_logger(), "Lely Core Context Shutdown");
                         ctx_->shutdown();
                     });
-
                 this->spinner_.join();
 
                 this->deactivate(true);
