@@ -59,10 +59,10 @@ namespace ros2_canopen
         {
 
             executor_ = executor;
-            this->declare_parameter("can_interface", "");
-            this->declare_parameter("master_config", "");
-            this->declare_parameter("bus_config", "");
-            this->declare_parameter("master_bin", "");
+            this->declare_parameter<std::string>("can_interface_name", "");
+            this->declare_parameter<std::string>("master_config", "");
+            this->declare_parameter<std::string>("bus_config", "");
+            this->declare_parameter<std::string>("master_bin", "");
             client_cbg_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
             init_driver_service_ = this->create_service<canopen_interfaces::srv::CONode>(
                 "~/init_driver",
@@ -91,7 +91,7 @@ namespace ros2_canopen
          */
         void init();
 
-        void init(const std::string &can_interface,
+        void init(const std::string &can_interface_name,
                   const std::string &master_config,
                   const std::string &bus_config,
                   const std::string &master_bin = "");
@@ -236,7 +236,7 @@ namespace ros2_canopen
         std::string dcf_txt_;                                        ///< Cached value of .dcf file parameter
         std::string bus_config_;                                     ///< Cached value of bus.yml file parameter
         std::string dcf_bin_;                                        ///< Cached value of .bin file parameter
-        std::string can_interface_;                                  ///< Cached value of can interface name
+        std::string can_interface_name_;                                  ///< Cached value of can interface name
         bool lifecycle_operation_;
 
         // ROS Objects
