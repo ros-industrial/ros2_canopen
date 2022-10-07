@@ -705,7 +705,10 @@ TEST_F(DeviceContainerTest, test_init_with_fparam)
 //     device_container->set_parameter(Parameter("bus_config", "bus.yml"));
 //     device_container->set_parameter(Parameter("master_config", "master.dcf"));
 //     device_container->set_parameter(Parameter("can_interface_name", "vcan0"));
-//     device_container->set_parameter(Parameter("can_interface", "vcan0"));
+
+//     exec->spin_some(100ms);
+
+//     device_container->configure();
 //     device_container->load_master();
 
 //     std::thread spinner(
