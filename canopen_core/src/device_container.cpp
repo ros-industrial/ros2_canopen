@@ -155,9 +155,9 @@ void DeviceContainer::configure()
         RCLCPP_ERROR(this->get_logger(), "Parameter bus_config could not be read.");
     }
 
-    if(can_interface_.length() == 0)
+    if(can_interface_name_.length() == 0)
     {
-        RCLCPP_ERROR(this->get_logger(), "Parameter can_interface was not set.");
+        RCLCPP_ERROR(this->get_logger(), "Parameter can_interface_name was not set.");
         throw DeviceContainerException("Fatal: Getting Parameter failed.");
     }
 
@@ -176,7 +176,7 @@ void DeviceContainer::configure()
     RCLCPP_INFO(this->get_logger(), "Starting Device Container with:");
     RCLCPP_INFO(this->get_logger(), "\t master_config %s", dcf_txt_.c_str());
     RCLCPP_INFO(this->get_logger(), "\t bus_config %s", bus_config_.c_str());
-    RCLCPP_INFO(this->get_logger(), "\t can_interface %s", can_interface_.c_str());
+    RCLCPP_INFO(this->get_logger(), "\t can_interface_name %s", can_interface_name_.c_str());
 
     try
     {
