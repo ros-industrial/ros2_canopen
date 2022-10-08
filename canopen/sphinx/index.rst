@@ -24,7 +24,7 @@ This is the documentation of the ROS2 CANopen stack.
   user-guide/operation/ros2-control-interface
   user-guide/master 
   user-guide/proxy-driver
-  user-guide/motion-controller-driver
+  user-guide/cia402-driver
 
 
 .. toctree:: 
