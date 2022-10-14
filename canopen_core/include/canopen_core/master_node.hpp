@@ -36,7 +36,7 @@ namespace ros2_canopen
          * @brief Get the master object
          * 
          * This function should return the lely master object. It should
-         * throw a #ros2_canopen::MasterException if the master object
+         * throw a ros2_canopen::MasterException if the master object
          * was not yet set.
          * 
          * @return std::shared_ptr<lely::canopen::AsyncMaster> 
@@ -46,7 +46,7 @@ namespace ros2_canopen
          * @brief Get the executor object
          * 
          * This function gets the lely executor object. It should throw
-         * a #ros2_canopen::MasterException if the executor object is not
+         * a ros2_canopen::MasterException if the executor object is not
          * yet instantiated.
          * 
          * @return std::shared_ptr<lely::ev::Executor> 
@@ -96,7 +96,7 @@ namespace ros2_canopen
          * 
          * This function intialises the driver. It is called by the 
          * device container after adding the node to the ros executor.
-         * This function uses the #NodeCanopenMasterInterface. It will 
+         * This function uses the NodeCanopenMasterInterface. It will 
          * call init(), configure() and activate(). If this function
          * does not throw, the dirver is successfully initialised and
          * ready to be used.
@@ -110,7 +110,7 @@ namespace ros2_canopen
          * This function is called by the device container before exiting,
          * it should enable a clean exit of the master and especially join
          * all threads. It will call the shutdown() function of the
-         * #NodeCanopenMasterInterface object associated with this class.
+         * NodeCanopenMasterInterface object associated with this class.
          */
         virtual void shutdown() override;
 
@@ -118,7 +118,7 @@ namespace ros2_canopen
          * @brief Get the master object
          * 
          * This function should return the lely master object. It should
-         * throw a #ros2_canopen::MasterException if the master object
+         * throw a ros2_canopen::MasterException if the master object
          * was not yet set.
          * 
          * @return std::shared_ptr<lely::canopen::AsyncMaster> 
@@ -128,7 +128,7 @@ namespace ros2_canopen
          * @brief Get the executor object
          * 
          * This function gets the lely executor object. It should throw
-         * a #ros2_canopen::MasterException if the executor object is not
+         * a ros2_canopen::MasterException if the executor object is not
          * yet instantiated.
          * 
          * @return std::shared_ptr<lely::ev::Executor> 
@@ -175,7 +175,7 @@ namespace ros2_canopen
          * 
          * This function intialises the driver. It is called by the 
          * device container after adding the node to the ros executor.
-         * This function uses the #NodeCanopenMasterInterface. It will 
+         * This function uses the NodeCanopenMasterInterface. It will 
          * call init(). If this function
          * does not throw, the dirver is successfully initialised and
          * ready to switch through the lifecycle.
@@ -189,14 +189,14 @@ namespace ros2_canopen
          * This function is called by the device container before exiting,
          * it should enable a clean exit of the master and especially join
          * all threads. It will call the shutdown() function of the
-         * #NodeCanopenMasterInterface object associated with this class.
+         * NodeCanopenMasterInterface object associated with this class.
          */
         virtual void shutdown() override;
         /**
          * @brief Get the master object
          * 
          * This function should return the lely master object. It should
-         * throw a #ros2_canopen::MasterException if the master object
+         * throw a ros2_canopen::MasterException if the master object
          * was not yet set.
          * 
          * @return std::shared_ptr<lely::canopen::AsyncMaster> 
@@ -206,7 +206,7 @@ namespace ros2_canopen
          * @brief Get the executor object
          * 
          * This function gets the lely executor object. It should throw
-         * a #ros2_canopen::MasterException if the executor object is not
+         * a ros2_canopen::MasterException if the executor object is not
          * yet instantiated.
          * 
          * @return std::shared_ptr<lely::ev::Executor> 
@@ -216,7 +216,7 @@ namespace ros2_canopen
          * @brief Configure Transition Callback
          * 
          * This function will call the configure() function of the 
-         * #NodeCanopenMasterInterface object associated with this class.
+         * NodeCanopenMasterInterface object associated with this class.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 
@@ -227,7 +227,7 @@ namespace ros2_canopen
          * @brief Activate Transition Callback
          * 
          * This function will call the active() function of the 
-         * #NodeCanopenMasterInterface object associated with this class.
+         * NodeCanopenMasterInterface object associated with this class.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 
@@ -238,7 +238,7 @@ namespace ros2_canopen
          * @brief Deactivet Transition Callback
          * 
          * This function will call the deactive() function of the 
-         * #NodeCanopenMasterInterface object associated with this class.
+         * NodeCanopenMasterInterface object associated with this class.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 
@@ -249,7 +249,7 @@ namespace ros2_canopen
          * @brief Cleanup Transition Callback
          * 
          * This function will call the cleanup() function of the 
-         * #NodeCanopenMasterInterface object associated with this class.
+         * NodeCanopenMasterInterface object associated with this class.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 
@@ -260,7 +260,7 @@ namespace ros2_canopen
          * @brief Shutdown Transition Callback
          * 
          * This function will call the shutdown() function of the 
-         * #NodeCanopenMasterInterface object associated with this class.
+         * NodeCanopenMasterInterface object associated with this class.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 

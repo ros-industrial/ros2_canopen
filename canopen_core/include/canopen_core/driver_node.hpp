@@ -10,7 +10,7 @@ namespace ros2_canopen
      * @brief Canopen Driver Interface
      * 
      * This provides an interface that all driver nodes that are loaded
-     * by #ros2_canopen::DeviceContainer need to implement.
+     * by ros2_canopen::DeviceContainer need to implement.
      * 
      */
     class CanopenDriverInterface
@@ -83,7 +83,7 @@ namespace ros2_canopen
      * @brief Canopen Driver
      * 
      * This provides a class, that driver nodes that are based on rclcpp::Node
-     * should be derived of. This class implements the #ros2_canopen::CanopenDriverInterface.
+     * should be derived of. This class implements the ros2_canopen::CanopenDriverInterface.
      * 
      */
     class CanopenDriver : public CanopenDriverInterface, public rclcpp::Node
@@ -101,7 +101,7 @@ namespace ros2_canopen
          * @brief Initialise the driver
          * 
          * This function will activate the driver using the instantiated
-         * #node_canopen_driver_. It will call the init, configure, demand_set_master and activate
+         * node_canopen_driver_. It will call the init, configure, demand_set_master and activate
          * of the NodeCanopenDriverInterface. If the function finishes without exception,
          * the driver is activated and ready for use.
          * 
@@ -139,7 +139,7 @@ namespace ros2_canopen
          * @brief Shutdown the driver
          * 
          * This function will shutdown the driver by calling the
-         * shutdown() function of #node_canopen_driver_.
+         * shutdown() function of node_canopen_driver_.
          * 
          */
         virtual void shutdown() override;
@@ -168,10 +168,10 @@ namespace ros2_canopen
     };
 
     /**
-     * @brief Canopen Driver
+     * @brief Lifecycle Canopen Driver
      * 
      * This provides a class, that driver nodes that are based on rclcpp_lifecycle::LifecycleNode
-     * should be derived of. This class implements the #ros2_canopen::CanopenDriverInterface.
+     * should be derived of. This class implements the ros2_canopen::CanopenDriverInterface.
      * 
      */
     class LifecycleCanopenDriver : public CanopenDriverInterface, public rclcpp_lifecycle::LifecycleNode
@@ -190,7 +190,7 @@ namespace ros2_canopen
          * @brief Initialise the driver
          * 
          * This function will activate the driver using the instantiated
-         * #node_canopen_driver_. It will call init()
+         * node_canopen_driver_. It will call init()
          * of the NodeCanopenDriverInterface. If the function finishes without exception,
          * the driver can be configured.
          * 
@@ -215,7 +215,7 @@ namespace ros2_canopen
          * @brief Configure Callback
          * 
          * This function will call configure() and demand_set_master() of the
-         * #node_canopen_driver_.
+         * node_canopen_driver_.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 
@@ -226,7 +226,7 @@ namespace ros2_canopen
          * @brief Activate Callback
          * 
          * This function will call activate() of the
-         * #node_canopen_driver_.
+         * node_canopen_driver_.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 
@@ -238,7 +238,7 @@ namespace ros2_canopen
          * @brief Deactivate Callback
          * 
          * This function will call deactivate() of the
-         * #node_canopen_driver_.
+         * node_canopen_driver_.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 
@@ -251,7 +251,7 @@ namespace ros2_canopen
          * @brief Deactivate Callback
          * 
          * This function will call cleanup() of the
-         * #node_canopen_driver_.
+         * node_canopen_driver_.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 
@@ -263,7 +263,7 @@ namespace ros2_canopen
          * @brief Deactivate Callback
          * 
          * This function will call shutdown() of the
-         * #node_canopen_driver_.
+         * node_canopen_driver_.
          * 
          * @param state 
          * @return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn 
@@ -288,7 +288,7 @@ namespace ros2_canopen
          * @brief Shutdown the driver
          * 
          * This function will shutdown the driver by calling the
-         * shutdown() function of #node_canopen_driver_.
+         * shutdown() function of node_canopen_driver_.
          * 
          */
         virtual void shutdown() override;
