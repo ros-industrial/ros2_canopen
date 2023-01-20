@@ -1,7 +1,7 @@
 #include "canopen_402_driver/command.hpp"
 using namespace ros2_canopen;
 
-// const Command402::TransitionTable Command402::transitions_;
+const Command402::TransitionTable Command402::transitions_;
 
 Command402::TransitionTable::TransitionTable()
 {
