@@ -116,17 +116,9 @@ void LelyDriverBridge::OnRpdoWrite(uint16_t idx, uint8_t subidx) noexcept
 {
   uint32_t data = (uint32_t)rpdo_mapped[idx][subidx];
   COData codata = {idx, subidx, data, CODataTypes::CODataUnkown};
-
-  // We do not care so much about missing a message, rather push them through.
-  std::unique_lock<std::mutex> lk(pdo_mtex, std::defer_lock);
-  if (lk.try_lock())
-  {
-    if (!rpdo_is_set.load())
-    {
-      rpdo_is_set.store(true);
-      rpdo_promise.set_value(codata);
-    }
-  }
+  
+  //  We do not care so much about missing a message, rather push them through.
+  rpdo_queue_data.push(codata);
 }
 
 void LelyDriverBridge::OnEmcy(uint16_t eec, uint8_t er, uint8_t msef[5]) noexcept
@@ -136,15 +128,7 @@ void LelyDriverBridge::OnEmcy(uint16_t eec, uint8_t er, uint8_t msef[5]) noexcep
   COEmcy emcy = {eec, er};
   for (int i = 0; i < 5; i++) emcy.msef[i] = msef[i];
 
-  std::unique_lock<std::mutex> lk(emcy_mtex, std::defer_lock);
-  if (lk.try_lock())
-  {
-    if (!emcy_is_set.load())
-    {
-      emcy_is_set.store(true);
-      emcy_promise.set_value(emcy);
-    }
-  }
+  emcy_queue_data.push(emcy);
 }
 
 std::future<bool> LelyDriverBridge::async_sdo_write(COData data)
@@ -334,20 +318,17 @@ std::future<canopen::NmtState> LelyDriverBridge::async_request_nmt()
   return nmt_state_promise.get_future();
 }
 
-std::future<COData> LelyDriverBridge::async_request_rpdo()
+COData LelyDriverBridge::async_request_rpdo()
 {
-  std::scoped_lock<std::mutex> lk(pdo_mtex);
-  rpdo_is_set.store(false);
-  rpdo_promise = std::promise<COData>();
-  return rpdo_promise.get_future();
+  auto data = rpdo_queue_data.wait_and_pop();
+  // rpdo_promise.set_value(*data);
+  return (*data);  // rpdo_promise.get_future();
 }
 
-std::future<COEmcy> LelyDriverBridge::async_request_emcy()
+COEmcy LelyDriverBridge::async_request_emcy()
 {
-  std::scoped_lock<std::mutex> lk(emcy_mtex);
-  emcy_is_set.store(false);
-  emcy_promise = std::promise<COEmcy>();
-  return emcy_promise.get_future();
+  auto data = emcy_queue_data.wait_and_pop();
+  return (*data);
 }
 
 void LelyDriverBridge::tpdo_transmit(COData data)

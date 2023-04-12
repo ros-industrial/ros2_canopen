@@ -138,11 +138,13 @@ protected:
   std::promise<COData> rpdo_promise;
   std::atomic<bool> rpdo_is_set;
   std::mutex pdo_mtex;
+  SafeQueue<COData> rpdo_queue_data;
 
   // EMCY synchronisation items
   std::promise<COEmcy> emcy_promise;
   std::atomic<bool> emcy_is_set;
   std::mutex emcy_mtex;
+  SafeQueue<COEmcy> emcy_queue_data;
 
   // BOOT synchronisation items
   std::atomic<bool> booted;
@@ -267,7 +269,7 @@ public:
    * @return std::future<COData>
    * The returned future is set when an RPDO event is detected.
    */
-  std::future<COData> async_request_rpdo();
+  COData async_request_rpdo();
 
   /**
    * @brief Asynchronous request for EMCY
@@ -275,7 +277,7 @@ public:
    * @return std::future<COEmcy>
    * The returned future is set when an EMCY event is detected.
    */
-  std::future<COEmcy> async_request_emcy();
+  COEmcy async_request_emcy();
 
   /**
    * @brief Executes a TPDO transmission

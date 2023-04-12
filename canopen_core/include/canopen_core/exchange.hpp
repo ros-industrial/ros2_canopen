@@ -15,6 +15,10 @@
 #ifndef EXCHANGE_HPP
 #define EXCHANGE_HPP
 
+#include <boost/lockfree/queue.hpp>
+#include <boost/optional.hpp>
+#include <boost/thread.hpp>
+
 namespace ros2_canopen
 {
 enum CODataTypes
@@ -40,6 +44,62 @@ public:
   uint16_t eec;
   uint8_t er;
   uint8_t msef[5];
+};
+
+/**
+ * @brief Thread Safe Queue 
+*/
+template <typename T>
+class SafeQueue
+{
+private:
+  std::size_t capacity_;
+  boost::lockfree::queue<T> *queue_;
+
+  void create_queue(std::size_t capacity)
+  {
+    queue_ = new boost::lockfree::queue<T>(capacity);
+  }
+
+public:
+  explicit SafeQueue(std::size_t capacity = 10) : capacity_(capacity), queue_(nullptr) {}
+  ~SafeQueue() { delete queue_; }
+
+  void push(T value) {
+    if (queue_ == nullptr) create_queue(capacity_); 
+    queue_->push(std::move(value)); 
+  }
+
+  boost::optional<T> try_pop()
+  {
+    if (queue_ == nullptr) return boost::none;
+    T value;
+    if (queue_->pop(value)) return std::optional<T>(std::move(value));
+    return boost::none;
+  }
+
+  bool try_pop(T & value)
+  {
+    if (queue_ == nullptr) return false;
+    if (queue_->pop(value)) return true;
+    return false;
+  }
+
+  boost::optional<T> wait_and_pop()
+  {
+    if (queue_ == nullptr) create_queue(capacity_);
+    T value;
+    while (!queue_->pop(value)) boost::this_thread::yield();
+    return value;
+  }
+
+  void wait_and_pop(T & value)
+  {
+    if (queue_ == nullptr) create_queue(capacity_);
+    while (!queue_->pop(value)) boost::this_thread::yield();
+  }
+
+  bool empty() const { return queue_->empty(); }
 };
 }  // namespace ros2_canopen
 
