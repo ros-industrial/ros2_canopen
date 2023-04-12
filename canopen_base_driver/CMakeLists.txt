@@ -16,6 +16,7 @@ find_package(rclcpp_components REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(Boost REQUIRED system thread)
 
 set(dependencies
   canopen_core
@@ -26,6 +27,7 @@ set(dependencies
   rclcpp_lifecycle
   std_msgs
   std_srvs
+  Boost
 )
 
 

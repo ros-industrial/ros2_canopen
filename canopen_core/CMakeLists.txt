@@ -26,6 +26,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
+find_package(Boost REQUIRED system thread)
 
 set (dependencies
   canopen_interfaces
@@ -35,6 +36,7 @@ set (dependencies
   rclcpp_components
   rclcpp_lifecycle
   yaml_cpp_vendor
+  Boost
 )
 
 
@@ -56,6 +58,7 @@ ament_target_dependencies(node_canopen_driver
   lely_core_libraries
   yaml_cpp_vendor
   canopen_interfaces
+  Boost
 )
 
 add_library(node_canopen_master
@@ -76,6 +79,7 @@ ament_target_dependencies(node_canopen_master
   lely_core_libraries
   yaml_cpp_vendor
   canopen_interfaces
+  Boost
 )
 
 

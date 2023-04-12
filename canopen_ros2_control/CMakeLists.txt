@@ -15,6 +15,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclcpp
   rclcpp_components
   rclcpp_lifecycle
+  Boost
 )
 
 find_package(ros2_control_test_assets)
@@ -24,6 +25,8 @@ find_package(ament_cmake REQUIRED)
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
+
+find_package(Boost REQUIRED system thread)
 
 add_library(
   canopen_ros2_control

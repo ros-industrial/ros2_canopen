@@ -211,6 +211,7 @@ The CMakeLists.txt file should look like this:
    find_package(lely_core_libraries REQUIRED)
    find_package(std_msgs REQUIRED)
    find_package(std_srvs REQUIRED)
+   find_package(Boost REQUIRED system thread)
 
    set(dependencies
    rclcpp
@@ -224,6 +225,7 @@ The CMakeLists.txt file should look like this:
    lely_core_libraries
    std_msgs
    std_srvs
+   Boost
    )
 
    # Functionality library

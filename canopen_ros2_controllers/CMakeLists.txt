@@ -16,12 +16,15 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   ros2_control_test_assets
   std_msgs
   std_srvs
+  Boost
 )
 
 find_package(ament_cmake REQUIRED)
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
+
+find_package(Boost REQUIRED system thread)
 
 add_library(
   ${PROJECT_NAME}
