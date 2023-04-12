@@ -116,7 +116,7 @@ void LelyDriverBridge::OnRpdoWrite(uint16_t idx, uint8_t subidx) noexcept
 {
   uint32_t data = (uint32_t)rpdo_mapped[idx][subidx];
   COData codata = {idx, subidx, data, CODataTypes::CODataUnkown};
-  
+
   //  We do not care so much about missing a message, rather push them through.
   rpdo_queue_data.push(codata);
 }

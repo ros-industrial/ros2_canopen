@@ -47,27 +47,25 @@ public:
 };
 
 /**
- * @brief Thread Safe Queue 
-*/
+ * @brief Thread Safe Queue
+ */
 template <typename T>
 class SafeQueue
 {
 private:
   std::size_t capacity_;
-  boost::lockfree::queue<T> *queue_;
+  boost::lockfree::queue<T> * queue_;
 
-  void create_queue(std::size_t capacity)
-  {
-    queue_ = new boost::lockfree::queue<T>(capacity);
-  }
+  void create_queue(std::size_t capacity) { queue_ = new boost::lockfree::queue<T>(capacity); }
 
 public:
   explicit SafeQueue(std::size_t capacity = 10) : capacity_(capacity), queue_(nullptr) {}
   ~SafeQueue() { delete queue_; }
 
-  void push(T value) {
-    if (queue_ == nullptr) create_queue(capacity_); 
-    queue_->push(std::move(value)); 
+  void push(T value)
+  {
+    if (queue_ == nullptr) create_queue(capacity_);
+    queue_->push(std::move(value));
   }
 
   boost::optional<T> try_pop()
