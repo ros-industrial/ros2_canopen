@@ -54,23 +54,20 @@ class SafeQueue
 {
 private:
   std::size_t capacity_;
-  boost::lockfree::queue<T> * queue_;
+  std::unique_ptr<boost::lockfree::queue<T>> queue_;
 
-  void create_queue(std::size_t capacity) { queue_ = new boost::lockfree::queue<T>(capacity); }
+  void create_queue() { queue_ = std::make_shared<boost::lockfree::queue<T>>(capacity_); }
 
 public:
-  explicit SafeQueue(std::size_t capacity = 10) : capacity_(capacity), queue_(nullptr) {}
-  ~SafeQueue() { delete queue_; }
+  explicit SafeQueue(std::size_t capacity = 10) : capacity_(capacity), queue_(new boost::lockfree::queue<T>(capacity_)) {}
 
   void push(T value)
   {
-    if (queue_ == nullptr) create_queue(capacity_);
     queue_->push(std::move(value));
   }
 
   boost::optional<T> try_pop()
   {
-    if (queue_ == nullptr) return boost::none;
     T value;
     if (queue_->pop(value)) return std::optional<T>(std::move(value));
     return boost::none;
@@ -78,14 +75,12 @@ public:
 
   bool try_pop(T & value)
   {
-    if (queue_ == nullptr) return false;
     if (queue_->pop(value)) return true;
     return false;
   }
 
   boost::optional<T> wait_and_pop()
   {
-    if (queue_ == nullptr) create_queue(capacity_);
     T value;
     while (!queue_->pop(value)) boost::this_thread::yield();
     return value;
@@ -93,8 +88,28 @@ public:
 
   void wait_and_pop(T & value)
   {
-    if (queue_ == nullptr) create_queue(capacity_);
     while (!queue_->pop(value)) boost::this_thread::yield();
+  }
+
+  boost::optional<T> wait_and_pop_for(const std::chrono::milliseconds & timeout)
+  {
+    T value;
+    auto start_time = std::chrono::steady_clock::now();
+    while (!queue_->pop(value)) {
+      if(timeout != std::chrono::milliseconds::zero() && std::chrono::steady_clock::now() - start_time >= timeout) return boost::none;
+      boost::this_thread::yield();
+    }
+    return value;
+  }
+
+  bool wait_and_pop_for(const std::chrono::milliseconds & timeout, T & value)
+  {
+    auto start_time = std::chrono::steady_clock::now();
+    while (!queue_->pop(value)) {
+      if(timeout != std::chrono::milliseconds::zero() && std::chrono::steady_clock::now() - start_time >= timeout) return false;
+      boost::this_thread::yield();
+    }
+    return true;
   }
 
   bool empty() const { return queue_->empty(); }

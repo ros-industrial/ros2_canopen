@@ -118,7 +118,7 @@ void LelyDriverBridge::OnRpdoWrite(uint16_t idx, uint8_t subidx) noexcept
   COData codata = {idx, subidx, data, CODataTypes::CODataUnkown};
 
   //  We do not care so much about missing a message, rather push them through.
-  rpdo_queue_data.push(codata);
+  rpdo_queue->push(codata);
 }
 
 void LelyDriverBridge::OnEmcy(uint16_t eec, uint8_t er, uint8_t msef[5]) noexcept
@@ -128,7 +128,7 @@ void LelyDriverBridge::OnEmcy(uint16_t eec, uint8_t er, uint8_t msef[5]) noexcep
   COEmcy emcy = {eec, er};
   for (int i = 0; i < 5; i++) emcy.msef[i] = msef[i];
 
-  emcy_queue_data.push(emcy);
+  emcy_queue->push(emcy);
 }
 
 std::future<bool> LelyDriverBridge::async_sdo_write(COData data)
@@ -318,17 +318,14 @@ std::future<canopen::NmtState> LelyDriverBridge::async_request_nmt()
   return nmt_state_promise.get_future();
 }
 
-COData LelyDriverBridge::async_request_rpdo()
+std::shared_ptr<SafeQueue<COData>> LelyDriverBridge::async_request_rpdo()
 {
-  auto data = rpdo_queue_data.wait_and_pop();
-  // rpdo_promise.set_value(*data);
-  return (*data);  // rpdo_promise.get_future();
+  return rpdo_queue;
 }
 
-COEmcy LelyDriverBridge::async_request_emcy()
+std::shared_ptr<SafeQueue<COEmcy>> LelyDriverBridge::async_request_emcy()
 {
-  auto data = emcy_queue_data.wait_and_pop();
-  return (*data);
+  return emcy_queue; 
 }
 
 void LelyDriverBridge::tpdo_transmit(COData data)

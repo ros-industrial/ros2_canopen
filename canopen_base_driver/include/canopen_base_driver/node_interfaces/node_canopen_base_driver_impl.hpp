@@ -157,12 +157,13 @@ template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::rdpo_listener()
 {
   RCLCPP_INFO(this->node_->get_logger(), "Starting RPDO Listener");
+  auto q = lely_driver_->async_request_rpdo();
   while (rclcpp::ok())
   {
     ros2_canopen::COData rpdo;
+    while(!q->wait_and_pop_for(this->non_transmit_timeout_, rpdo))
     {
-      std::scoped_lock<std::mutex> lock(this->driver_mutex_);
-      rpdo = lely_driver_->async_request_rpdo();
+      if (!this->activated_.load()) return;
     }
     try
     {
@@ -172,7 +173,7 @@ void NodeCanopenBaseDriver<NODETYPE>::rdpo_listener()
       }
       on_rpdo(rpdo);
     }
-    catch (const std::future_error & e)
+    catch (const std::exception & e)
     {
       RCLCPP_ERROR_STREAM(this->node_->get_logger(), "RPDO Listener error: " << e.what());
       break;
@@ -183,12 +184,14 @@ void NodeCanopenBaseDriver<NODETYPE>::rdpo_listener()
 template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::emcy_listener()
 {
+  RCLCPP_INFO(this->node_->get_logger(), "Starting EMCY Listener");
+  auto q = lely_driver_->async_request_emcy();
   while (rclcpp::ok())
   {
     ros2_canopen::COEmcy emcy;
+    while(!q->wait_and_pop_for(this->non_transmit_timeout_, emcy))
     {
-      std::scoped_lock<std::mutex> lock(this->driver_mutex_);
-      emcy = lely_driver_->async_request_emcy();
+      if (!this->activated_.load()) return;
     }
     try
     {
@@ -198,8 +201,9 @@ void NodeCanopenBaseDriver<NODETYPE>::emcy_listener()
       }
       on_emcy(emcy);
     }
-    catch (const std::future_error & e)
+    catch (const std::exception & e)
     {
+      RCLCPP_ERROR_STREAM(this->node_->get_logger(), "EMCY Listener error: " << e.what());
       break;
     }
   }
