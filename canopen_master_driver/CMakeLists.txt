@@ -14,7 +14,6 @@ find_package(lely_core_libraries REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
-find_package(Boost REQUIRED system thread)
 
 set(dependencies
   canopen_core
@@ -23,7 +22,6 @@ set(dependencies
   rclcpp
   rclcpp_components
   rclcpp_lifecycle
-  Boost
 )
 
 add_library(lely_master_bridge

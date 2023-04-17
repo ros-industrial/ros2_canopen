@@ -17,7 +17,6 @@ find_package(rclcpp_components REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
-find_package(Boost REQUIRED system thread)
 
 set(dependencies
   canopen_base_driver
@@ -29,7 +28,6 @@ set(dependencies
   rclcpp_components
   sensor_msgs
   std_srvs
-  Boost
 )
 
 add_library(lely_motion_controller_bridge
