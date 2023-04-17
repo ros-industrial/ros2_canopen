@@ -217,7 +217,9 @@ public:
    * @param [in] id       NodeId to connect to
    */
   LelyDriverBridge(ev_exec_t * exec, canopen::AsyncMaster & master, uint8_t id, std::string name)
-  : FiberDriver(exec, master, id), rpdo_queue(new SafeQueue<COData>()), emcy_queue(new SafeQueue<COEmcy>())
+  : FiberDriver(exec, master, id),
+    rpdo_queue(new SafeQueue<COData>()),
+    emcy_queue(new SafeQueue<COEmcy>())
   {
     nodeid = id;
     running = false;

@@ -161,7 +161,7 @@ void NodeCanopenBaseDriver<NODETYPE>::rdpo_listener()
   while (rclcpp::ok())
   {
     ros2_canopen::COData rpdo;
-    while(!q->wait_and_pop_for(this->non_transmit_timeout_, rpdo))
+    while (!q->wait_and_pop_for(this->non_transmit_timeout_, rpdo))
     {
       if (!this->activated_.load()) return;
     }
@@ -189,7 +189,7 @@ void NodeCanopenBaseDriver<NODETYPE>::emcy_listener()
   while (rclcpp::ok())
   {
     ros2_canopen::COEmcy emcy;
-    while(!q->wait_and_pop_for(this->non_transmit_timeout_, emcy))
+    while (!q->wait_and_pop_for(this->non_transmit_timeout_, emcy))
     {
       if (!this->activated_.load()) return;
     }

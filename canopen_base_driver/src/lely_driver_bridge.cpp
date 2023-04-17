@@ -318,15 +318,9 @@ std::future<canopen::NmtState> LelyDriverBridge::async_request_nmt()
   return nmt_state_promise.get_future();
 }
 
-std::shared_ptr<SafeQueue<COData>> LelyDriverBridge::async_request_rpdo()
-{
-  return rpdo_queue;
-}
+std::shared_ptr<SafeQueue<COData>> LelyDriverBridge::async_request_rpdo() { return rpdo_queue; }
 
-std::shared_ptr<SafeQueue<COEmcy>> LelyDriverBridge::async_request_emcy()
-{
-  return emcy_queue; 
-}
+std::shared_ptr<SafeQueue<COEmcy>> LelyDriverBridge::async_request_emcy() { return emcy_queue; }
 
 void LelyDriverBridge::tpdo_transmit(COData data)
 {

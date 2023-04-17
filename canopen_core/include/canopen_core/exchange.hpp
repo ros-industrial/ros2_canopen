@@ -59,12 +59,12 @@ private:
   void create_queue() { queue_ = std::make_shared<boost::lockfree::queue<T>>(capacity_); }
 
 public:
-  explicit SafeQueue(std::size_t capacity = 10) : capacity_(capacity), queue_(new boost::lockfree::queue<T>(capacity_)) {}
-
-  void push(T value)
+  explicit SafeQueue(std::size_t capacity = 10)
+  : capacity_(capacity), queue_(new boost::lockfree::queue<T>(capacity_))
   {
-    queue_->push(std::move(value));
   }
+
+  void push(T value) { queue_->push(std::move(value)); }
 
   boost::optional<T> try_pop()
   {
@@ -95,8 +95,12 @@ public:
   {
     T value;
     auto start_time = std::chrono::steady_clock::now();
-    while (!queue_->pop(value)) {
-      if(timeout != std::chrono::milliseconds::zero() && std::chrono::steady_clock::now() - start_time >= timeout) return boost::none;
+    while (!queue_->pop(value))
+    {
+      if (
+        timeout != std::chrono::milliseconds::zero() &&
+        std::chrono::steady_clock::now() - start_time >= timeout)
+        return boost::none;
       boost::this_thread::yield();
     }
     return value;
@@ -105,8 +109,12 @@ public:
   bool wait_and_pop_for(const std::chrono::milliseconds & timeout, T & value)
   {
     auto start_time = std::chrono::steady_clock::now();
-    while (!queue_->pop(value)) {
-      if(timeout != std::chrono::milliseconds::zero() && std::chrono::steady_clock::now() - start_time >= timeout) return false;
+    while (!queue_->pop(value))
+    {
+      if (
+        timeout != std::chrono::milliseconds::zero() &&
+        std::chrono::steady_clock::now() - start_time >= timeout)
+        return false;
       boost::this_thread::yield();
     }
     return true;
