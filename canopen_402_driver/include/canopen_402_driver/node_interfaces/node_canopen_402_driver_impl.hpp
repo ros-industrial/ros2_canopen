@@ -369,7 +369,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  response->success = set_mode_cyclic_velocity();
+  response->success = set_mode_cyclic_position();
 }
 
 template <class NODETYPE>
