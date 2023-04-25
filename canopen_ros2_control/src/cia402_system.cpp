@@ -307,22 +307,17 @@ hardware_interface::return_type Cia402System::write(
       case MotorBase::No_Mode:
         break;
       case MotorBase::Profiled_Position:
-        motion_controller_driver->set_target(motor_data_[it->first].target.position_value);
-        break;
       case MotorBase::Cyclic_Synchronous_Position:
+      case MotorBase::Interpolated_Position:
         motion_controller_driver->set_target(motor_data_[it->first].target.position_value);
         break;
       case MotorBase::Profiled_Velocity:
-        motion_controller_driver->set_target(motor_data_[it->first].target.velocity_value);
-        break;
       case MotorBase::Cyclic_Synchronous_Velocity:
         motion_controller_driver->set_target(motor_data_[it->first].target.velocity_value);
         break;
       case MotorBase::Profiled_Torque:
         motion_controller_driver->set_target(motor_data_[it->first].target.torque_value);
         break;
-      case MotorBase::Interpolated_Position:
-        motion_controller_driver->set_target(motor_data_[it->first].target.position_value);
       default:
         RCLCPP_INFO(kLogger, "Mode %u not supported", mode);
     }
