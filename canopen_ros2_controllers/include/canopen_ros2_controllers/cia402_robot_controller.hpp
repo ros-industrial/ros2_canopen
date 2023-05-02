@@ -21,41 +21,119 @@
 
 namespace cia402_robot_controller
 {
-
+/**
+ * @brief Controller for a robot with CiA402 drivers.
+ *
+ * This controller handles bringing up of the CiA402 drivers to operational
+ * state with the right operation mode set.
+ */
 class Cia402RobotController : public controller_interface::ControllerInterface
 {
 public:
   CANOPEN_ROS2_CONTROLLERS__VISIBILITY_PUBLIC
   Cia402RobotController();
 
+  /**
+   * @brief Initialize controller
+   *
+   * @details
+   * This function initializes the controller. It declares the
+   * parameters of the controller. This is done using the
+   * generate_parameter_library.
+   *
+   * @return controller_interface::CallbackReturn
+   */
   CANOPEN_ROS2_CONTROLLERS__VISIBILITY_PUBLIC
   controller_interface::CallbackReturn on_init() override;
 
+  /**
+   * @brief Get the command interface configuration object
+   *
+   * @details
+   * This function returns the command interface configuration.
+   * This controller has uses the following command interfaces per joint:
+   * - init
+   * - init_feedback
+   * - halt
+   * - halt_feedback
+   * - recover
+   * - recover_feedback
+   * - operation_mode
+   * - operation_mode_feedback
+   *
+   * @return controller_interface::InterfaceConfiguration
+   */
   CANOPEN_ROS2_CONTROLLERS__VISIBILITY_PUBLIC
   controller_interface::InterfaceConfiguration command_interface_configuration() const override;
 
+  /**
+   * @brief Get the state interface configuration object
+   *
+   * @details
+   * This function returns the state interface configuration.
+   * This controller has no state interface.
+   *
+   * @return CANOPEN_ROS2_CONTROLLERS__VISIBILITY_PUBLIC
+   */
   CANOPEN_ROS2_CONTROLLERS__VISIBILITY_PUBLIC
   controller_interface::InterfaceConfiguration state_interface_configuration() const override;
 
+  /**
+   * @brief Configure controller
+   *
+   * @details
+   * This function configures the controller. It reads the
+   * parameters of the controller and sets up the interfaces
+   * used by the controller.
+   *
+   * @param previous_state
+   * @return controller_interface::CallbackReturn
+   */
   CANOPEN_ROS2_CONTROLLERS__VISIBILITY_PUBLIC
   controller_interface::CallbackReturn on_configure(
     const rclcpp_lifecycle::State & previous_state) override;
 
+  /**
+   * @brief Activate controller
+   *
+   * @details
+   * This function activates the controller. It brings up the
+   * CiA402 drivers to operational state with the right operation
+   * mode set.
+   *
+   * @param previous_state
+   * @return controller_interface::CallbackReturn
+   */
   CANOPEN_ROS2_CONTROLLERS__VISIBILITY_PUBLIC
   controller_interface::CallbackReturn on_activate(
     const rclcpp_lifecycle::State & previous_state) override;
 
+  /**
+   * @brief Deactivate controller
+   *
+   *
+   * @param previous_state
+   * @return controller_interface::CallbackReturn
+   */
   CANOPEN_ROS2_CONTROLLERS__VISIBILITY_PUBLIC
   controller_interface::CallbackReturn on_deactivate(
     const rclcpp_lifecycle::State & previous_state) override;
 
+  /**
+   * @brief Update controller
+   *
+   * @details
+   * This function updates the controller. It does nothing.
+   *
+   * @param time
+   * @param period
+   * @return controller_interface::return_type
+   */
   CANOPEN_ROS2_CONTROLLERS__VISIBILITY_PUBLIC
   controller_interface::return_type update(
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
 protected:
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_init_service_;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_halt_service_;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_recover_service_;
 
   std::shared_ptr<ParamListener> param_listener_;
