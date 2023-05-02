@@ -198,12 +198,13 @@ controller_interface::CallbackReturn Cia402RobotController::on_deactivate(
     // Some devices may require setting operation mode before init.
     ////////////////////////////////////////////////////////////////////////////////////////
 
-    command_interfaces_[OPERATION_MODE].set_value(0.0);
-    while (std::isnan(command_interfaces_[OPERATION_MODE_FEEDBACK].get_value()) && rclcpp::ok())
+    command_interfaces_[jn + OPERATION_MODE].set_value(0.0);
+    while (std::isnan(command_interfaces_[jn + OPERATION_MODE_FEEDBACK].get_value()) &&
+           rclcpp::ok())
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(params_.command_poll_freq));
     }
-    if (command_interfaces_[OPERATION_MODE_FEEDBACK].get_value() != 1.0)
+    if (command_interfaces_[jn + OPERATION_MODE_FEEDBACK].get_value() != 1.0)
     {
       RCLCPP_ERROR(
         get_node()->get_logger(), "Setting operation mode '%li' of '%s' failed",
@@ -213,6 +214,7 @@ controller_interface::CallbackReturn Cia402RobotController::on_deactivate(
     command_interfaces_[jn + OPERATION_MODE].set_value(std::numeric_limits<double>::quiet_NaN());
     command_interfaces_[jn + OPERATION_MODE_FEEDBACK].set_value(
       std::numeric_limits<double>::quiet_NaN());
+    jn += ADD_OP;
   }
   for (size_t i = 0; i < command_interfaces_.size(); ++i)
   {
