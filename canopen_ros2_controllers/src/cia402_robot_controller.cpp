@@ -132,7 +132,7 @@ void Cia402RobotController::activate()
     command_interfaces_[jn + INIT].set_value(1.0);
     while (std::isnan(command_interfaces_[jn + INIT_FEEDBACK].get_value()) && rclcpp::ok())
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(params_.command_poll_freq));
+      rclcpp::sleep_for(std::chrono::milliseconds(params_.command_poll_freq));
     }
     if (command_interfaces_[jn + INIT_FEEDBACK].get_value() != 1.0)
     {
@@ -142,7 +142,7 @@ void Cia402RobotController::activate()
 
     command_interfaces_[jn + INIT].set_value(std::numeric_limits<double>::quiet_NaN());
     command_interfaces_[jn + INIT_FEEDBACK].set_value(std::numeric_limits<double>::quiet_NaN());
-    rclcpp::sleep_for(std::chrono::milliseconds(1000));
+    // rclcpp::sleep_for(std::chrono::milliseconds(1000));
     RCLCPP_INFO(
       get_node()->get_logger(), "Setting operation mode '%li' of '%s'", params_.operation_mode,
       joint_name.c_str());
@@ -154,7 +154,7 @@ void Cia402RobotController::activate()
     while (std::isnan(command_interfaces_[jn + OPERATION_MODE_FEEDBACK].get_value()) &&
            rclcpp::ok())
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(params_.command_poll_freq));
+      rclcpp::sleep_for(std::chrono::milliseconds(params_.command_poll_freq));
     }
     if (command_interfaces_[jn + OPERATION_MODE_FEEDBACK].get_value() != 1.0)
     {
@@ -183,7 +183,7 @@ controller_interface::CallbackReturn Cia402RobotController::on_deactivate(
     command_interfaces_[jn + HALT].set_value(1.0);
     while (std::isnan(command_interfaces_[jn + HALT_FEEDBACK].get_value()) && rclcpp::ok())
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(params_.command_poll_freq));
+      rclcpp::sleep_for(std::chrono::milliseconds(params_.command_poll_freq));
     }
     if (command_interfaces_[jn + HALT_FEEDBACK].get_value() != 1.0)
     {
@@ -202,7 +202,7 @@ controller_interface::CallbackReturn Cia402RobotController::on_deactivate(
     while (std::isnan(command_interfaces_[jn + OPERATION_MODE_FEEDBACK].get_value()) &&
            rclcpp::ok())
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(params_.command_poll_freq));
+      rclcpp::sleep_for(std::chrono::milliseconds(params_.command_poll_freq));
     }
     if (command_interfaces_[jn + OPERATION_MODE_FEEDBACK].get_value() != 1.0)
     {
