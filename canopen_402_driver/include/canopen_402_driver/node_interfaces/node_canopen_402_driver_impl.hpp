@@ -472,7 +472,9 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_target(
   {
     auto mode = motor_->getMode();
     double target;
-    if ((mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position))
+    if (
+      (mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position) or
+      (mode == MotorBase::Interpolated_Position))
     {
       target = request->target * scale_pos_to_dev_;
     }
@@ -649,7 +651,9 @@ bool NodeCanopen402Driver<NODETYPE>::set_target(double target)
   {
     auto mode = motor_->getMode();
     double scaled_target;
-    if ((mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position))
+    if (
+      (mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position) or
+      (mode == MotorBase::Interpolated_Position))
     {
       scaled_target = target * scale_pos_to_dev_;
     }
