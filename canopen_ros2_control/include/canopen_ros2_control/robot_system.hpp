@@ -16,13 +16,13 @@ class Cia402RobotSystem : public hardware_interface::SystemInterface
   struct Cia402MotorNodeData
   {
     // FROM MOTOR
-    double actual_position;
-    double actual_velocity;
+    double actual_position = std::numeric_limits<double>::quiet_NaN();
+    double actual_velocity = std::numeric_limits<double>::quiet_NaN();
 
     // TO MOTOR
-    double target_position;
-    double target_velocity;
-    double target_torque;
+    double target_position = std::numeric_limits<double>::quiet_NaN();
+    double target_velocity = std::numeric_limits<double>::quiet_NaN();
+    double target_torque = std::numeric_limits<double>::quiet_NaN();
 
     // COMMANDS
     MotorTriggerCommand init;
