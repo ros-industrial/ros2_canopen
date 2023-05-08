@@ -1,6 +1,10 @@
+#ifndef CANOPEN_ROS2_CONTROL__ROBOT_SYSTEM_HPP_
+#define CANOPEN_ROS2_CONTROL__ROBOT_SYSTEM_HPP_
+
 #include "canopen_402_driver/cia402_driver.hpp"
+#include "canopen_core/configuration_manager.hpp"
 #include "canopen_core/device_container.hpp"
-#include "canopen_ros2_control/robot_system_data.hpp"
+#include "canopen_ros2_control/cia402_data.hpp"
 #include "canopen_ros2_control/visibility_control.h"
 #include "hardware_interface/handle.hpp"
 #include "hardware_interface/hardware_info.hpp"
@@ -11,32 +15,13 @@
 #include "rclcpp_lifecycle/state.hpp"
 namespace canopen_ros2_control
 {
-class Cia402RobotSystem : public hardware_interface::SystemInterface
+class RobotSystem : public hardware_interface::SystemInterface
 {
-  struct Cia402MotorNodeData
-  {
-    // FROM MOTOR
-    double actual_position = std::numeric_limits<double>::quiet_NaN();
-    double actual_velocity = std::numeric_limits<double>::quiet_NaN();
-
-    // TO MOTOR
-    double target_position = std::numeric_limits<double>::quiet_NaN();
-    double target_velocity = std::numeric_limits<double>::quiet_NaN();
-    double target_torque = std::numeric_limits<double>::quiet_NaN();
-
-    // COMMANDS
-    MotorTriggerCommand init;
-    MotorTriggerCommand recover;
-    MotorTriggerCommand halt;
-
-    MotorModeSwitchCommand operation_mode;
-  };
-
 public:
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  Cia402RobotSystem() : hardware_interface::SystemInterface() {}
+  RobotSystem() : hardware_interface::SystemInterface() {}
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  ~Cia402RobotSystem() = default;
+  ~RobotSystem() = default;
 
   /**
    * @brief Initialize the hardware interface
@@ -155,13 +140,22 @@ public:
   hardware_interface::return_type write(
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
+  CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
+  hardware_interface::return_type perform_command_mode_switch(
+    const std::vector<std::string> & start_interfaces,
+    const std::vector<std::string> & stop_interfaces) override;
+
 protected:
   std::shared_ptr<ros2_canopen::DeviceContainer> device_container_;
   std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> executor_;
-  std::map<uint, Cia402MotorNodeData> motor_data_;
+  std::vector<Cia402Data> robot_motor_data_;
+  std::string bus_config_;
+  std::string master_config_;
+  std::string master_bin_;
+  std::string can_interface_;
   std::unique_ptr<std::thread> spin_thread_;
   std::unique_ptr<std::thread> init_thread_;
-  std::vector<std::shared_ptr<ros2_canopen::Cia402Driver>> cia402_drivers_;
+  rclcpp::Logger robot_system_logger = rclcpp::get_logger("robot_system");
 
 private:
   /**
@@ -178,3 +172,5 @@ private:
   void initDeviceContainer();
 };
 }  // namespace canopen_ros2_control
+
+#endif

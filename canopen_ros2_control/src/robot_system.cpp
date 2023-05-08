@@ -3,37 +3,112 @@
 
 using namespace canopen_ros2_control;
 
-auto robot_system_logger = rclcpp::get_logger("robot_system_interface");
+// auto robot_system_logger = rclcpp::get_logger("robot_system_interface");
 
-hardware_interface::CallbackReturn Cia402RobotSystem::on_init(
+hardware_interface::CallbackReturn RobotSystem::on_init(
   const hardware_interface::HardwareInfo & info)
 {
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
   {
     return CallbackReturn::ERROR;
   }
+  robot_system_logger = rclcpp::get_logger(info_.name + "_interface");
+  RCLCPP_INFO(robot_system_logger, "Registering hardware interface '%s'", info_.name.c_str());
 
+  // Check bus config is specified.
+  if (info_.hardware_parameters.find("bus_config") == info_.hardware_parameters.end())
+  {
+    RCLCPP_ERROR(
+      robot_system_logger, "No bus_config parameter provided for '%s' hardware interface.",
+      info_.name.c_str());
+    return CallbackReturn::ERROR;
+  }
+  bus_config_ = info_.hardware_parameters["bus_config"];
   RCLCPP_INFO(
-    robot_system_logger, "bus_config: '%s'", info_.hardware_parameters["bus_config"].c_str());
-  RCLCPP_INFO(
-    robot_system_logger, "master_config: '%s'", info_.hardware_parameters["master_config"].c_str());
-  RCLCPP_INFO(
-    robot_system_logger, "can_interface_name: '%s'",
-    info_.hardware_parameters["can_interface_name"].c_str());
-  RCLCPP_INFO(
-    robot_system_logger, "master_bin: '%s'", info_.hardware_parameters["master_bin"].c_str());
+    robot_system_logger, "'%s' has bus config: '%s'", info_.name.c_str(), bus_config_.c_str());
 
+  // Check master config is specified.
+  if (info_.hardware_parameters.find("master_config") == info_.hardware_parameters.end())
+  {
+    RCLCPP_ERROR(
+      robot_system_logger, "No master_config parameter provided for '%s' hardware interface.",
+      info_.name.c_str());
+    return CallbackReturn::ERROR;
+  }
+  master_config_ = info_.hardware_parameters["master_config"];
+  RCLCPP_INFO(
+    robot_system_logger, "'%s' has master config: '%s'", info_.name.c_str(),
+    master_config_.c_str());
+
+  // Check master bin is specified.
+  if (info_.hardware_parameters.find("master_bin") != info_.hardware_parameters.end())
+  {
+    master_bin_ = info_.hardware_parameters["master_bin"];
+    if (master_bin_ == "\"\"")
+    {
+      master_bin_ = "";
+    }
+    RCLCPP_INFO(
+      robot_system_logger, "'%s' has master bin: '%s'", info_.name.c_str(), master_bin_.c_str());
+  }
+  else
+  {
+    master_bin_ = "";
+  }
+
+  // Check can_interface_name is specified.
+  if (info_.hardware_parameters.find("can_interface_name") == info_.hardware_parameters.end())
+  {
+    RCLCPP_ERROR(
+      robot_system_logger, "No can_interface_name parameter provided for '%s' hardware interface.",
+      info_.name.c_str());
+    return CallbackReturn::ERROR;
+  }
+  can_interface_ = info_.hardware_parameters["can_interface_name"];
+  RCLCPP_INFO(
+    robot_system_logger, "'%s' has can interface: '%s'", info_.name.c_str(),
+    can_interface_.c_str());
+
+  ros2_canopen::ConfigurationManager config(bus_config_);
+  config.init_config();
+
+  // Load joint data
+  for (auto joint : info.joints)
+  {
+    auto driver_type =
+      config.get_entry<std::string>(joint.parameters["device_name"], "driver").value();
+    if (driver_type == "ros2_canopen::Cia402Driver")
+    {
+      auto data = Cia402Data();
+      if (data.init_data(joint, config.dump_device(joint.parameters["device_name"])))
+      {
+        robot_motor_data_.push_back(data);
+      }
+      {
+        robot_motor_data_.push_back(data);
+      }
+    }
+    else
+    {
+      RCLCPP_ERROR(
+        robot_system_logger, "Driver type '%s' not supported for joint '%s'", driver_type.c_str(),
+        joint.name.c_str());
+      return CallbackReturn::ERROR;
+    }
+  }
   return CallbackReturn::SUCCESS;
 }
-hardware_interface::CallbackReturn Cia402RobotSystem::on_configure(
+
+hardware_interface::CallbackReturn RobotSystem::on_configure(
   const rclcpp_lifecycle::State & previous_state)
 {
-  executor_ = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
+  executor_ =
+    std::make_shared<rclcpp::executors::MultiThreadedExecutor>(rclcpp::ExecutorOptions(), 2);
   device_container_ = std::make_shared<ros2_canopen::DeviceContainer>(executor_);
   executor_->add_node(device_container_);
 
-  spin_thread_ = std::make_unique<std::thread>(&Cia402RobotSystem::spin, this);
-  init_thread_ = std::make_unique<std::thread>(&Cia402RobotSystem::initDeviceContainer, this);
+  spin_thread_ = std::make_unique<std::thread>(&RobotSystem::spin, this);
+  init_thread_ = std::make_unique<std::thread>(&RobotSystem::initDeviceContainer, this);
 
   if (init_thread_->joinable())
   {
@@ -46,244 +121,184 @@ hardware_interface::CallbackReturn Cia402RobotSystem::on_configure(
   }
   return CallbackReturn::SUCCESS;
 }
-hardware_interface::CallbackReturn Cia402RobotSystem::on_activate(
+hardware_interface::CallbackReturn RobotSystem::on_activate(
   const rclcpp_lifecycle::State & previous_state)
 {
+  for (auto & data : robot_motor_data_)
+  {
+    if (!data.driver->init_motor())
+    {
+      RCLCPP_ERROR(robot_system_logger, "Failed to activate '%s'", data.joint_name.c_str());
+      return CallbackReturn::FAILURE;
+    }
+  }
   return CallbackReturn::SUCCESS;
 }
-hardware_interface::CallbackReturn Cia402RobotSystem::on_deactivate(
+hardware_interface::CallbackReturn RobotSystem::on_deactivate(
   const rclcpp_lifecycle::State & previous_state)
 {
+  for (auto & data : robot_motor_data_)
+  {
+    if (!data.driver->halt_motor())
+    {
+      RCLCPP_ERROR(robot_system_logger, "Failed to deactivate '%s'", data.joint_name.c_str());
+      return CallbackReturn::FAILURE;
+    }
+  }
   return CallbackReturn::SUCCESS;
 }
-hardware_interface::CallbackReturn Cia402RobotSystem::on_cleanup(
+hardware_interface::CallbackReturn RobotSystem::on_cleanup(
   const rclcpp_lifecycle::State & previous_state)
 {
+  clean();
   return CallbackReturn::SUCCESS;
 }
-hardware_interface::CallbackReturn Cia402RobotSystem::on_shutdown(
+hardware_interface::CallbackReturn RobotSystem::on_shutdown(
   const rclcpp_lifecycle::State & previous_state)
 {
+  clean();
   return CallbackReturn::SUCCESS;
 }
 
-std::vector<hardware_interface::StateInterface> Cia402RobotSystem::export_state_interfaces()
+std::vector<hardware_interface::StateInterface> RobotSystem::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
 
   // Iterate over joints in xacro
-  for (uint i = 0; i < info_.joints.size(); i++)
+  for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
   {
-    // If no node_id in xacro, skip.
-    if (info_.joints[i].parameters.find("node_id") == info_.joints[i].parameters.end())
-    {
-      // skip adding motor canopen interfaces
-      continue;
-    }
-
-    // Read node_id
-    const uint8_t node_id = static_cast<uint8_t>(std::stoi(info_.joints[i].parameters["node_id"]));
-
-    // actual position
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_POSITION,
-      &motor_data_[node_id].actual_position));
-
-    // actual speed
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_VELOCITY,
-      &motor_data_[node_id].actual_velocity));
+    data.export_state_interface(state_interfaces);
   }
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> Cia402RobotSystem::export_command_interfaces()
+std::vector<hardware_interface::CommandInterface> RobotSystem::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
 
   // Iterate over joints in xacro
-  for (uint i = 0; i < info_.joints.size(); i++)
+  for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
   {
-    // Skip joing if node_id missing
-    if (info_.joints[i].parameters.find("node_id") == info_.joints[i].parameters.end())
-    {
-      RCLCPP_INFO(
-        robot_system_logger, "Joint %s does not have node_id specified.",
-        info_.joints[i].name.c_str());
-      // skip adding canopen interfaces
-      continue;
-    }
-
-    const uint8_t node_id = static_cast<uint8_t>(std::stoi(info_.joints[i].parameters["node_id"]));
-
-    // DATA INTERFACES
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_POSITION,
-      &motor_data_[node_id].target_position));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_VELOCITY,
-      &motor_data_[node_id].target_velocity));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_EFFORT, &motor_data_[node_id].target_torque));
-
-    // COMMAND INTERFACES
-
-    // Switch command
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "operation_mode", &motor_data_[node_id].operation_mode.mode));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "operation_mode_feedback", &motor_data_[node_id].operation_mode.resp));
-
-    // Init command
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "init", &motor_data_[node_id].init.command));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "init_feedback", &motor_data_[node_id].init.response));
-
-    // Recover command
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "recover", &motor_data_[node_id].recover.command));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "recover_feedback", &motor_data_[node_id].recover.response));
-
-    // Halt command
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "halt", &motor_data_[node_id].halt.command));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "halt_feedback", &motor_data_[node_id].halt.response));
+    data.export_command_interface(command_interfaces);
   }
   return command_interfaces;
 }
 
-hardware_interface::return_type Cia402RobotSystem::read(
+hardware_interface::return_type RobotSystem::read(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
-  auto drivers = device_container_->get_registered_drivers();
-
   // Iterate over joints
-  for (auto it = motor_data_.begin(); it != motor_data_.end(); ++it)
+  for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
   {
-    auto motion_controller_driver =
-      std::static_pointer_cast<ros2_canopen::Cia402Driver>(drivers[it->first]);
-    // get position
-    motor_data_[it->first].actual_position = motion_controller_driver->get_position();
-    // get speed
-    motor_data_[it->first].actual_velocity = motion_controller_driver->get_speed();
+    data.read_state();
   }
 
   return hardware_interface::return_type::OK;
 }
 
-hardware_interface::return_type Cia402RobotSystem::write(
+hardware_interface::return_type RobotSystem::write(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
-  auto drivers = device_container_->get_registered_drivers();
-
-  for (auto it = motor_data_.begin(); it != motor_data_.end(); ++it)
+  for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
   {
-    auto motion_controller_driver =
-      std::static_pointer_cast<ros2_canopen::Cia402Driver>(drivers[it->first]);
-
-    // init
-    if (motor_data_[it->first].init.command_available())
-    {
-      motor_data_[it->first].init.set_response(motion_controller_driver->init_motor());
-      RCLCPP_INFO(robot_system_logger, "Initialised node %d", it->first);
-    }
-
-    // recover
-    if (motor_data_[it->first].recover.command_available())
-    {
-      motor_data_[it->first].recover.set_response(motion_controller_driver->recover_motor());
-    }
-
-    // halt
-    if (motor_data_[it->first].halt.command_available())
-    {
-      motor_data_[it->first].halt.set_response(motion_controller_driver->halt_motor());
-    }
-
-    // mode switching
-    if (motor_data_[it->first].operation_mode.mode_changed())
-    {
-      RCLCPP_INFO(robot_system_logger, "Switching mode for node %d", it->first);
-      auto mode = motor_data_[it->first].operation_mode.get_mode();
-      motor_data_[it->first].operation_mode.set_response(
-        motion_controller_driver->set_operation_mode(mode));
-      RCLCPP_INFO(robot_system_logger, "Switched mode for node %d", it->first);
-    }
-
-    const uint16_t & mode = motion_controller_driver->get_mode();
-
-    // Check operation mode and set correct target.
-    switch (mode)
-    {
-      case MotorBase::No_Mode:
-        break;
-      case MotorBase::Profiled_Position:
-      case MotorBase::Cyclic_Synchronous_Position:
-      case MotorBase::Interpolated_Position:
-        motion_controller_driver->set_target(motor_data_[it->first].target_position);
-        break;
-      case MotorBase::Profiled_Velocity:
-      case MotorBase::Cyclic_Synchronous_Velocity:
-        motion_controller_driver->set_target(motor_data_[it->first].target_velocity);
-        break;
-      case MotorBase::Profiled_Torque:
-        motion_controller_driver->set_target(motor_data_[it->first].target_torque);
-        break;
-      default:
-        RCLCPP_INFO(rclcpp::get_logger("robot_system_interface"), "Mode not supported");
-    }
+    data.write_target();
   }
-
   return hardware_interface::return_type::OK;
 }
 
-void Cia402RobotSystem::initDeviceContainer()
+hardware_interface::return_type RobotSystem::perform_command_mode_switch(
+  const std::vector<std::string> & start_interfaces,
+  const std::vector<std::string> & stop_interfaces)
 {
-  std::string tmp_master_bin = (info_.hardware_parameters["master_bin"] == "\"\"")
-                                 ? ""
-                                 : info_.hardware_parameters["master_bin"];
-
-  device_container_->init(
-    info_.hardware_parameters["can_interface_name"], info_.hardware_parameters["master_config"],
-    info_.hardware_parameters["bus_config"], tmp_master_bin);
-  auto drivers = device_container_->get_registered_drivers();
-  RCLCPP_INFO(
-    rclcpp::get_logger("robot_system_interface"), "Number of registered drivers: '%zu'",
-    device_container_->count_drivers());
-  for (auto it = drivers.begin(); it != drivers.end(); it++)
+  // register interfaces to start per device
+  for (auto interface : start_interfaces)
   {
-    uint16_t node_id = it->first;
-    std::string driver_type = device_container_->get_driver_type(node_id);
-    RCLCPP_INFO(
-      robot_system_logger, "Found driver type '%s' at node_id '%u'", driver_type.c_str(), node_id);
-
-    // Check if driver at id is of type ros2_canopen::Cia402Driver
-    if (driver_type.compare("ros2_canopen::Cia402Driver") == 0)
+    auto it = std::find_if(
+      robot_motor_data_.begin(), robot_motor_data_.end(),
+      [interface](Cia402Data & data)
+      {
+        return std::find(data.interfaces.begin(), data.interfaces.end(), interface) !=
+               data.interfaces.end();
+      });
+    if (it != robot_motor_data_.end())
     {
-      cia402_drivers_.emplace_back(
-        std::static_pointer_cast<ros2_canopen::Cia402Driver>(it->second));
+      it->interfaces_to_start.push_back(
+        hardware_interface::CommandInterface(interface).get_interface_name());
     }
-    else
+  }
+
+  // register interfaces to stop per device
+  for (auto interface : stop_interfaces)
+  {
+    auto it = std::find_if(
+      robot_motor_data_.begin(), robot_motor_data_.end(),
+      [interface](Cia402Data & data)
+      {
+        return std::find(data.interfaces.begin(), data.interfaces.end(), interface) !=
+               data.interfaces.end();
+      });
+    if (it != robot_motor_data_.end())
+    {
+      it->interfaces_to_stop.push_back(
+        hardware_interface::CommandInterface(interface).get_interface_name());
+    }
+  }
+
+  // perform switching
+  for (auto & data : robot_motor_data_)
+  {
+    if (!data.perform_switch())
+    {
+      return hardware_interface::return_type::ERROR;
+    }
+  }
+  return hardware_interface::return_type::OK;
+}
+
+void RobotSystem::initDeviceContainer()
+{
+  // Init device container
+  device_container_->init(
+    this->can_interface_, this->master_config_, this->bus_config_, this->master_bin_);
+
+  // Get all registered drivers.
+  auto drivers = device_container_->get_registered_drivers();
+
+  // Iterate over all drivers and allocate them to the correct joint.
+  for (auto & data : robot_motor_data_)
+  {
+    // Find correct driver for joint via node id.
+    auto driver = std::find_if(
+      drivers.begin(), drivers.end(),
+      [&data](const std::pair<int, std::shared_ptr<ros2_canopen::CanopenDriverInterface>> & driver)
+      { return driver.first == data.node_id; });
+
+    if (driver == drivers.end())
     {
       RCLCPP_ERROR(
-        robot_system_logger, "Driver at node_id '%u' is not of type ros2_canopen::Cia402Driver",
-        node_id);
+        device_container_->get_logger(), "Could not find driver for joint '%s' with node id '%d'",
+        data.joint_name.c_str(), data.node_id);
+      continue;
+    }
+
+    // Allocate driver to joint.
+    if (
+      device_container_->get_driver_type(driver->first).compare("ros2_canopen::Cia402Driver") == 0)
+    {
+      data.driver = std::static_pointer_cast<ros2_canopen::Cia402Driver>(driver->second);
     }
   }
   RCLCPP_INFO(device_container_->get_logger(), "Initialisation successful.");
 }
 
-void Cia402RobotSystem::spin()
+void RobotSystem::spin()
 {
   executor_->spin();
   executor_->remove_node(device_container_);
-  RCLCPP_INFO(device_container_->get_logger(), "Stopped spinning Cia402RobotSystem ROS2 executor");
+  RCLCPP_INFO(device_container_->get_logger(), "Stopped spinning RobotSystem ROS2 executor");
 }
 
-void Cia402RobotSystem::clean()
+void RobotSystem::clean()
 {
   printf("Cancel exectutor...");
   executor_->cancel();
@@ -299,10 +314,9 @@ void Cia402RobotSystem::clean()
 
   executor_.reset();
   spin_thread_.reset();
-  motor_data_.clear();
-  cia402_drivers_.clear();
+  robot_motor_data_.clear();
 }
 
 #include "pluginlib/class_list_macros.hpp"
 
-PLUGINLIB_EXPORT_CLASS(canopen_ros2_control::Cia402RobotSystem, hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(canopen_ros2_control::RobotSystem, hardware_interface::SystemInterface)

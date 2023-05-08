@@ -77,7 +77,7 @@ public:
 
   uint16_t get_mode() { return node_canopen_402_driver_->get_mode(); }
 
-  uint16_t set_operation_mode(uint16_t mode)
+  bool set_operation_mode(uint16_t mode)
   {
     return node_canopen_402_driver_->set_operation_mode(mode);
   }
