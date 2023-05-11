@@ -295,7 +295,7 @@ bool NodeCanopenProxyDriver<NODETYPE>::sdo_write(ros2_canopen::COData & data)
     // Process response
     try
     {
-      f.get();
+      return f.get();
     }
     catch (std::exception & e)
     {
