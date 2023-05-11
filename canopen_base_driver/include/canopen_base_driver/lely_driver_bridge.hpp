@@ -15,8 +15,14 @@
 #ifndef CANOPEN_BASE_DRIVER__LELY_BRIDGE_HPP_
 #define CANOPEN_BASE_DRIVER__LELY_BRIDGE_HPP_
 
+#include <sys/stat.h>
+
+#include <lely/co/dcf.hpp>
+#include <lely/co/dev.hpp>
+#include <lely/co/obj.hpp>
 #include <lely/coapp/fiber_driver.hpp>
 #include <lely/coapp/master.hpp>
+#include <lely/coapp/sdo_error.hpp>
 #include <lely/ev/co_task.hpp>
 #include <lely/ev/future.hpp>
 
@@ -26,6 +32,7 @@
 #include <memory>
 #include <mutex>
 #include <rclcpp/rclcpp.hpp>
+#include <string>
 #include <system_error>
 #include <thread>
 #include <vector>
@@ -41,6 +48,67 @@ using namespace lely;
 
 namespace ros2_canopen
 {
+
+class DriverDictionary : public lely::CODev
+{
+public:
+  DriverDictionary(std::string eds_file) : lely::CODev(eds_file.c_str()) {}
+  ~DriverDictionary()
+  {
+    // lely::CODev::~CODev();
+  }
+
+  bool checkObjRPDO(uint16_t idx, uint8_t subidx)
+  {
+    std::cout << "Checking for rpo mapping of object: index=" << std::hex << (int)idx
+              << " subindex=" << (int)subidx << std::endl;
+    for (int i = 0; i < 256; i++)
+    {
+      if (this->checkObjInPDO(i, 0x1600, idx, subidx))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool checkObjTPDO(uint16_t idx, uint8_t subidx)
+  {
+    std::cout << "Checking for rpo mapping of object: index=" << std::hex << (int)idx
+              << " subindex=" << (int)subidx << std::endl;
+    for (int i = 0; i < 256; i++)
+    {
+      if (this->checkObjInPDO(i, 0x1A00, idx, subidx))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool checkObjInPDO(uint8_t pdo, uint16_t mapping_idx, uint16_t idx, uint8_t subindex)
+  {
+    for (int i = 1; i < 9; i++)
+    {
+      auto obj = find(mapping_idx + pdo, i);
+      if (obj == nullptr)
+      {
+        return false;
+      }
+      std::cout << "Found object in pdo: " << (int)pdo << std::endl;
+      uint32_t data = obj->getVal<CO_DEFTYPE_UNSIGNED32>();
+      uint8_t tmps = (data >> 8) & 0xFF;
+      uint16_t tmpi = (data >> 16) & 0xFFFF;
+
+      if (tmps == subindex && tmpi == idx)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+};
 
 enum class LelyBridgeErrc
 {
@@ -126,6 +194,9 @@ class LelyDriverBridge : public canopen::FiberDriver
   };
 
 protected:
+  // Dictionary for driver based on DCF and BIN files.
+  std::unique_ptr<DriverDictionary> dictionary_;
+
   // SDO Read synchronisation items
   std::shared_ptr<std::promise<COData>> sdo_read_data_promise;
   std::shared_ptr<std::promise<bool>> sdo_write_data_promise;
@@ -215,8 +286,13 @@ public:
    * @param [in] exec     Executor to use
    * @param [in] master   Master to use
    * @param [in] id       NodeId to connect to
+   * @param [in] eds      EDS file
+   * @param [in] bin      BIN file (concise dcf)
+   *
    */
-  LelyDriverBridge(ev_exec_t * exec, canopen::AsyncMaster & master, uint8_t id, std::string name)
+  LelyDriverBridge(
+    ev_exec_t * exec, canopen::AsyncMaster & master, uint8_t id, std::string name, std::string eds,
+    std::string bin)
   : FiberDriver(exec, master, id),
     rpdo_queue(new SafeQueue<COData>()),
     emcy_queue(new SafeQueue<COEmcy>())
@@ -224,6 +300,18 @@ public:
     nodeid = id;
     running = false;
     name_ = name;
+    dictionary_ = std::make_unique<DriverDictionary>(eds.c_str());
+    struct stat buffer;
+    if (stat(bin.c_str(), &buffer) == 0)
+    {
+      co_unsigned16_t * a = NULL;
+      co_unsigned16_t * b = NULL;
+      dictionary_->readDCF(a, b, bin.c_str());
+    }
+    if (dictionary_->checkObjRPDO(0x4000, 0))
+    {
+      std::cout << "RPDO0 is mapped" << std::endl;
+    }
   }
 
   /**
@@ -360,6 +448,59 @@ public:
    * @return false
    */
   bool is_booted() { return booted.load(); }
+
+  template <typename T>
+  void submit_write(COData data)
+  {
+    T value = 0;
+    std::memcpy(&value, &data.data_, sizeof(value));
+
+    this->SubmitWrite(
+      data.index_, data.subindex_, value,
+      [this, value](uint8_t id, uint16_t idx, uint8_t subidx, ::std::error_code ec) mutable
+      {
+        if (ec)
+        {
+          this->sdo_write_data_promise->set_exception(
+            lely::canopen::make_sdo_exception_ptr(id, idx, subidx, ec, "AsyncDownload"));
+        }
+        else
+        {
+          this->dictionary_->setVal<T>(idx, subidx, value);
+          this->sdo_write_data_promise->set_value(true);
+        }
+        std::unique_lock<std::mutex> lck(this->sdo_mutex);
+        this->running = false;
+        this->sdo_cond.notify_one();
+      },
+      20ms);
+  }
+
+  template <typename T>
+  void submit_read(COData data)
+  {
+    this->SubmitRead<T>(
+      data.index_, data.subindex_,
+      [this](uint8_t id, uint16_t idx, uint8_t subidx, ::std::error_code ec, T value) mutable
+      {
+        if (ec)
+        {
+          this->sdo_read_data_promise->set_exception(
+            lely::canopen::make_sdo_exception_ptr(id, idx, subidx, ec, "AsyncUpload"));
+        }
+        else
+        {
+          this->dictionary_->setVal<T>(idx, subidx, value);
+          COData d = {idx, subidx, 0, CODataTypes::COData32};
+          std::memcpy(&d.data_, &value, sizeof(T));
+          this->sdo_read_data_promise->set_value(d);
+        }
+        std::unique_lock<std::mutex> lck(this->sdo_mutex);
+        this->running = false;
+        this->sdo_cond.notify_one();
+      },
+      20ms);
+  }
 };
 
 }  // namespace ros2_canopen
