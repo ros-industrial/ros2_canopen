@@ -126,31 +126,37 @@ void LelyDriverBridge::OnRpdoWrite(uint16_t idx, uint8_t subidx) noexcept
   uint32_t data = 0;
   if (co_def == CO_DEFTYPE_UNSIGNED8)
   {
+    std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
     sub->setVal<CO_DEFTYPE_UNSIGNED8>((uint8_t)rpdo_mapped[idx][subidx]);
     std::memcpy(&data, &sub->getVal<CO_DEFTYPE_UNSIGNED8>(), 1);
   }
   if (co_def == CO_DEFTYPE_INTEGER8)
   {
+    std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
     sub->setVal<CO_DEFTYPE_INTEGER8>((int8_t)rpdo_mapped[idx][subidx]);
     std::memcpy(&data, &sub->getVal<CO_DEFTYPE_INTEGER8>(), 1);
   }
   if (co_def == CO_DEFTYPE_UNSIGNED16)
   {
+    std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
     sub->setVal<CO_DEFTYPE_UNSIGNED16>((uint16_t)rpdo_mapped[idx][subidx]);
     std::memcpy(&data, &sub->getVal<CO_DEFTYPE_UNSIGNED16>(), 2);
   }
   if (co_def == CO_DEFTYPE_INTEGER16)
   {
+    std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
     sub->setVal<CO_DEFTYPE_INTEGER16>((int16_t)rpdo_mapped[idx][subidx]);
     std::memcpy(&data, &sub->getVal<CO_DEFTYPE_INTEGER16>(), 2);
   }
   if (co_def == CO_DEFTYPE_UNSIGNED32)
   {
+    std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
     sub->setVal<CO_DEFTYPE_UNSIGNED32>((uint32_t)rpdo_mapped[idx][subidx]);
     std::memcpy(&data, &sub->getVal<CO_DEFTYPE_UNSIGNED32>(), 4);
   }
   if (co_def == CO_DEFTYPE_INTEGER32)
   {
+    std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
     sub->setVal<CO_DEFTYPE_INTEGER32>((int32_t)rpdo_mapped[idx][subidx]);
     std::memcpy(&data, &sub->getVal<CO_DEFTYPE_INTEGER32>(), 4);
   }
@@ -309,14 +315,77 @@ std::shared_ptr<SafeQueue<COEmcy>> LelyDriverBridge::async_request_emcy() { retu
 
 void LelyDriverBridge::tpdo_transmit(COData data)
 {
-  TPDOWriteTask task(this->GetStrand());
-  task.driver = this;
-  task.data = data;
+  lely::COSub * sub = this->dictionary_->find(data.index_, data.subindex_);
+  if (sub == nullptr)
   {
-    this->master.GetExecutor().post([&task, this] { this->GetStrand().post(task); });
+    std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
+              << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
+              << " object does not exist" << std::endl;
+    return;
   }
-  // Wait for task to finish.
-  std::scoped_lock<std::mutex> lk(task.mtx);
+  uint8_t co_def = (uint8_t)sub->getType();
+  try
+  {
+    if (co_def == CO_DEFTYPE_UNSIGNED8)
+    {
+      uint8_t val;
+      std::memcpy(&val, &data.data_, sizeof(uint8_t));
+      tpdo_mapped[data.index_][data.subindex_] = val;
+      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+      sub->setVal<CO_DEFTYPE_UNSIGNED8>(val);
+    }
+    if (co_def == CO_DEFTYPE_INTEGER8)
+    {
+      int8_t val;
+      std::memcpy(&val, &data.data_, sizeof(int8_t));
+      tpdo_mapped[data.index_][data.subindex_] = val;
+      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+      sub->setVal<CO_DEFTYPE_INTEGER8>(val);
+    }
+    if (co_def == CO_DEFTYPE_UNSIGNED16)
+    {
+      uint16_t val;
+      std::memcpy(&val, &data.data_, sizeof(uint16_t));
+      tpdo_mapped[data.index_][data.subindex_] = val;
+      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+      sub->setVal<CO_DEFTYPE_UNSIGNED16>(val);
+    }
+    if (co_def == CO_DEFTYPE_INTEGER16)
+    {
+      int16_t val;
+      std::memcpy(&val, &data.data_, sizeof(int16_t));
+      tpdo_mapped[data.index_][data.subindex_] = val;
+      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+      sub->setVal<CO_DEFTYPE_INTEGER16>(val);
+    }
+    if (co_def == CO_DEFTYPE_UNSIGNED32)
+    {
+      uint32_t val;
+      std::memcpy(&val, &data.data_, sizeof(uint32_t));
+      tpdo_mapped[data.index_][data.subindex_] = val;
+      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+      sub->setVal<CO_DEFTYPE_UNSIGNED32>(val);
+    }
+    if (co_def == CO_DEFTYPE_INTEGER32)
+    {
+      int32_t val;
+      std::memcpy(&val, &data.data_, sizeof(int32_t));
+      tpdo_mapped[data.index_][data.subindex_] = val;
+      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+      sub->setVal<CO_DEFTYPE_INTEGER32>(val);
+    }
+    tpdo_mapped[data.index_][data.subindex_].WriteEvent();
+    std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
+              << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
+              << (uint32_t)data.data_ << std::endl;
+  }
+  catch (lely::canopen::SdoError & e)
+  {
+    std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
+              << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
+              << e.what() << std::endl;
+    return;
+  }
 }
 
 void LelyDriverBridge::nmt_command(canopen::NmtCommand command)

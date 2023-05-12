@@ -48,7 +48,13 @@ using namespace lely;
 
 namespace ros2_canopen
 {
+struct pdo_mapping
+{
+  bool is_tpdo;
+  bool is_rpdo;
+};
 
+typedef std::map<uint16_t, std::map<uint8_t, pdo_mapping>> PDOMap;
 class DriverDictionary : public lely::CODev
 {
 public:
@@ -58,10 +64,116 @@ public:
     // lely::CODev::~CODev();
   }
 
+  std::shared_ptr<PDOMap> createPDOMapping()
+  {
+    std::shared_ptr<PDOMap> pdo_map = std::make_shared<PDOMap>();
+    fetchRPDO(pdo_map);
+    fetchTPDO(pdo_map);
+    return pdo_map;
+    // COObj * first = co_dev_first_obj((lely::CODev *)this);
+    // COObj * last = co_dev_last_obj((lely::CODev *)this);
+    // if (first == nullptr || last == nullptr)
+    // {
+    //   std::cout << "No objects found in dictionary" << std::endl;
+    //   return pdo_map;
+    // }
+    // COObj * current = first;
+    // while (current != last)
+    // {
+    //   uint16_t index = co_obj_get_idx(current);
+    //   auto subids = current->getSubidx();
+    //   bool created = false;
+    //   for (auto subid : subids)
+    //   {
+    //     bool is_rpdo = checkObjRPDO(index, subid);
+    //     bool is_tpdo = checkObjTPDO(index, subid);
+    //     std::cout << "Found subobject: index=" << std::hex << (int)index
+    //               << " subindex=" << (int)subid << (is_rpdo ? " rpdo" : "")
+    //               << (is_tpdo ? " tpdo" : "") << std::endl;
+    //     if (is_rpdo || is_tpdo)
+    //     {
+    //       pdo_mapping mapping;
+    //       mapping.is_rpdo = is_rpdo;
+    //       mapping.is_tpdo = is_tpdo;
+    //       if (!created)
+    //       {
+    //         pdo_map->emplace(index, std::map<uint8_t, pdo_mapping>());
+    //         created = true;
+    //       }
+    //       (*pdo_map)[index].emplace(subid, mapping);
+    //     }
+    //   }
+    //   current = co_obj_next(current);
+    // }
+    // return pdo_map;
+  }
+
+  void fetchRPDO(std::shared_ptr<PDOMap> map)
+  {
+    for (int index = 0; index < 256; index++)
+    {
+      for (int subindex = 1; subindex < 9; subindex++)
+      {
+        auto obj = find(0x1600 + index, subindex);
+        if (obj == nullptr)
+        {
+          continue;
+        }
+        uint32_t data;
+        {
+          data = obj->getVal<CO_DEFTYPE_UNSIGNED32>();
+        }
+        uint8_t tmps = (data >> 8) & 0xFF;
+        uint16_t tmpi = (data >> 16) & 0xFFFF;
+        if (tmpi == 0U)
+        {
+          continue;
+        }
+        pdo_mapping mapping;
+        mapping.is_rpdo = true;
+        mapping.is_tpdo = false;
+        (*map)[tmpi][tmps] = mapping;
+        std::cout << "Found rpdo mapped object: index=" << std::hex << (int)tmpi
+                  << " subindex=" << (int)tmps << std::endl;
+      }
+    }
+  }
+  void fetchTPDO(std::shared_ptr<PDOMap> map)
+  {
+    for (int index = 0; index < 256; index++)
+    {
+      for (int subindex = 1; subindex < 9; subindex++)
+      {
+        auto obj = find(0x1A00 + index, subindex);
+        if (obj == nullptr)
+        {
+          continue;
+        }
+        uint32_t data;
+        {
+          data = obj->getVal<CO_DEFTYPE_UNSIGNED32>();
+        }
+        uint8_t tmps = (data >> 8) & 0xFF;
+        uint16_t tmpi = (data >> 16) & 0xFFFF;
+        if (tmpi == 0U)
+        {
+          continue;
+        }
+
+        pdo_mapping mapping;
+        mapping.is_rpdo = false;
+        mapping.is_tpdo = true;
+        (*map)[tmpi][tmps] = mapping;
+        std::cout << "Found tpdo mapped object: index=" << std::hex << (int)tmpi
+                  << " subindex=" << (int)tmps << std::endl;
+      }
+    }
+  }
+
   bool checkObjRPDO(uint16_t idx, uint8_t subidx)
   {
-    std::cout << "Checking for rpo mapping of object: index=" << std::hex << (int)idx
-              << " subindex=" << (int)subidx << std::endl;
+    // std::cout << "Checking for rpo mapping of object: index=" << std::hex << (int)idx
+    //           << " subindex=" << (int)subidx << std::endl;
     for (int i = 0; i < 256; i++)
     {
       if (this->checkObjInPDO(i, 0x1600, idx, subidx))
@@ -74,8 +186,8 @@ public:
 
   bool checkObjTPDO(uint16_t idx, uint8_t subidx)
   {
-    std::cout << "Checking for rpo mapping of object: index=" << std::hex << (int)idx
-              << " subindex=" << (int)subidx << std::endl;
+    // std::cout << "Checking for rpo mapping of object: index=" << std::hex << (int)idx
+    //          << " subindex=" << (int)subidx << std::endl;
     for (int i = 0; i < 256; i++)
     {
       if (this->checkObjInPDO(i, 0x1A00, idx, subidx))
@@ -95,13 +207,16 @@ public:
       {
         return false;
       }
-      std::cout << "Found object in pdo: " << (int)pdo << std::endl;
-      uint32_t data = obj->getVal<CO_DEFTYPE_UNSIGNED32>();
+      uint32_t data;
+      {
+        data = obj->getVal<CO_DEFTYPE_UNSIGNED32>();
+      }
       uint8_t tmps = (data >> 8) & 0xFF;
       uint16_t tmpi = (data >> 16) & 0xFFFF;
 
       if (tmps == subindex && tmpi == idx)
       {
+        std::cout << "Found object in pdo: " << (int)pdo << std::endl;
         return true;
       }
     }
@@ -159,43 +274,11 @@ namespace ros2_canopen
  */
 class LelyDriverBridge : public canopen::FiberDriver
 {
-  class TPDOWriteTask : public ev::CoTask
-  {
-  public:
-    COData data;
-    LelyDriverBridge * driver;
-    std::mutex mtx;
-    explicit TPDOWriteTask(ev_exec_t * exec) : ev::CoTask(exec)
-    {
-      // Lock and load
-      mtx.lock();
-    }
-    void operator()() noexcept
-    {
-      std::scoped_lock<util::BasicLockable> lk(driver->tpdo_event_mutex);
-      switch (data.type_)
-      {
-        case CODataTypes::COData8:
-          driver->tpdo_mapped[data.index_][data.subindex_] = static_cast<uint8_t>(data.data_);
-          break;
-        case CODataTypes::COData16:
-          driver->tpdo_mapped[data.index_][data.subindex_] = static_cast<uint16_t>(data.data_);
-          break;
-        case CODataTypes::COData32:
-          driver->tpdo_mapped[data.index_][data.subindex_] = static_cast<uint32_t>(data.data_);
-          break;
-        default:
-          break;
-      }
-      driver->master.TpdoWriteEvent(driver->id(), data.index_, data.subindex_);
-      // Unlock when done
-      mtx.unlock();
-    }
-  };
-
 protected:
   // Dictionary for driver based on DCF and BIN files.
   std::unique_ptr<DriverDictionary> dictionary_;
+  std::mutex dictionary_mutex_;
+  std::shared_ptr<PDOMap> pdo_map_;
 
   // SDO Read synchronisation items
   std::shared_ptr<std::promise<COData>> sdo_read_data_promise;
@@ -229,7 +312,6 @@ protected:
   std::condition_variable boot_cond;
   std::mutex boot_mtex;
 
-  std::vector<std::shared_ptr<TPDOWriteTask>> tpdo_tasks;
   uint8_t nodeid;
   std::string name_;
 
@@ -308,10 +390,7 @@ public:
       co_unsigned16_t * b = NULL;
       dictionary_->readDCF(a, b, bin.c_str());
     }
-    if (dictionary_->checkObjRPDO(0x4000, 0))
-    {
-      std::cout << "RPDO0 is mapped" << std::endl;
-    }
+    pdo_map_ = dictionary_->createPDOMapping();
   }
 
   /**
@@ -380,7 +459,7 @@ public:
   /**
    * @brief Executes a TPDO transmission
    *
-   * This function executes a TPDO transmission. The
+   * This function executes a TPDO transmission. The{false, true}
    * object specified in the input data is sent if it
    * is registered as a TPDO with the master.
    *
@@ -466,6 +545,7 @@ public:
         }
         else
         {
+          std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
           this->dictionary_->setVal<T>(idx, subidx, value);
           this->sdo_write_data_promise->set_value(true);
         }
@@ -490,6 +570,7 @@ public:
         }
         else
         {
+          std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
           this->dictionary_->setVal<T>(idx, subidx, value);
           COData d = {idx, subidx, 0, CODataTypes::COData32};
           std::memcpy(&d.data_, &value, sizeof(T));
@@ -500,6 +581,103 @@ public:
         this->sdo_cond.notify_one();
       },
       20ms);
+  }
+
+  template <typename T>
+  const T universal_get_value(uint16_t index, uint8_t subindex)
+  {
+    T value = 0;
+    bool is_tpdo = false;
+    if (this->pdo_map_->find(index) != this->pdo_map_->end())
+    {
+      auto object = this->pdo_map_->at(index);
+      if (object.find(subindex) != object.end())
+      {
+        auto entry = object.at(subindex);
+        is_tpdo = entry.is_tpdo;
+      }
+    }
+    if (is_tpdo)
+    {
+      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+      if (typeid(T) == typeid(uint8_t))
+      {
+        value = this->dictionary_->getVal<CO_DEFTYPE_UNSIGNED8>(index, subindex);
+      }
+      if (typeid(T) == typeid(uint16_t))
+      {
+        value = this->dictionary_->getVal<CO_DEFTYPE_UNSIGNED16>(index, subindex);
+      }
+      if (typeid(T) == typeid(uint32_t))
+      {
+        value = this->dictionary_->getVal<CO_DEFTYPE_UNSIGNED32>(index, subindex);
+      }
+      if (typeid(T) == typeid(int8_t))
+      {
+        value = this->dictionary_->getVal<CO_DEFTYPE_INTEGER8>(index, subindex);
+      }
+      if (typeid(T) == typeid(int16_t))
+      {
+        value = this->dictionary_->getVal<CO_DEFTYPE_INTEGER16>(index, subindex);
+      }
+      if (typeid(T) == typeid(int32_t))
+      {
+        value = this->dictionary_->getVal<CO_DEFTYPE_INTEGER32>(index, subindex);
+      }
+    }
+    else
+    {
+      COData d = {index, subindex, 0, CODataTypes::COData32};
+      auto f = async_sdo_read(d);
+      f.wait();
+      try
+      {
+        uint32_t temp = f.get().data_;
+        std::memcpy(&value, &temp, sizeof(T));
+      }
+      catch (std::exception & e)
+      {
+        RCLCPP_ERROR(rclcpp::get_logger(name_), e.what());
+      }
+    }
+    return value;
+  }
+
+  template <typename T>
+  void universal_set_value(uint16_t index, uint8_t subindex, T value)
+  {
+    bool is_rpdo = false;
+    if (this->pdo_map_->find(index) != this->pdo_map_->end())
+    {
+      auto object = this->pdo_map_->at(index);
+      if (object.find(subindex) != object.end())
+      {
+        auto entry = object.at(subindex);
+        is_rpdo = entry.is_rpdo;
+      }
+    }
+    if (is_rpdo)
+    {
+      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+      this->dictionary_->setVal<T>(index, subindex, value);
+      this->tpdo_mapped[index][subindex] = value;
+      this->tpdo_mapped[index][subindex].WriteEvent();
+    }
+    else
+    {
+      COData d = {index, subindex, 0, CODataTypes::COData32};
+      std::memcpy(&d.data_, &value, sizeof(T));
+      auto f = async_sdo_write(d);
+      f.wait();
+      try
+      {
+        bool temp = f.get();
+      }
+      catch (std::exception & e)
+      {
+        RCLCPP_ERROR(rclcpp::get_logger(name_), e.what());
+      }
+    }
   }
 };
 
