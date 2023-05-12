@@ -26,19 +26,18 @@ void NodeCanopenBaseDriver<NODETYPE>::activate(bool called_from_base)
 {
   nmt_state_publisher_thread_ =
     std::thread(std::bind(&NodeCanopenBaseDriver<NODETYPE>::nmt_listener, this));
-
-  rpdo_publisher_thread_ =
-    std::thread(std::bind(&NodeCanopenBaseDriver<NODETYPE>::rdpo_listener, this));
-
-  emcy_publisher_thread_ =
-    std::thread(std::bind(&NodeCanopenBaseDriver<NODETYPE>::emcy_listener, this));
+  emcy_queue_ = this->lely_driver_->async_request_emcy();
+  rpdo_queue_ = this->lely_driver_->async_request_rpdo();
+  poll_timer_ = this->node_->create_wall_timer(
+    std::chrono::milliseconds(10),
+    std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
 }
 
 template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::deactivate(bool called_from_base)
 {
   nmt_state_publisher_thread_.join();
-  rpdo_publisher_thread_.join();
+  poll_timer_->cancel();
 }
 
 template <class NODETYPE>
@@ -179,6 +178,52 @@ void NodeCanopenBaseDriver<NODETYPE>::rdpo_listener()
     catch (const std::exception & e)
     {
       RCLCPP_ERROR_STREAM(this->node_->get_logger(), "RPDO Listener error: " << e.what());
+      break;
+    }
+  }
+}
+template <class NODETYPE>
+void NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback()
+{
+  for (int i = 0; i < 10; i++)
+  {
+    auto opt = emcy_queue_->try_pop();
+    if (!opt.has_value())
+    {
+      break;
+    }
+    try
+    {
+      if (emcy_cb_)
+      {
+        emcy_cb_(opt.value(), this->lely_driver_->get_id());
+      }
+      on_emcy(opt.value());
+    }
+    catch (const std::exception & e)
+    {
+      RCLCPP_ERROR_STREAM(this->node_->get_logger(), "EMCY poll error: " << e.what());
+      break;
+    }
+  }
+  for (int i = 0; i < 10; i++)
+  {
+    auto opt = rpdo_queue_->try_pop();
+    if (!opt.has_value())
+    {
+      break;
+    }
+    try
+    {
+      if (rpdo_cb_)
+      {
+        rpdo_cb_(opt.value(), this->lely_driver_->get_id());
+      }
+      on_rpdo(opt.value());
+    }
+    catch (const std::exception & e)
+    {
+      RCLCPP_ERROR_STREAM(this->node_->get_logger(), "RPDO Poll error: " << e.what());
       break;
     }
   }

@@ -36,6 +36,10 @@ protected:
   // emcy callback
   std::function<void(COEmcy, uint8_t)> emcy_cb_;
 
+  std::shared_ptr<ros2_canopen::SafeQueue<ros2_canopen::COEmcy>> emcy_queue_;
+  std::shared_ptr<ros2_canopen::SafeQueue<ros2_canopen::COData>> rpdo_queue_;
+  rclcpp::TimerBase::SharedPtr poll_timer_;
+  void poll_timer_callback();
   void nmt_listener();
   virtual void on_nmt(canopen::NmtState nmt_state);
   void rdpo_listener();
