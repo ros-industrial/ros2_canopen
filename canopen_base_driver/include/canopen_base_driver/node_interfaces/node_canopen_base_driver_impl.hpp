@@ -26,8 +26,8 @@ void NodeCanopenBaseDriver<NODETYPE>::activate(bool called_from_base)
 {
   nmt_state_publisher_thread_ =
     std::thread(std::bind(&NodeCanopenBaseDriver<NODETYPE>::nmt_listener, this));
-  emcy_queue_ = this->lely_driver_->async_request_emcy();
-  rpdo_queue_ = this->lely_driver_->async_request_rpdo();
+  emcy_queue_ = this->lely_driver_->get_emcy_queue();
+  rpdo_queue_ = this->lely_driver_->get_rpdo_queue();
   poll_timer_ = this->node_->create_wall_timer(
     std::chrono::milliseconds(10),
     std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
