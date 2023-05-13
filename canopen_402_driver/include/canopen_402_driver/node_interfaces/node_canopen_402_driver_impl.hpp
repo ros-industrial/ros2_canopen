@@ -501,6 +501,7 @@ bool NodeCanopen402Driver<NODETYPE>::set_operation_mode(uint16_t mode)
   {
     return motor_->enterModeAndWait(mode);
   }
+  return false;
 }
 
 template <class NODETYPE>
