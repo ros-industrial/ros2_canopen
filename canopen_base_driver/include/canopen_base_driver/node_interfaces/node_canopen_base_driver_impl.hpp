@@ -160,7 +160,7 @@ template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::rdpo_listener()
 {
   RCLCPP_INFO(this->node_->get_logger(), "Starting RPDO Listener");
-  auto q = lely_driver_->async_request_rpdo();
+  auto q = lely_driver_->get_rpdo_queue();
   while (rclcpp::ok())
   {
     ros2_canopen::COData rpdo;
@@ -188,7 +188,7 @@ template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::emcy_listener()
 {
   RCLCPP_INFO(this->node_->get_logger(), "Starting EMCY Listener");
-  auto q = lely_driver_->async_request_emcy();
+  auto q = lely_driver_->get_emcy_queue();
   while (rclcpp::ok())
   {
     ros2_canopen::COEmcy emcy;

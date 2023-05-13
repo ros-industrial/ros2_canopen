@@ -445,7 +445,7 @@ public:
    * @return std::future<COData>
    * The returned future is set when an RPDO event is detected.
    */
-  std::shared_ptr<SafeQueue<COData>> async_request_rpdo();
+  std::shared_ptr<SafeQueue<COData>> get_rpdo_queue();
 
   /**
    * @brief Asynchronous request for EMCY
@@ -454,7 +454,7 @@ public:
    * @return std::future<COEmcy>
    * The returned future is set when an EMCY event is detected.
    */
-  std::shared_ptr<SafeQueue<COEmcy>> async_request_emcy();
+  std::shared_ptr<SafeQueue<COEmcy>> get_emcy_queue();
 
   /**
    * @brief Executes a TPDO transmission
