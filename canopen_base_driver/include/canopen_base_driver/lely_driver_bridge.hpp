@@ -408,6 +408,77 @@ public:
    */
   std::future<bool> async_sdo_write(COData data);
 
+  template <typename T>
+  std::future<bool> async_sdo_write_typed(uint16_t idx, uint8_t subidx, T value)
+  {
+    std::unique_lock<std::mutex> lck(sdo_mutex);
+    if (running)
+    {
+      sdo_cond.wait(lck);
+    }
+    running = true;
+
+    auto prom = std::make_shared<std::promise<bool>>();
+    lely::COSub * sub = this->dictionary_->find(idx, subidx);
+    if (sub == nullptr)
+    {
+      std::cout << "async_sdo_write_typed: id=" << (unsigned int)this->get_id() << " index=0x"
+                << std::hex << (unsigned int)idx << " subindex=" << (unsigned int)subidx
+                << " object does not exist" << std::endl;
+      prom->set_value(false);
+      this->running = false;
+      this->sdo_cond.notify_one();
+      return prom->get_future();
+    }
+
+    this->SubmitWrite(
+      idx, subidx, value,
+      [this, value, prom](uint8_t id, uint16_t idx, uint8_t subidx, ::std::error_code ec) mutable
+      {
+        if (ec)
+        {
+          prom->set_exception(
+            lely::canopen::make_sdo_exception_ptr(id, idx, subidx, ec, "AsyncDownload"));
+        }
+        else
+        {
+          std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+          this->dictionary_->setVal<T>(idx, subidx, value);
+          prom->set_value(true);
+        }
+        std::unique_lock<std::mutex> lck(this->sdo_mutex);
+        this->running = false;
+        this->sdo_cond.notify_one();
+      },
+      20ms);
+    return prom->get_future();
+  }
+
+  template <typename T>
+  bool sync_sdo_write_typed(
+    uint16_t idx, uint8_t subidx, T value, std::chrono::milliseconds timeout)
+  {
+    auto fut = async_sdo_write_typed(idx, subidx, value);
+    auto wait_res = fut.wait_for(timeout);
+    if (wait_res == std::future_status::timeout)
+    {
+      std::cout << "sync_sdo_write_typed: id=" << (unsigned int)this->get_id() << " index=0x"
+                << std::hex << (unsigned int)idx << " subindex=" << (unsigned int)subidx
+                << " timed out." << std::endl;
+      return false;
+    }
+    bool res = false;
+    try
+    {
+      res = fut.get();
+    }
+    catch (std::exception & e)
+    {
+      RCLCPP_ERROR(rclcpp::get_logger(name_), e.what());
+    }
+    return res;
+  }
+
   /**
    * @brief Aynchronous SDO Read
    *
@@ -422,6 +493,85 @@ public:
    * request was unsuccessful.
    */
   std::future<COData> async_sdo_read(COData data);
+
+  template <typename T>
+  std::future<T> async_sdo_read_typed(uint16_t idx, uint8_t subidx)
+  {
+    std::unique_lock<std::mutex> lck(sdo_mutex);
+    if (running)
+    {
+      sdo_cond.wait(lck);
+    }
+    running = true;
+
+    auto prom = std::make_shared<std::promise<T>>();
+    lely::COSub * sub = this->dictionary_->find(idx, subidx);
+    if (sub == nullptr)
+    {
+      std::cout << "async_sdo_read: id=" << (unsigned int)this->get_id() << " index=0x" << std::hex
+                << (unsigned int)idx << " subindex=" << (unsigned int)subidx
+                << " object does not exist" << std::endl;
+      try
+      {
+        throw lely::canopen::SdoError(this->get_id(), idx, subidx, lely::canopen::SdoErrc::NO_OBJ);
+      }
+      catch (...)
+      {
+        prom->set_exception(std::current_exception());
+      }
+      this->running = false;
+      this->sdo_cond.notify_one();
+      return prom->get_future();
+    }
+    this->SubmitRead<T>(
+      idx, subidx,
+      [this, prom](uint8_t id, uint16_t idx, uint8_t subidx, ::std::error_code ec, T value) mutable
+      {
+        if (ec)
+        {
+          prom->set_exception(
+            lely::canopen::make_sdo_exception_ptr(id, idx, subidx, ec, "AsyncUpload"));
+        }
+        else
+        {
+          std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+          this->dictionary_->setVal<T>(idx, subidx, value);
+          prom->set_value(value);
+        }
+        std::unique_lock<std::mutex> lck(this->sdo_mutex);
+        this->running = false;
+        this->sdo_cond.notify_one();
+      },
+      20ms);
+    return prom->get_future();
+  }
+
+  template <typename T>
+  bool sync_sdo_read_typed(
+    uint16_t idx, uint8_t subidx, T & value, std::chrono::milliseconds timeout)
+  {
+    auto fut = async_sdo_read_typed<T>(idx, subidx);
+    auto wait_res = fut.wait_for(timeout);
+    if (wait_res == std::future_status::timeout)
+    {
+      std::cout << "sync_sdo_read_typed: id=" << (unsigned int)this->get_id() << " index=0x"
+                << std::hex << (unsigned int)idx << " subindex=" << (unsigned int)subidx
+                << " timed out." << std::endl;
+      return false;
+    }
+    bool res = false;
+    try
+    {
+      value = fut.get();
+      res = true;
+    }
+    catch (std::exception & e)
+    {
+      RCLCPP_ERROR(rclcpp::get_logger(name_), e.what());
+      res = false;
+    }
+    return res;
+  }
 
   /**
    * @brief Asynchronous request for NMT
@@ -597,49 +747,40 @@ public:
         is_tpdo = entry.is_tpdo;
       }
     }
-    if (is_tpdo)
+    if (!is_tpdo)
     {
-      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
-      if (typeid(T) == typeid(uint8_t))
+      if (sync_sdo_read_typed<T>(index, subindex, value, std::chrono::milliseconds(20)))
       {
-        value = this->dictionary_->getVal<CO_DEFTYPE_UNSIGNED8>(index, subindex);
-      }
-      if (typeid(T) == typeid(uint16_t))
-      {
-        value = this->dictionary_->getVal<CO_DEFTYPE_UNSIGNED16>(index, subindex);
-      }
-      if (typeid(T) == typeid(uint32_t))
-      {
-        value = this->dictionary_->getVal<CO_DEFTYPE_UNSIGNED32>(index, subindex);
-      }
-      if (typeid(T) == typeid(int8_t))
-      {
-        value = this->dictionary_->getVal<CO_DEFTYPE_INTEGER8>(index, subindex);
-      }
-      if (typeid(T) == typeid(int16_t))
-      {
-        value = this->dictionary_->getVal<CO_DEFTYPE_INTEGER16>(index, subindex);
-      }
-      if (typeid(T) == typeid(int32_t))
-      {
-        value = this->dictionary_->getVal<CO_DEFTYPE_INTEGER32>(index, subindex);
+        return value;
       }
     }
-    else
+
+    std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+    if (typeid(T) == typeid(uint8_t))
     {
-      COData d = {index, subindex, 0, CODataTypes::COData32};
-      auto f = async_sdo_read(d);
-      f.wait();
-      try
-      {
-        uint32_t temp = f.get().data_;
-        std::memcpy(&value, &temp, sizeof(T));
-      }
-      catch (std::exception & e)
-      {
-        RCLCPP_ERROR(rclcpp::get_logger(name_), e.what());
-      }
+      value = this->dictionary_->getVal<CO_DEFTYPE_UNSIGNED8>(index, subindex);
     }
+    if (typeid(T) == typeid(uint16_t))
+    {
+      value = this->dictionary_->getVal<CO_DEFTYPE_UNSIGNED16>(index, subindex);
+    }
+    if (typeid(T) == typeid(uint32_t))
+    {
+      value = this->dictionary_->getVal<CO_DEFTYPE_UNSIGNED32>(index, subindex);
+    }
+    if (typeid(T) == typeid(int8_t))
+    {
+      value = this->dictionary_->getVal<CO_DEFTYPE_INTEGER8>(index, subindex);
+    }
+    if (typeid(T) == typeid(int16_t))
+    {
+      value = this->dictionary_->getVal<CO_DEFTYPE_INTEGER16>(index, subindex);
+    }
+    if (typeid(T) == typeid(int32_t))
+    {
+      value = this->dictionary_->getVal<CO_DEFTYPE_INTEGER32>(index, subindex);
+    }
+
     return value;
   }
 
@@ -665,18 +806,7 @@ public:
     }
     else
     {
-      COData d = {index, subindex, 0, CODataTypes::COData32};
-      std::memcpy(&d.data_, &value, sizeof(T));
-      auto f = async_sdo_write(d);
-      f.wait();
-      try
-      {
-        bool temp = f.get();
-      }
-      catch (std::exception & e)
-      {
-        RCLCPP_ERROR(rclcpp::get_logger(name_), e.what());
-      }
+      sync_sdo_write_typed(index, subindex, value, std::chrono::milliseconds(20));
     }
   }
 };
