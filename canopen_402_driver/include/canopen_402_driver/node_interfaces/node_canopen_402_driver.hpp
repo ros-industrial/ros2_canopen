@@ -34,7 +34,6 @@ protected:
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_interpolated_position_service;
   rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr handle_set_target_service;
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr publish_joint_state;
-  uint32_t period_ms_;
   double scale_pos_to_dev_;
   double scale_pos_from_dev_;
   double scale_vel_to_dev_;
@@ -42,7 +41,7 @@ protected:
   ros2_canopen::State402::InternalState switching_state_;
 
   void publish();
-  void run();
+  virtual void poll_timer_callback() override;
 
 public:
   NodeCanopen402Driver(NODETYPE * node);

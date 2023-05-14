@@ -136,7 +136,6 @@ template <>
 void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool called_from_base)
 {
   NodeCanopenProxyDriver<rclcpp_lifecycle::LifecycleNode>::configure(false);
-  auto period = this->config_["period"].as<uint32_t>();
   std::optional<double> scale_pos_to_dev;
   std::optional<double> scale_pos_from_dev;
   std::optional<double> scale_vel_to_dev;
@@ -190,14 +189,12 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
     this->node_->get_logger(),
     "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\n",
     scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_);
-  period_ms_ = period;
 }
 
 template <>
 void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
 {
   NodeCanopenProxyDriver<rclcpp::Node>::configure(false);
-  auto period = this->config_["period"].as<uint32_t>();
   std::optional<double> scale_pos_to_dev;
   std::optional<double> scale_pos_from_dev;
   std::optional<double> scale_vel_to_dev;
@@ -251,17 +248,13 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
     this->node_->get_logger(),
     "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\n",
     scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_);
-  period_ms_ = period;
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::activate(bool called_from_base)
 {
-  motor_->registerDefaultModes();
-  timer_ = this->node_->create_wall_timer(
-    std::chrono::milliseconds(period_ms_), std::bind(&NodeCanopen402Driver<NODETYPE>::run, this),
-    this->timer_cbg_);
   NodeCanopenProxyDriver<NODETYPE>::activate(false);
+  motor_->registerDefaultModes();
 }
 
 template <class NODETYPE>
@@ -272,8 +265,9 @@ void NodeCanopen402Driver<NODETYPE>::deactivate(bool called_from_base)
 }
 
 template <class NODETYPE>
-void NodeCanopen402Driver<NODETYPE>::run()
+void NodeCanopen402Driver<NODETYPE>::poll_timer_callback()
 {
+  NodeCanopenProxyDriver<NODETYPE>::poll_timer_callback();
   motor_->handleRead();
   motor_->handleWrite();
   publish();
