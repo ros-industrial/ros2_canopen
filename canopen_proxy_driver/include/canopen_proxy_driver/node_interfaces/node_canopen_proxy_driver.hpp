@@ -29,6 +29,7 @@ protected:
   virtual void on_nmt(canopen::NmtState nmt_state) override;
   virtual void on_rpdo(COData data) override;
   virtual void on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg);
+  virtual void diagnostic_timer_callback() override;
 
   void on_nmt_state_reset(
     const std_srvs::srv::Trigger::Request::SharedPtr request,

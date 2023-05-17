@@ -101,38 +101,64 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
   {
     auto message = std_msgs::msg::String();
 
+    this->diagnostic_key_value_->key = "NMT";
+    this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::OK;
+
     switch (nmt_state)
     {
       case canopen::NmtState::BOOTUP:
         message.data = "BOOTUP";
+        this->diagnostic_status_->message = "Device is booting up.";
+        this->diagnostic_key_value_->value = "BOOTUP";
         break;
       case canopen::NmtState::PREOP:
         message.data = "PREOP";
+        this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
+        this->diagnostic_status_->message = "Device is in pre-operational state.";
+        this->diagnostic_key_value_->value = "PREOP";
         break;
       case canopen::NmtState::RESET_COMM:
         message.data = "RESET_COMM";
+        this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
+        this->diagnostic_status_->message = "Device is in reset communication state.";
+        this->diagnostic_key_value_->value = "RESET_COMM";
         break;
       case canopen::NmtState::RESET_NODE:
         message.data = "RESET_NODE";
+        this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
+        this->diagnostic_status_->message = "Device is in reset node state.";
+        this->diagnostic_key_value_->value = "RESET_NODE";
         break;
       case canopen::NmtState::START:
         message.data = "START";
+        this->diagnostic_status_->message = "Device is in operational state.";
+        this->diagnostic_key_value_->value = "START";
         break;
       case canopen::NmtState::STOP:
         message.data = "STOP";
+        this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
+        this->diagnostic_status_->message = "Device is in stopped state.";
+        this->diagnostic_key_value_->value = "STOP";
         break;
       case canopen::NmtState::TOGGLE:
         message.data = "TOGGLE";
+        this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
+        this->diagnostic_status_->message = "Device is in toggle state.";
+        this->diagnostic_key_value_->value = "TOGGLE";
         break;
       default:
         RCLCPP_ERROR(this->node_->get_logger(), "Unknown NMT State.");
         message.data = "ERROR";
+        this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
+        this->diagnostic_status_->message = "Unknown NMT State.";
+        this->diagnostic_key_value_->value = "ERROR";
         break;
     }
     RCLCPP_INFO(
       this->node_->get_logger(), "Slave %hhu: Switched NMT state to %s",
       this->lely_driver_->get_id(), message.data.c_str());
 
+    this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
     nmt_state_publisher->publish(message);
   }
 }
@@ -301,6 +327,16 @@ bool NodeCanopenProxyDriver<NODETYPE>::sdo_write(ros2_canopen::COData & data)
   }
   RCLCPP_ERROR(this->node_->get_logger(), "Could not write to SDO because driver not activated.");
   return false;
+}
+
+template <class NODETYPE>
+void NodeCanopenProxyDriver<NODETYPE>::diagnostic_timer_callback()
+{
+  auto msg = diagnostic_msgs::msg::DiagnosticArray();
+  msg.header.stamp = this->node_->now();
+  msg.status.push_back(*(this->diagnostic_status_));
+
+  this->diagnostic_publisher_->publish(msg);
 }
 
 #endif
