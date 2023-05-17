@@ -21,12 +21,24 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
 {
   try
   {
-    period_ms_ = this->config_["period"].as<std::uint32_t>();
+    polling_ = this->config_["polling"].as<bool>();
   }
   catch (...)
   {
-    RCLCPP_ERROR(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
-    period_ms_ = 10;
+    RCLCPP_ERROR(this->node_->get_logger(), "Could not polling from config, setting to true.");
+    polling_ = true;
+  }
+  if (polling_)
+  {
+    try
+    {
+      period_ms_ = this->config_["period"].as<std::uint32_t>();
+    }
+    catch (...)
+    {
+      RCLCPP_ERROR(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
+      period_ms_ = 10;
+    }
   }
 }
 template <>
@@ -34,12 +46,24 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
 {
   try
   {
-    period_ms_ = this->config_["period"].as<std::uint32_t>();
+    polling_ = this->config_["polling"].as<bool>();
   }
   catch (...)
   {
-    RCLCPP_ERROR(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
-    period_ms_ = 10;
+    RCLCPP_ERROR(this->node_->get_logger(), "Could not polling from config, setting to true.");
+    polling_ = true;
+  }
+  if (polling_)
+  {
+    try
+    {
+      period_ms_ = this->config_["period"].as<std::uint32_t>();
+    }
+    catch (...)
+    {
+      RCLCPP_ERROR(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
+      period_ms_ = 10;
+    }
   }
 }
 
@@ -50,11 +74,19 @@ void NodeCanopenBaseDriver<NODETYPE>::activate(bool called_from_base)
     std::thread(std::bind(&NodeCanopenBaseDriver<NODETYPE>::nmt_listener, this));
   emcy_queue_ = this->lely_driver_->get_emcy_queue();
   rpdo_queue_ = this->lely_driver_->get_rpdo_queue();
-  // poll_timer_ = this->node_->create_wall_timer(
-  //   std::chrono::milliseconds(period_ms_),
-  //   std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this), this->timer_cbg_);
-  this->lely_driver_->set_sync_function(
-    std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
+  if (polling_)
+  {
+    RCLCPP_INFO(this->node_->get_logger(), "Starting with polling mode.");
+    poll_timer_ = this->node_->create_wall_timer(
+      std::chrono::milliseconds(period_ms_),
+      std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this), this->timer_cbg_);
+  }
+  else
+  {
+    RCLCPP_INFO(this->node_->get_logger(), "Starting with event mode.");
+    this->lely_driver_->set_sync_function(
+      std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
+  }
 }
 
 template <class NODETYPE>
@@ -62,6 +94,7 @@ void NodeCanopenBaseDriver<NODETYPE>::deactivate(bool called_from_base)
 {
   nmt_state_publisher_thread_.join();
   poll_timer_->cancel();
+  this->lely_driver_->unset_sync_function();
 }
 
 template <class NODETYPE>

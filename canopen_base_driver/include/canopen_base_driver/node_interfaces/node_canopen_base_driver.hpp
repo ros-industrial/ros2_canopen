@@ -29,6 +29,7 @@ protected:
   std::mutex driver_mutex_;
   std::shared_ptr<ros2_canopen::LelyDriverBridge> lely_driver_;
   uint32_t period_ms_;
+  bool polling_;
 
   // nmt state callback
   std::function<void(canopen::NmtState, uint8_t)> nmt_state_cb_;
