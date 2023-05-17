@@ -70,6 +70,11 @@ bool Motor402::switchMode(uint16_t mode)
     catch (...)
     {
     }
+    if (enable_diagnostics_.load())
+    {
+      this->diagnostic_key_value_->value = "No mode selected: " + std::to_string(mode);
+      this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+    }
     return true;
   }
 
@@ -130,11 +135,21 @@ bool Motor402::switchMode(uint16_t mode)
     {
       selected_mode_ = next_mode;
       okay = true;
+      if (enable_diagnostics_.load())
+      {
+        this->diagnostic_key_value_->value = "Mode selected: " + std::to_string(mode);
+        this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+      }
     }
     else
     {
       RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Mode switch timed out.");
       driver->universal_set_value<int8_t>(op_mode_index, 0x0, mode_id_);
+      if (enable_diagnostics_.load())
+      {
+        this->diagnostic_key_value_->value = "Mode switch timed out: " + std::to_string(mode);
+        this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+      }
     }
   }
 
@@ -159,10 +174,22 @@ bool Motor402::switchState(const State402::InternalState & target)
       RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Could not set transition.");
       return false;
     }
+    else if (enable_diagnostics_.load())
+    {
+      this->diagnostic_key_value_->value =
+        "Transition: " + std::to_string(state) + " -> " + std::to_string(next);
+      this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+    }
     lock.unlock();
     if (state != next && !state_handler_.waitForNewState(abstime, state))
     {
       RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Transition timed out.");
+      if (enable_diagnostics_.load())
+      {
+        this->diagnostic_key_value_->value =
+          "Transition timed out: " + std::to_string(state) + " -> " + std::to_string(next);
+        this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+      }
       return false;
     }
   }
@@ -252,36 +279,60 @@ void Motor402::handleDiag()
 {
   uint16_t sw = status_word_;
   State402::InternalState state = state_handler_.getState();
+  this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::OK;
 
   switch (state)
   {
     case State402::Not_Ready_To_Switch_On:
-    case State402::Switch_On_Disabled:
-    case State402::Ready_To_Switch_On:
-    case State402::Switched_On:
-      std::cout << "Motor operation is not enabled" << std::endl;
-    case State402::Operation_Enable:
+      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
+      this->diagnostic_status_->message = "Not ready to switch on";
       break;
-
+    case State402::Switch_On_Disabled:
+      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
+      this->diagnostic_status_->message = "Switch on disabled";
+      break;
+    case State402::Ready_To_Switch_On:
+      this->diagnostic_status_->message = "Ready to switch on";
+      break;
+    case State402::Switched_On:
+      // std::cout << "Motor operation is not enabled" << std::endl;
+      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::STALE;
+      this->diagnostic_status_->message = "Switched on";
+      break;
+    case State402::Operation_Enable:
+      this->diagnostic_status_->message = "Operation enabled";
+      break;
     case State402::Quick_Stop_Active:
-      std::cout << "Quick stop is active" << std::endl;
+      // std::cout << "Quick stop is active" << std::endl;
+      this->diagnostic_status_->message = "Quick stop active";
       break;
     case State402::Fault:
+      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
+      this->diagnostic_status_->message = "Fault";
+      break;
     case State402::Fault_Reaction_Active:
-      std::cout << "Motor has fault" << std::endl;
+      // std::cout << "Motor has fault" << std::endl;
+      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
+      this->diagnostic_status_->message = "Motor has fault";
       break;
     case State402::Unknown:
-      std::cout << "State is unknown" << std::endl;
+      // std::cout << "State is unknown" << std::endl;
+      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
+      this->diagnostic_status_->message = "State is unknown";
       break;
   }
 
   if (sw & (1 << State402::SW_Warning))
   {
-    std::cout << "Warning bit is set" << std::endl;
+    // std::cout << "Warning bit is set" << std::endl;
+    this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
+    this->diagnostic_status_->message = "Warning bit is set";
   }
   if (sw & (1 << State402::SW_Internal_limit))
   {
-    std::cout << "Internal limit active" << std::endl;
+    // std::cout << "Internal limit active" << std::endl;
+    this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
+    this->diagnostic_status_->message = "Internal limit active";
   }
 }
 bool Motor402::handleInit()

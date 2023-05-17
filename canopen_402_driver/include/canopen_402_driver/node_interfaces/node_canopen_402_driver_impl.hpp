@@ -255,6 +255,7 @@ void NodeCanopen402Driver<NODETYPE>::activate(bool called_from_base)
 {
   NodeCanopenProxyDriver<NODETYPE>::activate(false);
   motor_->registerDefaultModes();
+  motor_->set_diagnostic_status_msgs(this->diagnostic_status_, this->diagnostic_enabled_);
 }
 
 template <class NODETYPE>
@@ -600,6 +601,18 @@ bool NodeCanopen402Driver<NODETYPE>::set_target(double target)
   {
     return false;
   }
+}
+
+template <class NODETYPE>
+void NodeCanopen402Driver<NODETYPE>::diagnostic_timer_callback()
+{
+  this->motor_->handleDiag();
+
+  auto diag = diagnostic_msgs::msg::DiagnosticArray();
+  diag.header.stamp = this->node_->now();
+  diag.status.push_back(*this->diagnostic_status_);
+
+  this->diagnostic_publisher_->publish(diag);
 }
 
 #endif
