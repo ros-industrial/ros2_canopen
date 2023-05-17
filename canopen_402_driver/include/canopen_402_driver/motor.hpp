@@ -10,6 +10,8 @@
 #include <limits>
 #include <mutex>
 #include <thread>
+#include "diagnostic_msgs/msg/diagnostic_status.hpp"
+#include "diagnostic_msgs/msg/key_value.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 #include "canopen_402_driver/default_homing_mode.hpp"
@@ -53,6 +55,14 @@ public:
   virtual bool isModeSupported(uint16_t mode);
   virtual uint16_t getMode();
   bool readState();
+
+  /**
+   * @brief Updates the device diagnostic information
+   *
+   * This function updates the diagnostic information of the device by updating the diagnostic
+   * status message
+   * @ref diagnostic_status_ and publishing it.
+   */
   void handleDiag();
   /**
    * @brief Initialise the drive
@@ -154,6 +164,16 @@ public:
     return (double)this->driver->universal_get_value<int32_t>(0x6064, 0);
   }
 
+  void set_diagnostic_status_msgs(
+    std::shared_ptr<diagnostic_msgs::msg::DiagnosticStatus> status, bool enable)
+  {
+    this->enable_diagnostics_.store(enable);
+    this->diagnostic_status_ = status;
+    this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::OK;
+    this->diagnostic_key_value_ = std::make_shared<diagnostic_msgs::msg::KeyValue>();
+    this->diagnostic_key_value_->key = "Motor402";
+  }
+
 private:
   virtual bool isModeSupportedByDevice(uint16_t mode);
   void registerMode(uint16_t id, const ModeSharedPtr & m);
@@ -190,6 +210,11 @@ private:
   const uint16_t op_mode_display_index = 0x6061;
   const uint16_t op_mode_index = 0x6060;
   const uint16_t supported_drive_modes_index = 0x6502;
+
+  // Diagnostic components
+  std::atomic<bool> enable_diagnostics_ = false;
+  std::shared_ptr<diagnostic_msgs::msg::DiagnosticStatus> diagnostic_status_;
+  std::shared_ptr<diagnostic_msgs::msg::KeyValue> diagnostic_key_value_;
 };
 
 }  // namespace ros2_canopen
