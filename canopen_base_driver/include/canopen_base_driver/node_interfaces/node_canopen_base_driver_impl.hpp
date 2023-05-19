@@ -189,11 +189,10 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
 
   if (diagnostic_enabled_.load())
   {
-    diagnostic_key_value_->key = "Add to master";
-    diagnostic_key_value_->value = "OK";
     diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::STALE;
     diagnostic_status_->message = "Device booted.";
-    diagnostic_status_->values.push_back(*diagnostic_key_value_);
+    diagnostic_status_->values.push_back(
+      diagnostic_key_value_->set__key("Add to master").set__value("OK"));
   }
 }
 
@@ -217,11 +216,10 @@ void NodeCanopenBaseDriver<NODETYPE>::remove_from_master()
   }
   if (diagnostic_enabled_.load())
   {
-    diagnostic_key_value_->key = "Remove to master";
-    diagnostic_key_value_->value = "OK";
     diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
     diagnostic_status_->message = "Device removed from the master.";
-    diagnostic_status_->values.push_back(*diagnostic_key_value_);
+    diagnostic_status_->values.push_back(
+      diagnostic_key_value_->set__key("Remove to master").set__value("OK"));
   }
 }
 template <class NODETYPE>
@@ -268,7 +266,6 @@ void NodeCanopenBaseDriver<NODETYPE>::on_emcy(COEmcy emcy)
 {
   diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
   diagnostic_status_->message = "Emergency message received.";
-  diagnostic_key_value_->key = "EMCY";
   std::string emcy_msg = "Emergency message received. ";
   emcy_msg.append("eec: ");
   emcy_msg.append(std::to_string(emcy.eec));
@@ -280,8 +277,8 @@ void NodeCanopenBaseDriver<NODETYPE>::on_emcy(COEmcy emcy)
     emcy_msg.append(std::to_string(msef));
     emcy_msg.append(" ");
   }
-  diagnostic_key_value_->value = emcy_msg;
-  diagnostic_status_->values.push_back(*diagnostic_key_value_);
+  diagnostic_status_->values.push_back(
+    diagnostic_key_value_->set__key("EMCY").set__value(emcy_msg));
 }
 
 template <class NODETYPE>
