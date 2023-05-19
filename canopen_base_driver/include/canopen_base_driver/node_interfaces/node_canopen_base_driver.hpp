@@ -47,6 +47,7 @@ protected:
 
   // Diagnostic components
   std::atomic<bool> diagnostic_enabled_;
+  uint32_t diagnostic_period_ms_;
   rclcpp::TimerBase::SharedPtr diagnostic_timer_;
   rclcpp::Publisher<diagnostic_msgs::msg::DiagnosticArray>::SharedPtr diagnostic_publisher_;
   std::shared_ptr<diagnostic_msgs::msg::KeyValue> diagnostic_key_value_;

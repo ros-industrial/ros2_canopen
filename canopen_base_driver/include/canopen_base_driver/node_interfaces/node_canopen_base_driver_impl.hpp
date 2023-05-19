@@ -45,10 +45,31 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
   }
 
   // Diagnostic components
-  // diagnostic_enabled_ = this->config_["diagnostic"]["enabled"].as<bool>();
-  diagnostic_enabled_ = true;
+  try
+  {
+    diagnostic_enabled_ = this->config_["diagnostics"]["enable"].as<bool>();
+  }
+  catch (...)
+  {
+    RCLCPP_ERROR(
+      this->node_->get_logger(),
+      "Could not read enable diagnostics from config, setting to false.");
+    diagnostic_enabled_ = false;
+  }
   if (diagnostic_enabled_.load())
   {
+    try
+    {
+      diagnostic_period_ms_ = this->config_["diagnostics"]["period"].as<std::uint32_t>();
+    }
+    catch (...)
+    {
+      RCLCPP_ERROR(
+        this->node_->get_logger(),
+        "Could not read diagnostics period from config, setting to 1000ms");
+      diagnostic_period_ms_ = 1000;
+    }
+
     diagnostic_status_->name = this->node_->get_name();
     diagnostic_status_->hardware_id = std::to_string(this->node_id_);
     diagnostic_publisher_ = this->node_->create_publisher<diagnostic_msgs::msg::DiagnosticArray>(
@@ -81,10 +102,31 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
   }
 
   // Diagnostic components
-  // diagnostic_enabled_ = this->config_["diagnostic"]["enabled"].as<bool>();
-  diagnostic_enabled_ = true;
+  try
+  {
+    diagnostic_enabled_ = this->config_["diagnostics"]["enable"].as<bool>();
+  }
+  catch (...)
+  {
+    RCLCPP_ERROR(
+      this->node_->get_logger(),
+      "Could not read enable diagnostics from config, setting to false.");
+    diagnostic_enabled_ = false;
+  }
   if (diagnostic_enabled_.load())
   {
+    try
+    {
+      diagnostic_period_ms_ = this->config_["diagnostics"]["period"].as<std::uint32_t>();
+    }
+    catch (...)
+    {
+      RCLCPP_ERROR(
+        this->node_->get_logger(),
+        "Could not read diagnostics period from config, setting to 1000ms");
+      diagnostic_period_ms_ = 1000;
+    }
+
     diagnostic_status_->name = this->node_->get_name();
     diagnostic_status_->hardware_id = std::to_string(this->node_id_);
     diagnostic_publisher_ = this->node_->create_publisher<diagnostic_msgs::msg::DiagnosticArray>(
@@ -120,8 +162,9 @@ void NodeCanopenBaseDriver<NODETYPE>::activate(bool called_from_base)
 
   if (diagnostic_enabled_.load())
   {
+    RCLCPP_INFO(this->node_->get_logger(), "Starting with diagnostics enabled.");
     diagnostic_timer_ = this->node_->create_wall_timer(
-      std::chrono::milliseconds(1000),
+      std::chrono::milliseconds(diagnostic_period_ms_),
       std::bind(&NodeCanopenBaseDriver<NODETYPE>::diagnostic_timer_callback, this),
       this->timer_cbg_);
   }
