@@ -169,9 +169,8 @@ public:
   {
     this->enable_diagnostics_.store(enable);
     this->diagnostic_status_ = status;
-    this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::OK;
     this->diagnostic_key_value_ = std::make_shared<diagnostic_msgs::msg::KeyValue>();
-    this->diagnostic_key_value_->key = "Motor402";
+    this->diagnostic_key_value_->key = "CiA402";
   }
 
 private:

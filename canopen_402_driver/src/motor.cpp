@@ -72,8 +72,8 @@ bool Motor402::switchMode(uint16_t mode)
     }
     if (enable_diagnostics_.load())
     {
-      this->diagnostic_key_value_->value = "No mode selected: " + std::to_string(mode);
-      this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+      this->diagnostic_status_->values.push_back(
+        this->diagnostic_key_value_->set__value("No mode selected: " + std::to_string(mode)));
     }
     return true;
   }
@@ -137,8 +137,8 @@ bool Motor402::switchMode(uint16_t mode)
       okay = true;
       if (enable_diagnostics_.load())
       {
-        this->diagnostic_key_value_->value = "Mode selected: " + std::to_string(mode);
-        this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+        this->diagnostic_status_->values.push_back(
+          this->diagnostic_key_value_->set__value("Mode selected: " + std::to_string(mode)));
       }
     }
     else
@@ -147,8 +147,8 @@ bool Motor402::switchMode(uint16_t mode)
       driver->universal_set_value<int8_t>(op_mode_index, 0x0, mode_id_);
       if (enable_diagnostics_.load())
       {
-        this->diagnostic_key_value_->value = "Mode switch timed out: " + std::to_string(mode);
-        this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+        this->diagnostic_status_->values.push_back(this->diagnostic_key_value_->set__value(
+          "Mode switch timed out: " + std::to_string(mode)));
       }
     }
   }
@@ -174,11 +174,10 @@ bool Motor402::switchState(const State402::InternalState & target)
       RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Could not set transition.");
       return false;
     }
-    else if (enable_diagnostics_.load())
+    else if (enable_diagnostics_.load() && success)
     {
-      this->diagnostic_key_value_->value =
-        "Transition: " + std::to_string(state) + " -> " + std::to_string(next);
-      this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+      this->diagnostic_status_->values.push_back(this->diagnostic_key_value_->set__value(
+        "State transition: " + std::to_string(state) + " -> " + std::to_string(next)));
     }
     lock.unlock();
     if (state != next && !state_handler_.waitForNewState(abstime, state))
@@ -186,9 +185,8 @@ bool Motor402::switchState(const State402::InternalState & target)
       RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Transition timed out.");
       if (enable_diagnostics_.load())
       {
-        this->diagnostic_key_value_->value =
-          "Transition timed out: " + std::to_string(state) + " -> " + std::to_string(next);
-        this->diagnostic_status_->values.push_back(*this->diagnostic_key_value_);
+        this->diagnostic_status_->values.push_back(this->diagnostic_key_value_->set__value(
+          "State transition timed out: " + std::to_string(state) + " -> " + std::to_string(next)));
       }
       return false;
     }
