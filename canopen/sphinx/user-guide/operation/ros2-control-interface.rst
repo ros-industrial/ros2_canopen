@@ -6,16 +6,17 @@ communication services, and object dictionary used for device communication
 and network management in a CANopen system.
 
 The CiA 301 profile defines several communication services that allow devices
- to exchange data and perform actions. These services include 
- the SDO (Service Data Object) service for transferring object data between devices, 
- the PDO (Process Data Object) service for real-time data exchange, 
- and the NMT (Network Management) service for network initialization, 
- device state control, and error handling.
+to exchange data and perform actions. These services include 
+the SDO (Service Data Object) service for transferring object data between devices, 
+the PDO (Process Data Object) service for real-time data exchange, 
+and the NMT (Network Management) service for network initialization, 
+device state control, and error handling.
 
-# Preparing the configuration
- To use the control system interface for CiA301 profile, we should prepare the following files
+Preparing the configuration
+-----
+To use the control system interface for CiA301 profile, we should prepare the following files
 
- .. csv-table:: Parameters
+.. csv-table:: Parameters
    :header: "Parameter", "Type", "Description"
 
     bus_conf, string, (Mandatory) Path to the bus configuration YAML-file
@@ -24,92 +25,91 @@ The CiA 301 profile defines several communication services that allow devices
     can_interface, string, (Mandatory) Name of the CAN interface to be used. (default: vcan0)
 
 
-## Define the bus configuration
-    .. code-block:: yaml
-        master:
+Define the bus configuration
+
+.. code-block:
+    master:
         node_id: 1
         driver: "ros2_canopen::MasterDriver"
         package: "canopen_master_driver"
         baudrate: 250
 
-        # Can be used instead of the paths below
-        options:
-        dcf_path: "@BUS_CONFIG_PATH@"
+    # Can be used instead of the paths below
+    options:
+    dcf_path: "@BUS_CONFIG_PATH@"
 
-        joint_1:
-            node_id: 0x00
-            dcf: "joint.eds"
-            driver: "ros2_canopen::ProxyDriver"
-            package: "canopen_proxy_driver"
-            reset_communication: false
+    joint_1:
+        node_id: 0x00
+        dcf: "joint.eds"
+        driver: "ros2_canopen::ProxyDriver"
+        package: "canopen_proxy_driver"
+        reset_communication: false
 
-        joint_2:
-            node_id: 0x01
-            dcf: "joint.eds"
-            driver: "ros2_canopen::ProxyDriver"
-            package: "canopen_proxy_driver"
-            reset_communication: false
+    joint_2:
+        node_id: 0x01
+        dcf: "joint.eds"
+        driver: "ros2_canopen::ProxyDriver"
+        package: "canopen_proxy_driver"
+        reset_communication: false
 
 
-    .. code-block:: yaml
-        controller_manager:
-            ros__parameters:
-                update_rate: 100  # Hz
+.. code-block::
+    controller_manager:
+        ros__parameters:
+            update_rate: 100  # Hz
 
-                joint_state_broadcaster:
-                type: joint_state_broadcaster/JointStateBroadcaster
-
-                joint_1_controller:
-                type: canopen_ros2_controllers/CanopenProxyController
-
-                right_caterpillar_controller:
-                type: canopen_ros2_controllers/CanopenProxyController
-
+            joint_state_broadcaster:
+            type: joint_state_broadcaster/JointStateBroadcaster
 
             joint_1_controller:
-                ros__parameters:
-                    joint: joint_1
+            type: canopen_ros2_controllers/CanopenProxyController
+
+            right_caterpillar_controller:
+            type: canopen_ros2_controllers/CanopenProxyController
+
+        joint_1_controller:
+            ros__parameters:
+                joint: joint_1
 
 
-           joint_1_controller:
-                ros__parameters:
-                    joint: joint_2
+       joint_1_controller:
+            ros__parameters:
+                joint: joint_2
 
-# The example of master_dcf see https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_tests/config/simple/simple.eds
+The example of master_dcf see https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_tests/config/simple/simple.eds
 
 
-# Preparing the code 
-## Use RPDO to access the current state
-### Defining the Joint and CANopen Data Structure
+Use RPDO to access the current state
+-----
+Defining the Joint and CANopen Data Structure
+ The first step is to define a structure that will hold information about your joints and the associated CANopen data. This structure serves as the foundation for  your CANopen network, ensuring that all the relevant data is stored and accessible when needed.
 
-The first step is to define a structure that will hold information about your joints and the associated CANopen data. This structure serves as the foundation for your CANopen network, ensuring that all the relevant data is stored and accessible when needed.
+Implementing the export_state_interfaces() Function
+ The next step involves implementing the export_state_interfaces() function. This function iterates over each joint and for those with a "node_id" parameter, it creates a series of StateInterface objects.
 
-### Implementing the export_state_interfaces() Function
+Registering Receive Process Data Objects (RPDOs) and Network Management (NMT)
+ Inside the export_state_interfaces() function, we register the resources for Receive Process Data Objects (RPDOs) and Network Management (NMT) for each joint. This step is crucial as it enables the control and management of these aspects in each joint's operation. The RPDOs and NMT commands that we register include:
 
-The next step involves implementing the export_state_interfaces() function. This function iterates over each joint and for those with a "node_id" parameter, it creates a series of StateInterface objects.
+ For RPDOs:
+ 
+ - "rpdo/index"
+ - "rpdo/subindex"
+ - "rpdo/type"
+ - "rpdo/data"
 
-### Registering Receive Process Data Objects (RPDOs) and Network Management (NMT)
+ For NMT:
+ 
+ - "nmt/state"
 
-Inside the export_state_interfaces() function, we register the resources for Receive Process Data Objects (RPDOs) and Network Management (NMT) for each joint. This step is crucial as it enables the control and management of these aspects in each joint's operation. The RPDOs and NMT commands that we register include:
+PDO Index and Subindex
+ Each Process Data Object (PDO) has an index and a subindex. The index acts as a unique identifier for each PDO, differentiating it from other PDOs in the system. The subindex is used to access individual data fields within each PDO as a PDO can contain multiple data fields.
 
-For RPDOs:
-"rpdo/index"
-"rpdo/subindex"
-"rpdo/type"
-"rpdo/data"
-For NMT:
-"nmt/state"
-
-### Understanding PDO Index and Subindex
-
-Each Process Data Object (PDO) has an index and a subindex. The index acts as a unique identifier for each PDO, differentiating it from other PDOs in the system. The subindex is used to access individual data fields within each PDO as a PDO can contain multiple data fields.
-
-### Managing Devices with Network Management (NMT)
-
-Network Management (NMT) is a fundamental service in the CANopen protocol suite. It offers basic device control commands such as start, stop, and reset, and manages the state of devices within the network.
+Network Management (NMT)
+ Network Management (NMT) is a fundamental service in the CANopen protocol suite. It offers basic device control commands such as start, stop, and reset, and manages the state of devices within the network.
 
 An example:
-.. code-block:: C++
+
+.. code-block::
     std::vector<hardware_interface::StateInterface> CanopenSystem::export_state_interfaces(){
         std::vector<hardware_interface::StateInterface> state_interfaces;
         for (uint i = 0; i < info_.joints.size(); i++)
@@ -141,29 +141,30 @@ An example:
         return state_interfaces;
     }
 
-## Use TPOD to send commands
+
+Use TPOD to send commands
+----
 In order to send commands to hardware devices in a CANopen network, we first need to export the appropriate hardware interfaces. This is a critical step that enables us to effectively control each joint within our network.
 
 Registering Transmit Process Data Objects (TPDOs)
+ Similar to how we handle state interfaces, we must register Transmit Process Data Objects (TPDOs) for each joint. These TPDOs are related to the following commands:
 
-Similar to how we handle state interfaces, we must register Transmit Process Data Objects (TPDOs) for each joint. These TPDOs are related to the following commands:
-
-"tpdo/index"
-"tpdo/subindex"
-"tpdo/type"
-"tpdo/data"
-"tpdo/owns"
-These commands are crucial as they enable real-time data transfer from a device to the network.
+- "tpdo/index"
+- "tpdo/subindex"
+- "tpdo/type"
+- "tpdo/data"
+- "tpdo/owns"
 
 Network Management (NMT) Commands
+ Beyond this, we have the ability to register commands associated with Network Management (NMT) to control the state of devices within our network. This is important for the smooth operation and control of our devices. The NMT related commands include:
 
-Beyond this, we have the ability to register commands associated with Network Management (NMT) to control the state of devices within our network. This is important for the smooth operation and control of our devices. The NMT related commands include:
+- "nmt/reset"
+- "nmt/reset_fbk"
+- "nmt/start"
+- "nmt/start_fbk"
 
-"nmt/reset"
-"nmt/reset_fbk"
-"nmt/start"
-"nmt/start_fbk"
 These NMT commands not only help in managing the state of devices but also in providing feedback (indicated by "fbk") from the device to the control system after the execution of a command. This feedback mechanism is crucial for ensuring the successful execution of commands and managing the overall health of the network.
+
 .. code-block:: C++
     std::vector<hardware_interface::CommandInterface> CanopenSystem::export_command_interfaces(){
     std::vector<hardware_interface::CommandInterface> command_interfaces;
@@ -206,5 +207,6 @@ These NMT commands not only help in managing the state of devices but also in pr
     return command_interfaces;
     }
 
-# How to launch the nodes
+How to launch the nodes
+----
 Finally, we prepare the launch file for the interface. An example see: https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_ros2_control/launch/canopen_system.launch.py
