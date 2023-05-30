@@ -12,6 +12,11 @@ the PDO (Process Data Object) service for real-time data exchange,
 and the NMT (Network Management) service for network initialization, 
 device state control, and error handling.
 
+To bring up the CiA301 interface, it includes three steps: preparing the configuration
+for bus and `ros2_control`, preparing the state and command interfaces,
+and finally preparing the launch file. 
+
+
 Preparing the configuration
 -----
 To use the control system interface for CiA301 profile, we should prepare the following files
@@ -46,7 +51,7 @@ Define the bus configuration
       package: "canopen_proxy_driver"
       reset_communication: false
 
-Define the controller parameters
+Define the `ros2_control` parameters
 .. code-block::
     controller_manager:
         ros__parameters:
@@ -58,7 +63,7 @@ Define the controller parameters
             joint_1_controller:
             type: canopen_ros2_controllers/CanopenProxyController
 
-            right_caterpillar_controller:
+            joint_2_controller:
             type: canopen_ros2_controllers/CanopenProxyController
 
         joint_1_controller:
