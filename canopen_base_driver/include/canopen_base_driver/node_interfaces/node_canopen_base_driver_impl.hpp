@@ -70,10 +70,10 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
       diagnostic_period_ms_ = 1000;
     }
 
-    diagnostic_status_->name = this->node_->get_name();
+    diagnostic_status_->name = "/" + std::string(this->node_->get_name());
     diagnostic_status_->hardware_id = std::to_string(this->node_id_);
-    diagnostic_publisher_ = this->node_->create_publisher<diagnostic_msgs::msg::DiagnosticArray>(
-      std::string(this->node_->get_name()).append("/diagnostic"), 10);
+    diagnostic_publisher_ =
+      this->node_->create_publisher<diagnostic_msgs::msg::DiagnosticArray>("/diagnostics", 10);
   }
 }
 template <>
@@ -127,10 +127,10 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
       diagnostic_period_ms_ = 1000;
     }
 
-    diagnostic_status_->name = this->node_->get_name();
+    diagnostic_status_->name = "/" + std::string(this->node_->get_name());
     diagnostic_status_->hardware_id = std::to_string(this->node_id_);
-    diagnostic_publisher_ = this->node_->create_publisher<diagnostic_msgs::msg::DiagnosticArray>(
-      std::string(this->node_->get_name()).append("/diagnostic"), 10);
+    diagnostic_publisher_ =
+      this->node_->create_publisher<diagnostic_msgs::msg::DiagnosticArray>("/diagnostics", 10);
   }
 }
 

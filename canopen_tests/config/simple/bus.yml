@@ -24,3 +24,6 @@ proxy_device_2:
   package: "canopen_proxy_driver"
   polling: true
   period: 10
+  diagnostics:
+    enable: true
+    period: 1000 # in milliseconds

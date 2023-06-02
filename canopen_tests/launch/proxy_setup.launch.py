@@ -2,6 +2,7 @@ import os
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 import launch
+import launch_ros
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
@@ -72,4 +73,20 @@ def generate_launch_description():
         }.items(),
     )
 
-    return LaunchDescription([slave_node_1, slave_node_2, device_container])
+    diagnostics_analyzer_path = os.path.join(
+        get_package_share_directory("canopen_tests"),
+        "launch",
+        "analyzers",
+        "proxy_diagnostic_analyzer.yaml",
+    )
+
+    print(diagnostics_analyzer_path)
+
+    aggregator = launch_ros.actions.Node(
+        package="diagnostic_aggregator",
+        executable="aggregator_node",
+        output="screen",
+        parameters=[diagnostics_analyzer_path],
+    )
+
+    return LaunchDescription([slave_node_1, slave_node_2, device_container, aggregator])
