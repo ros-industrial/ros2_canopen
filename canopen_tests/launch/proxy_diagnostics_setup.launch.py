@@ -9,7 +9,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
     slave_eds_path = os.path.join(
-        get_package_share_directory("canopen_tests"), "config", "simple", "simple.eds"
+        get_package_share_directory("canopen_tests"), "config", "simple_diagnostics", "simple.eds"
     )
     slave_node_1 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -59,18 +59,34 @@ def generate_launch_description():
             "master_config": os.path.join(
                 get_package_share_directory("canopen_tests"),
                 "config",
-                "simple",
+                "simple_diagnostics",
                 "master.dcf",
             ),
             "master_bin": "",
             "bus_config": os.path.join(
                 get_package_share_directory("canopen_tests"),
                 "config",
-                "simple",
+                "simple_diagnostics",
                 "bus.yml",
             ),
             "can_interface_name": "vcan0",
         }.items(),
     )
 
-    return LaunchDescription([slave_node_1, slave_node_2, device_container])
+    diagnostics_analyzer_path = os.path.join(
+        get_package_share_directory("canopen_tests"),
+        "launch",
+        "analyzers",
+        "proxy_diagnostic_analyzer.yaml",
+    )
+
+    diagnostics_aggregator_node = launch_ros.actions.Node(
+        package="diagnostic_aggregator",
+        executable="aggregator_node",
+        output="screen",
+        parameters=[diagnostics_analyzer_path],
+    )
+
+    return LaunchDescription(
+        [slave_node_1, slave_node_2, device_container, diagnostics_aggregator_node]
+    )
