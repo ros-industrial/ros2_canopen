@@ -7,7 +7,10 @@ using namespace ros2_canopen::node_interfaces;
 
 template <class NODETYPE>
 NodeCanopenBaseDriver<NODETYPE>::NodeCanopenBaseDriver(NODETYPE * node)
-: ros2_canopen::node_interfaces::NodeCanopenDriver<NODETYPE>(node)
+: ros2_canopen::node_interfaces::NodeCanopenDriver<NODETYPE>(node),
+  diagnostic_enabled_(false),
+  diagnostic_key_value_(new diagnostic_msgs::msg::KeyValue()),
+  diagnostic_status_(new diagnostic_msgs::msg::DiagnosticStatus())
 {
 }
 
@@ -40,6 +43,17 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
       period_ms_ = 10;
     }
   }
+
+  // Diagnostic components
+  // diagnostic_enabled_ = this->config_["diagnostic"]["enabled"].as<bool>();
+  diagnostic_enabled_ = true;
+  if (diagnostic_enabled_.load())
+  {
+    diagnostic_status_->name = this->node_->get_name();
+    diagnostic_status_->hardware_id = std::to_string(this->node_id_);
+    diagnostic_publisher_ = this->node_->create_publisher<diagnostic_msgs::msg::DiagnosticArray>(
+      std::string(this->node_->get_name()).append("/diagnostic"), 10);
+  }
 }
 template <>
 void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
@@ -65,6 +79,17 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
       period_ms_ = 10;
     }
   }
+
+  // Diagnostic components
+  // diagnostic_enabled_ = this->config_["diagnostic"]["enabled"].as<bool>();
+  diagnostic_enabled_ = true;
+  if (diagnostic_enabled_.load())
+  {
+    diagnostic_status_->name = this->node_->get_name();
+    diagnostic_status_->hardware_id = std::to_string(this->node_id_);
+    diagnostic_publisher_ = this->node_->create_publisher<diagnostic_msgs::msg::DiagnosticArray>(
+      std::string(this->node_->get_name()).append("/diagnostic"), 10);
+  }
 }
 
 template <class NODETYPE>
@@ -87,6 +112,19 @@ void NodeCanopenBaseDriver<NODETYPE>::activate(bool called_from_base)
     this->lely_driver_->set_sync_function(
       std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
   }
+  // poll_timer_ = this->node_->create_wall_timer(
+  //   std::chrono::milliseconds(period_ms_),
+  //   std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this), this->timer_cbg_);
+  this->lely_driver_->set_sync_function(
+    std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
+
+  if (diagnostic_enabled_.load())
+  {
+    diagnostic_timer_ = this->node_->create_wall_timer(
+      std::chrono::milliseconds(1000),
+      std::bind(&NodeCanopenBaseDriver<NODETYPE>::diagnostic_timer_callback, this),
+      this->timer_cbg_);
+  }
 }
 
 template <class NODETYPE>
@@ -95,6 +133,7 @@ void NodeCanopenBaseDriver<NODETYPE>::deactivate(bool called_from_base)
   nmt_state_publisher_thread_.join();
   poll_timer_->cancel();
   this->lely_driver_->unset_sync_function();
+  diagnostic_timer_->cancel();
 }
 
 template <class NODETYPE>
@@ -147,6 +186,15 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
     }
   }
   RCLCPP_INFO(this->node_->get_logger(), "Driver booted and ready.");
+
+  if (diagnostic_enabled_.load())
+  {
+    diagnostic_key_value_->key = "Add to master";
+    diagnostic_key_value_->value = "OK";
+    diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::STALE;
+    diagnostic_status_->message = "Device booted.";
+    diagnostic_status_->values.push_back(*diagnostic_key_value_);
+  }
 }
 
 template <class NODETYPE>
@@ -166,6 +214,14 @@ void NodeCanopenBaseDriver<NODETYPE>::remove_from_master()
   if (future_status != std::future_status::ready)
   {
     throw DriverException("remove_from_master: removing timed out");
+  }
+  if (diagnostic_enabled_.load())
+  {
+    diagnostic_key_value_->key = "Remove to master";
+    diagnostic_key_value_->value = "OK";
+    diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
+    diagnostic_status_->message = "Device removed from the master.";
+    diagnostic_status_->values.push_back(*diagnostic_key_value_);
   }
 }
 template <class NODETYPE>
@@ -210,6 +266,22 @@ void NodeCanopenBaseDriver<NODETYPE>::on_rpdo(COData data)
 template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::on_emcy(COEmcy emcy)
 {
+  diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
+  diagnostic_status_->message = "Emergency message received.";
+  diagnostic_key_value_->key = "EMCY";
+  std::string emcy_msg = "Emergency message received. ";
+  emcy_msg.append("eec: ");
+  emcy_msg.append(std::to_string(emcy.eec));
+  emcy_msg.append(" er: ");
+  emcy_msg.append(std::to_string(emcy.er));
+  emcy_msg.append(" msef: ");
+  for (auto & msef : emcy.msef)
+  {
+    emcy_msg.append(std::to_string(msef));
+    emcy_msg.append(" ");
+  }
+  diagnostic_key_value_->value = emcy_msg;
+  diagnostic_status_->values.push_back(*diagnostic_key_value_);
 }
 
 template <class NODETYPE>
@@ -312,6 +384,11 @@ void NodeCanopenBaseDriver<NODETYPE>::emcy_listener()
       break;
     }
   }
+}
+
+template <class NODETYPE>
+void NodeCanopenBaseDriver<NODETYPE>::diagnostic_timer_callback()
+{
 }
 
 #endif
