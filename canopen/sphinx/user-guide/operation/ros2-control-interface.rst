@@ -12,9 +12,11 @@ the PDO (Process Data Object) service for real-time data exchange,
 and the NMT (Network Management) service for network initialization, 
 device state control, and error handling.
 
-To bring up the CiA301 interface, it includes three steps: preparing the configuration
-for bus and `ros2_control`, preparing the state and command interfaces,
-and finally preparing the launch file. 
+To bring up the CiA301 interface, it includes three steps: 
+
+- preparing the configuration for bus and `ros2_control`
+- preparing the state and command interfaces,
+- and finally preparing the launch file. 
 
 
 Preparing the configuration
@@ -138,3 +140,5 @@ These NMT commands not only help in managing the state of devices but also in pr
 How to launch the nodes
 ----------------------------
 Finally, we prepare the launch file for the interface. An example see: https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_ros2_control/launch/canopen_system.launch.py
+
+For testing, please refer to :doc:../../software-tests/ros2_control_system-test.rst
