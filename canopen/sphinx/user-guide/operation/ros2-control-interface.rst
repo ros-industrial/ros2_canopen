@@ -88,29 +88,23 @@ Use RPDO to access the current state
 --------------------------------------------------------
 Defining the Joint and CANopen Data Structure
  The first step is to define a structure that will hold information about your joints and the associated CANopen data. This structure serves as the foundation for  your CANopen network, ensuring that all the relevant data is stored and accessible when needed.
+ 
+PDO Index and Subindex
+ Each Process Data Object (PDO) has an index and a subindex. The index acts as a unique identifier for each PDO, differentiating it from other PDOs in the system. The subindex is used to access individual data fields within each PDO as a PDO can contain multiple data fields.
 
-Implementing the export_state_interfaces() Function
- The next step involves implementing the export_state_interfaces() function. This function iterates over each joint and for those with a "node_id" parameter, it creates a series of StateInterface objects.
+Network Management (NMT)
+ Network Management (NMT) is a fundamental service in the CANopen protocol suite. It offers basic device control commands such as start, stop, and reset, and manages the state of devices within the network.
 
-Registering Receive Process Data Objects (RPDOs) and Network Management (NMT)
- Inside the export_state_interfaces() function, we register the resources for Receive Process Data Objects (RPDOs) and Network Management (NMT) for each joint. This step is crucial as it enables the control and management of these aspects in each joint's operation. The RPDOs and NMT commands that we register include:
-
- For RPDOs:
+ For RPDOs, the data are defined using:
  
  - "rpdo/index"
  - "rpdo/subindex"
  - "rpdo/type"
  - "rpdo/data"
 
- For NMT:
+ For NMT, we can read the states via:
  
  - "nmt/state"
-
-PDO Index and Subindex
- Each Process Data Object (PDO) has an index and a subindex. The index acts as a unique identifier for each PDO, differentiating it from other PDOs in the system. The subindex is used to access individual data fields within each PDO as a PDO can contain multiple data fields.
-
-Network Management (NMT)
- Network Management (NMT) is a fundamental service in the CANopen protocol suite. It offers basic device control commands such as start, stop, and reset, and manages the state of devices within the network.
 
 
 Use TPOD to send commands
