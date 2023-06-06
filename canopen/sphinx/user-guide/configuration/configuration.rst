@@ -3,28 +3,31 @@ Bus Configuration Reference
 
 The ros2_canopen stack relies on a YAML configuration file that is used
 for configuring the bus topology and specifying configurations for
-each device. From this configuration file, we generate the device configuration
-file (DCF) for the CANopen master as well as concise DCF files for master and
-each slave. The ros2_canopen stack uses the YAML configuration file to choose
-the correct drivers for each device on the bus and the generated DCF for configuring
-the CANopen Master as well as the devices on the bus.
+each device. The file details which devices connected to the bus, which
+EDS/DCF file applies to them, which parameters of the EDS/DCF files should be
+overwritten and which drivers should be used to control the devices.
 
 Structure
 ---------
 
-The YAML configuration file contains a section for each device on the bus. The section
-for the master has different configuration options than the section for the slave devices.
-The file has the following structure. The master section has to be named master. The
-device sections need be named uniquely.
+The YAML configuration file has the following sections:
+
 .. code-block::
+  options: # General options especially dcf_path
+    [configuration item]: [value]
 
-  master:
+  master: # The configuration of the master
     [configuration item]: [value]
     [...]
-
-  [device_name]:
+  
+  defaults: # Defaults that apply to all slave nodes
     [configuration item]: [value]
-    [...]
+    []
+
+  nodes: # Configurations fot all slave nodes
+    - [device_name]:
+        [configuration item]: [value]
+        [...]
 
 Options Section
 ---------------
@@ -115,3 +118,8 @@ device.
 Further references
 ------------------
 The dcfgen documentation gives more details on the usage of the dcfgen tool for generating DCF: https://opensource.lely.com/canopen/docs/dcf-tools/
+
+Variables
+---------
+
+``@BUS_CONFIG_PATH@: Automatic config path definition if configuration package structure is followed.``
