@@ -179,7 +179,7 @@ Add the following code:
                     "{bus_config_name}",
                     "bus.yml",
                 ),
-                "can_interface_name": "{can_interface i.e. can0}",
+                "can_interface_name": "{can_interface_name i.e. can0}",
             }.items(),
 
         )
