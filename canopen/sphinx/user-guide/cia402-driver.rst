@@ -4,6 +4,12 @@ Cia402 Driver
 The Cia402 Driver implements the CIA402 profile for motion controllers and enables setting
 the drive status, operation mode and sending target values to the motion controller.
 
+.. csv-table:: CIA402 Drivers
+   :header: Type, Package, Name
+   :widths: 30, 20, 50
+
+   lifecycle, canopen_402_driver, ros2_canopen::LifecycleCia402Driver
+   simple, canopen_402_driver, ros2_canopen::Cia402Driver
 
 Services
 --------
@@ -69,6 +75,12 @@ Publishers
   * - ~/joint_states
     - sensor_msgs/msg/JointState
     - Joint states of the drive
+  * - ~/nmt_state
+    - String
+    - Publishes NMT state on change
+  * - ~/rpdo
+    - COData
+    - Publishes received PDO objects on reception
 
 
 Subscribers
@@ -84,6 +96,9 @@ Subscribers
   * - ~/target
     - COTargetDouble
     - Sets target value.
+  * - ~/tpdo
+    - COData
+    - Writes received data to remote device if the specified object is RPDO mapped on remote device.
 
 Bus Configuration Parameters
 ----------------------------
@@ -97,6 +112,9 @@ Additional parameters that can be used in bus.yml for this driver.
   * - Parameter
     - Type
     - Description
+  * - polling
+    - bool
+    - Enables polling of the drive status. Default: true. If false, period will be used to run a ros2 timer as update loop. If true, the update loop will be triggered by the sync signal and directly executed in the canopen realtime loop. This requires all data processed in the update loop to be PDO, otherwise the loop will get stuck. This can speed reduce processor load significantly though.
   * - period
     - Milliseconds
     - Refresh period for 402 state machine. Should be similar to sync period of master.
@@ -115,3 +133,12 @@ Additional parameters that can be used in bus.yml for this driver.
   * - scale_vel_from_dev
     - double
     - Scaling factor to convert from device units to SI units for velocity.
+  * - position_mode
+    - int
+    - The drives operation mode to use for the position interface
+  * - velocity_mode
+    - int
+    - The drives operation mode to use for the velocity interface
+  * - torque_mode
+    - int
+    - The drives operation mode to use for the torque interface

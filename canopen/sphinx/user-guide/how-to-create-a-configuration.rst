@@ -1,4 +1,4 @@
-Creating a Configuration Package
+How to create a coniguration package
 ========================================
 In order to use the ros2_canopen stack for your robot, you need to
 create a configuration package, that holds the configuration of the
@@ -124,6 +124,7 @@ Bus configuration creation
     The slave name is the node name that will be assigned to the driver.
 
     .. code-block:: yaml
+
       nodes:
         - [unique slave name]:
           node_id: [node id]

@@ -43,22 +43,24 @@ Structure
 
 The YAML configuration file has the following sections:
 
-.. code-block::
+.. code-block:: yaml
+
   options: # General options especially dcf_path
     [configuration item]: [value]
 
   master: # The configuration of the master
     [configuration item]: [value]
     [...]
-  
+
   defaults: # Defaults that apply to all slave nodes
     [configuration item]: [value]
     []
 
-  nodes: # Configurations fot all slave nodes
+  nodes: # Configurations for all slave nodes
     - [device_name]:
         [configuration item]: [value]
         [...]
+
 
 Options Section
 ---------------
@@ -115,6 +117,12 @@ Device Section
 The device configuration enables configuring the characteristics of the connected CANopen
 device.
 
+.. note::
+  It is important to note, that you choose the operation (simple nodes or managed nodes) by choosing
+  either only lifecycle drivers or only simple drivers.
+
+  **Mixing them will not work!**
+
 .. csv-table:: Device Configuration
   :header-rows: 1
   :class: longtable
@@ -153,7 +161,9 @@ The dcfgen documentation gives more details on the usage of the dcfgen tool for 
 Variables
 ---------
 
-``@BUS_CONFIG_PATH@: Automatic config path definition if configuration package structure is followed.``
+``@BUS_CONFIG_PATH@:`` Automatic config path definition if configuration package structure is followed.
+
+
 
 
 Configuration Package CMake
@@ -168,6 +178,5 @@ CMAKE macro.
 Target: the name of the configuration (e.g. for config/{bus_config_name_1} is bus_config_name_1)
 
 .. code-block::
-  
+
   cogen_dcf(bus_config)
-  
