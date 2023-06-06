@@ -80,6 +80,7 @@ protected:
     const rclcpp_lifecycle::State &)
   {
     RCLCPP_INFO(this->get_logger(), "Shutdown");
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 };
 }  // namespace ros2_canopen
