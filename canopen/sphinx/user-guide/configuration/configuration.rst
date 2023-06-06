@@ -1,4 +1,35 @@
-Bus Configuration Reference
+Configuration Package
+=====================
+
+A configuration package contains one or more configurations for the CANopen
+stack. The configuration package needs to hold the EDS/DCF files for each device,
+the bus configuration and the launch files for the different configurations.
+
+Consequently, the structure of the configuration package should look as follows:
+
+    ::
+
+          {package_name}
+          ├── config
+          │   ├── {bus_config_name_1}
+          │   |   ├── bus.yml
+          │   |   ├── {device1}.eds
+          │   |   ├── {device...}.eds
+          │   |   └── {slave_n}.eds
+          │   └── {bus_config_name_2}
+          │       ├── bus.yml
+          │       ├── {device1}.eds
+          │       ├── {device...}.eds
+          │       └── {slave_n}.eds
+          ├── launch
+          │   ├── {bus_config_name_1}.launch.py
+          |   └── {bus_config_name_1}.launch.py
+          ├── CMakeLists.txt
+          └── package.xml
+
+
+
+Bus Configuration File
 ============================
 
 The ros2_canopen stack relies on a YAML configuration file that is used
@@ -123,3 +154,20 @@ Variables
 ---------
 
 ``@BUS_CONFIG_PATH@: Automatic config path definition if configuration package structure is followed.``
+
+
+Configuration Package CMake
+===========================
+
+In order to build the configuration package and generate the necessary runtime artifacts from the
+bus configuration file and eds/dcf files, the lely_core_libraries package contains an extra
+CMAKE macro.
+
+**cogen_dcf(target)**
+
+Target: the name of the configuration (e.g. for config/{bus_config_name_1} is bus_config_name_1)
+
+.. code-block::
+  
+  cogen_dcf(bus_config)
+  
