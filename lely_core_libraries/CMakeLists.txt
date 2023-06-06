@@ -1,16 +1,17 @@
 cmake_minimum_required(VERSION 3.8)
 project(lely_core_libraries)
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
 
 include(ExternalProject)
 ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   #--Download step--------------
   GIT_REPOSITORY https://gitlab.com/lely_industries/lely-core.git
-  GIT_TAG f13629b4fcc042744ff497c8bf7428cf2775aba8
-  TIMEOUT 60          
+  GIT_TAG ac31cd5cdf2ded4b2a5ba4a94520f388450614ff
+  TIMEOUT 60
   #--Update/Patch step----------
-  UPDATE_COMMAND touch <SOURCE_DIR>/config.h 
-    COMMAND mkdir -p <SOURCE_DIR>/include <SOURCE_DIR>/lib 
+  UPDATE_COMMAND touch <SOURCE_DIR>/config.h
+    COMMAND mkdir -p <SOURCE_DIR>/include <SOURCE_DIR>/lib
     COMMAND touch <SOURCE_DIR>/python/dcf-tools/README.md
   #--Configure step-------------
   CONFIGURE_COMMAND autoreconf -i <SOURCE_DIR> COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-cython --disable-doc --disable-tests --disable-static "CPPFLAGS=-DNDEBUG" "CFLAGS=-DNDEBUG" "CXXFLAGS=-DNDEBUG"
@@ -36,6 +37,14 @@ install(
   DIRECTORY cmake
   DESTINATION share/${PROJECT_NAME}
 )
+
+ament_python_install_package(cogen SCRIPTS_DESTINATION lib/cogen)
+
+# install entry-point script(s) in bin as well
+install(
+    DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ament_cmake_python/cogen/scripts/
+    DESTINATION bin/
+    USE_SOURCE_PERMISSIONS)
 
 ament_export_include_directories(include)
 ament_export_libraries(lely-can lely-co lely-coapp lely-ev lely-io2 lely-io lely-libc lely-tap lely-util)
