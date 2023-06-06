@@ -1,4 +1,4 @@
-# ROS2 CANopen
+# ROS2 CANopen - (FOXY end of life - no updates)
 
 [![Build Status](https://github.com/ros-industrial/ros2_canopen/workflows/foxy/badge.svg?branch=master)](https://github.com/ros-industrial/ros2_canopen/actions)
 [![Build Status](https://github.com/ros-industrial/ros2_canopen/workflows/galactic/badge.svg?branch=master)](https://github.com/ros-industrial/ros2_canopen/actions)
