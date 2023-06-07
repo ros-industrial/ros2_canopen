@@ -44,3 +44,10 @@ This is the documentation of the ROS2 CANopen stack.
   :glob:
 
   software-tests/**
+
+.. toctree::
+  :maxdepth: 1
+  :caption: Application Demos
+  :glob:
+
+  application/**

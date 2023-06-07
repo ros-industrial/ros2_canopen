@@ -1,4 +1,4 @@
-How to create a coniguration package
+How to create a configuration package
 ========================================
 In order to use the ros2_canopen stack for your robot, you need to
 create a configuration package, that holds the configuration of the

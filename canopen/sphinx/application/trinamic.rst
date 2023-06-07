@@ -170,7 +170,7 @@ Running the example
 
 To begin, follow the instructions for :doc:`../quickstart/operation`, which can be done using either a virtual or peak CAN interface.
 
-If you prefer to use a real CAN interface, you will need to modify the launch file by changing the ``can_interface_name`` argument to ``can0``. 
+If you prefer to use a real CAN interface, you will need to modify the launch file by changing the ``can_interface_name`` argument to ``can0``.
 Additionally, if you are using real hardware, you should comment out the fake slave launch by adding a *#* in front of the line *ld.add_action(slave_node_1)*.
 Once these changes have been made, you can launch the example.
 
