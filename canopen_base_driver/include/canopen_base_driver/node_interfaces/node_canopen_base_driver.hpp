@@ -3,9 +3,7 @@
 
 #include "canopen_base_driver/lely_driver_bridge.hpp"
 #include "canopen_core/node_interfaces/node_canopen_driver.hpp"
-#include "diagnostic_msgs/msg/diagnostic_array.hpp"
-#include "diagnostic_msgs/msg/diagnostic_status.hpp"
-#include "diagnostic_msgs/msg/key_value.hpp"
+#include "canopen_base_driver/diagnostic_collector.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "std_srvs/srv/trigger.hpp"
 
@@ -48,10 +46,8 @@ protected:
   // Diagnostic components
   std::atomic<bool> diagnostic_enabled_;
   uint32_t diagnostic_period_ms_;
-  rclcpp::TimerBase::SharedPtr diagnostic_timer_;
-  rclcpp::Publisher<diagnostic_msgs::msg::DiagnosticArray>::SharedPtr diagnostic_publisher_;
-  std::shared_ptr<diagnostic_msgs::msg::KeyValue> diagnostic_key_value_;
-  std::shared_ptr<diagnostic_msgs::msg::DiagnosticStatus> diagnostic_status_;
+  std::shared_ptr<diagnostic_updater::Updater> diagnostic_updater_;
+  std::shared_ptr<DiagnosticsCollector> diagnostic_collector_;
 
   virtual void poll_timer_callback();
   void nmt_listener();
@@ -60,7 +56,7 @@ protected:
   virtual void on_rpdo(COData data);
   void emcy_listener();
   virtual void on_emcy(COEmcy emcy);
-  virtual void diagnostic_timer_callback();
+  virtual void diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper & stat);
 
 public:
   NodeCanopenBaseDriver(NODETYPE * node);
