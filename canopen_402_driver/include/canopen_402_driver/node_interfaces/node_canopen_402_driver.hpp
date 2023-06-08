@@ -1,6 +1,8 @@
 #ifndef NODE_CANOPEN_402_DRIVER
 #define NODE_CANOPEN_402_DRIVER
 
+#define BOOST_BIND_NO_PLACEHOLDERS
+
 #include "canopen_402_driver/motor.hpp"
 #include "canopen_base_driver/lely_driver_bridge.hpp"
 #include "canopen_interfaces/srv/co_target_double.hpp"
