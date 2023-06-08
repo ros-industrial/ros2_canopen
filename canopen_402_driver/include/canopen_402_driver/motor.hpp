@@ -10,13 +10,12 @@
 #include <limits>
 #include <mutex>
 #include <thread>
-#include "diagnostic_msgs/msg/diagnostic_status.hpp"
-#include "diagnostic_msgs/msg/key_value.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 #include "canopen_402_driver/default_homing_mode.hpp"
 #include "canopen_402_driver/mode_forward_helper.hpp"
 #include "canopen_402_driver/profiled_position_mode.hpp"
+#include "canopen_base_driver/diagnostic_collector.hpp"
 #include "canopen_base_driver/lely_driver_bridge.hpp"
 
 namespace ros2_canopen
@@ -164,13 +163,10 @@ public:
     return (double)this->driver->universal_get_value<int32_t>(0x6064, 0);
   }
 
-  void set_diagnostic_status_msgs(
-    std::shared_ptr<diagnostic_msgs::msg::DiagnosticStatus> status, bool enable)
+  void set_diagnostic_status_msgs(std::shared_ptr<DiagnosticsCollector> status, bool enable)
   {
     this->enable_diagnostics_.store(enable);
-    this->diagnostic_status_ = status;
-    this->diagnostic_key_value_ = std::make_shared<diagnostic_msgs::msg::KeyValue>();
-    this->diagnostic_key_value_->key = "CiA402";
+    this->diag_collector_ = status;
   }
 
 private:
@@ -211,9 +207,8 @@ private:
   const uint16_t supported_drive_modes_index = 0x6502;
 
   // Diagnostic components
-  std::atomic<bool> enable_diagnostics_ = false;
-  std::shared_ptr<diagnostic_msgs::msg::DiagnosticStatus> diagnostic_status_;
-  std::shared_ptr<diagnostic_msgs::msg::KeyValue> diagnostic_key_value_;
+  std::atomic<bool> enable_diagnostics_;
+  std::shared_ptr<DiagnosticsCollector> diag_collector_;
 };
 
 }  // namespace ros2_canopen

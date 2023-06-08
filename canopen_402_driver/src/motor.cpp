@@ -72,8 +72,7 @@ bool Motor402::switchMode(uint16_t mode)
     }
     if (enable_diagnostics_.load())
     {
-      this->diagnostic_status_->values.push_back(
-        this->diagnostic_key_value_->set__value("No mode selected: " + std::to_string(mode)));
+      this->diag_collector_->addf("cia402_mode", "No mode selected: %d", mode);
     }
     return true;
   }
@@ -137,8 +136,7 @@ bool Motor402::switchMode(uint16_t mode)
       okay = true;
       if (enable_diagnostics_.load())
       {
-        this->diagnostic_status_->values.push_back(
-          this->diagnostic_key_value_->set__value("Mode selected: " + std::to_string(mode)));
+        this->diag_collector_->addf("cia402_mode", "Mode switched to: %d", mode);
       }
     }
     else
@@ -147,8 +145,7 @@ bool Motor402::switchMode(uint16_t mode)
       driver->universal_set_value<int8_t>(op_mode_index, 0x0, mode_id_);
       if (enable_diagnostics_.load())
       {
-        this->diagnostic_status_->values.push_back(this->diagnostic_key_value_->set__value(
-          "Mode switch timed out: " + std::to_string(mode)));
+        this->diag_collector_->addf("cia402_mode", "Mode switch timed out: %d", mode);
       }
     }
   }
@@ -176,8 +173,7 @@ bool Motor402::switchState(const State402::InternalState & target)
     }
     else if (enable_diagnostics_.load() && success)
     {
-      this->diagnostic_status_->values.push_back(this->diagnostic_key_value_->set__value(
-        "State transition: " + std::to_string(state) + " -> " + std::to_string(next)));
+      this->diag_collector_->addf("cia402_state", "State transition: %d -> %d", state, next);
     }
     lock.unlock();
     if (state != next && !state_handler_.waitForNewState(abstime, state))
@@ -185,8 +181,8 @@ bool Motor402::switchState(const State402::InternalState & target)
       RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Transition timed out.");
       if (enable_diagnostics_.load())
       {
-        this->diagnostic_status_->values.push_back(this->diagnostic_key_value_->set__value(
-          "State transition timed out: " + std::to_string(state) + " -> " + std::to_string(next)));
+        this->diag_collector_->addf(
+          "cia402_state", "State transition timed out: %d -> %d", state, next);
       }
       return false;
     }
@@ -277,62 +273,63 @@ void Motor402::handleDiag()
 {
   uint16_t sw = status_word_;
   State402::InternalState state = state_handler_.getState();
-  this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::OK;
 
   switch (state)
   {
     case State402::Not_Ready_To_Switch_On:
-      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
-      this->diagnostic_status_->message = "Not ready to switch on";
+      this->diag_collector_->summary(
+        diagnostic_msgs::msg::DiagnosticStatus::WARN, "Not ready to switch on");
       break;
     case State402::Switch_On_Disabled:
-      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
-      this->diagnostic_status_->message = "Switch on disabled";
+      this->diag_collector_->summary(
+        diagnostic_msgs::msg::DiagnosticStatus::WARN, "Switch on disabled");
       break;
     case State402::Ready_To_Switch_On:
-      this->diagnostic_status_->message = "Ready to switch on";
+      this->diag_collector_->summary(
+        diagnostic_msgs::msg::DiagnosticStatus::OK, "Ready to switch on");
       break;
     case State402::Switched_On:
       // std::cout << "Motor operation is not enabled" << std::endl;
-      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::STALE;
-      this->diagnostic_status_->message = "Switched on";
+      this->diag_collector_->summary(diagnostic_msgs::msg::DiagnosticStatus::OK, "Switched on");
       break;
     case State402::Operation_Enable:
-      this->diagnostic_status_->message = "Operation enabled";
+      this->diag_collector_->summary(
+        diagnostic_msgs::msg::DiagnosticStatus::OK, "Operation enabled");
       break;
     case State402::Quick_Stop_Active:
       // std::cout << "Quick stop is active" << std::endl;
-      this->diagnostic_status_->message = "Quick stop active";
+      this->diag_collector_->summary(
+        diagnostic_msgs::msg::DiagnosticStatus::WARN, "Quick stop active");
       break;
     case State402::Fault:
-      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
-      this->diagnostic_status_->message = "Fault";
+      this->diag_collector_->summary(diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Fault");
       break;
     case State402::Fault_Reaction_Active:
       // std::cout << "Motor has fault" << std::endl;
-      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
-      this->diagnostic_status_->message = "Motor has fault";
+      this->diag_collector_->summary(
+        diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Fault reaction active");
       break;
     case State402::Unknown:
       // std::cout << "State is unknown" << std::endl;
-      this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::ERROR;
-      this->diagnostic_status_->message = "State is unknown";
+      this->diag_collector_->summary(
+        diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Unknown state");
       break;
   }
 
   if (sw & (1 << State402::SW_Warning))
   {
     // std::cout << "Warning bit is set" << std::endl;
-    this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
-    this->diagnostic_status_->message = "Warning bit is set";
+    this->diag_collector_->summary(
+      diagnostic_msgs::msg::DiagnosticStatus::WARN, "Warning bit is set");
   }
   if (sw & (1 << State402::SW_Internal_limit))
   {
     // std::cout << "Internal limit active" << std::endl;
-    this->diagnostic_status_->level = diagnostic_msgs::msg::DiagnosticStatus::WARN;
-    this->diagnostic_status_->message = "Internal limit active";
+    this->diag_collector_->summary(
+      diagnostic_msgs::msg::DiagnosticStatus::WARN, "Internal limit active");
   }
 }
+
 bool Motor402::handleInit()
 {
   for (std::unordered_map<uint16_t, AllocFuncType>::iterator it = mode_allocators_.begin();
