@@ -1,6 +1,8 @@
 #ifndef NODE_CANOPEN_402_DRIVER_IMPL_HPP_
 #define NODE_CANOPEN_402_DRIVER_IMPL_HPP_
 
+#define BOOST_BIND_NO_PLACEHOLDERS
+
 #include "canopen_402_driver/node_interfaces/node_canopen_402_driver.hpp"
 #include "canopen_core/driver_error.hpp"
 
