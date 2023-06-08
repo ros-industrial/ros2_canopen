@@ -105,36 +105,44 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
     {
       case canopen::NmtState::BOOTUP:
         message.data = "BOOTUP";
-        this->diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT bootup", "NMT", "BOOTUP");
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT bootup", "NMT", "BOOTUP");
         break;
       case canopen::NmtState::PREOP:
         message.data = "PREOP";
-        this->diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT preop", "NMT", "PREOP");
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT preop", "NMT", "PREOP");
         break;
       case canopen::NmtState::RESET_COMM:
         message.data = "RESET_COMM";
-        this->diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::WARN, "NMT reset comm", "NMT", "RESET_COMM");
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::WARN, "NMT reset comm", "NMT", "RESET_COMM");
         break;
       case canopen::NmtState::RESET_NODE:
         message.data = "RESET_NODE";
-        this->diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::WARN, "NMT reset node", "NMT", "RESET_NODE");
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::WARN, "NMT reset node", "NMT", "RESET_NODE");
         break;
       case canopen::NmtState::START:
         message.data = "START";
-        this->diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT start", "NMT", "START");
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT start", "NMT", "START");
         break;
       case canopen::NmtState::STOP:
         message.data = "STOP";
-        this->diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT stop", "NMT", "STOP");
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT stop", "NMT", "STOP");
         break;
       case canopen::NmtState::TOGGLE:
         message.data = "TOGGLE";
-        this->diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT toggle", "NMT", "TOGGLE");
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT toggle", "NMT", "TOGGLE");
         break;
       default:
         RCLCPP_ERROR(this->node_->get_logger(), "Unknown NMT State.");
         message.data = "ERROR";
-        this->diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::ERROR, "NMT unknown state", "NMT", "ERROR");
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::ERROR, "NMT unknown state", "NMT", "ERROR");
         break;
     }
     RCLCPP_INFO(
@@ -312,7 +320,8 @@ bool NodeCanopenProxyDriver<NODETYPE>::sdo_write(ros2_canopen::COData & data)
 }
 
 template <class NODETYPE>
-void NodeCanopenProxyDriver<NODETYPE>::diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper & stat)
+void NodeCanopenProxyDriver<NODETYPE>::diagnostic_callback(
+  diagnostic_updater::DiagnosticStatusWrapper & stat)
 {
   stat.summary(this->diagnostic_collector_->getLevel(), this->diagnostic_collector_->getMessage());
   stat.add("device_state", this->diagnostic_collector_->getValue("DEVICE"));

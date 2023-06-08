@@ -158,7 +158,8 @@ void NodeCanopenBaseDriver<NODETYPE>::activate(bool called_from_base)
   if (diagnostic_enabled_.load())
   {
     RCLCPP_INFO(this->node_->get_logger(), "Starting with diagnostics enabled.");
-    diagnostic_updater_->add("diagnostic updater", this, &NodeCanopenBaseDriver<NODETYPE>::diagnostic_callback);
+    diagnostic_updater_->add(
+      "diagnostic updater", this, &NodeCanopenBaseDriver<NODETYPE>::diagnostic_callback);
   }
 }
 
@@ -227,7 +228,8 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
 
   if (diagnostic_enabled_.load())
   {
-    diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::OK, "Device ready", "DEVICE", "Added to master.");
+    diagnostic_collector_->updateAll(
+      diagnostic_msgs::msg::DiagnosticStatus::OK, "Device ready", "DEVICE", "Added to master.");
   }
 }
 
@@ -251,7 +253,9 @@ void NodeCanopenBaseDriver<NODETYPE>::remove_from_master()
   }
   if (diagnostic_enabled_.load())
   {
-    diagnostic_collector_->updateAll(diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Device removed", "DEVICE", "Removed from master.");
+    diagnostic_collector_->updateAll(
+      diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Device removed", "DEVICE",
+      "Removed from master.");
   }
 }
 template <class NODETYPE>
@@ -296,7 +300,8 @@ void NodeCanopenBaseDriver<NODETYPE>::on_rpdo(COData data)
 template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::on_emcy(COEmcy emcy)
 {
-  diagnostic_collector_->summayf(diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Emergency message received");
+  diagnostic_collector_->summayf(
+    diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Emergency message received");
   std::string emcy_msg = "Emergency message: ";
   emcy_msg.append("eec: ");
   emcy_msg.append(std::to_string(emcy.eec));
@@ -414,7 +419,8 @@ void NodeCanopenBaseDriver<NODETYPE>::emcy_listener()
 }
 
 template <class NODETYPE>
-void NodeCanopenBaseDriver<NODETYPE>::diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper & stat)
+void NodeCanopenBaseDriver<NODETYPE>::diagnostic_callback(
+  diagnostic_updater::DiagnosticStatusWrapper & stat)
 {
 }
 

@@ -1,9 +1,9 @@
 #ifndef NODE_CANOPEN_BASE_DRIVER
 #define NODE_CANOPEN_BASE_DRIVER
 
+#include "canopen_base_driver/diagnostic_collector.hpp"
 #include "canopen_base_driver/lely_driver_bridge.hpp"
 #include "canopen_core/node_interfaces/node_canopen_driver.hpp"
-#include "canopen_base_driver/diagnostic_collector.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "std_srvs/srv/trigger.hpp"
 
