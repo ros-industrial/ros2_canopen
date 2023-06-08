@@ -12,7 +12,7 @@
 
 
     <!-- ros2 control include -->
-    <xacro:include filename="$(find canopen_ros2_control)/urdf/cia402_system.ros2_control.xacro"/>
+    <xacro:include filename="$(find canopen_tests)/urdf/cia402_system/cia402_system.ros2_control.xacro"/>
 
     <xacro:cia402_ros2_control_test
       name="$(arg name)"
