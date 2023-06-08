@@ -1,3 +1,17 @@
+//    Copyright 2022 Christoph Hellmann Santos
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
 #ifndef NODE_CANOPEN_PROXY_DRIVER_IMPL_HPP_
 #define NODE_CANOPEN_PROXY_DRIVER_IMPL_HPP_
 
@@ -140,8 +154,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
 template <class NODETYPE>
 void NodeCanopenProxyDriver<NODETYPE>::on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg)
 {
-  ros2_canopen::COData data = {
-    msg->index, msg->subindex, msg->data, static_cast<CODataTypes>(msg->type)};
+  ros2_canopen::COData data = {msg->index, msg->subindex, msg->data};
   if (!tpdo_transmit(data))
   {
     RCLCPP_ERROR(this->node_->get_logger(), "Could transmit PDO because driver not activated.");
@@ -154,7 +167,7 @@ bool NodeCanopenProxyDriver<NODETYPE>::tpdo_transmit(ros2_canopen::COData & data
   if (this->activated_.load())
   {
     RCLCPP_INFO(
-      this->node_->get_logger(), "Slave %hhu: Transmit PDO index %x, subindex %hhu, data %d",
+      this->node_->get_logger(), "Node ID %hhu: Transmit PDO index %x, subindex %hhu, data %d",
       this->lely_driver_->get_id(), data.index_, data.subindex_,
       data.data_);  // ToDo: Remove or make debug
     this->lely_driver_->tpdo_transmit(data);
@@ -168,14 +181,13 @@ void NodeCanopenProxyDriver<NODETYPE>::on_rpdo(ros2_canopen::COData d)
 {
   if (this->activated_.load())
   {
-    RCLCPP_INFO(
-      this->node_->get_logger(), "Slave %hhu: Sent PDO index %hu, subindex %hhu, data %x",
-      this->lely_driver_->get_id(), d.index_, d.subindex_, d.data_);
+    // RCLCPP_INFO(
+    //   this->node_->get_logger(), "Node ID %hhu: Received PDO index %#04x, subindex %hhu, data
+    //   %x", this->lely_driver_->get_id(), d.index_, d.subindex_, d.data_);
     auto message = canopen_interfaces::msg::COData();
     message.index = d.index_;
     message.subindex = d.subindex_;
     message.data = d.data_;
-    message.type = static_cast<uint8_t>(d.type_);
     rpdo_publisher->publish(message);
   }
 }
@@ -227,8 +239,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_sdo_read(
   const canopen_interfaces::srv::CORead::Request::SharedPtr request,
   canopen_interfaces::srv::CORead::Response::SharedPtr response)
 {
-  ros2_canopen::COData data = {
-    request->index, request->subindex, 0U, static_cast<CODataTypes>(request->type)};
+  ros2_canopen::COData data = {request->index, request->subindex, 0U};
   response->success = sdo_read(data);
   response->data = data.data_;
 }
@@ -239,8 +250,8 @@ bool NodeCanopenProxyDriver<NODETYPE>::sdo_read(ros2_canopen::COData & data)
   if (this->activated_.load())
   {
     RCLCPP_INFO(
-      this->node_->get_logger(), "Slave %hhu: SDO Read Call index=0x%x subindex=%hhu bits=%hhu",
-      this->lely_driver_->get_id(), data.index_, data.subindex_, data.type_);
+      this->node_->get_logger(), "Slave %hhu: SDO Read Call index=0x%x subindex=%hhu",
+      this->lely_driver_->get_id(), data.index_, data.subindex_);
 
     // Only allow one SDO request concurrently
     std::scoped_lock<std::mutex> lk(sdo_mtex);
@@ -269,8 +280,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_sdo_write(
   const canopen_interfaces::srv::COWrite::Request::SharedPtr request,
   canopen_interfaces::srv::COWrite::Response::SharedPtr response)
 {
-  ros2_canopen::COData data = {
-    request->index, request->subindex, request->data, static_cast<CODataTypes>(request->type)};
+  ros2_canopen::COData data = {request->index, request->subindex, request->data};
   response->success = sdo_write(data);
 }
 
@@ -280,9 +290,8 @@ bool NodeCanopenProxyDriver<NODETYPE>::sdo_write(ros2_canopen::COData & data)
   if (this->activated_.load())
   {
     RCLCPP_INFO(
-      this->node_->get_logger(),
-      "Slave %hhu: SDO Write Call index=0x%x subindex=%hhu bits=%hhu data=%u",
-      this->lely_driver_->get_id(), data.index_, data.subindex_, data.type_, data.data_);
+      this->node_->get_logger(), "Slave %hhu: SDO Write Call index=0x%x subindex=%hhu data=%u",
+      this->lely_driver_->get_id(), data.index_, data.subindex_, data.data_);
 
     // Only allow one SDO request concurrently
     std::scoped_lock<std::mutex> lk(sdo_mtex);
@@ -295,7 +304,7 @@ bool NodeCanopenProxyDriver<NODETYPE>::sdo_write(ros2_canopen::COData & data)
     // Process response
     try
     {
-      f.get();
+      return f.get();
     }
     catch (std::exception & e)
     {

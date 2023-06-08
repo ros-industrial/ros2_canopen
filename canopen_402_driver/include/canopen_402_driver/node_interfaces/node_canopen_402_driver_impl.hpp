@@ -136,11 +136,11 @@ template <>
 void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool called_from_base)
 {
   NodeCanopenProxyDriver<rclcpp_lifecycle::LifecycleNode>::configure(false);
-  auto period = this->config_["period"].as<uint32_t>();
   std::optional<double> scale_pos_to_dev;
   std::optional<double> scale_pos_from_dev;
   std::optional<double> scale_vel_to_dev;
   std::optional<double> scale_vel_from_dev;
+  std::optional<int> switching_state;
   try
   {
     scale_pos_to_dev = std::optional(this->config_["scale_pos_to_dev"].as<double>());
@@ -169,6 +169,13 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   catch (...)
   {
   }
+  try
+  {
+    switching_state = std::optional(this->config_["switching_state"].as<int>());
+  }
+  catch (...)
+  {
+  }
 
   // auto period = this->config_["scale_eff_to_dev"].as<double>();
   // auto period = this->config_["scale_eff_from_dev"].as<double>();
@@ -176,22 +183,23 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   scale_pos_from_dev_ = scale_pos_from_dev.value_or(0.001);
   scale_vel_to_dev_ = scale_vel_to_dev.value_or(1000.0);
   scale_vel_from_dev_ = scale_vel_from_dev.value_or(0.001);
+  switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
+    (int)ros2_canopen::State402::InternalState::Operation_Enable);
   RCLCPP_INFO(
     this->node_->get_logger(),
     "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\n",
     scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_);
-  period_ms_ = period;
 }
 
 template <>
 void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
 {
   NodeCanopenProxyDriver<rclcpp::Node>::configure(false);
-  auto period = this->config_["period"].as<uint32_t>();
   std::optional<double> scale_pos_to_dev;
   std::optional<double> scale_pos_from_dev;
   std::optional<double> scale_vel_to_dev;
   std::optional<double> scale_vel_from_dev;
+  std::optional<int> switching_state;
   try
   {
     scale_pos_to_dev = std::optional(this->config_["scale_pos_to_dev"].as<double>());
@@ -220,6 +228,13 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   catch (...)
   {
   }
+  try
+  {
+    switching_state = std::optional(this->config_["switching_state"].as<int>());
+  }
+  catch (...)
+  {
+  }
 
   // auto period = this->config_["scale_eff_to_dev"].as<double>();
   // auto period = this->config_["scale_eff_from_dev"].as<double>();
@@ -227,22 +242,19 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   scale_pos_from_dev_ = scale_pos_from_dev.value_or(0.001);
   scale_vel_to_dev_ = scale_vel_to_dev.value_or(1000.0);
   scale_vel_from_dev_ = scale_vel_from_dev.value_or(0.001);
+  switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
+    (int)ros2_canopen::State402::InternalState::Operation_Enable);
   RCLCPP_INFO(
     this->node_->get_logger(),
     "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\n",
     scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_);
-  period_ms_ = period;
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::activate(bool called_from_base)
 {
-  motor_->registerDefaultModes();
-  mc_driver_->validate_objs();
-  timer_ = this->node_->create_wall_timer(
-    std::chrono::milliseconds(period_ms_), std::bind(&NodeCanopen402Driver<NODETYPE>::run, this),
-    this->timer_cbg_);
   NodeCanopenProxyDriver<NODETYPE>::activate(false);
+  motor_->registerDefaultModes();
 }
 
 template <class NODETYPE>
@@ -253,8 +265,9 @@ void NodeCanopen402Driver<NODETYPE>::deactivate(bool called_from_base)
 }
 
 template <class NODETYPE>
-void NodeCanopen402Driver<NODETYPE>::run()
+void NodeCanopen402Driver<NODETYPE>::poll_timer_callback()
 {
+  NodeCanopenProxyDriver<NODETYPE>::poll_timer_callback();
   motor_->handleRead();
   motor_->handleWrite();
   publish();
@@ -265,8 +278,8 @@ void NodeCanopen402Driver<NODETYPE>::publish()
 {
   sensor_msgs::msg::JointState js_msg;
   js_msg.name.push_back(this->node_->get_name());
-  js_msg.position.push_back(mc_driver_->get_position() * scale_pos_from_dev_);
-  js_msg.velocity.push_back(mc_driver_->get_speed() * scale_vel_from_dev_);
+  js_msg.position.push_back(motor_->get_position() * scale_pos_from_dev_);
+  js_msg.velocity.push_back(motor_->get_speed() * scale_vel_from_dev_);
   js_msg.effort.push_back(0.0);
   publish_joint_state->publish(js_msg);
 }
@@ -274,46 +287,8 @@ void NodeCanopen402Driver<NODETYPE>::publish()
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::add_to_master()
 {
-  std::shared_ptr<std::promise<std::shared_ptr<ros2_canopen::LelyMotionControllerBridge>>> prom;
-  prom =
-    std::make_shared<std::promise<std::shared_ptr<ros2_canopen::LelyMotionControllerBridge>>>();
-  std::future<std::shared_ptr<ros2_canopen::LelyMotionControllerBridge>> f = prom->get_future();
-  this->exec_->post(
-    [this, prom]()
-    {
-      std::scoped_lock<std::mutex> lock(this->driver_mutex_);
-      mc_driver_ = std::make_shared<LelyMotionControllerBridge>(
-        *(this->exec_), *(this->master_), this->node_id_, this->node_->get_name());
-      mc_driver_->Boot();
-      prom->set_value(mc_driver_);
-    });
-  auto future_status = f.wait_for(this->non_transmit_timeout_);
-  if (future_status != std::future_status::ready)
-  {
-    RCLCPP_ERROR(this->node_->get_logger(), "Adding timed out.");
-    throw DriverException("add_to_master: Adding timed out.");
-  }
-  this->mc_driver_ = f.get();
-  this->motor_ = std::make_shared<Motor402>(mc_driver_);
-  this->lely_driver_ = std::static_pointer_cast<LelyDriverBridge>(mc_driver_);
-  this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(mc_driver_);
-  if (!this->mc_driver_->IsReady())
-  {
-    RCLCPP_WARN(this->node_->get_logger(), "Wait for device to boot.");
-    try
-    {
-      this->mc_driver_->wait_for_boot();
-    }
-    catch (const std::exception & e)
-    {
-      RCLCPP_ERROR(this->node_->get_logger(), e.what());
-      std::string msg;
-      msg.append("add_to_master: ");
-      msg.append(e.what());
-      throw DriverException(msg);
-    }
-  }
-  RCLCPP_INFO(this->node_->get_logger(), "Driver booted and ready.");
+  NodeCanopenProxyDriver<NODETYPE>::add_to_master();
+  motor_ = std::make_shared<Motor402>(this->lely_driver_, switching_state_);
 }
 
 template <class NODETYPE>
@@ -324,7 +299,6 @@ void NodeCanopen402Driver<NODETYPE>::handle_init(
   if (this->activated_.load())
   {
     bool temp = motor_->handleInit();
-    mc_driver_->validate_objs();
     response->success = temp;
   }
 }
@@ -353,16 +327,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Profiled_Position)
-    {
-      response->success = motor_->enterModeAndWait(MotorBase::Profiled_Position);
-      return;
-    }
-
-    response->success = false;
-  }
+  response->success = set_mode_position();
 }
 
 template <class NODETYPE>
@@ -370,15 +335,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_velocity(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Velocity)
-    {
-      response->success = motor_->enterModeAndWait(MotorBase::Velocity);
-      return;
-    }
-    response->success = false;
-  }
+  response->success = set_mode_velocity();
 }
 
 template <class NODETYPE>
@@ -386,15 +343,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Cyclic_Synchronous_Position)
-    {
-      response->success = motor_->enterModeAndWait(MotorBase::Cyclic_Synchronous_Position);
-      return;
-    }
-    response->success = false;
-  }
+  response->success = set_mode_cyclic_position();
 }
 
 template <class NODETYPE>
@@ -402,15 +351,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_interpolated_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Interpolated_Position)
-    {
-      response->success = motor_->enterModeAndWait(MotorBase::Interpolated_Position);
-      return;
-    }
-    response->success = false;
-  }
+  response->success = set_mode_interpolated_position();
 }
 
 template <class NODETYPE>
@@ -418,29 +359,14 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_velocity(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Cyclic_Synchronous_Velocity)
-    {
-      response->success = motor_->enterModeAndWait(MotorBase::Cyclic_Synchronous_Velocity);
-      return;
-    }
-    response->success = false;
-  }
+  response->success = set_mode_cyclic_velocity();
 }
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_mode_torque(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Profiled_Torque)
-    {
-      response->success = motor_->enterModeAndWait(MotorBase::Profiled_Torque);
-    }
-    response->success = true;
-  }
+  response->success = set_mode_torque();
 }
 
 template <class NODETYPE>
@@ -452,7 +378,9 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_target(
   {
     auto mode = motor_->getMode();
     double target;
-    if ((mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position))
+    if (
+      (mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position) or
+      (mode == MotorBase::Interpolated_Position))
     {
       target = request->target * scale_pos_to_dev_;
     }
@@ -477,7 +405,6 @@ bool NodeCanopen402Driver<NODETYPE>::init_motor()
   if (this->activated_.load())
   {
     bool temp = motor_->handleInit();
-    mc_driver_->validate_objs();
     return temp;
   }
   else
@@ -514,6 +441,16 @@ bool NodeCanopen402Driver<NODETYPE>::halt_motor()
 }
 
 template <class NODETYPE>
+bool NodeCanopen402Driver<NODETYPE>::set_operation_mode(uint16_t mode)
+{
+  if (this->activated_.load())
+  {
+    return motor_->enterModeAndWait(mode);
+  }
+  return false;
+}
+
+template <class NODETYPE>
 bool NodeCanopen402Driver<NODETYPE>::set_mode_position()
 {
   if (this->activated_.load())
@@ -534,13 +471,33 @@ bool NodeCanopen402Driver<NODETYPE>::set_mode_position()
 }
 
 template <class NODETYPE>
+bool NodeCanopen402Driver<NODETYPE>::set_mode_interpolated_position()
+{
+  if (this->activated_.load())
+  {
+    if (motor_->getMode() != MotorBase::Interpolated_Position)
+    {
+      return motor_->enterModeAndWait(MotorBase::Interpolated_Position);
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    return false;
+  }
+}
+
+template <class NODETYPE>
 bool NodeCanopen402Driver<NODETYPE>::set_mode_velocity()
 {
   if (this->activated_.load())
   {
-    if (motor_->getMode() != MotorBase::Velocity)
+    if (motor_->getMode() != MotorBase::Profiled_Velocity)
     {
-      return motor_->enterModeAndWait(MotorBase::Velocity);
+      return motor_->enterModeAndWait(MotorBase::Profiled_Velocity);
     }
     else
     {
@@ -620,7 +577,9 @@ bool NodeCanopen402Driver<NODETYPE>::set_target(double target)
   {
     auto mode = motor_->getMode();
     double scaled_target;
-    if ((mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position))
+    if (
+      (mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position) or
+      (mode == MotorBase::Interpolated_Position))
     {
       scaled_target = target * scale_pos_to_dev_;
     }

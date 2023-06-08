@@ -1,3 +1,17 @@
+//    Copyright 2022 Christoph Hellmann Santos
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
 #ifndef NODE_CANOPEN_DRIVER_HPP_
 #define NODE_CANOPEN_DRIVER_HPP_
 
@@ -60,6 +74,8 @@ protected:
   YAML::Node config_;
   uint8_t node_id_;
   std::string container_name_;
+  std::string eds_;
+  std::string bin_;
 
   rclcpp::CallbackGroup::SharedPtr client_cbg_;
   rclcpp::CallbackGroup::SharedPtr timer_cbg_;
@@ -179,6 +195,11 @@ public:
     node_->get_parameter("config", config);
     this->config_ = YAML::Load(config);
     this->non_transmit_timeout_ = std::chrono::milliseconds(non_transmit_timeout);
+    auto path = this->config_["dcf_path"].as<std::string>();
+    auto dcf = this->config_["dcf"].as<std::string>();
+    auto name = this->node_->get_name();
+    eds_ = path + "/" + dcf;
+    bin_ = path + "/" + name + ".bin";
     this->configure(true);
     this->configured_.store(true);
     RCLCPP_DEBUG(node_->get_logger(), "configure_end");

@@ -21,13 +21,6 @@
 
 namespace ros2_canopen
 {
-enum CODataTypes
-{
-  CODataUnkown = 0,
-  COData8 = 8,
-  COData16 = 16,
-  COData32 = 32
-};
 
 struct COData
 {
@@ -35,7 +28,6 @@ public:
   uint16_t index_;
   uint8_t subindex_;
   uint32_t data_;
-  CODataTypes type_;
 };
 
 struct COEmcy
@@ -79,11 +71,11 @@ public:
    * @brief Try to pop a value from the queue
    * @return Value if available, boost::none otherwise
    */
-  boost::optional<T> try_pop()
+  std::optional<T> try_pop()
   {
     T value;
     if (queue_->pop(value)) return std::optional<T>(std::move(value));
-    return boost::none;
+    return std::optional<T>();
   }
 
   /**

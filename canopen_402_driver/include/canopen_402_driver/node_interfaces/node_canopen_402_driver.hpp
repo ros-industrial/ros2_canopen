@@ -1,8 +1,8 @@
 #ifndef NODE_CANOPEN_402_DRIVER
 #define NODE_CANOPEN_402_DRIVER
 
-#include "canopen_402_driver/lely_motion_controller_bridge.hpp"
 #include "canopen_402_driver/motor.hpp"
+#include "canopen_base_driver/lely_driver_bridge.hpp"
 #include "canopen_interfaces/srv/co_target_double.hpp"
 #include "canopen_proxy_driver/node_interfaces/node_canopen_proxy_driver.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
@@ -21,7 +21,6 @@ class NodeCanopen402Driver : public NodeCanopenProxyDriver<NODETYPE>
     "NODETYPE must derive from rclcpp::Node or rclcpp_lifecycle::LifecycleNode");
 
 protected:
-  std::shared_ptr<LelyMotionControllerBridge> mc_driver_;
   std::shared_ptr<Motor402> motor_;
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_init_service;
@@ -35,14 +34,14 @@ protected:
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_interpolated_position_service;
   rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr handle_set_target_service;
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr publish_joint_state;
-  uint32_t period_ms_;
   double scale_pos_to_dev_;
   double scale_pos_from_dev_;
   double scale_vel_to_dev_;
   double scale_vel_from_dev_;
+  ros2_canopen::State402::InternalState switching_state_;
 
   void publish();
-  void run();
+  virtual void poll_timer_callback() override;
 
 public:
   NodeCanopen402Driver(NODETYPE * node);
@@ -53,9 +52,9 @@ public:
   virtual void deactivate(bool called_from_base) override;
   virtual void add_to_master() override;
 
-  virtual double get_speed() { return this->mc_driver_->get_speed() * scale_vel_from_dev_; }
+  virtual double get_speed() { return motor_->get_speed() * scale_vel_from_dev_; }
 
-  virtual double get_position() { return this->mc_driver_->get_position() * scale_pos_from_dev_; }
+  virtual double get_position() { return motor_->get_position() * scale_pos_from_dev_; }
 
   virtual uint16_t get_mode() { return motor_->getMode(); }
 
@@ -151,6 +150,8 @@ public:
     const std_srvs::srv::Trigger::Request::SharedPtr request,
     std_srvs::srv::Trigger::Response::SharedPtr response);
 
+  bool set_operation_mode(uint16_t mode);
+
   /**
    * @brief Method to set profiled position mode
    *
@@ -218,6 +219,18 @@ public:
   void handle_set_mode_interpolated_position(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
     std_srvs::srv::Trigger::Response::SharedPtr response);
+
+  /**
+   * @brief Method to set interpolated position mode
+   *
+   * Calls Motor402::enterModeAndWait with Interpolated Position Mode as
+   * Target Operation Mode. If successful, the motor was transitioned
+   * to Interpolated Position Mode. This only supports linear mode.
+   *
+   * @param [in] void
+   * @param [out] bool
+   */
+  bool set_mode_interpolated_position();
 
   /**
    * @brief Method to set cyclic position mode

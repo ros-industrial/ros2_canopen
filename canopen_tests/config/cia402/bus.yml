@@ -5,15 +5,13 @@ master:
   node_id: 1
   driver: "ros2_canopen::MasterDriver"
   package: "canopen_master_driver"
-  sync_period: 20000
+  sync_period: 10000
 
-cia402_device_1:
-  node_id: 2
+defaults:
   dcf: "cia402_slave.eds"
   driver: "ros2_canopen::Cia402Driver"
   package: "canopen_402_driver"
-  period: 20
-  enable_lazy_load: false
+  period: 10
   revision_number: 0
   sdo:
     - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
@@ -52,3 +50,17 @@ cia402_device_1:
       mapping:
       - {index: 0x607A, sub_index: 0} # target position
       - {index: 0x60FF, sub_index: 0} # target velocity
+
+nodes:
+  cia402_device_1:
+    node_id: 2
+  cia402_device_2:
+    node_id: 3
+  cia402_device_3:
+    node_id: 4
+  cia402_device_4:
+    node_id: 5
+  cia402_device_5:
+    node_id: 6
+  cia402_device_6:
+    node_id: 7

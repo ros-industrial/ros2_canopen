@@ -1,3 +1,17 @@
+//    Copyright 2022 Christoph Hellmann Santos
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
 #include "canopen_core/driver_node.hpp"
 #include "canopen_core/node_interfaces/node_canopen_driver.hpp"
 #include "gmock/gmock.h"
@@ -129,7 +143,10 @@ TEST_F(NodeCanopenDriverTest, test_configure)
   node_canopen_driver->activated_.store(false);
   node_canopen_driver->init();
   node->set_parameter(rclcpp::Parameter(
-    "config", "node_id: 1\ndriver: \"ros2_canopen::CanopenDriver\"\npackage:\"canopen_core\"\n"));
+    "config",
+    "node_id: 1\ndriver: \"ros2_canopen::CanopenDriver\"\npackage: \"canopen_core\"\ndcf: "
+    "\"simple.eds\"\ndcf_path: \"\"\n"));
+  std::cout << node->get_parameter("config").as_string() << std::endl;
   node_canopen_driver->configure();
   EXPECT_TRUE(node_canopen_driver->configured_.load());
 }

@@ -1,3 +1,17 @@
+//    Copyright 2022 Christoph Hellmann Santos
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
 #ifndef NODE_CANOPEN_BASE_DRIVER
 #define NODE_CANOPEN_BASE_DRIVER
 
@@ -28,6 +42,8 @@ protected:
   std::thread emcy_publisher_thread_;
   std::mutex driver_mutex_;
   std::shared_ptr<ros2_canopen::LelyDriverBridge> lely_driver_;
+  uint32_t period_ms_;
+  bool polling_;
 
   // nmt state callback
   std::function<void(canopen::NmtState, uint8_t)> nmt_state_cb_;
@@ -36,6 +52,10 @@ protected:
   // emcy callback
   std::function<void(COEmcy, uint8_t)> emcy_cb_;
 
+  std::shared_ptr<ros2_canopen::SafeQueue<ros2_canopen::COEmcy>> emcy_queue_;
+  std::shared_ptr<ros2_canopen::SafeQueue<ros2_canopen::COData>> rpdo_queue_;
+  rclcpp::TimerBase::SharedPtr poll_timer_;
+  virtual void poll_timer_callback();
   void nmt_listener();
   virtual void on_nmt(canopen::NmtState nmt_state);
   void rdpo_listener();

@@ -11,19 +11,16 @@ find_package(lely_core_libraries REQUIRED)
 
 
 generate_dcf(simple)
-generate_dcf(cia402)
+cogen_dcf(cia402)
 generate_dcf(cia402_lifecycle)
 generate_dcf(simple_lifecycle)
+generate_dcf(robot_control)
 
 install(DIRECTORY
-  launch/
-  DESTINATION share/${PROJECT_NAME}/launch/
+  launch rviz urdf launch_tests
+  DESTINATION share/${PROJECT_NAME}
 )
 
-install(DIRECTORY
-  launch_tests/
-  DESTINATION share/${PROJECT_NAME}/launch_tests/
-)
 
 
 if(BUILD_TESTING)
