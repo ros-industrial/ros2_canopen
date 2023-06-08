@@ -24,10 +24,10 @@ Preparing the configuration
 --------------------------------------------------------
 To use the control system interface for CiA301 profile, we should prepare the following
 
-    - bus_conf
-    - master_dcf
-    - master_bin
-    - can_interface, (default: vcan0)
+- bus_conf
+- master_dcf
+- master_bin
+- can_interface, (default: vcan0)
 
 Define the bus configuration parameters
 
@@ -105,7 +105,7 @@ Network Management (NMT)
  - "nmt/state"
 
 
-Use TPOD to send commands
+Use TPDO to send commands
 ----------------------------
 In order to send commands to hardware devices in a CANopen network, we first need to export the appropriate hardware interfaces. This is a critical step that enables us to effectively control each joint within our network.
 
