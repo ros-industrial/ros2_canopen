@@ -63,21 +63,20 @@ class TestNode(Node):
             return True
         return False
 
-    def checkSDORead(self, node_name, index: int, subindex: int, type: int, data: int) -> bool:
+    def checkSDORead(self, node_name, index: int, subindex: int, data: int) -> bool:
         client = self.create_client(CORead, "/" + node_name + "/sdo_read")
         if not client.wait_for_service(timeout_sec=3.0):
             return False
         req = CORead.Request()
         req.index = index
         req.subindex = subindex
-        req.type = type
         result = client.call(req)
         client.destroy()
         if result.success and (data == result.data):
             return True
         return False
 
-    def checkSDOWrite(self, node_name, index: int, subindex: int, type: int, data: int) -> bool:
+    def checkSDOWrite(self, node_name, index: int, subindex: int, data: int) -> bool:
         client = self.create_client(COWrite, "/" + node_name + "/sdo_write")
         if not client.wait_for_service(timeout_sec=3.0):
             return False
@@ -85,7 +84,6 @@ class TestNode(Node):
         req.index = index
         req.subindex = subindex
         req.data = data
-        req.type = type
         result = client.call(req)
         client.destroy()
         if result.success:
@@ -101,7 +99,7 @@ class TestNode(Node):
         req = COReadID.Request()
         req.index = index
         req.subindex = subindex
-        req.type = type
+        req.canopen_datatype = type
         req.nodeid = node_id
         result = client.call(req)
         client.destroy()
@@ -119,7 +117,7 @@ class TestNode(Node):
         req.index = index
         req.subindex = subindex
         req.data = data
-        req.type = type
+        req.canopen_datatype = type
         req.nodeid = node_id
         result = client.call(req)
         client.destroy()
@@ -127,7 +125,7 @@ class TestNode(Node):
             return True
         return False
 
-    def checkRpdoTpdo(self, node_name, index: int, subindex: int, type: int, data: int) -> bool:
+    def checkRpdoTpdo(self, node_name, index: int, subindex: int, data: int) -> bool:
         publisher = self.create_publisher(COData, "/" + node_name + "/tpdo", 10)
         subscriber = self.create_subscription(
             COData, "/" + node_name + "/rpdo", self.rpdo_callback, 10
@@ -135,7 +133,6 @@ class TestNode(Node):
         target = COData()
         target.index = index
         target.subindex = subindex
-        target.type = type
         target.data = data
         publisher.publish(target)
         print("Published tpdo to topic: " + "/" + node_name + "/tpdo")
