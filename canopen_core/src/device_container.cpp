@@ -196,6 +196,10 @@ bool DeviceContainer::load_master()
   RCLCPP_INFO(this->get_logger(), "Loading Master Configuration.");
   std::vector<std::string> devices;
   uint32_t count = this->config_->get_all_devices(devices);
+  if (count == 0)
+  {
+    return false;
+  }
   bool master_found = false;
 
   // Find master in configuration
@@ -250,6 +254,10 @@ bool DeviceContainer::load_drivers()
   RCLCPP_INFO(this->get_logger(), "Loading Driver Configuration.");
   std::vector<std::string> devices;
   uint32_t count = this->config_->get_all_devices(devices);
+  if (count == 0)
+  {
+    return false;
+  }
 
   for (auto it = devices.begin(); it != devices.end(); it++)
   {

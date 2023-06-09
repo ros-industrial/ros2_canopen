@@ -45,6 +45,7 @@ public:
     this->activated_.load();
     RCLCPP_INFO(this->node_->get_logger(), "NodeCanopenBasicMaster");
   }
+  virtual ~NodeCanopenBasicMaster() {}
 
   virtual void activate(bool called_from_base) override;
   virtual void deactivate(bool called_from_base) override;
