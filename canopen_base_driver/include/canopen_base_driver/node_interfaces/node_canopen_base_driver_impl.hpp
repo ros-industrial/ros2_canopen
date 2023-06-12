@@ -300,7 +300,7 @@ void NodeCanopenBaseDriver<NODETYPE>::on_rpdo(COData data)
 template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::on_emcy(COEmcy emcy)
 {
-  diagnostic_collector_->summayf(
+  diagnostic_collector_->summary(
     diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Emergency message received");
   std::string emcy_msg = "Emergency message: ";
   emcy_msg.append("eec: ");

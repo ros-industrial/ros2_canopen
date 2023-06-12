@@ -11,18 +11,40 @@
 
 namespace ros2_canopen
 {
+
+/**
+ * @brief A class to collect diagnostic information
+ *
+ */
 class DiagnosticsCollector
 {
 public:
   DiagnosticsCollector() : level_(diagnostic_msgs::msg::DiagnosticStatus::OK) {}
 
+  /**
+   * @brief Get the Level
+   * Returns the current level (OK, WARN, ERROR or STALE) of the diagnostic
+   * @return unsigned char
+   */
   unsigned char getLevel() const
   {
     return static_cast<unsigned char>(level_.load(std::memory_order_relaxed));
   }
 
+  /**
+   * @brief Get the Message object
+   * Returns the current message of the diagnostic
+   * @return std::string
+   */
   std::string getMessage() const { return message_; }
 
+  /**
+   * @brief Get the Value object
+   * Returns the current different device state values of the diagnostic.
+   * @param key Search device state by key. Eg. "DEVICE", "NMT", "EMCY", "cia402_state",
+   * "cia402_mode" etc.
+   * @return std::string
+   */
   std::string getValue(const std::string & key) const
   {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -33,6 +55,12 @@ public:
       return "";  // Return an empty string if key not found
   }
 
+  /**
+   * @brief Store current device summary
+   *
+   * @param lvl Operation level (OK, WARN, ERROR or STALE)
+   * @param message Device summary message
+   */
   void summary(unsigned char lvl, const std::string & message)
   {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -40,7 +68,14 @@ public:
     this->setMessage(message);
   }
 
-  void summayf(unsigned char lvl, const char * format, ...)
+  /**
+   * @brief Store current device summary
+   *
+   * @param lvl Operation level (OK, WARN, ERROR or STALE)
+   * @param format Device summary message format
+   * @param ...
+   */
+  void summaryf(unsigned char lvl, const char * format, ...)
   {
     va_list args;
     va_start(args, format);
@@ -50,12 +85,25 @@ public:
     summary(lvl, std::string(buffer));
   }
 
+  /**
+   * @brief Add a device state value
+   *
+   * @param key Device state key. Eg. "DEVICE", "NMT", "EMCY", "cia402_state", "cia402_mode" etc.
+   * @param value Current device state value
+   */
   void add(const std::string & key, const std::string & value)
   {
     std::lock_guard<std::mutex> lock(mutex_);
     this->setValue(key, value);
   }
 
+  /**
+   * @brief Add a device state value
+   *
+   * @param key Device state key. Eg. "DEVICE", "NMT", "EMCY", "cia402_state", "cia402_mode" etc.
+   * @param format Current device state value format
+   * @param ...
+   */
   void addf(const std::string & key, const char * format, ...)
   {
     va_list args;
@@ -66,6 +114,14 @@ public:
     add(key, std::string(buffer));
   }
 
+  /**
+   * @brief Update all diagnostic information
+   *
+   * @param lvl Operation level (OK, WARN, ERROR or STALE)
+   * @param message Device summary message
+   * @param key Device state key. Eg. "DEVICE", "NMT", "EMCY", "cia402_state", "cia402_mode" etc.
+   * @param value Current device state value
+   */
   void updateAll(
     unsigned char lvl, const std::string & message, const std::string & key,
     const std::string & value)

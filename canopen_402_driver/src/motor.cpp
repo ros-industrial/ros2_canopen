@@ -173,7 +173,7 @@ bool Motor402::switchState(const State402::InternalState & target)
     }
     else if (enable_diagnostics_.load() && success)
     {
-      this->diag_collector_->addf("cia402_state", "State transition: %d -> %d", state, next);
+      this->diag_collector_->addf("cia402_state", "State switched to: %d", next);
     }
     lock.unlock();
     if (state != next && !state_handler_.waitForNewState(abstime, state))
