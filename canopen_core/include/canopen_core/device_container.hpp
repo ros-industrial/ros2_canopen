@@ -68,7 +68,7 @@ public:
       "~/init_driver",
       std::bind(
         &DeviceContainer::on_init_driver, this, std::placeholders::_1, std::placeholders::_2),
-      rclcpp::QoS(10).get_rmw_qos_profile(), client_cbg_);
+      rclcpp::QoS(10), client_cbg_);
 
     this->loadNode_srv_.reset();
     this->unloadNode_srv_.reset();
