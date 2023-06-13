@@ -1,5 +1,5 @@
-How to create a robot system
-========================================
+How to create a robot system with ros2_control
+==============================================
 This guide describes how to create a simple robot using the robot system hardware interface
 leveragin ros2_control.
 

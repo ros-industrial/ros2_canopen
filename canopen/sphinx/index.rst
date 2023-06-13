@@ -23,6 +23,7 @@ This is the documentation of the ROS2 CANopen stack.
   user-guide/proxy-driver
   user-guide/cia402-driver
   user-guide/how-to-create-a-configuration
+  user-guide/how-to-create-a-cia301-system
   user-guide/how-to-create-a-robot-system
 
 
