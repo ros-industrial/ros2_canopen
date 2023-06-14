@@ -1,30 +1,66 @@
-Bus Configuration Reference
+Configuration Package
+=====================
+
+A configuration package contains one or more configurations for the CANopen
+stack. The configuration package needs to hold the EDS/DCF files for each device,
+the bus configuration and the launch files for the different configurations.
+
+Consequently, the structure of the configuration package should look as follows:
+
+    ::
+
+          {package_name}
+          ├── config
+          │   ├── {bus_config_name_1}
+          │   |   ├── bus.yml
+          │   |   ├── {device1}.eds
+          │   |   ├── {device...}.eds
+          │   |   └── {slave_n}.eds
+          │   └── {bus_config_name_2}
+          │       ├── bus.yml
+          │       ├── {device1}.eds
+          │       ├── {device...}.eds
+          │       └── {slave_n}.eds
+          ├── launch
+          │   ├── {bus_config_name_1}.launch.py
+          |   └── {bus_config_name_1}.launch.py
+          ├── CMakeLists.txt
+          └── package.xml
+
+
+
+Bus Configuration File
 ============================
 
 The ros2_canopen stack relies on a YAML configuration file that is used
 for configuring the bus topology and specifying configurations for
-each device. From this configuration file, we generate the device configuration
-file (DCF) for the CANopen master as well as concise DCF files for master and
-each slave. The ros2_canopen stack uses the YAML configuration file to choose
-the correct drivers for each device on the bus and the generated DCF for configuring
-the CANopen Master as well as the devices on the bus.
+each device. The file details which devices connected to the bus, which
+EDS/DCF file applies to them, which parameters of the EDS/DCF files should be
+overwritten and which drivers should be used to control the devices.
 
 Structure
 ---------
 
-The YAML configuration file contains a section for each device on the bus. The section
-for the master has different configuration options than the section for the slave devices.
-The file has the following structure. The master section has to be named master. The
-device sections need be named uniquely.
-.. code-block::
+The YAML configuration file has the following sections:
 
-  master:
+.. code-block:: yaml
+
+  options: # General options especially dcf_path
+    [configuration item]: [value]
+
+  master: # The configuration of the master
     [configuration item]: [value]
     [...]
 
-  [device_name]:
+  defaults: # Defaults that apply to all slave nodes
     [configuration item]: [value]
-    [...]
+    []
+
+  nodes: # Configurations for all slave nodes
+    - [device_name]:
+        [configuration item]: [value]
+        [...]
+
 
 Options Section
 ---------------
@@ -81,6 +117,12 @@ Device Section
 The device configuration enables configuring the characteristics of the connected CANopen
 device.
 
+.. note::
+  It is important to note, that you choose the operation (simple nodes or managed nodes) by choosing
+  either only lifecycle drivers or only simple drivers.
+
+  **Mixing them will not work!**
+
 .. csv-table:: Device Configuration
   :header-rows: 1
   :class: longtable
@@ -115,3 +157,26 @@ device.
 Further references
 ------------------
 The dcfgen documentation gives more details on the usage of the dcfgen tool for generating DCF: https://opensource.lely.com/canopen/docs/dcf-tools/
+
+Variables
+---------
+
+``@BUS_CONFIG_PATH@:`` Automatic config path definition if configuration package structure is followed.
+
+
+
+
+Configuration Package CMake
+===========================
+
+In order to build the configuration package and generate the necessary runtime artifacts from the
+bus configuration file and eds/dcf files, the lely_core_libraries package contains an extra
+CMAKE macro.
+
+**cogen_dcf(target)**
+
+Target: the name of the configuration (e.g. for config/{bus_config_name_1} is bus_config_name_1)
+
+.. code-block::
+
+  cogen_dcf(bus_config)
