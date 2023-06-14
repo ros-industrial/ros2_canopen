@@ -4,6 +4,22 @@ Changelog for package canopen_fake_slaves
 
 Forthcoming
 -----------
+* Fix a number of build warnings (`#137 <https://github.com/ros-industrial/ros2_canopen/issues/137>`_)
+  * Fix a number of build warnings
+  * Try rclcpp::QoS
+  * Set QoS in device_container
+  ---------
+* Update package versions to 0.1.0 (`#133 <https://github.com/ros-industrial/ros2_canopen/issues/133>`_)
+* run interpolated mode in fake slave (`#126 <https://github.com/ros-industrial/ros2_canopen/issues/126>`_)
+* Beta release preparations (`#120 <https://github.com/ros-industrial/ros2_canopen/issues/120>`_)
+  * Improve lely compilation time
+  * Bump lely_core_librries to version 2.3.2
+  * Add license files
+  * Adapt package xml
+  * Add changelogs - forthcoming for now.
+  * Update readme
+  * Add apacje-2.0 license notifications to files
+  ---------
 * Add driver dictionaries (`#110 <https://github.com/ros-industrial/ros2_canopen/issues/110>`_)
   * Get slave eds and bin in node_canopen_driver
   * Add dictionary to base driver

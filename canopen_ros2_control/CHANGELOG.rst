@@ -4,7 +4,21 @@ Changelog for package canopen_ros2_control
 
 Forthcoming
 -----------
-* Add license files
+* Merge branch 'StoglRobotics-forks-use-can-interface-name-consistently'
+* Fix formatting.
+* Use 'can_interface_name' consistently everywhere.
+* Bring ros2_control test launches to canopen_tests pkg (`#131 <https://github.com/ros-industrial/ros2_canopen/issues/131>`_)
+* Update package versions to 0.1.0 (`#133 <https://github.com/ros-industrial/ros2_canopen/issues/133>`_)
+* Fix interpolated mode switch in CiA402 (`#124 <https://github.com/ros-industrial/ros2_canopen/issues/124>`_)
+* Beta release preparations (`#120 <https://github.com/ros-industrial/ros2_canopen/issues/120>`_)
+  * Improve lely compilation time
+  * Bump lely_core_librries to version 2.3.2
+  * Add license files
+  * Adapt package xml
+  * Add changelogs - forthcoming for now.
+  * Update readme
+  * Add apacje-2.0 license notifications to files
+  ---------
 * Reduce processor load (`#111 <https://github.com/ros-industrial/ros2_canopen/issues/111>`_)
   * Get slave eds and bin in node_canopen_driver
   * Add dictionary to base driver
@@ -155,4 +169,4 @@ Forthcoming
 * Print config paths on init.
 * Enable easy testing temporarily.
 * Introduce canopen system interface.
-* Contributors: Błażej Sowa, Christoph Hellmann Santos, Denis Štogl, Lovro, livanov93
+* Contributors: Błażej Sowa, Christoph Hellmann Santos, Denis Štogl, Lovro, Vishnuprasad Prachandabhanu, livanov93

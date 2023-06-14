@@ -4,6 +4,27 @@ Changelog for package canopen_proxy_driver
 
 Forthcoming
 -----------
+* Add device diagnostics messages (`#117 <https://github.com/ros-industrial/ros2_canopen/issues/117>`_)
+  * Diagnostic msgs publisher for proxy diver
+  * diagnostic msgs for cia402 and motor interface
+  * Restructured message constructor
+  * Added option to enable/disable diagnostic
+  * Add diagnostic test in proxy driver
+  * Diagnostics test launch for proxy and cia402
+  * proxy driver switched to diagnostic updater
+  * Complete diagnostic implementation for cia402  driver
+  * Update formating
+  * include code documentation
+* Update package versions to 0.1.0 (`#133 <https://github.com/ros-industrial/ros2_canopen/issues/133>`_)
+* Beta release preparations (`#120 <https://github.com/ros-industrial/ros2_canopen/issues/120>`_)
+  * Improve lely compilation time
+  * Bump lely_core_librries to version 2.3.2
+  * Add license files
+  * Adapt package xml
+  * Add changelogs - forthcoming for now.
+  * Update readme
+  * Add apacje-2.0 license notifications to files
+  ---------
 * Remove type indication from msg and srv interfaces (`#112 <https://github.com/ros-industrial/ros2_canopen/issues/112>`_)
   * Get slave eds and bin in node_canopen_driver
   * Add dictionary to base driver

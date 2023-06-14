@@ -4,7 +4,40 @@ Changelog for package canopen
 
 Forthcoming
 -----------
-* Adapt package xml
+* Merge branch 'StoglRobotics-forks-use-can-interface-name-consistently'
+* Documentation for beta release (`#127 <https://github.com/ros-industrial/ros2_canopen/issues/127>`_)
+  * Add documenation for cia301
+  * Update ros2-control-interface.rst
+  Fix some format problems... Still have issue showing the example code
+  * Update ros2-control-interface.rst
+  Make the code rending okay.. Still have issues with the code blocks
+  * Update ros2-control-interface.rst
+  Minor changes
+  * Fix the format so that it builds
+  * Update ros2-control-interface.rst
+  * Update ros2-control-interface.rst
+  * Update configuration section
+  * Update configuration in documentation
+  * Update structure
+  * Application demos: trinamic stepper motor
+  * fix formatting and typo
+  * Integrate the documentation from the master branch
+  * Update ros2-control-interface.rst
+  * Application demos: PRBT robot with ros2_canopen
+  * Rename and add to index
+  ---------
+  Co-authored-by: Xi Huang <sam.xihuang@gmail.com>
+  Co-authored-by: Vishnuprasad Prachandabhanu <vishnu.pbhat93@gmail.com>
+* Use 'can_interface_name' consistently everywhere.
+* Beta release preparations (`#120 <https://github.com/ros-industrial/ros2_canopen/issues/120>`_)
+  * Improve lely compilation time
+  * Bump lely_core_librries to version 2.3.2
+  * Add license files
+  * Adapt package xml
+  * Add changelogs - forthcoming for now.
+  * Update readme
+  * Add apacje-2.0 license notifications to files
+  ---------
 * Reduce processor load (`#111 <https://github.com/ros-industrial/ros2_canopen/issues/111>`_)
   * Get slave eds and bin in node_canopen_driver
   * Add dictionary to base driver
