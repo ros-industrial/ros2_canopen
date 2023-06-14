@@ -24,7 +24,7 @@ public:
     node = new rclcpp::Node("Node");
     interface = new ros2_canopen::node_interfaces::NodeCanopenBasicMaster<rclcpp::Node>(node);
   }
-  ~RclCppFixture()
+  virtual ~RclCppFixture()
   {
     rclcpp::shutdown();
     delete (interface);
