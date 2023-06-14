@@ -42,6 +42,7 @@ protected:
 
   void publish();
   virtual void poll_timer_callback() override;
+  void diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper & stat) override;
 
 public:
   NodeCanopen402Driver(NODETYPE * node);

@@ -15,6 +15,7 @@
 #include "canopen_402_driver/default_homing_mode.hpp"
 #include "canopen_402_driver/mode_forward_helper.hpp"
 #include "canopen_402_driver/profiled_position_mode.hpp"
+#include "canopen_base_driver/diagnostic_collector.hpp"
 #include "canopen_base_driver/lely_driver_bridge.hpp"
 
 namespace ros2_canopen
@@ -53,6 +54,14 @@ public:
   virtual bool isModeSupported(uint16_t mode);
   virtual uint16_t getMode();
   bool readState();
+
+  /**
+   * @brief Updates the device diagnostic information
+   *
+   * This function updates the diagnostic information of the device by updating the diagnostic
+   * status message
+   * @ref diagnostic_status_ and publishing it.
+   */
   void handleDiag();
   /**
    * @brief Initialise the drive
@@ -154,6 +163,12 @@ public:
     return (double)this->driver->universal_get_value<int32_t>(0x6064, 0);
   }
 
+  void set_diagnostic_status_msgs(std::shared_ptr<DiagnosticsCollector> status, bool enable)
+  {
+    this->enable_diagnostics_.store(enable);
+    this->diag_collector_ = status;
+  }
+
 private:
   virtual bool isModeSupportedByDevice(uint16_t mode);
   void registerMode(uint16_t id, const ModeSharedPtr & m);
@@ -190,6 +205,10 @@ private:
   const uint16_t op_mode_display_index = 0x6061;
   const uint16_t op_mode_index = 0x6060;
   const uint16_t supported_drive_modes_index = 0x6502;
+
+  // Diagnostic components
+  std::atomic<bool> enable_diagnostics_;
+  std::shared_ptr<DiagnosticsCollector> diag_collector_;
 };
 
 }  // namespace ros2_canopen

@@ -1,17 +1,3 @@
-#    Copyright 2022 Christoph Hellmann Santos
-#
-#    Licensed under the Apache License, Version 2.0 (the "License");
-#    you may not use this file except in compliance with the License.
-#    You may obtain a copy of the License at
-#
-#        http://www.apache.org/licenses/LICENSE-2.0
-#
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS,
-#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#    See the License for the specific language governing permissions and
-#    limitations under the License.
-
 import os
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
@@ -23,7 +9,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
     slave_eds_path = os.path.join(
-        get_package_share_directory("canopen_tests"), "config", "simple", "simple.eds"
+        get_package_share_directory("canopen_tests"), "config", "simple_diagnostics", "simple.eds"
     )
     slave_node_1 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -73,18 +59,34 @@ def generate_launch_description():
             "master_config": os.path.join(
                 get_package_share_directory("canopen_tests"),
                 "config",
-                "simple",
+                "simple_diagnostics",
                 "master.dcf",
             ),
             "master_bin": "",
             "bus_config": os.path.join(
                 get_package_share_directory("canopen_tests"),
                 "config",
-                "simple",
+                "simple_diagnostics",
                 "bus.yml",
             ),
             "can_interface_name": "vcan0",
         }.items(),
     )
 
-    return LaunchDescription([slave_node_1, slave_node_2, device_container])
+    diagnostics_analyzer_path = os.path.join(
+        get_package_share_directory("canopen_tests"),
+        "launch",
+        "analyzers",
+        "proxy_diagnostic_analyzer.yaml",
+    )
+
+    diagnostics_aggregator_node = launch_ros.actions.Node(
+        package="diagnostic_aggregator",
+        executable="aggregator_node",
+        output="screen",
+        parameters=[diagnostics_analyzer_path],
+    )
+
+    return LaunchDescription(
+        [slave_node_1, slave_node_2, device_container, diagnostics_aggregator_node]
+    )
