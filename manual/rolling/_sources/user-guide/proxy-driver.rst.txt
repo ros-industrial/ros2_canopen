@@ -2,6 +2,13 @@ Proxy Driver
 ===================
 A proxy driver which simply forwards CANopen functionality for a specific device via ROS2 services and messages.
 
+.. csv-table:: Proxy Drivers
+   :header: Type, Package, Name
+   :widths: 30, 20, 50
+
+   lifecycle, canopen_proxy_driver, ros2_canopen::LifecycleProxyDriver
+   simple, canopen_proxy_driver, ros2_canopen::ProxyDriver
+
 Services
 --------
 

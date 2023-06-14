@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Creating a Configuration Package" href="configuration.html" />
+    <link rel="next" title="Setup CAN Controller" href="operation.html" />
     <link rel="prev" title="ROS2 CANopen Stack" href="../index.html" /> 
 </head>
 
@@ -47,20 +47,21 @@
               <p class="caption" role="heading"><span class="caption-text">Quickstart</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Creating a Configuration Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operation.html">Starting a Configuration Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operation.html">Setup CAN Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Running Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration/configuration.html">Bus Configuration Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation/operation.html">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation/service-interface.html">Service Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation/managed-service-interface.html">Managed Service Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation/ros2-control-interface.html">ROS2 Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html">Configuration Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html#bus-configuration-file">Bus Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html#configuration-package-cmake">Configuration Package CMake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user-guide/master.html">Master Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user-guide/proxy-driver.html">Proxy Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user-guide/cia402-driver.html">Cia402 Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-configuration.html">How to create a configuration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-cia301-system.html">How to create a cia301 system with ros2_control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-robot-system.html">How to create a robot system with ros2_control</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -76,6 +77,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html">Lifecycle Proxy Driver Test</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html#proxy-driver-test">Proxy Driver Test</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../software-tests/ros2_control_system-test.html">ros2_control SystemInterface test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Application Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../application/prbt_robot.html">Pilz manipulator PRBT 6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../application/trinamic.html">Trinamic Stepper Motor control</a></li>
 </ul>
 
         </div>
@@ -119,7 +125,7 @@ build with colcon and your done.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../index.html" class="btn btn-neutral float-left" title="ROS2 CANopen Stack" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="configuration.html" class="btn btn-neutral float-right" title="Creating a Configuration Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="operation.html" class="btn btn-neutral float-right" title="Setup CAN Controller" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
