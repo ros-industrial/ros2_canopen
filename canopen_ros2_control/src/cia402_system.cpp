@@ -53,7 +53,7 @@ void Cia402System::initDeviceContainer()
                                  : info_.hardware_parameters["master_bin"];
 
   device_container_->init(
-    info_.hardware_parameters["can_interface"], info_.hardware_parameters["master_config"],
+    info_.hardware_parameters["can_interface_name"], info_.hardware_parameters["master_config"],
     info_.hardware_parameters["bus_config"], tmp_master_bin);
   auto drivers = device_container_->get_registered_drivers();
   RCLCPP_INFO(kLogger, "Number of registered drivers: '%lu'", device_container_->count_drivers());
@@ -72,7 +72,7 @@ void Cia402System::initDeviceContainer()
     driver->register_rpdo_cb(rpdo_cb);
 
     RCLCPP_INFO(
-      kLogger, "\nRegistered driver:\n    name: '%s'\n    node_id: '%u'",
+      kLogger, "\nRegistered driver:\n    name: '%s'\n    node_id: '%x'",
       it->second->get_node_base_interface()->get_name(), it->first);
   }
 
