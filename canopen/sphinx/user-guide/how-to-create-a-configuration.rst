@@ -1,4 +1,4 @@
-Creating a Configuration Package
+How to create a configuration package
 ========================================
 In order to use the ros2_canopen stack for your robot, you need to
 create a configuration package, that holds the configuration of the
@@ -54,18 +54,19 @@ Bus configuration creation
     for the devices that are in the bus configuration to the respective folder.
 
     Now your package directory should now look like this.
+
     ::
 
           {package_name}
           ├── config
-          │   ├── {bus_config_name_1}
-          │   |   ├── {device1}.eds
-          │   |   ├── {device...}.eds
-          │   |   └── {slave_n}.eds
-          │   └── {bus_config_name_2}
-          │       ├── {device1}.eds
-          │       ├── {device...}.eds
-          │       └── {slave_n}.eds
+          │   ├── {bus_config_name_1}
+          │   |   ├── {device1}.eds
+          │   |   ├── {device...}.eds
+          │   |   └── {slave_n}.eds
+          │   └── {bus_config_name_2}
+          │       ├── {device1}.eds
+          │       ├── {device...}.eds
+          │       └── {slave_n}.eds
           ├── CMakeLists.txt
           └── package.xml
 
@@ -81,16 +82,16 @@ Bus configuration creation
 
           {package_name}
           ├── config
-          │   ├── {bus_config_name_1}
-          │   |   ├── bus.yml
-          │   |   ├── {device1}.eds
-          │   |   ├── {device...}.eds
-          │   |   └── {slave_n}.eds
-          │   └── {bus_config_name_2}
-          │       ├── bus.yml
-          │       ├── {device1}.eds
-          │       ├── {device...}.eds
-          │       └── {slave_n}.eds
+          │   ├── {bus_config_name_1}
+          │   |   ├── bus.yml
+          │   |   ├── {device1}.eds
+          │   |   ├── {device...}.eds
+          │   |   └── {slave_n}.eds
+          │   └── {bus_config_name_2}
+          │       ├── bus.yml
+          │       ├── {device1}.eds
+          │       ├── {device...}.eds
+          │       └── {slave_n}.eds
           ├── CMakeLists.txt
           └── package.xml
 
@@ -124,10 +125,11 @@ Bus configuration creation
 
     .. code-block:: yaml
 
-      [unique slave name]:
-        node_id: [node id]
-        package: [ros2 package where to find the driver]
-        driver: [qualified name of the driver]
+      nodes:
+        - [unique slave name]:
+          node_id: [node id]
+          package: [ros2 package where to find the driver]
+          driver: [qualified name of the driver]
 
     Make sure you use a lifecycle slave if you use the lifecycled version of ros2_canopen.
 
@@ -211,7 +213,7 @@ Finally we need to adjust the CMakeLists.txt file to pick everything up correctl
   find_package(lely_core_libraries REQUIRED)
 
 
-  generate_dcf({bus_config_name})
+  cogen_dcf({bus_config_name})
 
   install(DIRECTORY
     launch/
