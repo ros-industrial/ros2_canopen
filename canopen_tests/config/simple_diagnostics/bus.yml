@@ -6,18 +6,18 @@ master:
   driver: "ros2_canopen::MasterDriver"
   package: "canopen_master_driver"
 
-proxy_device_1:
-  node_id: 2
+defaults:
   dcf: "simple.eds"
   driver: "ros2_canopen::ProxyDriver"
   package: "canopen_proxy_driver"
   polling: true
   period: 10
+  diagnostics:
+    enable: true
+    period: 1000 # in milliseconds
 
-proxy_device_2:
-  node_id: 3
-  dcf: "simple.eds"
-  driver: "ros2_canopen::ProxyDriver"
-  package: "canopen_proxy_driver"
-  polling: true
-  period: 10
+nodes:
+  proxy_device_1:
+    node_id: 2
+  proxy_device_2:
+    node_id: 3

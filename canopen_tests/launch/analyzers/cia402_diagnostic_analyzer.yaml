@@ -1,0 +1,15 @@
+analyzers:
+  ros__parameters:
+    path: Aggregation
+    cia402_device_1:
+      type: diagnostic_aggregator/GenericAnalyzer
+      path: Cia402Device1
+      contains: [ 'cia402_device_1' ]
+    cia402_device_2:
+      type: diagnostic_aggregator/GenericAnalyzer
+      path: Cia402Device2
+      contains: [ 'cia402_device_2' ]
+    cia402_device_3:
+      type: diagnostic_aggregator/GenericAnalyzer
+      path: Cia402Device3
+      contains: [ 'cia402_device_3' ]

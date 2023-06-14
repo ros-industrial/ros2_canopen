@@ -15,6 +15,7 @@
 #ifndef NODE_CANOPEN_BASE_DRIVER
 #define NODE_CANOPEN_BASE_DRIVER
 
+#include "canopen_base_driver/diagnostic_collector.hpp"
 #include "canopen_base_driver/lely_driver_bridge.hpp"
 #include "canopen_core/node_interfaces/node_canopen_driver.hpp"
 #include "std_msgs/msg/string.hpp"
@@ -55,6 +56,13 @@ protected:
   std::shared_ptr<ros2_canopen::SafeQueue<ros2_canopen::COEmcy>> emcy_queue_;
   std::shared_ptr<ros2_canopen::SafeQueue<ros2_canopen::COData>> rpdo_queue_;
   rclcpp::TimerBase::SharedPtr poll_timer_;
+
+  // Diagnostic components
+  std::atomic<bool> diagnostic_enabled_;
+  uint32_t diagnostic_period_ms_;
+  std::shared_ptr<diagnostic_updater::Updater> diagnostic_updater_;
+  std::shared_ptr<DiagnosticsCollector> diagnostic_collector_;
+
   virtual void poll_timer_callback();
   void nmt_listener();
   virtual void on_nmt(canopen::NmtState nmt_state);
@@ -62,6 +70,7 @@ protected:
   virtual void on_rpdo(COData data);
   void emcy_listener();
   virtual void on_emcy(COEmcy emcy);
+  virtual void diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper & stat);
 
 public:
   NodeCanopenBaseDriver(NODETYPE * node);
