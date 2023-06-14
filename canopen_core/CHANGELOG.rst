@@ -4,6 +4,22 @@ Changelog for package canopen_core
 
 Forthcoming
 -----------
+* Fix a number of build warnings (`#137 <https://github.com/ros-industrial/ros2_canopen/issues/137>`_)
+  * Fix a number of build warnings
+  * Try rclcpp::QoS
+  * Set QoS in device_container
+  ---------
+* Merge branch 'StoglRobotics-forks-use-can-interface-name-consistently'
+* Use 'can_interface_name' consistently everywhere.
+* Beta release preparations (`#120 <https://github.com/ros-industrial/ros2_canopen/issues/120>`_)
+  * Improve lely compilation time
+  * Bump lely_core_librries to version 2.3.2
+  * Add license files
+  * Adapt package xml
+  * Add changelogs - forthcoming for now.
+  * Update readme
+  * Add apacje-2.0 license notifications to files
+  ---------
 * Reduce processor load (`#111 <https://github.com/ros-industrial/ros2_canopen/issues/111>`_)
   * Get slave eds and bin in node_canopen_driver
   * Add dictionary to base driver

@@ -4,6 +4,31 @@ Changelog for package canopen_tests
 
 Forthcoming
 -----------
+* Merge branch 'StoglRobotics-forks-use-can-interface-name-consistently'
+* Add device diagnostics messages (`#117 <https://github.com/ros-industrial/ros2_canopen/issues/117>`_)
+  * Diagnostic msgs publisher for proxy diver
+  * diagnostic msgs for cia402 and motor interface
+  * Restructured message constructor
+  * Added option to enable/disable diagnostic
+  * Add diagnostic test in proxy driver
+  * Diagnostics test launch for proxy and cia402
+  * proxy driver switched to diagnostic updater
+  * Complete diagnostic implementation for cia402  driver
+  * Update formating
+  * include code documentation
+* Use 'can_interface_name' consistently everywhere.
+* Fix integration tests (`#136 <https://github.com/ros-industrial/ros2_canopen/issues/136>`_)
+* Bring ros2_control test launches to canopen_tests pkg (`#131 <https://github.com/ros-industrial/ros2_canopen/issues/131>`_)
+* Update package versions to 0.1.0 (`#133 <https://github.com/ros-industrial/ros2_canopen/issues/133>`_)
+* Beta release preparations (`#120 <https://github.com/ros-industrial/ros2_canopen/issues/120>`_)
+  * Improve lely compilation time
+  * Bump lely_core_librries to version 2.3.2
+  * Add license files
+  * Adapt package xml
+  * Add changelogs - forthcoming for now.
+  * Update readme
+  * Add apacje-2.0 license notifications to files
+  ---------
 * Enable simplified bus.yml format (`#115 <https://github.com/ros-industrial/ros2_canopen/issues/115>`_)
   * Get slave eds and bin in node_canopen_driver
   * Add dictionary to base driver

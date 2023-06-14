@@ -4,6 +4,17 @@ Changelog for package canopen_utils
 
 Forthcoming
 -----------
+* Fix integration tests (`#136 <https://github.com/ros-industrial/ros2_canopen/issues/136>`_)
+* Update package versions to 0.1.0 (`#133 <https://github.com/ros-industrial/ros2_canopen/issues/133>`_)
+* Beta release preparations (`#120 <https://github.com/ros-industrial/ros2_canopen/issues/120>`_)
+  * Improve lely compilation time
+  * Bump lely_core_librries to version 2.3.2
+  * Add license files
+  * Adapt package xml
+  * Add changelogs - forthcoming for now.
+  * Update readme
+  * Add apacje-2.0 license notifications to files
+  ---------
 * Include rpdo/tpdo test in launch_test. (`#98 <https://github.com/ros-industrial/ros2_canopen/issues/98>`_)
   * Implement rpdo/tpdo test
   * Removed unnecessary files
