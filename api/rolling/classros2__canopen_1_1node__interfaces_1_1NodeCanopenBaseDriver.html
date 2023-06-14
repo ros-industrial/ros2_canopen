@@ -187,6 +187,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:ac2bc0c3d4d2daa6c4efbf3183bbca34b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affe4649a9853df18298eb9d18d4f81f9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#affe4649a9853df18298eb9d18d4f81f9">on_emcy</a> (<a class="el" href="structros2__canopen_1_1COEmcy.html">COEmcy</a> emcy)</td></tr>
 <tr class="separator:affe4649a9853df18298eb9d18d4f81f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae52329f1c1b062e9605fae97031bd22"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#aae52329f1c1b062e9605fae97031bd22">diagnostic_callback</a> (diagnostic_updater::DiagnosticStatusWrapper &amp;stat)</td></tr>
+<tr class="separator:aae52329f1c1b062e9605fae97031bd22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -216,6 +218,14 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:ad458c5d2e004231f9737c8cdf7487e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a5b98a66a02b656e6ef4dbef3b84464"><td class="memItemLeft" align="right" valign="top">rclcpp::TimerBase::SharedPtr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a2a5b98a66a02b656e6ef4dbef3b84464">poll_timer_</a></td></tr>
 <tr class="separator:a2a5b98a66a02b656e6ef4dbef3b84464"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a819841f5c946964715c0fca180ed10ee"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a819841f5c946964715c0fca180ed10ee">diagnostic_enabled_</a></td></tr>
+<tr class="separator:a819841f5c946964715c0fca180ed10ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d50e72a0ebb1bc9be4d35cff72b41c3"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a2d50e72a0ebb1bc9be4d35cff72b41c3">diagnostic_period_ms_</a></td></tr>
+<tr class="separator:a2d50e72a0ebb1bc9be4d35cff72b41c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a763601665e3596101d7920cbf7e61d05"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; diagnostic_updater::Updater &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a763601665e3596101d7920cbf7e61d05">diagnostic_updater_</a></td></tr>
+<tr class="separator:a763601665e3596101d7920cbf7e61d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a550cfa2fb619397cd2b41f9ac5d92402"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classros2__canopen_1_1DiagnosticsCollector.html">DiagnosticsCollector</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a550cfa2fb619397cd2b41f9ac5d92402">diagnostic_collector_</a></td></tr>
+<tr class="separator:a550cfa2fb619397cd2b41f9ac5d92402"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver.html">ros2_canopen::node_interfaces::NodeCanopenDriver&lt; NODETYPE &gt;</a></td></tr>
 <tr class="memitem:a5c147ad1a7292ff3c36f7ead00746ec0 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver"><td class="memItemLeft" align="right" valign="top">NODETYPE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver.html#a5c147ad1a7292ff3c36f7ead00746ec0">node_</a></td></tr>
 <tr class="separator:a5c147ad1a7292ff3c36f7ead00746ec0 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -482,6 +492,36 @@ template&lt;class NODETYPE &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="aae52329f1c1b062e9605fae97031bd22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae52329f1c1b062e9605fae97031bd22">&#9670;&nbsp;</a></span>diagnostic_callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class NODETYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NodeCanopenBaseDriver::diagnostic_callback </td>
+          <td>(</td>
+          <td class="paramtype">diagnostic_updater::DiagnosticStatusWrapper &amp;&#160;</td>
+          <td class="paramname"><em>stat</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenProxyDriver.html#a1a9c87e6d85ebdbf7e931f8c3e4775a6">ros2_canopen::node_interfaces::NodeCanopenProxyDriver&lt; NODETYPE &gt;</a>, and <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#aa051adf2f30a496d3849d417993f3708">ros2_canopen::node_interfaces::NodeCanopen402Driver&lt; NODETYPE &gt;</a>.</p>
 
 </div>
 </div>
@@ -1196,6 +1236,102 @@ template&lt;class NODETYPE &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">rclcpp::TimerBase::SharedPtr <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html">ros2_canopen::node_interfaces::NodeCanopenBaseDriver</a>&lt; NODETYPE &gt;::poll_timer_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a819841f5c946964715c0fca180ed10ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a819841f5c946964715c0fca180ed10ee">&#9670;&nbsp;</a></span>diagnostic_enabled_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class NODETYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::atomic&lt;bool&gt; <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html">ros2_canopen::node_interfaces::NodeCanopenBaseDriver</a>&lt; NODETYPE &gt;::diagnostic_enabled_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2d50e72a0ebb1bc9be4d35cff72b41c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d50e72a0ebb1bc9be4d35cff72b41c3">&#9670;&nbsp;</a></span>diagnostic_period_ms_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class NODETYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html">ros2_canopen::node_interfaces::NodeCanopenBaseDriver</a>&lt; NODETYPE &gt;::diagnostic_period_ms_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a763601665e3596101d7920cbf7e61d05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a763601665e3596101d7920cbf7e61d05">&#9670;&nbsp;</a></span>diagnostic_updater_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class NODETYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;diagnostic_updater::Updater&gt; <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html">ros2_canopen::node_interfaces::NodeCanopenBaseDriver</a>&lt; NODETYPE &gt;::diagnostic_updater_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a550cfa2fb619397cd2b41f9ac5d92402"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a550cfa2fb619397cd2b41f9ac5d92402">&#9670;&nbsp;</a></span>diagnostic_collector_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class NODETYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classros2__canopen_1_1DiagnosticsCollector.html">DiagnosticsCollector</a>&gt; <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html">ros2_canopen::node_interfaces::NodeCanopenBaseDriver</a>&lt; NODETYPE &gt;::diagnostic_collector_</td>
         </tr>
       </table>
   </td>

@@ -1,0 +1,16 @@
+<map id="/home/runner/work/ros2_canopen/ros2_canopen/canopen_base_driver/include/canopen_base_driver/diagnostic_collector.hpp" name="/home/runner/work/ros2_canopen/ros2_canopen/canopen_base_driver/include/canopen_base_driver/diagnostic_collector.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="701,5,935,91"/>
+<area shape="rect" id="node2" href="$node__canopen__base__driver_8hpp.html" title=" " alt="" coords="546,139,818,224"/>
+<area shape="rect" id="node14" href="$motor_8hpp.html" title=" " alt="" coords="949,146,1175,217"/>
+<area shape="rect" id="node3" href="$base__driver_8hpp.html" title=" " alt="" coords="547,287,817,357"/>
+<area shape="rect" id="node4" href="$lifecycle__base__driver_8hpp.html" title=" " alt="" coords="5,279,228,365"/>
+<area shape="rect" id="node5" href="$node__canopen__base__driver__impl_8hpp.html" title=" " alt="" coords="251,279,523,365"/>
+<area shape="rect" id="node6" href="$node__canopen__proxy__driver_8hpp.html" title=" " alt="" coords="841,272,1077,372"/>
+<area shape="rect" id="node7" href="$node__canopen__402__driver_8hpp.html" title=" " alt="" coords="1095,427,1360,513"/>
+<area shape="rect" id="node11" href="$lifecycle__proxy__driver_8hpp.html" title=" " alt="" coords="334,427,563,513"/>
+<area shape="rect" id="node12" href="$node__canopen__proxy__driver__impl_8hpp.html" title=" " alt="" coords="588,420,824,520"/>
+<area shape="rect" id="node13" href="$proxy__driver_8hpp.html" title=" " alt="" coords="849,427,1070,513"/>
+<area shape="rect" id="node8" href="$cia402__driver_8hpp.html" title=" " alt="" coords="887,568,1095,653"/>
+<area shape="rect" id="node9" href="$lifecycle__cia402__driver_8hpp.html" title=" " alt="" coords="1119,568,1335,653"/>
+<area shape="rect" id="node10" href="$node__canopen__402__driver__impl_8hpp.html" title=" " alt="" coords="1360,568,1625,653"/>
+</map>
