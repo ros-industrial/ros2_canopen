@@ -7,7 +7,8 @@
 #include <optional>
 
 using namespace ros2_canopen::node_interfaces;
-using namespace std::placeholders;
+using std::placeholders::_1;
+using std::placeholders::_2;
 
 template <class NODETYPE>
 NodeCanopen402Driver<NODETYPE>::NodeCanopen402Driver(NODETYPE * node)
