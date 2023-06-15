@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trinamic Stepper Motor control &mdash; ros2_canopen 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Pilz manipulator PRBT 6" href="prbt_robot.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ros2_canopen
+              <img src="../_static/ros2-canopen-logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Quickstart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/operation.html">Setup CAN Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/examples.html">Running Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html">Configuration Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html#bus-configuration-file">Bus Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html#configuration-package-cmake">Configuration Package CMake</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/master.html">Master Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/proxy-driver.html">Proxy Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/cia402-driver.html">Cia402 Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-configuration.html">How to create a configuration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-cia301-system.html">How to create a cia301 system with ros2_control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-robot-system.html">How to create a robot system with ros2_control</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/design-objectives.html">Design Objectives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/new-driver.html">Creating a new device driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/new-master.html">Creating a new master</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ros-industrial.github.io/ros2_canopen/api/">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Software Tests</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html">Lifecycle Proxy Driver Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html#proxy-driver-test">Proxy Driver Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../software-tests/ros2_control_system-test.html">ros2_control SystemInterface test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Application Demos</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="prbt_robot.html">Pilz manipulator PRBT 6</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Trinamic Stepper Motor control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-example">Running the example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ros2_canopen</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Trinamic Stepper Motor control</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/application/trinamic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="trinamic-stepper-motor-control">
+<h1>Trinamic Stepper Motor control<a class="headerlink" href="#trinamic-stepper-motor-control" title="Permalink to this headline"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline"></a></h2>
+<p>This tutorial is a simple example of how to use the ros2_canopen package to control a <a class="reference external" href="https://www.trinamic.com/products/drives/details/pd42-x-1270/">Trinamic smart stepper motor</a>.</p>
+</section>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline"></a></h2>
+<p>If you haven’t already done so, follow the steps in the <a class="reference internal" href="../user-guide/configuration.html"><span class="doc">Configuration Package</span></a>.</p>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p>Create a new folder in the <code class="docutils literal notranslate"><span class="pre">config</span></code> folder of your configuration package. Name it <code class="docutils literal notranslate"><span class="pre">single-pd42</span></code>.</p></li>
+<li><p>Download <code class="docutils literal notranslate"><span class="pre">.eds</span></code> file from <a class="reference external" href="https://www.trinamic.com/fileadmin/assets/Products/Drives_Software/TMCM-1270_CANopen_V326.zip">Trinamic</a> and place <code class="docutils literal notranslate"><span class="pre">TMCM-1270.eds</span></code> in the <code class="docutils literal notranslate"><span class="pre">single-pd42</span></code> folder.</p></li>
+<li><p>Create a <code class="docutils literal notranslate"><span class="pre">bus.yml</span></code> file in the <code class="docutils literal notranslate"><span class="pre">single-pd42</span></code> folder with the following content:</p>
+<blockquote>
+<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dcf_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@BUS_CONFIG_PATH@&quot;</span>
+
+<span class="nt">master</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">    </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ros2_canopen::MasterDriver&quot;</span>
+<span class="w">    </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;canopen_master_driver&quot;</span>
+<span class="w">    </span><span class="nt">sync_period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20000</span>
+
+
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dcf</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TMCM-1270.eds&quot;</span>
+<span class="w">    </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ros2_canopen::Cia402Driver&quot;</span>
+<span class="w">    </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;canopen_402_driver&quot;</span>
+<span class="w">    </span><span class="nt">polling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">heartbeat_producer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"> </span><span class="c1"># Heartbeat every 1000 ms</span>
+<span class="w">    </span><span class="nt">sdo</span><span class="p">:</span><span class="w"> </span><span class="c1"># SDO executed during config</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6081</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">500000</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Set velocity</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6083</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">1000000</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Set acceleration</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6083</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">1000000</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Set deceleration</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6085</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">1000000</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Set quickstop deceleration</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6098</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">35</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Set default homing mode to 35</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x60C2</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">50</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Set interpolation time for cyclic modes to 50 ms</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x60C2</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">-3</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Set base 10-3s</span>
+
+<span class="nt">nodes</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">trinamic_pd42</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Edit the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file in the <code class="docutils literal notranslate"><span class="pre">config</span></code> folder of your configuration package and add the following lines:</p>
+<blockquote>
+<div><div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.8</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">trinamic_pd42_can</span><span class="p">)</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">CMAKE_COMPILER_IS_GNUCXX</span><span class="w"> </span><span class="s">OR</span><span class="w"> </span><span class="s">CMAKE_CXX_COMPILER_ID</span><span class="w"> </span><span class="s">MATCHES</span><span class="w"> </span><span class="s2">&quot;Clang&quot;</span><span class="p">)</span>
+<span class="nb">add_compile_options</span><span class="p">(</span><span class="s">-Wall</span><span class="w"> </span><span class="s">-Wextra</span><span class="w"> </span><span class="s">-Wpedantic</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+
+<span class="c"># find dependencies</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">ament_cmake</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">rclcpp</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">std_srvs</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">canopen</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">lely_core_libraries</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">canopen_interfaces</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+
+<span class="c"># generate_dcf(single-pd42)</span>
+<span class="nb">cogen_dcf</span><span class="p">(</span><span class="s">single-pd42</span><span class="p">)</span>
+
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">position_tick_client</span><span class="w"> </span><span class="s">src/position_tick_motor.cpp</span><span class="p">)</span>
+<span class="nb">ament_target_dependencies</span><span class="p">(</span><span class="s">position_tick_client</span>
+<span class="s">rclcpp</span><span class="w"> </span><span class="s">std_srvs</span><span class="w"> </span><span class="s">canopen_interfaces</span><span class="p">)</span>
+
+
+<span class="nb">install</span><span class="p">(</span><span class="s">TARGETS</span>
+<span class="s">position_tick_client</span>
+<span class="s">DESTINATION</span><span class="w"> </span><span class="s">lib/</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span><span class="p">)</span>
+
+<span class="c"># install launch file</span>
+<span class="nb">install</span><span class="p">(</span><span class="s">DIRECTORY</span>
+<span class="s">launch/</span>
+<span class="s">DESTINATION</span><span class="w"> </span><span class="s">share/</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span>
+<span class="p">)</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">BUILD_TESTING</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">ament_lint_auto</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+
+<span class="nb">ament_package</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Create launch file in folder <code class="docutils literal notranslate"><span class="pre">launch</span></code> and add the following content:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">launch</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.launch_description_sources</span> <span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+<span class="kn">from</span> <span class="nn">ament_index_python</span> <span class="kn">import</span> <span class="n">get_package_share_directory</span>
+<span class="kn">from</span> <span class="nn">launch</span> <span class="kn">import</span> <span class="n">LaunchDescription</span>
+
+
+<span class="k">def</span> <span class="nf">generate_launch_description</span><span class="p">():</span>
+    <span class="n">ld</span> <span class="o">=</span> <span class="n">LaunchDescription</span><span class="p">()</span>
+    <span class="n">slave_eds_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s2">&quot;trinamic_pd42_can&quot;</span><span class="p">),</span> <span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="s2">&quot;single-pd42&quot;</span><span class="p">,</span> <span class="s2">&quot;TMCM-1270.eds&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">slave_node_1</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_package_share_directory</span><span class="p">(</span><span class="s2">&quot;canopen_fake_slaves&quot;</span><span class="p">),</span> <span class="s2">&quot;launch&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;/cia402_slave.launch.py&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">launch_arguments</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;node_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;node_name&quot;</span><span class="p">:</span> <span class="s2">&quot;pd42_slave&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;slave_config&quot;</span><span class="p">:</span> <span class="n">slave_eds_path</span><span class="p">,</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="p">)</span>
+    <span class="n">master_bin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s2">&quot;trinamic_pd42_can&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;config&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;single-pd42&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;master.bin&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">master_bin_path</span><span class="p">):</span>
+        <span class="n">master_bin_path</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="n">device_container</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_package_share_directory</span><span class="p">(</span><span class="s2">&quot;canopen_core&quot;</span><span class="p">),</span> <span class="s2">&quot;launch&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;/canopen.launch.py&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">launch_arguments</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;master_config&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s2">&quot;trinamic_pd42_can&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;config&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;single-pd42&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;master.dcf&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;master_bin&quot;</span><span class="p">:</span> <span class="n">master_bin_path</span><span class="p">,</span>
+            <span class="s2">&quot;bus_config&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s2">&quot;trinamic_pd42_can&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;config&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;single-pd42&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;bus.yml&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;can_interface_name&quot;</span><span class="p">:</span> <span class="s2">&quot;vcan0&quot;</span><span class="p">,</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="n">ld</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">device_container</span><span class="p">)</span>
+    <span class="n">ld</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">slave_node_1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ld</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="running-the-example">
+<h2>Running the example<a class="headerlink" href="#running-the-example" title="Permalink to this headline"></a></h2>
+<p>To begin, follow the instructions for <a class="reference internal" href="../quickstart/operation.html"><span class="doc">Setup CAN Controller</span></a>, which can be done using either a virtual or peak CAN interface.</p>
+<p>If you prefer to use a real CAN interface, you will need to modify the launch file by changing the <code class="docutils literal notranslate"><span class="pre">can_interface_name</span></code> argument to <code class="docutils literal notranslate"><span class="pre">can0</span></code>.
+Additionally, if you are using real hardware, you should comment out the fake slave launch by adding a <em>#</em> in front of the line <em>ld.add_action(slave_node_1)</em>.
+Once these changes have been made, you can launch the example.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ros2 launch trinamic_pd42_can &lt;your launch file&gt;.launch.py</span>
+</pre></div>
+</div>
+<p>Initilaize the motor by calling the service <code class="docutils literal notranslate"><span class="pre">/trinamic_pd42/init</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ros2 service call /trinamic_pd42/init std_srvs/srv/Trigger</span>
+</pre></div>
+</div>
+<p>Set the operation mode to <code class="docutils literal notranslate"><span class="pre">Profile</span> <span class="pre">Position</span> <span class="pre">Mode</span></code> by calling the service <code class="docutils literal notranslate"><span class="pre">/trinamic_pd42/position_mode</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ros2 service call /trinamic_pd42/position_mode std_srvs/srv/Trigger</span>
+</pre></div>
+</div>
+<p>Set the target to the motor by calling the service <code class="docutils literal notranslate"><span class="pre">/trinamic_pd42/target</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ros2 service call /trinamic_pd42/target canopen_interfaces/srv/COTargetDouble &quot;{ target: 10.0 }&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline"></a></h2>
+<p>You can find the source code for this example in the <a class="reference external" href="https://github.com/ipa-cmh/trinamic_pd42_can.git">trinamic_pd42_can</a> package.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="prbt_robot.html" class="btn btn-neutral float-left" title="Pilz manipulator PRBT 6" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Christoph Hellmann Santos,  Harshavardhan Deshpande.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

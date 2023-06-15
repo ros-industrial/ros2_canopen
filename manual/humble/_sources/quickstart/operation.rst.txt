@@ -1,8 +1,5 @@
-Starting a Configuration Package
-================================
-
 Setup CAN Controller
---------------------
+====================
 
 **Option 1**: Virtual CANController
 
@@ -36,12 +33,3 @@ Bitrate depends on your bus and devices capabilities.
 Bitrate depends on your bus and devices capabilities.
 
 **Option 4**: Adapt these steps to other socketcan devices
-
-Launch configuration
---------------------
-
-Once the CANController is setup you can go on and launch your configuration package.
-
-.. code-block:: console
-
-  $ ros2 launch [package] [launchfile]

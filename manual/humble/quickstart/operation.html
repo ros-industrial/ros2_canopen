@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Starting a Configuration Package &mdash; ros2_canopen 0.0.1 documentation</title>
+  <title>Setup CAN Controller &mdash; ros2_canopen 0.0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Examples" href="examples.html" />
-    <link rel="prev" title="Creating a Configuration Package" href="configuration.html" /> 
+    <link rel="next" title="Running Examples" href="examples.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,24 +47,21 @@
               <p class="caption" role="heading"><span class="caption-text">Quickstart</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Creating a Configuration Package</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Starting a Configuration Package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#setup-can-controller">Setup CAN Controller</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#launch-configuration">Launch configuration</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup CAN Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Running Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration/configuration.html">Bus Configuration Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation/operation.html">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation/service-interface.html">Service Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation/managed-service-interface.html">Managed Service Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation/ros2-control-interface.html">ROS2 Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html">Configuration Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html#bus-configuration-file">Bus Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html#configuration-package-cmake">Configuration Package CMake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user-guide/master.html">Master Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user-guide/proxy-driver.html">Proxy Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user-guide/cia402-driver.html">Cia402 Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-configuration.html">How to create a configuration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-cia301-system.html">How to create a cia301 system with ros2_control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-robot-system.html">How to create a robot system with ros2_control</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -81,6 +78,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html#proxy-driver-test">Proxy Driver Test</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../software-tests/ros2_control_system-test.html">ros2_control SystemInterface test</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Application Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../application/prbt_robot.html">Pilz manipulator PRBT 6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../application/trinamic.html">Trinamic Stepper Motor control</a></li>
+</ul>
 
         </div>
       </div>
@@ -96,7 +98,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Starting a Configuration Package</li>
+      <li class="breadcrumb-item active">Setup CAN Controller</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/quickstart/operation.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -106,10 +108,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="starting-a-configuration-package">
-<h1>Starting a Configuration Package<a class="headerlink" href="#starting-a-configuration-package" title="Permalink to this headline"></a></h1>
-<section id="setup-can-controller">
-<h2>Setup CAN Controller<a class="headerlink" href="#setup-can-controller" title="Permalink to this headline"></a></h2>
+  <section id="setup-can-controller">
+<h1>Setup CAN Controller<a class="headerlink" href="#setup-can-controller" title="Permalink to this headline"></a></h1>
 <p><strong>Option 1</strong>: Virtual CANController</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>modprobe<span class="w"> </span>vcan
 <span class="gp">$ </span>sudo<span class="w"> </span>ip<span class="w"> </span>link<span class="w"> </span>add<span class="w"> </span>dev<span class="w"> </span>vcan0<span class="w"> </span><span class="nb">type</span><span class="w"> </span>vcan
@@ -135,21 +135,13 @@
 <p>Bitrate depends on your bus and devices capabilities.</p>
 <p><strong>Option 4</strong>: Adapt these steps to other socketcan devices</p>
 </section>
-<section id="launch-configuration">
-<h2>Launch configuration<a class="headerlink" href="#launch-configuration" title="Permalink to this headline"></a></h2>
-<p>Once the CANController is setup you can go on and launch your configuration package.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ros2<span class="w"> </span>launch<span class="w"> </span><span class="o">[</span>package<span class="o">]</span><span class="w"> </span><span class="o">[</span>launchfile<span class="o">]</span>
-</pre></div>
-</div>
-</section>
-</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="configuration.html" class="btn btn-neutral float-left" title="Creating a Configuration Package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Running Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

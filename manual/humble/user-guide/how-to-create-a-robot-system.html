@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to create a robot system with ros2_control &mdash; ros2_canopen 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Design Objectives" href="../developers-guide/design-objectives.html" />
+    <link rel="prev" title="How to create a cia301 system with ros2_control" href="how-to-create-a-cia301-system.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ros2_canopen
+              <img src="../_static/ros2-canopen-logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Quickstart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/operation.html">Setup CAN Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/examples.html">Running Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#bus-configuration-file">Bus Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#configuration-package-cmake">Configuration Package CMake</a></li>
+<li class="toctree-l1"><a class="reference internal" href="master.html">Master Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proxy-driver.html">Proxy Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cia402-driver.html">Cia402 Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to-create-a-configuration.html">How to create a configuration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to-create-a-cia301-system.html">How to create a cia301 system with ros2_control</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to create a robot system with ros2_control</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/design-objectives.html">Design Objectives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/new-driver.html">Creating a new device driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/new-master.html">Creating a new master</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ros-industrial.github.io/ros2_canopen/api/">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Software Tests</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html">Lifecycle Proxy Driver Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html#proxy-driver-test">Proxy Driver Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../software-tests/ros2_control_system-test.html">ros2_control SystemInterface test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Application Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../application/prbt_robot.html">Pilz manipulator PRBT 6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../application/trinamic.html">Trinamic Stepper Motor control</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ros2_canopen</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">How to create a robot system with ros2_control</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user-guide/how-to-create-a-robot-system.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="how-to-create-a-robot-system-with-ros2-control">
+<h1>How to create a robot system with ros2_control<a class="headerlink" href="#how-to-create-a-robot-system-with-ros2-control" title="Permalink to this headline"></a></h1>
+<p>This guide describes how to create a simple robot using the robot system hardware interface
+leveragin ros2_control.</p>
+<ol class="arabic simple">
+<li><p>Create a new configuration package with the name <code class="docutils literal notranslate"><span class="pre">canopen_robot_control_example</span></code>.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ros2<span class="w"> </span>pkg<span class="w"> </span>create<span class="w"> </span>--dependencies<span class="w"> </span>ros2_canopen<span class="w"> </span>lely_core_libraries<span class="w"> </span>--build-type<span class="w"> </span>ament_cmake<span class="w"> </span><span class="o">{</span>package_name<span class="o">}</span>
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span><span class="o">{</span>package_name<span class="o">}</span>
+<span class="gp">$ </span>rm<span class="w"> </span>-rf<span class="w"> </span>src
+<span class="gp">$ </span>rm<span class="w"> </span>-rf<span class="w"> </span>include
+<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>launch
+<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>config
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Create a new bus configuration folder with the name <code class="docutils literal notranslate"><span class="pre">robot_control</span></code>.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>config/robot_control
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Create a new bus configuration file with the name <code class="docutils literal notranslate"><span class="pre">bus.yml</span></code>.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>touch<span class="w"> </span>config/robot_control/bus.yml
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Add the following content to the <code class="docutils literal notranslate"><span class="pre">bus.yml</span></code> file.</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">options</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dcf_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@BUS_CONFIG_PATH@&quot;</span>
+
+<span class="nt">master</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ros2_canopen::MasterDriver&quot;</span>
+<span class="w">  </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;canopen_master_driver&quot;</span>
+<span class="w">  </span><span class="nt">sync_period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dcf</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cia402_slave.eds&quot;</span>
+<span class="w">  </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ros2_canopen::Cia402Driver&quot;</span>
+<span class="w">  </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;canopen_402_driver&quot;</span>
+<span class="w">  </span><span class="nt">period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">  </span><span class="nt">position_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">revision_number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span><span class="nt">sdo</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x60C2</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">50</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Set interpolation time for cyclic modes to 50 ms</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x60C2</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">-3</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Set base 10-3s</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6081</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">1000</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6083</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">2000</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6060</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">7</span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">tpdo</span><span class="p">:</span><span class="w"> </span><span class="c1"># TPDO needed statusword, actual velocity, actual position, mode of operation</span>
+<span class="w">    </span><span class="nt">1</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">cob_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">      </span><span class="nt">transmission</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x01</span>
+<span class="w">      </span><span class="nt">mapping</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6041</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># status word</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6061</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># mode of operation display</span>
+<span class="w">    </span><span class="nt">2</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">cob_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">      </span><span class="nt">transmission</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x01</span>
+<span class="w">      </span><span class="nt">mapping</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6064</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># position actual value</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x606c</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># velocity actual position</span>
+<span class="w">  </span><span class="nt">rpdo</span><span class="p">:</span><span class="w"> </span><span class="c1"># RPDO needed controlword, target position, target velocity, mode of operation</span>
+<span class="w">    </span><span class="nt">1</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">cob_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">      </span><span class="nt">mapping</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6040</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># controlword</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6060</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># mode of operation</span>
+<span class="w">    </span><span class="nt">2</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">cob_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">      </span><span class="nt">mapping</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x607A</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># target position</span>
+
+<span class="nt">nodes</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">joint_1</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">joint_2</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Copy the <code class="docutils literal notranslate"><span class="pre">cia402_slave.eds</span></code> file from the <code class="docutils literal notranslate"><span class="pre">canopen_tests/config/robot_control</span></code> package to the <code class="docutils literal notranslate"><span class="pre">config/robot_control</span></code> folder.</p></li>
+<li><p>Create a ros2_controllers.yaml and add the following content.</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">controller_manager</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ros__parameters</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">update_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w">  </span><span class="c1"># Hz</span>
+<span class="w">    </span><span class="nt">joint_state_broadcaster</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">joint_state_broadcaster/JointStateBroadcaster</span>
+
+<span class="w">    </span><span class="nt">forward_position_controller</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">forward_command_controller/ForwardCommandController</span>
+
+<span class="nt">forward_position_controller</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ros__parameters</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">joints</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">joint1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">joint2</span>
+<span class="w">    </span><span class="nt">interface_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">position</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li><p>Create a launch file with the name <code class="docutils literal notranslate"><span class="pre">robot_control.launch.py</span></code> in the launch directory of your package and add the following content.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">launch</span> <span class="kn">import</span> <span class="n">LaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">DeclareLaunchArgument</span>
+<span class="kn">from</span> <span class="nn">launch.substitutions</span> <span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">FindExecutable</span><span class="p">,</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span>
+<span class="kn">from</span> <span class="nn">launch_ros.actions</span> <span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">launch_ros.substitutions</span> <span class="kn">import</span> <span class="n">FindPackageShare</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.launch_description_sources</span> <span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+
+
+<span class="k">def</span> <span class="nf">generate_launch_description</span><span class="p">():</span>
+    <span class="n">robot_description_content</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">PathJoinSubstitution</span><span class="p">([</span><span class="n">FindExecutable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;xacro&quot;</span><span class="p">)]),</span>
+            <span class="s2">&quot; &quot;</span><span class="p">,</span>
+            <span class="n">PathJoinSubstitution</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">FindPackageShare</span><span class="p">(</span><span class="s2">&quot;canopen_tests&quot;</span><span class="p">),</span>
+                    <span class="s2">&quot;urdf&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;robot_controller.urdf.xacro&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">robot_description</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;robot_description&quot;</span><span class="p">:</span> <span class="n">robot_description_content</span><span class="p">}</span>
+    <span class="n">robot_control_config</span> <span class="o">=</span> <span class="n">PathJoinSubstitution</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">FindPackageShare</span><span class="p">(</span><span class="s2">&quot;canopen_tests&quot;</span><span class="p">),</span> <span class="s2">&quot;config/robot_control&quot;</span><span class="p">,</span> <span class="s2">&quot;ros2_controllers.yaml&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">control_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;controller_manager&quot;</span><span class="p">,</span>
+        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;ros2_control_node&quot;</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="n">robot_description</span><span class="p">,</span> <span class="n">robot_control_config</span><span class="p">],</span>
+        <span class="n">output</span><span class="o">=</span><span class="s2">&quot;screen&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">joint_state_broadcaster_spawner</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;controller_manager&quot;</span><span class="p">,</span>
+        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;spawner&quot;</span><span class="p">,</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;joint_state_broadcaster&quot;</span><span class="p">,</span> <span class="s2">&quot;--controller-manager&quot;</span><span class="p">,</span> <span class="s2">&quot;/controller_manager&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="n">forward_position_controller_spawner</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;controller_manager&quot;</span><span class="p">,</span>
+        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;spawner&quot;</span><span class="p">,</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;forward_position_controller&quot;</span><span class="p">,</span> <span class="s2">&quot;--controller-manager&quot;</span><span class="p">,</span> <span class="s2">&quot;/controller_manager&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="n">robot_state_publisher_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;robot_state_publisher&quot;</span><span class="p">,</span>
+        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;robot_state_publisher&quot;</span><span class="p">,</span>
+        <span class="n">output</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="n">robot_description</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="n">slave_config</span> <span class="o">=</span> <span class="n">PathJoinSubstitution</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">FindPackageShare</span><span class="p">(</span><span class="s2">&quot;canopen_tests&quot;</span><span class="p">),</span> <span class="s2">&quot;config/robot_control&quot;</span><span class="p">,</span> <span class="s2">&quot;cia402_slave.eds&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">slave_launch</span> <span class="o">=</span> <span class="n">PathJoinSubstitution</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">FindPackageShare</span><span class="p">(</span><span class="s2">&quot;canopen_fake_slaves&quot;</span><span class="p">),</span> <span class="s2">&quot;launch&quot;</span><span class="p">,</span> <span class="s2">&quot;cia402_slave.launch.py&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">slave_node_1</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span><span class="n">slave_launch</span><span class="p">),</span>
+        <span class="n">launch_arguments</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;node_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;node_name&quot;</span><span class="p">:</span> <span class="s2">&quot;slave_node_1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;slave_config&quot;</span><span class="p">:</span> <span class="n">slave_config</span><span class="p">,</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="n">slave_node_2</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span><span class="n">slave_launch</span><span class="p">),</span>
+        <span class="n">launch_arguments</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;node_id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;node_name&quot;</span><span class="p">:</span> <span class="s2">&quot;slave_node_2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;slave_config&quot;</span><span class="p">:</span> <span class="n">slave_config</span><span class="p">,</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="n">nodes_to_start</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">control_node</span><span class="p">,</span>
+        <span class="n">joint_state_broadcaster_spawner</span><span class="p">,</span>
+        <span class="n">forward_position_controller_spawner</span><span class="p">,</span>
+        <span class="n">robot_state_publisher_node</span><span class="p">,</span>
+        <span class="n">slave_node_1</span><span class="p">,</span>
+        <span class="n">slave_node_2</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">LaunchDescription</span><span class="p">(</span><span class="n">nodes_to_start</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="8">
+<li><p>Create a urdf folder add all files from the <code class="docutils literal notranslate"><span class="pre">canopen_tests/urdf/robot_controller</span></code> package to the urdf folder of your package.</p></li>
+<li><p>Edit the CMakeLists.txt file of your package and add the following lines after the find_package section.</p></li>
+</ol>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">cogen_dcf</span><span class="p">(</span><span class="s">robot_control</span><span class="p">)</span>
+
+<span class="nb">install</span><span class="p">(</span><span class="s">DIRECTORY</span>
+<span class="s">launch</span><span class="w"> </span><span class="s">urdf</span>
+<span class="s">DESTINATION</span><span class="w"> </span><span class="s">share/</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="10">
+<li><p>Build your package and source the setup.bash file.</p></li>
+<li><p>Start your launch file</p></li>
+<li><p>You can now control the robot with the forward_command_controller. You can as well visualize the robot in
+rviz by adding a tf or a robot model and setting the fixed frame to <code class="docutils literal notranslate"><span class="pre">base_link</span></code>. You can move the robot with the
+following command.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>topic<span class="w"> </span>pub<span class="w"> </span>/joint1/forward_position_controller/command<span class="w"> </span>std_msgs/msg/Float64<span class="w"> </span><span class="s2">&quot;data: [1.0, 1.0]&quot;</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="how-to-create-a-cia301-system.html" class="btn btn-neutral float-left" title="How to create a cia301 system with ros2_control" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../developers-guide/design-objectives.html" class="btn btn-neutral float-right" title="Design Objectives" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Christoph Hellmann Santos,  Harshavardhan Deshpande.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

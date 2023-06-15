@@ -75,7 +75,8 @@ $(function() {
 <div class="title">node_canopen_base_driver.hpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="lely__driver__bridge_8hpp_source.html">canopen_base_driver/lely_driver_bridge.hpp</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="diagnostic__collector_8hpp_source.html">canopen_base_driver/diagnostic_collector.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="lely__driver__bridge_8hpp_source.html">canopen_base_driver/lely_driver_bridge.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="node__canopen__driver_8hpp_source.html">canopen_core/node_interfaces/node_canopen_driver.hpp</a>&quot;</code><br />
 <code>#include &quot;std_msgs/msg/string.hpp&quot;</code><br />
 <code>#include &quot;std_srvs/srv/trigger.hpp&quot;</code><br />
@@ -87,57 +88,62 @@ Include dependency graph for node_canopen_base_driver.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="node__canopen__base__driver_8hpp__incl.png" border="0" usemap="#a_2home_2runner_2work_2ros2__canopen_2ros2__canopen_2canopen__base__driver_2include_2canopen__base__driver_2node__interfaces_2node__canopen__base__driver_8hpp" alt=""/></div>
 <map name="a_2home_2runner_2work_2ros2__canopen_2ros2__canopen_2canopen__base__driver_2include_2canopen__base__driver_2node__interfaces_2node__canopen__base__driver_8hpp" id="a_2home_2runner_2work_2ros2__canopen_2ros2__canopen_2canopen__base__driver_2include_2canopen__base__driver_2node__interfaces_2node__canopen__base__driver_8hpp">
-<area shape="rect" title=" " alt="" coords="5527,5,5799,91"/>
-<area shape="rect" href="lely__driver__bridge_8hpp.html" title=" " alt="" coords="5171,139,5342,180"/>
-<area shape="rect" href="node__canopen__driver_8hpp.html" title=" " alt="" coords="2552,139,2772,180"/>
-<area shape="rect" title=" " alt="" coords="5367,146,5552,173"/>
-<area shape="rect" title=" " alt="" coords="5576,146,5751,173"/>
-<area shape="rect" title=" " alt="" coords="5775,139,5925,180"/>
-<area shape="rect" title=" " alt="" coords="5949,139,6098,180"/>
-<area shape="rect" title=" " alt="" coords="6122,139,6271,180"/>
-<area shape="rect" title=" " alt="" coords="5509,235,5594,262"/>
-<area shape="rect" title=" " alt="" coords="5619,235,5735,262"/>
-<area shape="rect" title=" " alt="" coords="5759,235,5879,262"/>
-<area shape="rect" title=" " alt="" coords="5903,235,6021,262"/>
-<area shape="rect" title=" " alt="" coords="6095,235,6290,262"/>
-<area shape="rect" title=" " alt="" coords="3580,317,3747,344"/>
-<area shape="rect" title=" " alt="" coords="4389,235,4570,262"/>
-<area shape="rect" title=" " alt="" coords="4595,235,4743,262"/>
-<area shape="rect" title=" " alt="" coords="4767,235,4904,262"/>
-<area shape="rect" title=" " alt="" coords="4247,235,4314,262"/>
-<area shape="rect" title=" " alt="" coords="4928,235,5071,262"/>
-<area shape="rect" title=" " alt="" coords="5095,235,5157,262"/>
-<area shape="rect" title=" " alt="" coords="3902,235,3979,262"/>
-<area shape="rect" title=" " alt="" coords="5181,235,5245,262"/>
-<area shape="rect" title=" " alt="" coords="4004,235,4136,262"/>
-<area shape="rect" title=" " alt="" coords="4046,317,4105,344"/>
-<area shape="rect" title=" " alt="" coords="4749,317,4857,344"/>
-<area shape="rect" title=" " alt="" coords="5269,235,5333,262"/>
-<area shape="rect" title=" " alt="" coords="4160,235,4223,262"/>
-<area shape="rect" title=" " alt="" coords="5577,317,5763,344"/>
-<area shape="rect" title=" " alt="" coords="6085,317,6228,344"/>
-<area shape="rect" title=" " alt="" coords="6423,317,6555,344"/>
-<area shape="rect" href="exchange_8hpp.html" title=" " alt="" coords="6315,235,6521,262"/>
-<area shape="rect" title=" " alt="" coords="3096,235,3228,262"/>
-<area shape="rect" title=" " alt="" coords="3252,235,3411,262"/>
-<area shape="rect" title=" " alt="" coords="3435,235,3486,262"/>
-<area shape="rect" title=" " alt="" coords="3510,228,3699,269"/>
-<area shape="rect" title=" " alt="" coords="375,228,567,269"/>
-<area shape="rect" title=" " alt="" coords="591,228,786,269"/>
-<area shape="rect" title=" " alt="" coords="811,228,1017,269"/>
-<area shape="rect" title=" " alt="" coords="1041,228,1275,269"/>
-<area shape="rect" title=" " alt="" coords="1299,228,1511,269"/>
-<area shape="rect" title=" " alt="" coords="1535,228,1773,269"/>
-<area shape="rect" title=" " alt="" coords="1798,228,1998,269"/>
-<area shape="rect" title=" " alt="" coords="2022,228,2219,269"/>
-<area shape="rect" title=" " alt="" coords="2243,228,2465,269"/>
-<area shape="rect" title=" " alt="" coords="2489,228,2672,269"/>
-<area shape="rect" title=" " alt="" coords="2696,235,2788,262"/>
-<area shape="rect" href="driver__error_8hpp.html" title=" " alt="" coords="3723,228,3878,269"/>
-<area shape="rect" href="node__canopen__driver__interface_8hpp.html" title=" " alt="" coords="2813,228,3071,269"/>
-<area shape="rect" href="canopen__core_2include_2canopen__core_2visibility__control_8h.html" title=" " alt="" coords="5,228,177,269"/>
-<area shape="rect" title=" " alt="" coords="202,228,351,269"/>
-<area shape="rect" title=" " alt="" coords="2878,317,3006,344"/>
+<area shape="rect" title=" " alt="" coords="4733,5,5005,91"/>
+<area shape="rect" href="diagnostic__collector_8hpp.html" title=" " alt="" coords="579,139,762,180"/>
+<area shape="rect" href="lely__driver__bridge_8hpp.html" title=" " alt="" coords="2133,139,2304,180"/>
+<area shape="rect" href="node__canopen__driver_8hpp.html" title=" " alt="" coords="4431,139,4651,180"/>
+<area shape="rect" title=" " alt="" coords="4675,146,4861,173"/>
+<area shape="rect" title=" " alt="" coords="4885,146,5059,173"/>
+<area shape="rect" title=" " alt="" coords="5084,139,5233,180"/>
+<area shape="rect" title=" " alt="" coords="5257,139,5407,180"/>
+<area shape="rect" title=" " alt="" coords="5431,139,5580,180"/>
+<area shape="rect" title=" " alt="" coords="859,235,925,262"/>
+<area shape="rect" title=" " alt="" coords="771,235,835,262"/>
+<area shape="rect" title=" " alt="" coords="933,317,992,344"/>
+<area shape="rect" title=" " alt="" coords="177,235,301,262"/>
+<area shape="rect" title=" " alt="" coords="325,228,493,269"/>
+<area shape="rect" title=" " alt="" coords="518,228,695,269"/>
+<area shape="rect" title=" " alt="" coords="5,228,152,269"/>
+<area shape="rect" title=" " alt="" coords="1000,235,1085,262"/>
+<area shape="rect" title=" " alt="" coords="1110,235,1226,262"/>
+<area shape="rect" title=" " alt="" coords="1251,235,1371,262"/>
+<area shape="rect" title=" " alt="" coords="1395,235,1512,262"/>
+<area shape="rect" title=" " alt="" coords="1536,235,1731,262"/>
+<area shape="rect" title=" " alt="" coords="4934,317,5101,344"/>
+<area shape="rect" title=" " alt="" coords="1805,235,1987,262"/>
+<area shape="rect" title=" " alt="" coords="2062,235,2210,262"/>
+<area shape="rect" title=" " alt="" coords="2234,235,2371,262"/>
+<area shape="rect" title=" " alt="" coords="2395,235,2538,262"/>
+<area shape="rect" title=" " alt="" coords="2563,235,2624,262"/>
+<area shape="rect" title=" " alt="" coords="3120,235,3197,262"/>
+<area shape="rect" title=" " alt="" coords="3222,235,3354,262"/>
+<area shape="rect" title=" " alt="" coords="3233,317,3341,344"/>
+<area shape="rect" title=" " alt="" coords="2880,235,2944,262"/>
+<area shape="rect" title=" " alt="" coords="3378,235,3441,262"/>
+<area shape="rect" title=" " alt="" coords="1708,317,1895,344"/>
+<area shape="rect" title=" " alt="" coords="2235,317,2378,344"/>
+<area shape="rect" title=" " alt="" coords="2801,317,2933,344"/>
+<area shape="rect" href="exchange_8hpp.html" title=" " alt="" coords="2649,235,2855,262"/>
+<area shape="rect" title=" " alt="" coords="3818,235,3950,262"/>
+<area shape="rect" title=" " alt="" coords="3974,235,4133,262"/>
+<area shape="rect" title=" " alt="" coords="4157,235,4208,262"/>
+<area shape="rect" title=" " alt="" coords="4232,228,4421,269"/>
+<area shape="rect" title=" " alt="" coords="4445,228,4637,269"/>
+<area shape="rect" title=" " alt="" coords="4661,228,4856,269"/>
+<area shape="rect" title=" " alt="" coords="4881,228,5087,269"/>
+<area shape="rect" title=" " alt="" coords="5111,228,5345,269"/>
+<area shape="rect" title=" " alt="" coords="5369,228,5581,269"/>
+<area shape="rect" title=" " alt="" coords="5605,228,5843,269"/>
+<area shape="rect" title=" " alt="" coords="5868,228,6068,269"/>
+<area shape="rect" title=" " alt="" coords="6092,228,6289,269"/>
+<area shape="rect" title=" " alt="" coords="6313,228,6535,269"/>
+<area shape="rect" title=" " alt="" coords="6559,228,6742,269"/>
+<area shape="rect" title=" " alt="" coords="6766,235,6858,262"/>
+<area shape="rect" href="driver__error_8hpp.html" title=" " alt="" coords="3465,228,3620,269"/>
+<area shape="rect" href="node__canopen__driver__interface_8hpp.html" title=" " alt="" coords="6883,228,7141,269"/>
+<area shape="rect" href="canopen__core_2include_2canopen__core_2visibility__control_8h.html" title=" " alt="" coords="7166,228,7338,269"/>
+<area shape="rect" title=" " alt="" coords="3644,228,3793,269"/>
+<area shape="rect" title=" " alt="" coords="6948,317,7076,344"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">

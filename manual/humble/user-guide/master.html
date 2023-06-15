@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Proxy Driver" href="proxy-driver.html" />
-    <link rel="prev" title="ROS2 Control" href="operation/ros2-control-interface.html" /> 
+    <link rel="prev" title="Configuration Package" href="configuration.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,23 +47,24 @@
               <p class="caption" role="heading"><span class="caption-text">Quickstart</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../quickstart/configuration.html">Creating a Configuration Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../quickstart/operation.html">Starting a Configuration Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../quickstart/examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/operation.html">Setup CAN Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/examples.html">Running Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="configuration/configuration.html">Bus Configuration Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operation/operation.html">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operation/service-interface.html">Service Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operation/managed-service-interface.html">Managed Service Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operation/ros2-control-interface.html">ROS2 Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#bus-configuration-file">Bus Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#configuration-package-cmake">Configuration Package CMake</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Master Driver</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#services">Services</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="proxy-driver.html">Proxy Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cia402-driver.html">Cia402 Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to-create-a-configuration.html">How to create a configuration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to-create-a-cia301-system.html">How to create a cia301 system with ros2_control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to-create-a-robot-system.html">How to create a robot system with ros2_control</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -79,6 +80,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html">Lifecycle Proxy Driver Test</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html#proxy-driver-test">Proxy Driver Test</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../software-tests/ros2_control_system-test.html">ros2_control SystemInterface test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Application Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../application/prbt_robot.html">Pilz manipulator PRBT 6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../application/trinamic.html">Trinamic Stepper Motor control</a></li>
 </ul>
 
         </div>
@@ -107,7 +113,32 @@
              
   <section id="master-driver">
 <h1>Master Driver<a class="headerlink" href="#master-driver" title="Permalink to this headline"></a></h1>
-<p>The master node handles the creation of the necessary can interface and sets up a canopen event loop which drivers can hook onto. In addition, the node offers services for communicating with nodes via nmt and sdo. The device manager will automatically spawn a master node on start-up. The master node is configured by the provided dcf file.</p>
+<p>The master driver handles the creation of the necessary can interface and sets up a canopen event loop which drivers can hook onto.
+In addition, the node offers services for communicating with nodes via nmt and sdo.</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Master Drivers</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Package</p></th>
+<th class="head"><p>Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>lifecycle</p></td>
+<td><p>canopen_master_driver</p></td>
+<td><p>ros2_canopen::LifecycleMasterDriver</p></td>
+</tr>
+<tr class="row-odd"><td><p>simple</p></td>
+<td><p>canopen_master_driver</p></td>
+<td><p>ros2_canopen::MasterDriver</p></td>
+</tr>
+</tbody>
+</table>
 <section id="services">
 <h2>Services<a class="headerlink" href="#services" title="Permalink to this headline"></a></h2>
 <table class="colwidths-given docutils align-default">
@@ -148,7 +179,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="operation/ros2-control-interface.html" class="btn btn-neutral float-left" title="ROS2 Control" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Configuration Package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="proxy-driver.html" class="btn btn-neutral float-right" title="Proxy Driver" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

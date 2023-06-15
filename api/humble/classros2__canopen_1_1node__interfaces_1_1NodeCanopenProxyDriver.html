@@ -193,6 +193,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a4bc6b1ddf089cd7f16e85d71303541bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a7a0731150148e2e2c582957700cb91"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenProxyDriver.html#a9a7a0731150148e2e2c582957700cb91">on_tpdo</a> (const canopen_interfaces::msg::COData::SharedPtr msg)</td></tr>
 <tr class="separator:a9a7a0731150148e2e2c582957700cb91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a9c87e6d85ebdbf7e931f8c3e4775a6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenProxyDriver.html#a1a9c87e6d85ebdbf7e931f8c3e4775a6">diagnostic_callback</a> (diagnostic_updater::DiagnosticStatusWrapper &amp;stat) override</td></tr>
+<tr class="separator:a1a9c87e6d85ebdbf7e931f8c3e4775a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a105c6ab9db65eca997cd6d04266f1591"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenProxyDriver.html#a105c6ab9db65eca997cd6d04266f1591">on_nmt_state_reset</a> (const std_srvs::srv::Trigger::Request::SharedPtr request, std_srvs::srv::Trigger::Response::SharedPtr response)</td></tr>
 <tr class="separator:a105c6ab9db65eca997cd6d04266f1591"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49f01406c0a88eb2b7d4c4340b1d6a65"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenProxyDriver.html#a49f01406c0a88eb2b7d4c4340b1d6a65">on_nmt_state_start</a> (const std_srvs::srv::Trigger::Request::SharedPtr request, std_srvs::srv::Trigger::Response::SharedPtr response)</td></tr>
@@ -258,6 +260,14 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:ad458c5d2e004231f9737c8cdf7487e82 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a5b98a66a02b656e6ef4dbef3b84464 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memItemLeft" align="right" valign="top">rclcpp::TimerBase::SharedPtr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a2a5b98a66a02b656e6ef4dbef3b84464">poll_timer_</a></td></tr>
 <tr class="separator:a2a5b98a66a02b656e6ef4dbef3b84464 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a819841f5c946964715c0fca180ed10ee inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a819841f5c946964715c0fca180ed10ee">diagnostic_enabled_</a></td></tr>
+<tr class="separator:a819841f5c946964715c0fca180ed10ee inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d50e72a0ebb1bc9be4d35cff72b41c3 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a2d50e72a0ebb1bc9be4d35cff72b41c3">diagnostic_period_ms_</a></td></tr>
+<tr class="separator:a2d50e72a0ebb1bc9be4d35cff72b41c3 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a763601665e3596101d7920cbf7e61d05 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; diagnostic_updater::Updater &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a763601665e3596101d7920cbf7e61d05">diagnostic_updater_</a></td></tr>
+<tr class="separator:a763601665e3596101d7920cbf7e61d05 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a550cfa2fb619397cd2b41f9ac5d92402 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classros2__canopen_1_1DiagnosticsCollector.html">DiagnosticsCollector</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a550cfa2fb619397cd2b41f9ac5d92402">diagnostic_collector_</a></td></tr>
+<tr class="separator:a550cfa2fb619397cd2b41f9ac5d92402 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver.html">ros2_canopen::node_interfaces::NodeCanopenDriver&lt; NODETYPE &gt;</a></td></tr>
 <tr class="memitem:a5c147ad1a7292ff3c36f7ead00746ec0 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver"><td class="memItemLeft" align="right" valign="top">NODETYPE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver.html#a5c147ad1a7292ff3c36f7ead00746ec0">node_</a></td></tr>
 <tr class="separator:a5c147ad1a7292ff3c36f7ead00746ec0 inherit pro_attribs_classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -399,6 +409,38 @@ template&lt;class NODETYPE &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1a9c87e6d85ebdbf7e931f8c3e4775a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a9c87e6d85ebdbf7e931f8c3e4775a6">&#9670;&nbsp;</a></span>diagnostic_callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class NODETYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NodeCanopenProxyDriver::diagnostic_callback </td>
+          <td>(</td>
+          <td class="paramtype">diagnostic_updater::DiagnosticStatusWrapper &amp;&#160;</td>
+          <td class="paramname"><em>stat</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#aae52329f1c1b062e9605fae97031bd22">ros2_canopen::node_interfaces::NodeCanopenBaseDriver&lt; NODETYPE &gt;</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#aa051adf2f30a496d3849d417993f3708">ros2_canopen::node_interfaces::NodeCanopen402Driver&lt; NODETYPE &gt;</a>.</p>
 
 </div>
 </div>

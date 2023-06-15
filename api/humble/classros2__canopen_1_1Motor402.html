@@ -114,6 +114,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a50e26dd37e5c80830f5e1f8b0e6e394c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1Motor402.html#a50e26dd37e5c80830f5e1f8b0e6e394c">readState</a> ()</td></tr>
 <tr class="separator:a50e26dd37e5c80830f5e1f8b0e6e394c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05b67219710f44ad74411f277b620f5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1Motor402.html#a05b67219710f44ad74411f277b620f5b">handleDiag</a> ()</td></tr>
+<tr class="memdesc:a05b67219710f44ad74411f277b620f5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the device diagnostic information.  <a href="classros2__canopen_1_1Motor402.html#a05b67219710f44ad74411f277b620f5b">More...</a><br /></td></tr>
 <tr class="separator:a05b67219710f44ad74411f277b620f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76292b1e1e4b66e0867f49807aafff6b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1Motor402.html#a76292b1e1e4b66e0867f49807aafff6b">handleInit</a> ()</td></tr>
 <tr class="memdesc:a76292b1e1e4b66e0867f49807aafff6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialise the drive.  <a href="classros2__canopen_1_1Motor402.html#a76292b1e1e4b66e0867f49807aafff6b">More...</a><br /></td></tr>
@@ -144,6 +145,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a77b0ea812fb4ebc31c598b727c222d3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fbf927190762db50e883909d64a1fb5"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1Motor402.html#a4fbf927190762db50e883909d64a1fb5">get_position</a> () const</td></tr>
 <tr class="separator:a4fbf927190762db50e883909d64a1fb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae134748030056e86ca50716533b5a168"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1Motor402.html#ae134748030056e86ca50716533b5a168">set_diagnostic_status_msgs</a> (std::shared_ptr&lt; <a class="el" href="classros2__canopen_1_1DiagnosticsCollector.html">DiagnosticsCollector</a> &gt; status, bool enable)</td></tr>
+<tr class="separator:ae134748030056e86ca50716533b5a168"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -387,6 +390,9 @@ false </dd></dl>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Updates the device diagnostic information. </p>
+<p>This function updates the diagnostic information of the device by updating the diagnostic status message diagnostic_status_ and publishing it. </p>
 
 </div>
 </div>
@@ -636,6 +642,42 @@ false </dd></dl>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae134748030056e86ca50716533b5a168"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae134748030056e86ca50716533b5a168">&#9670;&nbsp;</a></span>set_diagnostic_status_msgs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ros2_canopen::Motor402::set_diagnostic_status_msgs </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classros2__canopen_1_1DiagnosticsCollector.html">DiagnosticsCollector</a> &gt;&#160;</td>
+          <td class="paramname"><em>status</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enable</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>

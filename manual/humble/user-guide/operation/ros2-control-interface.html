@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ROS2 Control &mdash; ros2_canopen 0.0.1 documentation</title>
+  <title>Hardware Interface &mdash; ros2_canopen 0.0.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -19,9 +19,7 @@
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Master Driver" href="../master.html" />
-    <link rel="prev" title="Managed Service Interface" href="managed-service-interface.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,30 +45,21 @@
               <p class="caption" role="heading"><span class="caption-text">Quickstart</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../quickstart/configuration.html">Creating a Configuration Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../quickstart/operation.html">Starting a Configuration Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../quickstart/examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/operation.html">Setup CAN Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/examples.html">Running Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../configuration/configuration.html">Bus Configuration Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="service-interface.html">Service Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="managed-service-interface.html">Managed Service Interface</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">ROS2 Control</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#hardware-interface">Hardware Interface</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#robot-system-interface">Robot System Interface</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#ros2-controllers">ROS2 Controllers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#robot-controller">Robot Controller</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html#bus-configuration-file">Bus Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html#configuration-package-cmake">Configuration Package CMake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../master.html">Master Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxy-driver.html">Proxy Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cia402-driver.html">Cia402 Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to-create-a-configuration.html">How to create a configuration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to-create-a-cia301-system.html">How to create a cia301 system with ros2_control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to-create-a-robot-system.html">How to create a robot system with ros2_control</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -87,6 +76,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../software-tests/proxy-driver-test.html#proxy-driver-test">Proxy Driver Test</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../software-tests/ros2_control_system-test.html">ros2_control SystemInterface test</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Application Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../application/prbt_robot.html">Pilz manipulator PRBT 6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../application/trinamic.html">Trinamic Stepper Motor control</a></li>
+</ul>
 
         </div>
       </div>
@@ -102,7 +96,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">ROS2 Control</li>
+      <li class="breadcrumb-item active">Hardware Interface</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/user-guide/operation/ros2-control-interface.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -112,10 +106,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ros2-control">
-<h1>ROS2 Control<a class="headerlink" href="#ros2-control" title="Permalink to this headline"></a></h1>
-<section id="hardware-interface">
-<h2>Hardware Interface<a class="headerlink" href="#hardware-interface" title="Permalink to this headline"></a></h2>
+  <section id="hardware-interface">
+<h1>Hardware Interface<a class="headerlink" href="#hardware-interface" title="Permalink to this headline"></a></h1>
 <p>This package provides multiple hardware interfaces for testing. Mainly the following:</p>
 <ul class="simple">
 <li><p>canopen_ros2_control/CanopenSystem: A system interface for ProxyDrivers</p></li>
@@ -123,7 +115,7 @@
 <li><p>canopen_ros2_control/Cia402RobotSystem: A system interface for Cia402Drivers in a robot configuration (under development)</p></li>
 </ul>
 <section id="robot-system-interface">
-<h3>Robot System Interface<a class="headerlink" href="#robot-system-interface" title="Permalink to this headline"></a></h3>
+<h2>Robot System Interface<a class="headerlink" href="#robot-system-interface" title="Permalink to this headline"></a></h2>
 <p>The robot system interface takes a number of inputs from the robot description (urdf).
 It will make the Cia402Drivers available via the ros2_control hardware interface.
 The bus has to still be defined in the bus.yml file. In the urdf you can the choose the
@@ -157,7 +149,7 @@ For each joint in your urdf you can choose the attached CANopen device by using 
 </section>
 </section>
 <section id="ros2-controllers">
-<h2>ROS2 Controllers<a class="headerlink" href="#ros2-controllers" title="Permalink to this headline"></a></h2>
+<h1>ROS2 Controllers<a class="headerlink" href="#ros2-controllers" title="Permalink to this headline"></a></h1>
 <p>This package provides multiple controllers for testing. Mainly the following:</p>
 <ul class="simple">
 <li><p>canopen_ros2_controllers/Cia402RobotController: Works with Robot System Interface</p></li>
@@ -165,7 +157,7 @@ For each joint in your urdf you can choose the attached CANopen device by using 
 <li><p>canopen_ros2_controllers/CanopenProxyController: Works with CanopenSystem and Cia402System</p></li>
 </ul>
 <section id="robot-controller">
-<h3>Robot Controller<a class="headerlink" href="#robot-controller" title="Permalink to this headline"></a></h3>
+<h2>Robot Controller<a class="headerlink" href="#robot-controller" title="Permalink to this headline"></a></h2>
 <p>The robot controller enables bringing up the different joints of the robot automatically
 by using the ros2_controller lifecycle. There is no need for further action, once the
 controller is activated, the drives are ready to be used.</p>
@@ -182,15 +174,11 @@ parameters:</p>
 </div>
 </section>
 </section>
-</section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="managed-service-interface.html" class="btn btn-neutral float-left" title="Managed Service Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../master.html" class="btn btn-neutral float-right" title="Master Driver" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
