@@ -1,0 +1,23 @@
+options:
+  dcf_path: "@BUS_CONFIG_PATH@"
+
+master:
+  node_id: 1
+  driver: "ros2_canopen::MasterDriver"
+  package: "canopen_master_driver"
+
+defaults:
+  dcf: "simple.eds"
+  driver: "ros2_canopen::ProxyDriver"
+  package: "canopen_proxy_driver"
+  polling: true
+  period: 10
+  diagnostics:
+    enable: true
+    period: 1000 # in milliseconds
+
+nodes:
+  proxy_device_1:
+    node_id: 2
+  proxy_device_2:
+    node_id: 3

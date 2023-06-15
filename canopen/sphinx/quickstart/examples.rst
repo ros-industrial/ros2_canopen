@@ -1,5 +1,5 @@
-Examples
-========
+Running Examples
+================
 
 In order to tryout the library a few examples are provided in the ``canopen_tests`` directory.
 You can run them if you have started the vcan0 interface.

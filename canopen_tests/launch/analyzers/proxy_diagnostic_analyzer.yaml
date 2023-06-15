@@ -1,0 +1,11 @@
+analyzers:
+  ros__parameters:
+    path: Aggregation
+    proxy_device_1:
+      type: diagnostic_aggregator/GenericAnalyzer
+      path: ProxyDevice1
+      contains: [ 'proxy_device_1' ]
+    proxy_device_2:
+      type: diagnostic_aggregator/GenericAnalyzer
+      path: ProxyDevice2
+      contains: [ 'proxy_device_2' ]

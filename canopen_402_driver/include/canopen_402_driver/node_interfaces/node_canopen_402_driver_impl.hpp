@@ -7,7 +7,8 @@
 #include <optional>
 
 using namespace ros2_canopen::node_interfaces;
-using namespace std::placeholders;
+using std::placeholders::_1;
+using std::placeholders::_2;
 
 template <class NODETYPE>
 NodeCanopen402Driver<NODETYPE>::NodeCanopen402Driver(NODETYPE * node)
@@ -255,6 +256,7 @@ void NodeCanopen402Driver<NODETYPE>::activate(bool called_from_base)
 {
   NodeCanopenProxyDriver<NODETYPE>::activate(false);
   motor_->registerDefaultModes();
+  motor_->set_diagnostic_status_msgs(this->diagnostic_collector_, this->diagnostic_enabled_);
 }
 
 template <class NODETYPE>
@@ -600,6 +602,20 @@ bool NodeCanopen402Driver<NODETYPE>::set_target(double target)
   {
     return false;
   }
+}
+
+template <class NODETYPE>
+void NodeCanopen402Driver<NODETYPE>::diagnostic_callback(
+  diagnostic_updater::DiagnosticStatusWrapper & stat)
+{
+  this->motor_->handleDiag();
+
+  stat.summary(this->diagnostic_collector_->getLevel(), this->diagnostic_collector_->getMessage());
+  stat.add("device_state", this->diagnostic_collector_->getValue("DEVICE"));
+  stat.add("nmt_state", this->diagnostic_collector_->getValue("NMT"));
+  stat.add("emcy_state", this->diagnostic_collector_->getValue("EMCY"));
+  stat.add("cia402_mode", this->diagnostic_collector_->getValue("cia402_mode"));
+  stat.add("cia402_state", this->diagnostic_collector_->getValue("cia402_state"));
 }
 
 #endif

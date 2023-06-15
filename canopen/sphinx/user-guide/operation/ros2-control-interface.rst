@@ -1,7 +1,3 @@
-ROS2 Control
-=============================
-
-
 Hardware Interface
 ------------------
 This package provides multiple hardware interfaces for testing. Mainly the following:

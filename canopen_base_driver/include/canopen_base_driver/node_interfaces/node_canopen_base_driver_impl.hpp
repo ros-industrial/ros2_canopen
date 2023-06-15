@@ -1,3 +1,17 @@
+//    Copyright 2022 Christoph Hellmann Santos
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
 #ifndef NODE_CANOPEN_BASE_DRIVER_IMPL
 #define NODE_CANOPEN_BASE_DRIVER_IMPL
 #include "canopen_base_driver/node_interfaces/node_canopen_base_driver.hpp"
@@ -7,7 +21,9 @@ using namespace ros2_canopen::node_interfaces;
 
 template <class NODETYPE>
 NodeCanopenBaseDriver<NODETYPE>::NodeCanopenBaseDriver(NODETYPE * node)
-: ros2_canopen::node_interfaces::NodeCanopenDriver<NODETYPE>(node)
+: ros2_canopen::node_interfaces::NodeCanopenDriver<NODETYPE>(node),
+  diagnostic_enabled_(false),
+  diagnostic_collector_(new DiagnosticsCollector())
 {
 }
 
@@ -40,6 +56,36 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
       period_ms_ = 10;
     }
   }
+
+  // Diagnostic components
+  try
+  {
+    diagnostic_enabled_ = this->config_["diagnostics"]["enable"].as<bool>();
+  }
+  catch (...)
+  {
+    RCLCPP_ERROR(
+      this->node_->get_logger(),
+      "Could not read enable diagnostics from config, setting to false.");
+    diagnostic_enabled_ = false;
+  }
+  if (diagnostic_enabled_.load())
+  {
+    try
+    {
+      diagnostic_period_ms_ = this->config_["diagnostics"]["period"].as<std::uint32_t>();
+    }
+    catch (...)
+    {
+      RCLCPP_ERROR(
+        this->node_->get_logger(),
+        "Could not read diagnostics period from config, setting to 1000ms");
+      diagnostic_period_ms_ = 1000;
+    }
+
+    diagnostic_updater_ = std::make_shared<diagnostic_updater::Updater>(this->node_);
+    diagnostic_updater_->setHardwareID(std::to_string(this->node_id_));
+  }
 }
 template <>
 void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
@@ -65,6 +111,36 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
       period_ms_ = 10;
     }
   }
+
+  // Diagnostic components
+  try
+  {
+    diagnostic_enabled_ = this->config_["diagnostics"]["enable"].as<bool>();
+  }
+  catch (...)
+  {
+    RCLCPP_ERROR(
+      this->node_->get_logger(),
+      "Could not read enable diagnostics from config, setting to false.");
+    diagnostic_enabled_ = false;
+  }
+  if (diagnostic_enabled_.load())
+  {
+    try
+    {
+      diagnostic_period_ms_ = this->config_["diagnostics"]["period"].as<std::uint32_t>();
+    }
+    catch (...)
+    {
+      RCLCPP_ERROR(
+        this->node_->get_logger(),
+        "Could not read diagnostics period from config, setting to 1000ms");
+      diagnostic_period_ms_ = 1000;
+    }
+
+    diagnostic_updater_ = std::make_shared<diagnostic_updater::Updater>(this->node_);
+    diagnostic_updater_->setHardwareID(std::to_string(this->node_id_));
+  }
 }
 
 template <class NODETYPE>
@@ -87,6 +163,18 @@ void NodeCanopenBaseDriver<NODETYPE>::activate(bool called_from_base)
     this->lely_driver_->set_sync_function(
       std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
   }
+  // poll_timer_ = this->node_->create_wall_timer(
+  //   std::chrono::milliseconds(period_ms_),
+  //   std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this), this->timer_cbg_);
+  this->lely_driver_->set_sync_function(
+    std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
+
+  if (diagnostic_enabled_.load())
+  {
+    RCLCPP_INFO(this->node_->get_logger(), "Starting with diagnostics enabled.");
+    diagnostic_updater_->add(
+      "diagnostic updater", this, &NodeCanopenBaseDriver<NODETYPE>::diagnostic_callback);
+  }
 }
 
 template <class NODETYPE>
@@ -95,6 +183,10 @@ void NodeCanopenBaseDriver<NODETYPE>::deactivate(bool called_from_base)
   nmt_state_publisher_thread_.join();
   poll_timer_->cancel();
   this->lely_driver_->unset_sync_function();
+  if (diagnostic_enabled_.load())
+  {
+    diagnostic_updater_->removeByName("diagnostic updater");
+  }
 }
 
 template <class NODETYPE>
@@ -147,6 +239,12 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
     }
   }
   RCLCPP_INFO(this->node_->get_logger(), "Driver booted and ready.");
+
+  if (diagnostic_enabled_.load())
+  {
+    diagnostic_collector_->updateAll(
+      diagnostic_msgs::msg::DiagnosticStatus::OK, "Device ready", "DEVICE", "Added to master.");
+  }
 }
 
 template <class NODETYPE>
@@ -166,6 +264,12 @@ void NodeCanopenBaseDriver<NODETYPE>::remove_from_master()
   if (future_status != std::future_status::ready)
   {
     throw DriverException("remove_from_master: removing timed out");
+  }
+  if (diagnostic_enabled_.load())
+  {
+    diagnostic_collector_->updateAll(
+      diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Device removed", "DEVICE",
+      "Removed from master.");
   }
 }
 template <class NODETYPE>
@@ -210,6 +314,20 @@ void NodeCanopenBaseDriver<NODETYPE>::on_rpdo(COData data)
 template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::on_emcy(COEmcy emcy)
 {
+  diagnostic_collector_->summary(
+    diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Emergency message received");
+  std::string emcy_msg = "Emergency message: ";
+  emcy_msg.append("eec: ");
+  emcy_msg.append(std::to_string(emcy.eec));
+  emcy_msg.append(" er: ");
+  emcy_msg.append(std::to_string(emcy.er));
+  emcy_msg.append(" msef: ");
+  for (auto & msef : emcy.msef)
+  {
+    emcy_msg.append(std::to_string(msef));
+    emcy_msg.append(" ");
+  }
+  diagnostic_collector_->add("EMCY", emcy_msg);
 }
 
 template <class NODETYPE>
@@ -312,6 +430,12 @@ void NodeCanopenBaseDriver<NODETYPE>::emcy_listener()
       break;
     }
   }
+}
+
+template <class NODETYPE>
+void NodeCanopenBaseDriver<NODETYPE>::diagnostic_callback(
+  diagnostic_updater::DiagnosticStatusWrapper & stat)
+{
 }
 
 #endif

@@ -1,3 +1,17 @@
+//    Copyright 2022 Christoph Hellmann Santos
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
 #ifndef NODE_CANOPEN_PROXY_DRIVER_IMPL_HPP_
 #define NODE_CANOPEN_PROXY_DRIVER_IMPL_HPP_
 
@@ -105,28 +119,44 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
     {
       case canopen::NmtState::BOOTUP:
         message.data = "BOOTUP";
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT bootup", "NMT", "BOOTUP");
         break;
       case canopen::NmtState::PREOP:
         message.data = "PREOP";
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT preop", "NMT", "PREOP");
         break;
       case canopen::NmtState::RESET_COMM:
         message.data = "RESET_COMM";
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::WARN, "NMT reset comm", "NMT", "RESET_COMM");
         break;
       case canopen::NmtState::RESET_NODE:
         message.data = "RESET_NODE";
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::WARN, "NMT reset node", "NMT", "RESET_NODE");
         break;
       case canopen::NmtState::START:
         message.data = "START";
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT start", "NMT", "START");
         break;
       case canopen::NmtState::STOP:
         message.data = "STOP";
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT stop", "NMT", "STOP");
         break;
       case canopen::NmtState::TOGGLE:
         message.data = "TOGGLE";
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT toggle", "NMT", "TOGGLE");
         break;
       default:
         RCLCPP_ERROR(this->node_->get_logger(), "Unknown NMT State.");
         message.data = "ERROR";
+        this->diagnostic_collector_->updateAll(
+          diagnostic_msgs::msg::DiagnosticStatus::ERROR, "NMT unknown state", "NMT", "ERROR");
         break;
     }
     RCLCPP_INFO(
@@ -301,6 +331,16 @@ bool NodeCanopenProxyDriver<NODETYPE>::sdo_write(ros2_canopen::COData & data)
   }
   RCLCPP_ERROR(this->node_->get_logger(), "Could not write to SDO because driver not activated.");
   return false;
+}
+
+template <class NODETYPE>
+void NodeCanopenProxyDriver<NODETYPE>::diagnostic_callback(
+  diagnostic_updater::DiagnosticStatusWrapper & stat)
+{
+  stat.summary(this->diagnostic_collector_->getLevel(), this->diagnostic_collector_->getMessage());
+  stat.add("device_state", this->diagnostic_collector_->getValue("DEVICE"));
+  stat.add("nmt_state", this->diagnostic_collector_->getValue("NMT"));
+  stat.add("emcy_state", this->diagnostic_collector_->getValue("EMCY"));
 }
 
 #endif

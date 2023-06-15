@@ -362,6 +362,7 @@ void DeviceContainer::init(
   bus_config_ = bus_config;
 
   RCLCPP_INFO(this->get_logger(), "Starting Device Container with:");
+  RCLCPP_INFO(this->get_logger(), "\t can_interface_name %s", can_interface_name_.c_str());
   RCLCPP_INFO(this->get_logger(), "\t master_config %s", dcf_txt_.c_str());
   RCLCPP_INFO(this->get_logger(), "\t bus_config %s", bus_config_.c_str());
 
