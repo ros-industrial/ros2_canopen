@@ -163,11 +163,6 @@ void NodeCanopenBaseDriver<NODETYPE>::activate(bool called_from_base)
     this->lely_driver_->set_sync_function(
       std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
   }
-  // poll_timer_ = this->node_->create_wall_timer(
-  //   std::chrono::milliseconds(period_ms_),
-  //   std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this), this->timer_cbg_);
-  this->lely_driver_->set_sync_function(
-    std::bind(&NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback, this));
 
   if (diagnostic_enabled_.load())
   {
