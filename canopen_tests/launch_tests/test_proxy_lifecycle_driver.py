@@ -24,12 +24,8 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 import launch_testing
 import threading
 import rclpy
-from rclpy.executors import ExternalShutdownException
-from rclpy.executors import MultiThreadedExecutor
-from rclpy.node import Node
 from canopen_utils.launch_test_node import LaunchTestNode
-from lifecycle_msgs.msg import State, Transition
-from std_srvs.srv import Trigger
+from lifecycle_msgs.msg import Transition
 from lifecycle_msgs.srv import ChangeState
 import unittest
 from canopen_interfaces.srv import CORead, COWrite
