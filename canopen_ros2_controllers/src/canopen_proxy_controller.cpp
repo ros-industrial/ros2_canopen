@@ -163,9 +163,8 @@ controller_interface::CallbackReturn CanopenProxyController::on_configure(
       std::numeric_limits<double>::quiet_NaN());
   };
 
-  auto service_profile = rmw_qos_profile_services_default;
-  service_profile.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
-  service_profile.depth = 1;
+  auto service_profile = rclcpp::QoS(1);
+  service_profile.keep_all();
   nmt_state_reset_service_ = get_node()->create_service<ControllerStartResetSrvType>(
     "~/nmt_reset_node", on_nmt_state_reset, service_profile);
 

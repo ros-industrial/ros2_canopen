@@ -86,10 +86,9 @@ protected:
   inline rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr createTriggerSrv(
     const std::string & service, Cia402CommandInterfaces cmd, Cia402CommandInterfaces fbk)
   {
-    // define service profile
-    auto service_profile = rmw_qos_profile_services_default;
-    service_profile.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
-    service_profile.depth = 1;
+    // define service profile Qos
+    auto service_profile = rclcpp::QoS(1);
+    service_profile.keep_all();
 
     rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr srv =
       get_node()->create_service<std_srvs::srv::Trigger>(
