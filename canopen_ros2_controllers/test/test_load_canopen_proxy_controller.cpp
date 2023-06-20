@@ -29,8 +29,7 @@ TEST(TestLoadCanopenProxyController, load_controller)
     std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
 
   controller_manager::ControllerManager cm(
-    std::make_unique<hardware_interface::ResourceManager>(),
-    executor, "test_controller_manager");
+    std::make_unique<hardware_interface::ResourceManager>(), executor, "test_controller_manager");
 
   ASSERT_NO_THROW(cm.load_controller(
     "test_canopen_ros2_controllers", "canopen_ros2_controllers/CanopenProxyController"));
