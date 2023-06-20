@@ -116,5 +116,10 @@ class LaunchTestNode(Node):
                 assert False, "Service call timed out."
 
         res = future.result()
-        print(res)
         assert res == expected_response, "Did not receive the expected response."
+        self.destroy_client(client)
+
+    def publish_message(self, topic_name: str, topic_type, msg):
+        publisher = self.create_publisher(topic_type, topic_name, 10)
+        publisher.publish(msg)
+        self.destroy_publisher(publisher)
