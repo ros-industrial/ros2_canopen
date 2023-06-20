@@ -7,8 +7,7 @@
 #include <optional>
 
 using namespace ros2_canopen::node_interfaces;
-using std::placeholders::_1;
-using std::placeholders::_2;
+using namespace std::placeholders;
 
 template <class NODETYPE>
 NodeCanopen402Driver<NODETYPE>::NodeCanopen402Driver(NODETYPE * node)
@@ -30,45 +29,64 @@ void NodeCanopen402Driver<rclcpp::Node>::init(bool called_from_base)
     this->node_->create_publisher<sensor_msgs::msg::JointState>("~/joint_states", 1);
   handle_init_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/init").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp::Node>::handle_init, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_init, this, std::placeholders::_1,
+      std::placeholders::_2));
 
   handle_halt_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/halt").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp::Node>::handle_halt, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_halt, this, std::placeholders::_1,
+      std::placeholders::_2));
 
   handle_recover_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/recover").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp::Node>::handle_recover, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_recover, this, std::placeholders::_1,
+      std::placeholders::_2));
 
   handle_set_mode_position_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/position_mode").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_position, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_position, this, std::placeholders::_1,
+      std::placeholders::_2));
 
   handle_set_mode_velocity_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/velocity_mode").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_velocity, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_velocity, this, std::placeholders::_1,
+      std::placeholders::_2));
 
   handle_set_mode_cyclic_velocity_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/cyclic_velocity_mode").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_cyclic_velocity, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_cyclic_velocity, this,
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_set_mode_cyclic_position_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/cyclic_position_mode").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_cyclic_position, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_cyclic_position, this,
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_set_mode_interpolated_position_service =
     this->node_->create_service<std_srvs::srv::Trigger>(
       std::string(this->node_->get_name()).append("/interpolated_position_mode").c_str(),
       std::bind(
-        &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_interpolated_position, this, _1, _2));
+        &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_interpolated_position, this,
+        std::placeholders::_1, std::placeholders::_2));
 
   handle_set_mode_torque_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/torque_mode").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_torque, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_torque, this, std::placeholders::_1,
+      std::placeholders::_2));
 
   handle_set_target_service = this->node_->create_service<canopen_interfaces::srv::COTargetDouble>(
     std::string(this->node_->get_name()).append("/target").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp::Node>::handle_set_target, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_set_target, this, std::placeholders::_1,
+      std::placeholders::_2));
 }
 
 template <>
@@ -79,58 +97,64 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::init(bool called_fro
     this->node_->create_publisher<sensor_msgs::msg::JointState>("~/joint_states", 10);
   handle_init_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/init").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_init, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_init, this,
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_halt_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/halt").c_str(),
-    std::bind(&NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_halt, this, _1, _2));
+    std::bind(
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_halt, this,
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_recover_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/recover").c_str(),
     std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_recover, this, _1, _2));
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_recover, this,
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_set_mode_position_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/position_mode").c_str(),
     std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_position, this, _1,
-      _2));
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_position, this,
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_set_mode_velocity_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/velocity_mode").c_str(),
     std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_velocity, this, _1,
-      _2));
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_velocity, this,
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_set_mode_cyclic_velocity_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/cyclic_velocity_mode").c_str(),
     std::bind(
       &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_cyclic_velocity, this,
-      _1, _2));
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_set_mode_cyclic_position_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/cyclic_position_mode").c_str(),
     std::bind(
       &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_cyclic_position, this,
-      _1, _2));
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_set_mode_interpolated_position_service = this->node_->create_service<
     std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/interpolated_position_mode").c_str(),
     std::bind(
       &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_interpolated_position,
-      this, _1, _2));
+      this, std::placeholders::_1, std::placeholders::_2));
 
   handle_set_mode_torque_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/torque_mode").c_str(),
     std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_torque, this, _1,
-      _2));
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_torque, this,
+      std::placeholders::_1, std::placeholders::_2));
 
   handle_set_target_service = this->node_->create_service<canopen_interfaces::srv::COTargetDouble>(
     std::string(this->node_->get_name()).append("/target").c_str(),
     std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_target, this, _1, _2));
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_target, this,
+      std::placeholders::_1, std::placeholders::_2));
 }
 
 template <>
