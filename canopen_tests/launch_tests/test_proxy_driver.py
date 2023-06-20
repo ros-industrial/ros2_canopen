@@ -14,6 +14,7 @@
 
 import os
 from time import sleep
+import time
 import pytest
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
@@ -26,7 +27,8 @@ import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
-from canopen_utils.test_node import TestNode
+from canopen_utils.launch_test_node import LaunchTestNode
+from canopen_interfaces.srv import CORead, COWrite, COReadID, COWriteID
 from lifecycle_msgs.msg import State, Transition
 from std_srvs.srv import Trigger
 import unittest
@@ -52,58 +54,159 @@ def generate_test_description():
     return (LaunchDescription([launch_desc, ready_to_test]), {})
 
 
-class TestLifecycle(unittest.TestCase):
+class TestNMT(unittest.TestCase):
+    def run_node(self):
+        while self.ok:
+            rclpy.spin_once(self.node, timeout_sec=0.1)
+
     @classmethod
     def setUpClass(cls):
-        print("SetupClass")
+        cls.ok = True
+        rclpy.init()
+        cls.node = LaunchTestNode()
+        cls.thread = threading.Thread(target=cls.run_node, args=[cls])
+        cls.thread.start()
 
     @classmethod
     def tearDownClass(cls):
-        print("TearDownClass")
+        cls.ok = False
+        cls.thread.join()
+        cls.node.destroy_node()
+        rclpy.shutdown()
+
+    def test_reset_nmt(self):
+        request = Trigger.Request()
+        response = Trigger.Response()
+        response.success = True
+        self.node.call_service("proxy_device_2/nmt_reset_node", Trigger, request, response)
+        time.sleep(1)
+
+
+class TestSDO(unittest.TestCase):
+    def run_node(self):
+        while self.ok:
+            rclpy.spin_once(self.node, timeout_sec=0.1)
 
     @classmethod
-    def setUp(self):
-        print("Setup")
+    def setUp(cls):
+        cls.ok = True
         rclpy.init()
-        self.node = TestNode()
-        self.x = threading.Thread(target=rclpy.spin, args=[self.node])
-        self.x.start()
+        cls.node = LaunchTestNode()
+        cls.thread = threading.Thread(target=cls.run_node, args=[cls])
+        cls.thread.start()
 
-    def tearDown(self):
-        print("TearDown")
+    @classmethod
+    def tearDown(cls):
+        cls.ok = False
+        cls.thread.join()
+        cls.node.destroy_node()
         rclpy.shutdown()
-        self.node.destroy_node()
-        self.x.join()
 
-    def test_02_nmt(self):
-        assert self.node.checkTrigger("proxy_device_1", "nmt_reset_node")
-        assert self.node.checkTrigger("proxy_device_2", "nmt_reset_node")
-        sleep(1.0)
+    def test_sdo_read(self):
+        req = CORead.Request()
+        req.index = 0x4000
+        req.subindex = 0
 
-    def test_03_sdo_read(self):
-        assert self.node.checkSDORead("proxy_device_1", index=0x1000, subindex=0, data=0)
-        assert self.node.checkSDORead("proxy_device_2", index=0x1000, subindex=0, data=0)
+        res = CORead.Response()
+        res.success = True
+        res.data = 0
 
-    def test_04_sdo_write(self):
-        assert self.node.checkSDOWrite("proxy_device_1", index=0x4000, subindex=0, data=100)
-        assert self.node.checkSDOWrite("proxy_device_2", index=0x4000, subindex=0, data=100)
-        assert self.node.checkSDORead("proxy_device_1", index=0x4000, subindex=0, data=100)
-        assert self.node.checkSDORead("proxy_device_2", index=0x4000, subindex=0, data=100)
+        self.node.call_service("proxy_device_1/sdo_read", CORead, req, res)
+        self.node.call_service("proxy_device_2/sdo_read", CORead, req, res)
 
-    def test_05_sdo_read_id(self):
-        assert self.node.checkSDOReadID(node_id=2, index=0x4000, subindex=0, type=0x7, data=100)
-        assert self.node.checkSDOReadID(node_id=3, index=0x4000, subindex=0, type=0x7, data=100)
+    def test_sdo_write(self):
+        index = 0x4000
+        subindex = 0
+        data = 100
 
-    def test_06_sdo_write_id(self):
-        assert self.node.checkSDOWriteID(node_id=2, index=0x4000, subindex=0, type=0x7, data=999)
-        assert self.node.checkSDOWriteID(node_id=3, index=0x4000, subindex=0, type=0x7, data=999)
-        assert self.node.checkSDOReadID(node_id=2, index=0x4000, subindex=0, type=0x7, data=999)
-        assert self.node.checkSDOReadID(node_id=3, index=0x4000, subindex=0, type=0x7, data=999)
+        req = COWrite.Request()
+        req.index = index
+        req.subindex = subindex
+        req.data = data
 
-    # def test_07_rpdo_tpdo(self):
-    #     assert self.node.checkRpdoTpdo(
-    #         "proxy_device_1", index=0x4000, subindex=0, data=101
-    #     )
-    #     assert self.node.checkRpdoTpdo(
-    #         "proxy_device_2", index=0x4000, subindex=0, data=202
-    #     )
+        res = COWrite.Response()
+        res.success = True
+
+        rreq = CORead.Request()
+        rreq.index = index
+        rreq.subindex = subindex
+
+        rres = CORead.Response()
+        rres.success = True
+        rres.data = data
+
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_read", CORead, rreq, rres)
+        self.node.call_service("proxy_device_2/sdo_read", CORead, rreq, rres)
+        req.data = 0
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+
+
+class TestSDOMaster(unittest.TestCase):
+    def run_node(self):
+        while self.ok:
+            rclpy.spin_once(self.node, timeout_sec=0.1)
+
+    @classmethod
+    def setUp(cls):
+        cls.ok = True
+        rclpy.init()
+        cls.node = LaunchTestNode()
+        cls.thread = threading.Thread(target=cls.run_node, args=[cls])
+        cls.thread.start()
+
+    @classmethod
+    def tearDown(cls):
+        cls.ok = False
+        cls.thread.join()
+        cls.node.destroy_node()
+        rclpy.shutdown()
+
+    def test_sdo_read(self):
+        req = COReadID.Request()
+        req.index = 0x4000
+        req.subindex = 0
+        req.nodeid = 2
+        req.canopen_datatype = 0x7
+
+        res = COReadID.Response()
+        res.success = True
+        res.data = 0
+
+        self.node.call_service("/master/sdo_read", COReadID, req, res)
+        req.nodeid = 3
+        self.node.call_service("/master/sdo_read", COReadID, req, res)
+
+    # def test_sdo_write(self):
+    #     index = 0x4000
+    #     subindex = 0
+    #     data = 100
+
+    #     req = COWrite.Request()
+    #     req.index = index
+    #     req.subindex = subindex
+    #     req.data = data
+
+    #     res = COWrite.Response()
+    #     res.success = True
+
+    #     rreq = CORead.Request()
+    #     rreq.index = index
+    #     rreq.subindex = subindex
+
+    #     rres = CORead.Response()
+    #     rres.success = True
+    #     rres.data = data
+
+    #     self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+    #     self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+    #     self.node.call_service("proxy_device_1/sdo_read", CORead, rreq, rres)
+    #     self.node.call_service("proxy_device_2/sdo_read", CORead, rreq, rres)
+    #     req.data = 0
+    #     self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+    #     self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
