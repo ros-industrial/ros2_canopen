@@ -21,7 +21,6 @@
   <depend>rclcpp</depend>
   <depend>rclcpp_lifecycle</depend>
   <depend>realtime_tools</depend>
-  <depend>ros2_control_test_assets</depend>
   <depend>std_msgs</depend>
   <depend>std_srvs</depend>
 
