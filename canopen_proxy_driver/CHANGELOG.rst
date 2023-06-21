@@ -2,6 +2,11 @@
 Changelog for package canopen_proxy_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use consistenlty (uppercase) HEX output for NodeID and Index.
+* Contributors: Christoph Hellmann Santos, Denis Štogl
+
 0.2.0 (2023-06-14)
 ------------------
 * Created package
