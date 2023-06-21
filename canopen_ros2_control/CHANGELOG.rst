@@ -2,6 +2,9 @@
 Changelog for package canopen_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.1 (2023-06-21)
 ------------------
 * Use consistenlty (uppercase) HEX output for NodeID and Index.
