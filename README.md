@@ -2,8 +2,8 @@
 
 ## Status
 
-[![Build Status](https://github.com/ros-industrial/ros2_canopen/workflows/rolling/badge.svg?branch=master)](https://github.com/ros-industrial/ros2_canopen/actions)
-[![Documentation Status](https://github.com/ros-industrial/ros2_canopen/workflows/Documentation/badge.svg?branch=master)](https://github.com/ros-industrial/ros2_canopen/actions)
+[![humble](https://github.com/ros-industrial/ros2_canopen/actions/workflows/humble.yml/badge.svg)](https://github.com/ros-industrial/ros2_canopen/actions/workflows/humble.yml)
+[![HUMBLE Documentation](https://github.com/ros-industrial/ros2_canopen/actions/workflows/humble_documentation.yml/badge.svg)](https://github.com/ros-industrial/ros2_canopen/actions/workflows/humble_documentation.yml)
 
 The stack is currently under development and not yet ready for production use.
 

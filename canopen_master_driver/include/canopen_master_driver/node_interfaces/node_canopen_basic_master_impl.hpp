@@ -34,6 +34,7 @@ void NodeCanopenBasicMaster<NODETYPE>::activate(bool called_from_base)
 template <class NODETYPE>
 void NodeCanopenBasicMaster<NODETYPE>::deactivate(bool called_from_base)
 {
+  master_bridge_.reset();
   this->master_.reset();
 }
 

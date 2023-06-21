@@ -1,4 +1,4 @@
-// Copyright (c) 2022, Stogl Robotics Consulting UG (haftungsbeschränkt)
+// Copyright (c) 2023, Stogl Robotics Consulting UG (haftungsbeschränkt)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ TEST(TestLoadCanopenProxyController, load_controller)
     std::make_unique<hardware_interface::ResourceManager>(), executor, "test_controller_manager");
 
   ASSERT_NO_THROW(cm.load_controller(
-    "test_canopen_ros2_controllers", "canopen_ros2_controllers/CanopenProxyController"));
+    "test_canopen_ros2_controllers", "canopen_ros2_controllers/Cia402DeviceController"));
 
   rclcpp::shutdown();
 }

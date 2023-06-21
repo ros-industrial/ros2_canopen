@@ -301,7 +301,17 @@ public:
       throw MasterException("Cleanup: master is still active");
     }
     this->cleanup(true);
+    io_guard_.reset();
+    ctx_.reset();
+    poll_.reset();
+    loop_.reset();
+
+    exec_.reset();
+    timer_.reset();
+    ctrl_.reset();
+    chan_.reset();
     this->configured_.store(false);
+    this->master_set_.store(false);
   }
   virtual void cleanup(bool called_from_base) {}
 

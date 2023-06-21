@@ -2,6 +2,11 @@
 Changelog for package canopen_402_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.1 (2023-06-21)
+------------------
+* Fix boost/std placeholders ambiguity in older boost versions
+* Contributors: Christoph Hellmann Santos
+
 0.2.0 (2023-06-14)
 ------------------
 * Created package
