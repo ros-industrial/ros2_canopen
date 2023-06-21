@@ -146,7 +146,7 @@ void CanopenSystem::initDeviceContainer()
     proxy_driver->register_rpdo_cb(rpdo_cb);
 
     RCLCPP_INFO(
-      kLogger, "\nRegistered driver:\n    name: '%s'\n    node_id: '%x'",  //
+      kLogger, "\nRegistered driver:\n    name: '%s'\n    node_id: '0x%X'",  //
       it->second->get_node_base_interface()->get_name(), it->first);
   }
 

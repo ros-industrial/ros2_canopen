@@ -160,7 +160,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
         break;
     }
     RCLCPP_INFO(
-      this->node_->get_logger(), "Slave %hhu: Switched NMT state to %s",
+      this->node_->get_logger(), "Slave 0x%X: Switched NMT state to %s",
       this->lely_driver_->get_id(), message.data.c_str());
 
     nmt_state_publisher->publish(message);
@@ -183,7 +183,7 @@ bool NodeCanopenProxyDriver<NODETYPE>::tpdo_transmit(ros2_canopen::COData & data
   if (this->activated_.load())
   {
     RCLCPP_INFO(
-      this->node_->get_logger(), "Node ID %hhu: Transmit PDO index %x, subindex %hhu, data %d",
+      this->node_->get_logger(), "Node ID 0x%X: Transmit PDO index %x, subindex %hhu, data %d",
       this->lely_driver_->get_id(), data.index_, data.subindex_,
       data.data_);  // ToDo: Remove or make debug
     this->lely_driver_->tpdo_transmit(data);
@@ -198,7 +198,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_rpdo(ros2_canopen::COData d)
   if (this->activated_.load())
   {
     // RCLCPP_INFO(
-    //   this->node_->get_logger(), "Node ID %hhu: Received PDO index %#04x, subindex %hhu, data
+    //   this->node_->get_logger(), "Node ID 0x%X: Received PDO index %#04x, subindex %hhu, data
     //   %x", this->lely_driver_->get_id(), d.index_, d.subindex_, d.data_);
     auto message = canopen_interfaces::msg::COData();
     message.index = d.index_;
@@ -266,7 +266,7 @@ bool NodeCanopenProxyDriver<NODETYPE>::sdo_read(ros2_canopen::COData & data)
   if (this->activated_.load())
   {
     RCLCPP_INFO(
-      this->node_->get_logger(), "Slave %hhu: SDO Read Call index=0x%x subindex=%hhu",
+      this->node_->get_logger(), "Slave 0x%X: SDO Read Call index=0x%X subindex=%hhu",
       this->lely_driver_->get_id(), data.index_, data.subindex_);
 
     // Only allow one SDO request concurrently
@@ -306,7 +306,7 @@ bool NodeCanopenProxyDriver<NODETYPE>::sdo_write(ros2_canopen::COData & data)
   if (this->activated_.load())
   {
     RCLCPP_INFO(
-      this->node_->get_logger(), "Slave %hhu: SDO Write Call index=0x%x subindex=%hhu data=%u",
+      this->node_->get_logger(), "Slave 0x%X: SDO Write Call index=0x%X subindex=%hhu data=%u",
       this->lely_driver_->get_id(), data.index_, data.subindex_, data.data_);
 
     // Only allow one SDO request concurrently

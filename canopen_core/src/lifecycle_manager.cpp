@@ -124,7 +124,7 @@ unsigned int LifecycleManager::get_state(uint8_t node_id, std::chrono::seconds t
   if (future_status != std::future_status::ready)
   {
     RCLCPP_ERROR(
-      get_logger(), "Server time out while getting current state for node %hhu", node_id);
+      get_logger(), "Server time out while getting current state for node 0x%X", node_id);
     return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
   }
   auto result = future_result.get()->current_state;
@@ -153,7 +153,7 @@ bool LifecycleManager::change_state(
   if (future_status != std::future_status::ready)
   {
     RCLCPP_ERROR(
-      get_logger(), "Server time out while getting current state for node %hhu", node_id);
+      get_logger(), "Server time out while getting current state for node 0x%X", node_id);
     return false;
   }
 
