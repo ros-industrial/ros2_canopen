@@ -2,8 +2,8 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.2 (2023-06-21)
+------------------
 * Reset hard before patch applicaiton
 * Contributors: Christoph Hellmann Santos
 
