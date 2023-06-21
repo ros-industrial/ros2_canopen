@@ -2,6 +2,9 @@
 Changelog for package canopen_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.1 (2023-06-21)
 ------------------
 * Fix master and driver lifecycle
