@@ -1,0 +1,30 @@
+From 10217b41326c2a0a878068558612c774854eb496 Mon Sep 17 00:00:00 2001
+From: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+Date: Wed, 21 Jun 2023 08:19:04 +0200
+Subject: [PATCH] Don't build bdist
+
+---
+ python/dcf-tools/Makefile.am | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/python/dcf-tools/Makefile.am b/python/dcf-tools/Makefile.am
+index 9852c84a..58edc597 100644
+--- a/python/dcf-tools/Makefile.am
++++ b/python/dcf-tools/Makefile.am
+@@ -30,13 +30,6 @@ clean-local:
+ 
+ install-exec-local: python-install
+ 
+-.PHONY: python-bdist_wheel
+-python-bdist_wheel:
+-if HAVE_PYTHON3
+-	@$(PYTHON3_ENV) $(PYTHON3) $(srcdir)/setup.py \
+-		bdist_wheel --dist-dir $(dist_dir)
+-endif
+-
+ .PHONY: python-install
+ python-install:
+ if HAVE_PYTHON3
+-- 
+2.34.1
+

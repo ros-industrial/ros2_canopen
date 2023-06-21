@@ -1,0 +1,25 @@
+From e122577c29f833fd5d2d9066c1a1740008d66776 Mon Sep 17 00:00:00 2001
+From: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+Date: Wed, 21 Jun 2023 08:25:33 +0200
+Subject: [PATCH] No bdist
+
+---
+ python/dcf-tools/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/python/dcf-tools/Makefile.am b/python/dcf-tools/Makefile.am
+index 58edc597..8a5b2c24 100644
+--- a/python/dcf-tools/Makefile.am
++++ b/python/dcf-tools/Makefile.am
+@@ -23,7 +23,7 @@ EXTRA_DIST += setup.py
+ build_base = $(realpath $(builddir))/build
+ dist_dir = $(realpath $(builddir))/dist
+ 
+-all-local: python-sdist python-bdist_wheel
++all-local: python-sdist
+ 
+ clean-local:
+ 	rm -rf $(build_base) $(dist_dir) $(srcdir)/*.egg-info $(builddir)/*.egg-info
+-- 
+2.34.1
+
