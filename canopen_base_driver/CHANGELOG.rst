@@ -2,8 +2,8 @@
 Changelog for package canopen_base_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2023-06-21)
+------------------
 * Fix base driver lifecyle
 * Fix node polling mode in base driver
 * Contributors: Błażej Sowa, Christoph Hellmann Santos

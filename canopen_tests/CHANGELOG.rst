@@ -2,8 +2,8 @@
 Changelog for package canopen_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2023-06-21)
+------------------
 * Add trvivial integration test for robot_control
 * Add trivial integration tests for cia402_driver
 * Use the more tidy launch_test_node

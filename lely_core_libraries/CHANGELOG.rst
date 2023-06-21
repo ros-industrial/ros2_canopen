@@ -2,8 +2,8 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2023-06-21)
+------------------
 * Do not build dcf-tools bdist in lely_core_libraries anymore, fixes buildfarm issue
 * Contributors: Christoph Hellmann Santos
 

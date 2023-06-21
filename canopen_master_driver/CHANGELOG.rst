@@ -2,8 +2,8 @@
 Changelog for package canopen_master_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2023-06-21)
+------------------
 * Fix master lifecycle
 * Contributors: Christoph Hellmann Santos
 

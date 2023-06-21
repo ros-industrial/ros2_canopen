@@ -2,8 +2,8 @@
 Changelog for package canopen_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2023-06-21)
+------------------
 * Fix master and driver lifecycle
 * Fix QoS build warning in canopen_core
 * Use consistenlty HEX output for NodeID and Index.
