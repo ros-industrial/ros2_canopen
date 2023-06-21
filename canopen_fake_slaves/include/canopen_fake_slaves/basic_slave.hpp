@@ -38,6 +38,18 @@ public:
   using BasicSlave::BasicSlave;
 
 protected:
+  /**
+   * @brief This function is called when a value is written to the local object dictionary by an SDO
+   * or RPDO. Also copies the RPDO value to TPDO.
+   * @param idx The index of the PDO.
+   * @param subidx The subindex of the PDO.
+   */
+  void OnWrite(uint16_t idx, uint8_t subidx) noexcept override
+  {
+    uint32_t val = (*this)[idx][subidx];
+    (*this)[0x4001][0] = val;
+    this->TpdoEvent(0);
+  }
 };
 
 class BasicSlave : public BaseSlave
