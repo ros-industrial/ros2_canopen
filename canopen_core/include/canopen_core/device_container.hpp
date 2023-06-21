@@ -215,6 +215,10 @@ public:
     std::vector<std::string> devices;
     std::vector<uint16_t> ids;
     uint32_t count = this->config_->get_all_devices(devices);
+    if (count == 0)
+    {
+      return ids;
+    }
 
     for (auto it = devices.begin(); it != devices.end(); it++)
     {
@@ -244,6 +248,10 @@ public:
   {
     std::vector<std::string> devices;
     uint32_t count = this->config_->get_all_devices(devices);
+    if (count == 0)
+    {
+      return "";
+    }
     for (auto it = devices.begin(); it != devices.end(); it++)
     {
       auto node_id = config_->get_entry<uint16_t>(*it, "node_id");
