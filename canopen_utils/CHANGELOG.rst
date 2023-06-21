@@ -2,6 +2,9 @@
 Changelog for package canopen_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.1 (2023-06-21)
 ------------------
 * Add more tidy launch_test_node.py
