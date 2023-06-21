@@ -10,8 +10,8 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   GIT_TAG 7824cbb2ac08d091c4fa2fb397669b938de9e3f5
   TIMEOUT 60
   #--Update/Patch step----------
-  UPDATE_COMMAND git apply ${CMAKE_CURRENT_SOURCE_DIR}/patches/0001-Don-t-build-bdist.patch
-  COMMAND git apply ${CMAKE_CURRENT_SOURCE_DIR}/patches/0002-No-bdist.patch
+  UPDATE_COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0001-Don-t-build-bdist.patch
+  COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0002-No-bdist.patch
   #--Configure step-------------
   CONFIGURE_COMMAND autoreconf -i <SOURCE_DIR> COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-cython --disable-doc --disable-tests --disable-static --disable-diag
   #--Build step-----------------
