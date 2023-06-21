@@ -233,7 +233,7 @@ $(function() {
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    }</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    RCLCPP_INFO(</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Slave %hhu: Switched NMT state to %s&quot;</span>,</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Slave 0x%X: Switched NMT state to %s&quot;</span>,</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;      this-&gt;lely_driver_-&gt;get_id(), message.data.c_str());</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    nmt_state_publisher-&gt;publish(message);</div>
@@ -256,7 +256,7 @@ $(function() {
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;  <span class="keywordflow">if</span> (this-&gt;activated_.load())</div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  {</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    RCLCPP_INFO(</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;      this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Node ID %hhu: Transmit PDO index %x, subindex %hhu, data %d&quot;</span>,</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;      this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Node ID 0x%X: Transmit PDO index %x, subindex %hhu, data %d&quot;</span>,</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;      this-&gt;lely_driver_-&gt;get_id(), data.<a class="code" href="structros2__canopen_1_1COData.html#a55faeba2e4693f404d50bbfbf037ae2b">index_</a>, data.<a class="code" href="structros2__canopen_1_1COData.html#a4c0f0155b543c8458581033300cdf0d9">subindex_</a>,</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;      data.<a class="code" href="structros2__canopen_1_1COData.html#a170bc01e0c38817f2f5f940a211abf0b">data_</a>);  <span class="comment">// ToDo: Remove or make debug</span></div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    this-&gt;lely_driver_-&gt;tpdo_transmit(data);</div>
@@ -271,7 +271,7 @@ $(function() {
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  <span class="keywordflow">if</span> (this-&gt;activated_.load())</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  {</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="comment">// RCLCPP_INFO(</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="comment">//   this-&gt;node_-&gt;get_logger(), &quot;Node ID %hhu: Received PDO index %#04x, subindex %hhu, data</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="comment">//   this-&gt;node_-&gt;get_logger(), &quot;Node ID 0x%X: Received PDO index %#04x, subindex %hhu, data</span></div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    <span class="comment">//   %x&quot;, this-&gt;lely_driver_-&gt;get_id(), d.index_, d.subindex_, d.data_);</span></div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="keyword">auto</span> message = canopen_interfaces::msg::COData();</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    message.index = d.<a class="code" href="structros2__canopen_1_1COData.html#a55faeba2e4693f404d50bbfbf037ae2b">index_</a>;</div>
@@ -339,7 +339,7 @@ $(function() {
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  <span class="keywordflow">if</span> (this-&gt;activated_.load())</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  {</div>
 <div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    RCLCPP_INFO(</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;      this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Slave %hhu: SDO Read Call index=0x%x subindex=%hhu&quot;</span>,</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;      this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Slave 0x%X: SDO Read Call index=0x%X subindex=%hhu&quot;</span>,</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;      this-&gt;lely_driver_-&gt;get_id(), data.<a class="code" href="structros2__canopen_1_1COData.html#a55faeba2e4693f404d50bbfbf037ae2b">index_</a>, data.<a class="code" href="structros2__canopen_1_1COData.html#a4c0f0155b543c8458581033300cdf0d9">subindex_</a>);</div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="comment">// Only allow one SDO request concurrently</span></div>
@@ -379,7 +379,7 @@ $(function() {
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;  <span class="keywordflow">if</span> (this-&gt;activated_.load())</div>
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;  {</div>
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    RCLCPP_INFO(</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;      this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Slave %hhu: SDO Write Call index=0x%x subindex=%hhu data=%u&quot;</span>,</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;      this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Slave 0x%X: SDO Write Call index=0x%X subindex=%hhu data=%u&quot;</span>,</div>
 <div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;      this-&gt;lely_driver_-&gt;get_id(), data.<a class="code" href="structros2__canopen_1_1COData.html#a55faeba2e4693f404d50bbfbf037ae2b">index_</a>, data.<a class="code" href="structros2__canopen_1_1COData.html#a4c0f0155b543c8458581033300cdf0d9">subindex_</a>, data.<a class="code" href="structros2__canopen_1_1COData.html#a170bc01e0c38817f2f5f940a211abf0b">data_</a>);</div>
 <div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160; </div>
 <div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    <span class="comment">// Only allow one SDO request concurrently</span></div>
