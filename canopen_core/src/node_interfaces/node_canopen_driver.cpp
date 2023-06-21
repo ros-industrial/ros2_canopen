@@ -27,7 +27,7 @@ void ros2_canopen::node_interfaces::NodeCanopenDriver<rclcpp::Node>::demand_set_
   rclcpp::Client<canopen_interfaces::srv::CONode>::SharedPtr demand_set_master_client;
   // demand_set_master_client;
   demand_set_master_client = node_->create_client<canopen_interfaces::srv::CONode>(
-    init_service_name, rmw_qos_profile_services_default, client_cbg_);
+    init_service_name, rclcpp::QoS(10), client_cbg_);
 
   while (!demand_set_master_client->wait_for_service(non_transmit_timeout_))
   {
@@ -70,7 +70,7 @@ void ros2_canopen::node_interfaces::NodeCanopenDriver<
   rclcpp::Client<canopen_interfaces::srv::CONode>::SharedPtr demand_set_master_client;
   // demand_set_master_client;
   demand_set_master_client = node_->create_client<canopen_interfaces::srv::CONode>(
-    init_service_name, rmw_qos_profile_services_default, client_cbg_);
+    init_service_name, rclcpp::QoS(10), client_cbg_);
 
   while (!demand_set_master_client->wait_for_service(non_transmit_timeout_))
   {
