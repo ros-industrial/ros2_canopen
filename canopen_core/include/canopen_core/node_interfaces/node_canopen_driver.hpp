@@ -316,6 +316,7 @@ public:
     {
       throw DriverException("Cleanup: driver is still activated");
     }
+    this->cleanup(true);
     this->configured_.store(false);
   }
 
@@ -326,7 +327,13 @@ public:
    *
    * @param called_from_base
    */
-  virtual void cleanup(bool called_from_base) {}
+  virtual void cleanup(bool called_from_base)
+  {
+    RCLCPP_INFO(this->node_->get_logger(), "Cleanup");
+    this->exec_.reset();
+    this->master_.reset();
+    this->master_set_.store(false);
+  }
 
   /**
    * @brief Shutdown the driver
