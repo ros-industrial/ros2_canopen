@@ -1,22 +1,23 @@
-From d8aee7e541a264a52f3831248835cc618f41db95 Mon Sep 17 00:00:00 2001
+From 80b4aacd880ea66151eb8cf94510e8ae7daa8371 Mon Sep 17 00:00:00 2001
 From: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
-Date: Thu, 22 Jun 2023 12:00:14 +0200
+Date: Thu, 22 Jun 2023 13:52:11 +0200
 Subject: [PATCH] Fix dcf-tools
 
 ---
- python/dcf-tools/Makefile.am | 17 +----------------
- 1 file changed, 1 insertion(+), 16 deletions(-)
+ python/dcf-tools/Makefile.am | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
 diff --git a/python/dcf-tools/Makefile.am b/python/dcf-tools/Makefile.am
-index 9852c84a..d7915fe1 100644
+index 9852c84a..793c2804 100644
 --- a/python/dcf-tools/Makefile.am
 +++ b/python/dcf-tools/Makefile.am
-@@ -23,30 +23,15 @@ EXTRA_DIST += setup.py
+@@ -23,25 +23,18 @@ EXTRA_DIST += setup.py
  build_base = $(realpath $(builddir))/build
  dist_dir = $(realpath $(builddir))/dist
  
 -all-local: python-sdist python-bdist_wheel
--
++all-local: python-sdist
+ 
  clean-local:
  	rm -rf $(build_base) $(dist_dir) $(srcdir)/*.egg-info $(builddir)/*.egg-info
  
@@ -34,15 +35,10 @@ index 9852c84a..d7915fe1 100644
  if HAVE_PYTHON3
  	@$(PYTHON3_ENV) $(PYTHON3) $(srcdir)/setup.py \
 -		install --prefix $(DESTDIR)$(prefix) --root /
-+		install --prefix $(DESTDIR)$(prefix) --install-scripts $(DESTDIR)$(prefix)/bin
++		build install --prefix $(DESTDIR)$(prefix) --root / --install-scripts $(DESTDIR)$(prefix)/bin 
  endif
  
--.PHONY: python-sdist
--python-sdist:
--if HAVE_PYTHON3
--	@cd $(srcdir); $(PYTHON3_ENV) $(PYTHON3) setup.py \
--		sdist --dist-dir $(dist_dir)
--endif
+ .PHONY: python-sdist
 -- 
 2.34.1
 

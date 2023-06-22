@@ -19,7 +19,7 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   BUILD_IN_SOURCE 1         # Use source dir for build dir
   #--Install step---------------
   INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}"  # Installation prefix
-  BUILD_COMMAND cd <SOURCE_DIR>  COMMAND $(MAKE) --silent
+  BUILD_COMMAND cd <SOURCE_DIR>  COMMAND $(MAKE)
 )
 message(STATUS "PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 message(STATUS "BUILD_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
