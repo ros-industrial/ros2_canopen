@@ -10,7 +10,7 @@ macro(
         COMMAND rm -rf ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/*
         COMMAND rm -rf ${CMAKE_BINARY_DIR}/config/${TARGET}/*
         COMMAND mkdir -p ${CMAKE_BINARY_DIR}/config/${TARGET}
-        COMMAND mkdir -p ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/
+        #COMMAND mkdir -p ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/
     )
 
     add_custom_target(
@@ -47,7 +47,7 @@ macro(
         COMMAND rm -rf ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/*
         COMMAND rm -rf ${CMAKE_BINARY_DIR}/config/${TARGET}/*
         COMMAND mkdir -p ${CMAKE_BINARY_DIR}/config/${TARGET}
-        COMMAND mkdir -p ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/
+        #COMMAND mkdir -p ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/
     )
 
     add_custom_target(
