@@ -1,0 +1,44 @@
+From 80b4aacd880ea66151eb8cf94510e8ae7daa8371 Mon Sep 17 00:00:00 2001
+From: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+Date: Thu, 22 Jun 2023 13:52:11 +0200
+Subject: [PATCH] Fix dcf-tools
+
+---
+ python/dcf-tools/Makefile.am | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/python/dcf-tools/Makefile.am b/python/dcf-tools/Makefile.am
+index 9852c84a..793c2804 100644
+--- a/python/dcf-tools/Makefile.am
++++ b/python/dcf-tools/Makefile.am
+@@ -23,25 +23,18 @@ EXTRA_DIST += setup.py
+ build_base = $(realpath $(builddir))/build
+ dist_dir = $(realpath $(builddir))/dist
+ 
+-all-local: python-sdist python-bdist_wheel
++all-local: python-sdist
+ 
+ clean-local:
+ 	rm -rf $(build_base) $(dist_dir) $(srcdir)/*.egg-info $(builddir)/*.egg-info
+ 
+ install-exec-local: python-install
+ 
+-.PHONY: python-bdist_wheel
+-python-bdist_wheel:
+-if HAVE_PYTHON3
+-	@$(PYTHON3_ENV) $(PYTHON3) $(srcdir)/setup.py \
+-		bdist_wheel --dist-dir $(dist_dir)
+-endif
+-
+ .PHONY: python-install
+ python-install:
+ if HAVE_PYTHON3
+ 	@$(PYTHON3_ENV) $(PYTHON3) $(srcdir)/setup.py \
+-		install --prefix $(DESTDIR)$(prefix) --root /
++		egg_info build install --record install.log --install-scripts $(DESTDIR)$(prefix)/bin/ --install-lib $(DESTDIR)$(prefix)/dcfgen_lib/ --single-version-externally-managed
+ endif
+ 
+ .PHONY: python-sdist
+-- 
+2.34.1
+
