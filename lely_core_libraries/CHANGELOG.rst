@@ -2,8 +2,8 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.3 (2023-06-22)
+------------------
 * Fix manual dcfgen python installation on buildfarm
 * Solve buildfarm dependency issues
 * Contributors: Christoph Hellmann Santos
