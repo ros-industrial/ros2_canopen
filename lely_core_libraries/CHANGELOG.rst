@@ -6,8 +6,6 @@ Forthcoming
 -----------
 * Fix manual dcfgen python installation on buildfarm
 * Solve buildfarm dependency issues
-
-  ---------
 * Contributors: Christoph Hellmann Santos
 
 0.2.2 (2023-06-21)
