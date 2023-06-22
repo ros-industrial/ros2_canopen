@@ -5,7 +5,6 @@ Changelog for package canopen_ros2_control
 Forthcoming
 -----------
 * Solve buildfarm issues
-  ---------
 * Contributors: Christoph Hellmann Santos
 
 0.2.2 (2023-06-21)
