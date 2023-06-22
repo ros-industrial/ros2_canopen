@@ -34,7 +34,7 @@ index 9852c84a..d7915fe1 100644
  if HAVE_PYTHON3
  	@$(PYTHON3_ENV) $(PYTHON3) $(srcdir)/setup.py \
 -		install --prefix $(DESTDIR)$(prefix) --root /
-+		install --prefix $(DESTDIR)$(prefix) --install-scripts $(DESTDIR)$(prefix)/bin /
++		install --prefix $(DESTDIR)$(prefix) --install-scripts $(DESTDIR)$(prefix)/bin
  endif
  
 -.PHONY: python-sdist
