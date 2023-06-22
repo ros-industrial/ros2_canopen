@@ -2,6 +2,17 @@
 Changelog for package canopen_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update package.xml
+* Solve buildfarm issues (`#155 <https://github.com/ros-industrial/ros2_canopen/issues/155>`_)
+  * Move exec deps from ros2_control to tests
+  * Remove mkdir in install dir from cogen and dcfgen
+  This causes a permission denied error on buildfarm.
+  The install command creates it anyways
+  ---------
+* Contributors: Christoph Hellmann Santos
+
 0.2.2 (2023-06-21)
 ------------------
 
