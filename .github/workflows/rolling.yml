@@ -1,4 +1,4 @@
-name: rolling
+name: Industrial CI Rolling
 
 on:
   push:
