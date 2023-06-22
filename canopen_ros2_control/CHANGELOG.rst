@@ -2,6 +2,12 @@
 Changelog for package canopen_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Solve buildfarm issues (`#155 <https://github.com/ros-industrial/ros2_canopen/issues/155>`_)
+  ---------
+* Contributors: Christoph Hellmann Santos
+
 0.2.2 (2023-06-21)
 ------------------
 
