@@ -1,4 +1,4 @@
-name: humble
+name: Industrial CI Humble
 
 on:
   push:
