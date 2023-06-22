@@ -35,7 +35,7 @@ index 9852c84a..793c2804 100644
  if HAVE_PYTHON3
  	@$(PYTHON3_ENV) $(PYTHON3) $(srcdir)/setup.py \
 -		install --prefix $(DESTDIR)$(prefix) --root /
-+		build install --prefix $(DESTDIR)$(prefix) --root / --install-scripts $(DESTDIR)$(prefix)/bin 
++		egg_info build install --record install.log --install-scripts $(DESTDIR)$(prefix)/bin/ --install-lib $(DESTDIR)$(prefix)/dcfgen_lib/ --single-version-externally-managed
  endif
  
  .PHONY: python-sdist
