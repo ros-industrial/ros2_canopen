@@ -22,7 +22,9 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}"  # Installation prefix
   BUILD_COMMAND cd <SOURCE_DIR>  COMMAND $(MAKE) --silent
 )
-
+message(STATUS "PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+message(STATUS "BUILD_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+message(STATUS "INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/ DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
@@ -44,7 +46,7 @@ ament_python_install_package(cogen SCRIPTS_DESTINATION lib/cogen)
 # install entry-point script(s) in bin as well
 install(
     DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ament_cmake_python/cogen/scripts/
-    DESTINATION bin/
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
     USE_SOURCE_PERMISSIONS)
 
 ament_export_include_directories(include)
