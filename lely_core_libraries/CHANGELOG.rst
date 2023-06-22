@@ -2,8 +2,8 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.4 (2023-06-22)
+------------------
 * Add empy dependency for dcfgen
 * Clean up lely build folder after install for rpm build
 * Contributors: Christoph Hellmann Santos
