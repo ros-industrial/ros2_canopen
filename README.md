@@ -10,7 +10,7 @@
 
 The stack is currently under development and not yet ready for production use.
 
-| Binary Package | Jammy | Rhel9 |
+| Binary Package (rolling) | Jammy | Rhel9 |
 |---------|-------|-------|
 | canopen_interfaces | [![Build Status](https://build.ros2.org/job/Rbin_uJ64__canopen_interfaces__ubuntu_jammy_amd64__binary/badge/icon)](https://build.ros2.org/job/Rbin_uJ64__canopen_interfaces__ubuntu_jammy_amd64__binary/) | [![Build Status](https://build.ros2.org/job/Rbin_rhel_el964__canopen_interfaces__rhel_9_x86_64__binary/badge/icon)](https://build.ros2.org/job/Rbin_rhel_el964__canopen_interfaces__rhel_9_x86_64__binary/) |
 | lely_core_libraries | [![Build Status](https://build.ros2.org/job/Rbin_uJ64__lely_core_libraries__ubuntu_jammy_amd64__binary/badge/icon)](https://build.ros2.org/job/Rbin_uJ64__lely_core_libraries__ubuntu_jammy_amd64__binary/) | [![Build Status](https://build.ros2.org/job/Rbin_rhel_el964__lely_core_libraries__rhel_9_x86_64__binary/badge/icon)](https://build.ros2.org/job/Rbin_rhel_el964__lely_core_libraries__rhel_9_x86_64__binary/) |
