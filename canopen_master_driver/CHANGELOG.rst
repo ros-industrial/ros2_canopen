@@ -2,6 +2,9 @@
 Changelog for package canopen_master_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.4 (2023-06-22)
 ------------------
 
