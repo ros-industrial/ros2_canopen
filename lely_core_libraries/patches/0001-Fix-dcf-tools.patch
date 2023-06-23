@@ -1,23 +1,50 @@
-From 80b4aacd880ea66151eb8cf94510e8ae7daa8371 Mon Sep 17 00:00:00 2001
+From 0d1dd06a25e6de2fa1396ca299757a45eff30846 Mon Sep 17 00:00:00 2001
 From: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
-Date: Thu, 22 Jun 2023 13:52:11 +0200
+Date: Fri, 23 Jun 2023 07:14:18 +0200
 Subject: [PATCH] Fix dcf-tools
 
 ---
- python/dcf-tools/Makefile.am | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ configure.ac                 | 10 +++-------
+ python/dcf-tools/Makefile.am | 21 ++++-----------------
+ 2 files changed, 7 insertions(+), 24 deletions(-)
 
+diff --git a/configure.ac b/configure.ac
+index 1dd9410d..c274636b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -569,19 +569,15 @@ AC_ARG_ENABLE([python],
+ 	AS_HELP_STRING([--disable-python], [disable Python tools and bindings]))
+ 
+ AM_CONDITIONAL([HAVE_PYTHON2], [false])
+-AC_ARG_ENABLE([python2],
+-	AS_HELP_STRING([--disable-python2], [disable Python 2 tools and bindings]))
+-AS_IF([test "$enable_python" == "no"], [enable_python2=no])
+-AS_IF([test "$enable_python2" != "no"], [
+-	AX_CHECK_PYTHON([2], [AM_CONDITIONAL([HAVE_PYTHON2], [true])])
+-])
+ 
+ AM_CONDITIONAL([HAVE_PYTHON3], [false])
+ AC_ARG_ENABLE([python3],
+ 	AS_HELP_STRING([--disable-python3], [disable Python 3 tools and bindings]))
+ AS_IF([test "$enable_python" == "no"], [enable_python3=no])
+ AS_IF([test "$enable_python3" != "no"], [
+-	AX_CHECK_PYTHON([3], [AM_CONDITIONAL([HAVE_PYTHON3], [true])])
++	AM_PATH_PYTHON(,, [:])
++	AC_SUBST(PYTHON3, $PYTHON)
++	AM_CONDITIONAL([HAVE_PYTHON3], [test "$PYTHON" != :])
+ ])
+ 
+ AM_CONDITIONAL([NO_CYTHON], [false])
 diff --git a/python/dcf-tools/Makefile.am b/python/dcf-tools/Makefile.am
-index 9852c84a..793c2804 100644
+index 9852c84a..c41aa5bd 100644
 --- a/python/dcf-tools/Makefile.am
 +++ b/python/dcf-tools/Makefile.am
-@@ -23,25 +23,18 @@ EXTRA_DIST += setup.py
+@@ -23,30 +23,17 @@ EXTRA_DIST += setup.py
  build_base = $(realpath $(builddir))/build
  dist_dir = $(realpath $(builddir))/dist
  
 -all-local: python-sdist python-bdist_wheel
-+all-local: python-sdist
- 
+-
  clean-local:
  	rm -rf $(build_base) $(dist_dir) $(srcdir)/*.egg-info $(builddir)/*.egg-info
  
@@ -35,10 +62,18 @@ index 9852c84a..793c2804 100644
  if HAVE_PYTHON3
  	@$(PYTHON3_ENV) $(PYTHON3) $(srcdir)/setup.py \
 -		install --prefix $(DESTDIR)$(prefix) --root /
-+		egg_info build install --record install.log --install-scripts $(DESTDIR)$(prefix)/bin/ --install-lib $(DESTDIR)$(prefix)/dcfgen_lib/ --single-version-externally-managed
+-endif
+-
+-.PHONY: python-sdist
+-python-sdist:
+-if HAVE_PYTHON3
+-	@cd $(srcdir); $(PYTHON3_ENV) $(PYTHON3) setup.py \
+-		sdist --dist-dir $(dist_dir)
++		egg_info build install --record install.log \
++		--install-scripts $(DESTDIR)$(prefix)/bin/ \
++		--install-lib $(DESTDIR)$(prefix)/lib/python$(PYTHON_VERSION)/site-packages/ \
++		--single-version-externally-managed
  endif
- 
- .PHONY: python-sdist
 -- 
 2.34.1
 

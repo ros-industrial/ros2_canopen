@@ -8,6 +8,7 @@ include(ExternalProject)
 ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   #--Download step--------------
   SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/upstream
+  INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"  # Installation prefix
   GIT_REPOSITORY https://gitlab.com/lely_industries/lely-core.git
   GIT_TAG 7824cbb2ac08d091c4fa2fb397669b938de9e3f5
   TIMEOUT 60
@@ -20,25 +21,22 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   #--Build step-----------------
   BUILD_IN_SOURCE 1         # Use source dir for build dir
   #--Install step---------------
-  INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}"  # Installation prefix
   BUILD_COMMAND cd <SOURCE_DIR>  COMMAND $(MAKE)
 )
-message(STATUS "PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-message(STATUS "BUILD_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
-message(STATUS "INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(DIRECTORY
-  ${CMAKE_CURRENT_BINARY_DIR}/dcfgen_lib/
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${python_version}/site-packages
-  PATTERN "dcfgen_lib/*"
-  )
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/ DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
-        PATTERN "bin/*"
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-        GROUP_EXECUTE GROUP_READ WORLD_READ WORLD_EXECUTE)
-
-install(CODE "file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/lib ${CMAKE_CURRENT_BINARY_DIR}/dcfgen_lib ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/bin)")
+# message(STATUS "PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+# message(STATUS "BUILD_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+# message(STATUS "INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
+# install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib DESTINATION ${CMAKE_INSTALL_PREFIX})
+# install(DIRECTORY
+#   ${CMAKE_CURRENT_BINARY_DIR}/dcfgen_lib/
+#   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${python_version}/site-packages
+#   PATTERN "dcfgen_lib/*"
+#   )
+# install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include DESTINATION ${CMAKE_INSTALL_PREFIX})
+# install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/ DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+#         PATTERN "bin/*"
+#         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+#         GROUP_EXECUTE GROUP_READ WORLD_READ WORLD_EXECUTE)
 
 set(lely_core_cmake_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include("cmake/lely_core_libraries-extras.cmake" NO_POLICY_SCOPE)
