@@ -2,6 +2,9 @@ name: Prerelease-Test Rolling
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - "*"
 
 jobs:
   industrial_ci:
