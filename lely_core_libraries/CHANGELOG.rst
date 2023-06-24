@@ -2,6 +2,11 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Move install from external project to cmake main
+* Contributors: Christoph Hellmann Santos
+
 0.2.5 (2023-06-23)
 ------------------
 * Directly install lely
