@@ -9,34 +9,25 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   #--Download step--------------
   SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/upstream
   INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"  # Installation prefix
+  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/build
   GIT_REPOSITORY https://gitlab.com/lely_industries/lely-core.git
   GIT_TAG 7824cbb2ac08d091c4fa2fb397669b938de9e3f5
   TIMEOUT 60
-  #--Update/Patch step----------
+  #UPDATE step apply patch to fix dcf-tools install
   UPDATE_COMMAND
   COMMAND git reset --hard
   COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0001-Fix-dcf-tools.patch
-  #--Configure step-------------
-  CONFIGURE_COMMAND autoreconf -i <SOURCE_DIR> COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-cython --disable-doc --disable-tests --disable-static --disable-diag
-  #--Build step-----------------
-  BUILD_IN_SOURCE 1         # Use source dir for build dir
-  #--Install step---------------
-  BUILD_COMMAND cd <SOURCE_DIR>  COMMAND $(MAKE)
+  #CONFIGURE step execute autoreconf and configure
+  CONFIGURE_COMMAND autoreconf -i <SOURCE_DIR>
+  COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-cython --disable-doc --disable-tests --disable-static --disable-diag
+  #BUILD STEP execute make
+  BUILD_COMMAND $(MAKE) -C ${CMAKE_CURRENT_BINARY_DIR}/build
+  #INSTALL STEP do nothing as we install in main
+  INSTALL_COMMAND ""
 )
-# message(STATUS "PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-# message(STATUS "BUILD_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
-# message(STATUS "INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
-# install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib DESTINATION ${CMAKE_INSTALL_PREFIX})
-# install(DIRECTORY
-#   ${CMAKE_CURRENT_BINARY_DIR}/dcfgen_lib/
-#   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${python_version}/site-packages
-#   PATTERN "dcfgen_lib/*"
-#   )
-# install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include DESTINATION ${CMAKE_INSTALL_PREFIX})
-# install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/ DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
-#         PATTERN "bin/*"
-#         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-#         GROUP_EXECUTE GROUP_READ WORLD_READ WORLD_EXECUTE)
+
+#INSTALL lely_core_libraries - execute make install
+install(CODE "execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} install VERBOSE=1 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/build)")
 
 set(lely_core_cmake_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include("cmake/lely_core_libraries-extras.cmake" NO_POLICY_SCOPE)

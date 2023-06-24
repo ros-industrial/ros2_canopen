@@ -1,12 +1,12 @@
-From 0d1dd06a25e6de2fa1396ca299757a45eff30846 Mon Sep 17 00:00:00 2001
+From 62b4b4fcd1f1491f524249471b5830cd760e11ac Mon Sep 17 00:00:00 2001
 From: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
-Date: Fri, 23 Jun 2023 07:14:18 +0200
+Date: Sat, 24 Jun 2023 13:42:45 +0200
 Subject: [PATCH] Fix dcf-tools
 
 ---
  configure.ac                 | 10 +++-------
- python/dcf-tools/Makefile.am | 21 ++++-----------------
- 2 files changed, 7 insertions(+), 24 deletions(-)
+ python/dcf-tools/Makefile.am | 23 +++++------------------
+ 2 files changed, 8 insertions(+), 25 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index 1dd9410d..c274636b 100644
@@ -36,7 +36,7 @@ index 1dd9410d..c274636b 100644
  
  AM_CONDITIONAL([NO_CYTHON], [false])
 diff --git a/python/dcf-tools/Makefile.am b/python/dcf-tools/Makefile.am
-index 9852c84a..c41aa5bd 100644
+index 9852c84a..6db4d232 100644
 --- a/python/dcf-tools/Makefile.am
 +++ b/python/dcf-tools/Makefile.am
 @@ -23,30 +23,17 @@ EXTRA_DIST += setup.py
@@ -60,7 +60,7 @@ index 9852c84a..c41aa5bd 100644
  .PHONY: python-install
  python-install:
  if HAVE_PYTHON3
- 	@$(PYTHON3_ENV) $(PYTHON3) $(srcdir)/setup.py \
+-	@$(PYTHON3_ENV) $(PYTHON3) $(srcdir)/setup.py \
 -		install --prefix $(DESTDIR)$(prefix) --root /
 -endif
 -
@@ -69,6 +69,7 @@ index 9852c84a..c41aa5bd 100644
 -if HAVE_PYTHON3
 -	@cd $(srcdir); $(PYTHON3_ENV) $(PYTHON3) setup.py \
 -		sdist --dist-dir $(dist_dir)
++	@cd $(srcdir) && $(PYTHON3_ENV) $(PYTHON3) setup.py \
 +		egg_info build install --record install.log \
 +		--install-scripts $(DESTDIR)$(prefix)/bin/ \
 +		--install-lib $(DESTDIR)$(prefix)/lib/python$(PYTHON_VERSION)/site-packages/ \
