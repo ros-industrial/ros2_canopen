@@ -13,6 +13,14 @@ Test details
     Description; Create an exemplary ros2_control SystemInterface with CAN master and communicates to a slave node.
     Prerequisites; vcan0 must be available
 
+To bring up vcan0:
+
+   .. code-block:: bash
+      
+      sudo modprobe vcan
+      sudo ip link add dev vcan0 type vcan
+      sudo ip link set up vcan0
+
 
 Explanation of the test
 ------------------------
@@ -41,8 +49,8 @@ The next few lines show you some command to have exemplary usage of the ros2_con
    .. code-block:: bash
 
       ros2 topic pub --once /node_1_controller/tpdo canopen_interfaces/msg/COData "
-      index: 25
-      subindex: 35
-      data: 238"
+      index: 0x4000
+      subindex: 0
+      data: 0x1122"
 
-   Now watch how data in the first two opened terminals are changing.
+   Now watch how data in the first two opened terminals are changing. (So far, they don't change at all...)
