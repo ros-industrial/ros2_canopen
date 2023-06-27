@@ -208,7 +208,7 @@ CanopenProxyController::command_interface_configuration() const
   controller_interface::InterfaceConfiguration command_interfaces_config;
   command_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
 
-  command_interfaces_config.names.reserve(9);
+  command_interfaces_config.names.reserve(8);
   command_interfaces_config.names.push_back(joint_name_ + "/" + "tpdo/index");
   command_interfaces_config.names.push_back(joint_name_ + "/" + "tpdo/subindex");
   command_interfaces_config.names.push_back(joint_name_ + "/" + "tpdo/data");
@@ -227,7 +227,7 @@ controller_interface::InterfaceConfiguration CanopenProxyController::state_inter
   controller_interface::InterfaceConfiguration state_interfaces_config;
   state_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
 
-  state_interfaces_config.names.reserve(5);
+  state_interfaces_config.names.reserve(4);
   state_interfaces_config.names.push_back(joint_name_ + "/" + "rpdo/index");
   state_interfaces_config.names.push_back(joint_name_ + "/" + "rpdo/subindex");
   state_interfaces_config.names.push_back(joint_name_ + "/" + "rpdo/data");
