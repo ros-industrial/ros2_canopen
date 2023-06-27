@@ -63,10 +63,10 @@ The next few lines show you some command to have exemplary usage of the ros2_con
       data: 0x1122"
 
    Now watch how data in the topic ``/proxy_device_1/rpdo`` are changing. There is a mirror of the data on 0x4001. 
-   That is, the slave node will mirror the data on 0x4001 via its tpdo.
+   That is, the slave node will mirror the data on 0x4001 via its tpdo and the proxy device will get the data via its rpdo.
    You should see this
 
-   -- code-block:: bash
+   .. code-block:: bash
 
       index: 16385 # This is 0x4001
       subindex: 0
