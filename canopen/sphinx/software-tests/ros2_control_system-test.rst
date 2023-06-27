@@ -37,14 +37,23 @@ The next few lines show you some command to have exemplary usage of the ros2_con
       ros2 topic echo /dynamic_joint_states
 
 
-2. Open a new terminal and echo data from the topic ``/node_1_controller/rpdo``.
+2. Open a new terminal and echo data from the topic ``/node_1_controller/tpdo``.
 
    .. code-block:: bash
 
-      ros2 topic echo /node_1_controller/rpdo
+      ros2 topic echo /node_1_controller/tpdo
 
 
-3. In a new terminal publish some data to the controller to write them to the CAN bus:
+3. Open a new terminal reset the state of network management(NMT).
+
+   .. code-block:: bash
+
+      ros2 service call /node_1_controller/nmt_reset_node std_srvs/srv/Trigger {}
+
+   You will expect changes in the ``/dynamic_joint_states`` topic.
+   
+
+4. In a new terminal publish some data to the controller to write them to the CAN bus:
 
    .. code-block:: bash
 
@@ -53,4 +62,4 @@ The next few lines show you some command to have exemplary usage of the ros2_con
       subindex: 0
       data: 0x1122"
 
-   Now watch how data in the first two opened terminals are changing. (So far, they don't change at all...)
+
