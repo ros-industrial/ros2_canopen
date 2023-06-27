@@ -67,7 +67,7 @@ ament_target_dependencies(
 
 add_library(lifecycle_cia402_driver
   src/lifecycle_cia402_driver.cpp
-  )
+)
 target_compile_features(lifecycle_cia402_driver PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_compile_options(lifecycle_cia402_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(lifecycle_cia402_driver PUBLIC
@@ -94,7 +94,7 @@ set(node_plugins "${node_plugins}ros2_canopen::LifecycleCia402Driver;$<TARGET_FI
 
 add_library(cia402_driver
   src/cia402_driver.cpp
-  )
+)
 target_compile_features(cia402_driver PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_compile_options(cia402_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(cia402_driver PUBLIC

@@ -6,7 +6,7 @@ ament_target_dependencies(test_node_interface
 )
 target_include_directories(test_node_interface PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_node_interface
   node_canopen_proxy_driver
 )
@@ -22,7 +22,7 @@ ament_target_dependencies(test_driver_component
 )
 target_include_directories(test_driver_component PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 
 
-FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/master.dcf DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/master.dcf DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

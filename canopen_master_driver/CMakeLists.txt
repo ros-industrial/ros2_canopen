@@ -62,7 +62,7 @@ ament_target_dependencies(
 
 add_library(lifecycle_master_driver
   src/lifecycle_master_driver.cpp
-  )
+)
 target_compile_features(lifecycle_master_driver PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_compile_options(lifecycle_master_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(lifecycle_master_driver PUBLIC
@@ -90,7 +90,7 @@ set(node_plugins "${node_plugins}ros2_canopen::LifecycleMasterDriver;$<TARGET_FI
 
 add_library(master_driver
   src/master_driver.cpp
-  )
+)
 target_compile_features(master_driver PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_compile_options(master_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(master_driver PUBLIC
