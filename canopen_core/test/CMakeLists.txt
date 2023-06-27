@@ -10,7 +10,7 @@ ament_target_dependencies(test_node_canopen_driver
 )
 target_include_directories(test_node_canopen_driver PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_node_canopen_driver
     node_canopen_driver
 )
@@ -27,7 +27,7 @@ ament_target_dependencies(test_node_canopen_master
 )
 target_include_directories(test_node_canopen_master PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_node_canopen_master
     node_canopen_master
 )
@@ -42,14 +42,14 @@ ament_target_dependencies(test_device_container
 )
 target_include_directories(test_device_container PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_device_container
     node_canopen_master
     node_canopen_driver
     device_container
 )
 endif()
-FILE(COPY bus_configs DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY bus_configs DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 ament_add_gmock(test_canopen_driver
 test_canopen_driver.cpp
@@ -59,7 +59,7 @@ ament_target_dependencies(test_canopen_driver
 )
 target_include_directories(test_canopen_driver PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_canopen_driver
     node_canopen_driver
 )
@@ -72,7 +72,7 @@ ament_target_dependencies(test_lifecycle_canopen_driver
 )
 target_include_directories(test_lifecycle_canopen_driver PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_lifecycle_canopen_driver
     node_canopen_driver
 )
@@ -85,7 +85,7 @@ ament_target_dependencies(test_canopen_master
 )
 target_include_directories(test_canopen_master PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_canopen_master
     node_canopen_master
 )
@@ -98,7 +98,7 @@ ament_target_dependencies(test_lifecycle_canopen_master
 )
 target_include_directories(test_lifecycle_canopen_master PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_lifecycle_canopen_master
     node_canopen_master
 )
@@ -111,7 +111,7 @@ ament_target_dependencies(test_lifecycle_manager
 )
 target_include_directories(test_lifecycle_manager PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_lifecycle_manager
   device_container
 )
@@ -124,7 +124,7 @@ ament_target_dependencies(test_errors
 )
 target_include_directories(test_errors PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-  )
+)
 target_link_libraries(test_errors
   device_container
   node_canopen_master

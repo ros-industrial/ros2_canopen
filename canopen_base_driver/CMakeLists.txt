@@ -67,7 +67,7 @@ message(STATUS "node_canopen_base_driver: ${lely_core_libraries_LIBRARIES}")
 
 add_library(lifecycle_base_driver
   src/lifecycle_base_driver.cpp
-  )
+)
 target_compile_features(lifecycle_base_driver PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_compile_options(lifecycle_base_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(lifecycle_base_driver PUBLIC
@@ -94,7 +94,7 @@ set(node_plugins "${node_plugins}ros2_canopen::LifecycleBaseDriver;$<TARGET_FILE
 
 add_library(base_driver
   src/base_driver.cpp
-  )
+)
 target_compile_features(base_driver PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_compile_options(base_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(base_driver PUBLIC
