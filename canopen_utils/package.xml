@@ -4,7 +4,7 @@
   <name>canopen_utils</name>
   <version>0.2.6</version>
   <description>Utils for working with ros2_canopen.</description>
-  <maintainer email="christoph.hellmann.santos@ipa.fraunhofer.de">christoph</maintainer>
+  <maintainer email="christoph.hellmann.santos@ipa.fraunhofer.de">Christoph Hellmann Santos</maintainer>
   <license>Apache-2.0</license>
   <depend>rclpy</depend>
   <depend>canopen_interfaces</depend>
