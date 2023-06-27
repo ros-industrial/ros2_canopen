@@ -101,5 +101,5 @@ repos:
     rev: v2.2.1
     hooks:
       - id: codespell
-        args: ['--write-changes']
+        args: ['--write-changes', '-I', '.codespellignore']
         exclude: CHANGELOG\.rst|\.(svg|pyc|drawio|dcf|eds)$
