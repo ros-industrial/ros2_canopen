@@ -232,7 +232,7 @@ protected:
   // Controller-related parameters
   std::string joint_name_ = {"joint1"};
   std::vector<std::string> command_interface_names_ = {
-    "tpdo/index", "tpdo/subindex", "tpdo/data", "tpdo/owns",
+    "tpdo/index", "tpdo/subindex", "tpdo/data", "tpdo/ons",
     "nmt/reset",  "nmt/reset_fbk", "nmt/start", "nmt/start_fbk"};
 
   std::vector<std::string> state_interface_names_ = {
