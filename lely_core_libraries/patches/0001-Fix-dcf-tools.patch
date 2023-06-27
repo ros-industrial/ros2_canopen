@@ -1,6 +1,6 @@
-From 62b4b4fcd1f1491f524249471b5830cd760e11ac Mon Sep 17 00:00:00 2001
+From 1fcc088cdf64bee181f1141077af01267cc224ad Mon Sep 17 00:00:00 2001
 From: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
-Date: Sat, 24 Jun 2023 13:42:45 +0200
+Date: Tue, 27 Jun 2023 10:15:06 +0200
 Subject: [PATCH] Fix dcf-tools
 
 ---
@@ -29,14 +29,14 @@ index 1dd9410d..c274636b 100644
  AS_IF([test "$enable_python" == "no"], [enable_python3=no])
  AS_IF([test "$enable_python3" != "no"], [
 -	AX_CHECK_PYTHON([3], [AM_CONDITIONAL([HAVE_PYTHON3], [true])])
-+	AM_PATH_PYTHON(,, [:])
-+	AC_SUBST(PYTHON3, $PYTHON)
++	AM_PATH_PYTHON([3.3],, [:])
++	AC_SUBST(PYTHON3, "$PYTHON")
 +	AM_CONDITIONAL([HAVE_PYTHON3], [test "$PYTHON" != :])
  ])
  
  AM_CONDITIONAL([NO_CYTHON], [false])
 diff --git a/python/dcf-tools/Makefile.am b/python/dcf-tools/Makefile.am
-index 9852c84a..6db4d232 100644
+index 9852c84a..dd5cdfa0 100644
 --- a/python/dcf-tools/Makefile.am
 +++ b/python/dcf-tools/Makefile.am
 @@ -23,30 +23,17 @@ EXTRA_DIST += setup.py
