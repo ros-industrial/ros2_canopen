@@ -45,19 +45,6 @@ repos:
       - id: black
         args: ["--line-length=99"]
 
-  # PEP 257
-  # - repo: https://github.com/FalconSocial/pre-commit-mirrors-pep257
-  #   rev: v0.3.3
-  #   hooks:
-  #   - id: pep257
-  #     args: ["--ignore=D100,D101,D102,D103,D104,D105,D106,D107,D203,D212,D404"]
-
-  # - repo: https://github.com/pycqa/flake8
-  #   rev: 5.0.4
-  #   hooks:
-  #   - id: flake8
-  #     args: ["--ignore=E501"]
-
   # CPP hooks
   - repo: local
     hooks:
@@ -68,36 +55,8 @@ repos:
         language: system
         files: \.(c|cc|cxx|cpp|frag|glsl|h|hpp|hxx|ih|ispc|ipp|java|js|m|proto|vert)$
         args: ['-fallback-style=none', '-i']
-  # The same options as in ament_cppcheck are used, but its not working...
-  #- repo: https://github.com/pocc/pre-commit-hooks
-    #rev: v1.1.1
-    #hooks:
-      #- id: cppcheck
-        #args: ['--error-exitcode=1', '-f', '--inline-suppr', '-q', '-rp', '--suppress=internalAstError', '--suppress=unknownMacro', '--verbose']
 
-  # - repo: local
-  #   hooks:
-  #     - id: ament_cppcheck
-  #       name: ament_cppcheck
-  #       description: Static code analysis of C/C++ files.
-  #       stages: [commit]
-  #       entry: ament_cppcheck
-  #       language: system
-  #       files: \.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cu|c\+\+|cxx|tpp|txx)$
-
-  # # Maybe use https://github.com/cpplint/cpplint instead
-  # - repo: local
-  #   hooks:
-  #     - id: ament_cpplint
-  #       name: ament_cpplint
-  #       description: Static code analysis of C/C++ files.
-  #       stages: [commit]
-  #       entry: ament_cpplint
-  #       language: system
-  #       files: \.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cu|c\+\+|cxx|tpp|txx)$
-  #       args: ["--linelength=100", "--filter=-whitespace/newline"]
-
-  # # Cmake hooks
+  # Cmake hooks
   # - repo: local
   #   hooks:
   #     - id: ament_lint_cmake
@@ -107,6 +66,7 @@ repos:
   #       entry: ament_lint_cmake
   #       language: system
   #       files: CMakeLists\.txt$
+  #       exclude: lely_core_libraries\/CMakeLists\.txt$
 
   # # Copyright
   - repo: local

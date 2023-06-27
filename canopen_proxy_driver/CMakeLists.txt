@@ -47,7 +47,7 @@ ament_target_dependencies(
 
 add_library(lifecycle_proxy_driver
   src/lifecycle_proxy_driver.cpp
-  )
+)
 target_compile_features(lifecycle_proxy_driver PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_compile_options(lifecycle_proxy_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(lifecycle_proxy_driver PUBLIC
@@ -73,7 +73,7 @@ set(node_plugins "${node_plugins}ros2_canopen::LifecycleProxyDriver;$<TARGET_FIL
 
 add_library(proxy_driver
   src/proxy_driver.cpp
-  )
+)
 target_compile_features(proxy_driver PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_compile_options(proxy_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(proxy_driver PUBLIC
