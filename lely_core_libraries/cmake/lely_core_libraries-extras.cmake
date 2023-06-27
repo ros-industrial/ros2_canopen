@@ -1,7 +1,18 @@
-# dcfgen macro executes the dcfgen command for the specified target.
-# For this macro to work there needs to be a folder config/{target}
-# in your package. Inside that folder there needs to be the bus.yml
-# file to use for generation.
+#   Copyright (c) 2023 Christoph Hellmann Santos
+#                      Błażej Sowa
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 macro(
     generate_dcf
     TARGET)

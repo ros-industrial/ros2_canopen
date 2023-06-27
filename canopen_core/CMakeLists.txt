@@ -28,7 +28,7 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 include(ConfigExtras.cmake)
 
-set (dependencies
+set(dependencies
   canopen_interfaces
   lely_core_libraries
   lifecycle_msgs
@@ -51,7 +51,7 @@ target_compile_options(node_canopen_driver PUBLIC -fPIC -Wl,--no-undefined)
 target_include_directories(node_canopen_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
-  )
+)
 ament_target_dependencies(node_canopen_driver
   rclcpp
   rclcpp_lifecycle
@@ -72,7 +72,7 @@ target_compile_options(node_canopen_master PUBLIC -fPIC -Wl,--no-undefined)
 target_include_directories(node_canopen_master PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
-  )
+)
 ament_target_dependencies(node_canopen_master
   rclcpp
   rclcpp_lifecycle
@@ -95,7 +95,7 @@ target_compile_options(device_container PUBLIC -fPIC -Wl,--no-undefined)
 target_include_directories(device_container PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
-  )
+)
 ament_target_dependencies(device_container
   rclcpp
   rclcpp_lifecycle
@@ -111,7 +111,7 @@ target_link_libraries(device_container
 
 add_executable(device_container_node
   src/device_container_node.cpp
-  )
+)
 target_link_libraries(device_container_node
   device_container
   node_canopen_master
