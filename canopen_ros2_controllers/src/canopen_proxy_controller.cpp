@@ -240,7 +240,10 @@ controller_interface::CallbackReturn CanopenProxyController::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   // Set default value in command
-  *(input_cmd_.readFromRT()) = nullptr;
+  if (input_cmd_.readFromRT())
+  {
+    *(input_cmd_.readFromRT()) = nullptr;
+  }
 
   return controller_interface::CallbackReturn::SUCCESS;
 }
