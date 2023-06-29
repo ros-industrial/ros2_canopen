@@ -8,7 +8,7 @@ Test details
     :header: "Detail", "Information"
     :delim: ;
 
-    Package; canopen_ros2_control
+    Package; canopen_tests
     Test file; launch/canopen_system.launch.py
     Description; Create an exemplary ros2_control SystemInterface with CAN master and communicates to a slave node.
     Prerequisites; vcan0 must be available
@@ -17,7 +17,7 @@ Test details
 Explanation of the test
 ------------------------
 
-The test is starting generic system interface and generic controller for CanOpen devices.
+The test starts generic system interface and generic proxy controller for CanOpen devices.
 Generic system interface enables integration of values from the CAN Bus into ros2_control framework and the controller enables you to send and receive data from the CAN bus through ros2_control to ROS2.
 
 The next few lines show you some command to have exemplary usage of the ros2_control integration:
@@ -40,10 +40,9 @@ The next few lines show you some command to have exemplary usage of the ros2_con
 
    .. code-block:: bash
 
-      ros2 topic pub -r 100 node_1_controller/rpdo canopen_interfaces/msg/COData "
-        index: 25
-        subindex: 35
-        data: 238
-        type: 8"
+      ros2 topic pub --once /node_1_controller/tpdo canopen_interfaces/msg/COData "
+      index: 25
+      subindex: 35
+      data: 238"
 
    Now watch how data in the first two opened terminals are changing.
