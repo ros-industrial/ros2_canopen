@@ -207,7 +207,7 @@ std::vector<hardware_interface::CommandInterface> CanopenSystem::export_command_
       info_.joints[i].name, "tpdo/data", &canopen_data_[node_id].tpdo_data.data));
 
     command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "tpdo/owns", &canopen_data_[node_id].tpdo_data.one_shot));
+      info_.joints[i].name, "tpdo/ons", &canopen_data_[node_id].tpdo_data.one_shot));
 
     command_interfaces.emplace_back(hardware_interface::CommandInterface(
       info_.joints[i].name, "nmt/reset", &canopen_data_[node_id].nmt_state.reset_ons));

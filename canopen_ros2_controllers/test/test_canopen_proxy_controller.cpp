@@ -58,6 +58,8 @@ TEST_F(CanopenProxyControllerTest, all_parameters_set_configure_success)
   ASSERT_TRUE(controller_->joint_name_.empty());
 
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), NODE_SUCCESS);
+  // check that the message is reset
+  auto msg = controller_->input_cmd_.readFromNonRT();
 
   ASSERT_THAT(controller_->joint_name_, joint_name_);
 }
@@ -91,10 +93,8 @@ TEST_F(CanopenProxyControllerTest, activate_success)
   ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), NODE_SUCCESS);
 
   // check that the message is reset
-  auto msg = controller_->input_cmd_.readFromNonRT();
-  EXPECT_EQ((*msg)->index, 0u);
-  EXPECT_EQ((*msg)->subindex, 0u);
-  EXPECT_EQ((*msg)->data, 0u);
+  auto msg = *(controller_->input_cmd_.readFromNonRT());
+  EXPECT_EQ(msg, nullptr);
 }
 
 TEST_F(CanopenProxyControllerTest, update_success)
