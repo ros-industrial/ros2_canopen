@@ -232,16 +232,16 @@ protected:
   // Controller-related parameters
   std::string joint_name_ = {"joint1"};
   std::vector<std::string> command_interface_names_ = {
-    "tpdo/index", "tpdo/subindex", "tpdo/type", "tpdo/data",    "tpdo/owns",
+    "tpdo/index", "tpdo/subindex", "tpdo/data", "tpdo/ons",
     "nmt/reset",  "nmt/reset_fbk", "nmt/start", "nmt/start_fbk"};
 
   std::vector<std::string> state_interface_names_ = {
-    "rpdo/index", "rpdo/subindex", "rpdo/type", "rpdo/data", "nmt/state"};
+    "rpdo/index", "rpdo/subindex", "rpdo/data", "nmt/state"};
 
   // see StateInterfaces in canopen_proxy_controller.hpp for correct order;
-  std::array<double, 5> joint_state_values_ = {0, 0, 0, 0, 0};
+  std::array<double, 4> joint_state_values_ = {0, 0, 0, 0};
   // see CommandInterfaces in canopen_proxy_controller.hpp for correct order;
-  std::array<double, 9> joint_command_values_ = {101.101, 101.101, 101.101, 101.101, 101.101,
+  std::array<double, 8> joint_command_values_ = {101.101, 101.101, 101.101, 101.101,
                                                  101.101, 101.101, 101.101, 101.101};
 
   std::vector<hardware_interface::StateInterface> state_itfs_;
