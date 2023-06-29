@@ -32,13 +32,6 @@ namespace
 using ControllerCommandMsg = canopen_ros2_controllers::CanopenProxyController::ControllerCommandMsg;
 
 // called from RT control loop
-void reset_controller_command_msg(
-  std::shared_ptr<ControllerCommandMsg> & msg, const std::string & joint_name)
-{
-  msg->index = 0u;
-  msg->subindex = 0u;
-  msg->data = 0u;
-}
 bool propagate_controller_command_msg(std::shared_ptr<ControllerCommandMsg> & msg)
 {
   // TODO (livanov93): add better logic to decide if a message
@@ -106,10 +99,7 @@ controller_interface::CallbackReturn CanopenProxyController::on_configure(
   tpdo_subscriber_ = get_node()->create_subscription<ControllerCommandMsg>(
     "~/tpdo", rclcpp::SystemDefaultsQoS(), callback_cmd);
 
-  std::shared_ptr<ControllerCommandMsg> msg = std::make_shared<ControllerCommandMsg>();
-  reset_controller_command_msg(msg, joint_name_);
-
-  input_cmd_.writeFromNonRT(msg);
+  input_cmd_.writeFromNonRT(nullptr);
 
   try
   {
@@ -218,12 +208,11 @@ CanopenProxyController::command_interface_configuration() const
   controller_interface::InterfaceConfiguration command_interfaces_config;
   command_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
 
-  command_interfaces_config.names.reserve(9);
+  command_interfaces_config.names.reserve(8);
   command_interfaces_config.names.push_back(joint_name_ + "/" + "tpdo/index");
   command_interfaces_config.names.push_back(joint_name_ + "/" + "tpdo/subindex");
-  command_interfaces_config.names.push_back(joint_name_ + "/" + "tpdo/type");
   command_interfaces_config.names.push_back(joint_name_ + "/" + "tpdo/data");
-  command_interfaces_config.names.push_back(joint_name_ + "/" + "tpdo/owns");
+  command_interfaces_config.names.push_back(joint_name_ + "/" + "tpdo/ons");
   command_interfaces_config.names.push_back(joint_name_ + "/" + "nmt/reset");
   command_interfaces_config.names.push_back(joint_name_ + "/" + "nmt/reset_fbk");
   command_interfaces_config.names.push_back(joint_name_ + "/" + "nmt/start");
@@ -238,10 +227,9 @@ controller_interface::InterfaceConfiguration CanopenProxyController::state_inter
   controller_interface::InterfaceConfiguration state_interfaces_config;
   state_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
 
-  state_interfaces_config.names.reserve(5);
+  state_interfaces_config.names.reserve(4);
   state_interfaces_config.names.push_back(joint_name_ + "/" + "rpdo/index");
   state_interfaces_config.names.push_back(joint_name_ + "/" + "rpdo/subindex");
-  state_interfaces_config.names.push_back(joint_name_ + "/" + "rpdo/type");
   state_interfaces_config.names.push_back(joint_name_ + "/" + "rpdo/data");
   state_interfaces_config.names.push_back(joint_name_ + "/" + "nmt/state");
 
@@ -252,7 +240,10 @@ controller_interface::CallbackReturn CanopenProxyController::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   // Set default value in command
-  reset_controller_command_msg(*(input_cmd_.readFromRT)(), joint_name_);
+  if (input_cmd_.readFromRT())
+  {
+    *(input_cmd_.readFromRT()) = nullptr;
+  }
 
   return controller_interface::CallbackReturn::SUCCESS;
 }
@@ -341,6 +332,8 @@ controller_interface::return_type CanopenProxyController::update(
     command_interfaces_[CommandInterfaces::TPDO_DATA].set_value((*current_cmd)->data);
     // tpdo data one shot mechanism
     command_interfaces_[CommandInterfaces::TPDO_ONS].set_value(kCommandValue);
+
+    *(input_cmd_.readFromRT()) = nullptr;
   }
 
   return controller_interface::return_type::OK;
