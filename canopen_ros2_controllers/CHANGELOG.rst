@@ -2,6 +2,11 @@
 Changelog for package canopen_ros2_controllers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Correct Proxy controller after changes and update tests.
+* Contributors: Dr. Denis, Christoph Hellmann Santos
+
 0.2.6 (2023-06-24)
 ------------------
 
