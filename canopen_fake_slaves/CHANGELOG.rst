@@ -2,6 +2,11 @@
 Changelog for package canopen_fake_slaves
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add missing license headers and activate ament_copyright
+* Contributors: Christoph Hellmann Santos
+
 0.2.6 (2023-06-24)
 ------------------
 

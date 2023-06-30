@@ -2,6 +2,12 @@
 Changelog for package canopen_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add missing license headers and activate ament_copyright
+* Fix maintainer naming
+* Contributors: Christoph Hellmann Santos
+
 0.2.6 (2023-06-24)
 ------------------
 
