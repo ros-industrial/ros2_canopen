@@ -2,8 +2,8 @@
 Changelog for package canopen_base_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.7 (2023-06-30)
+------------------
 * Add missing license headers and activate ament_copyright
 * Fix maintainer naming
 * Update printed output in lely_driver_bridge.cpp
