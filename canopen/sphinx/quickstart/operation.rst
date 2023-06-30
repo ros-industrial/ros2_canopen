@@ -1,5 +1,6 @@
 Setup CAN Controller
 ====================
+.. _quick-start-setup-can-controller:
 
 **Option 1**: Virtual CANController
 
