@@ -142,6 +142,15 @@
 </tr>
 </tbody>
 </table>
+<p>To bring up vcan0:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>modprobe<span class="w"> </span>vcan
+sudo<span class="w"> </span>ip<span class="w"> </span>link<span class="w"> </span>add<span class="w"> </span>dev<span class="w"> </span>vcan0<span class="w"> </span><span class="nb">type</span><span class="w"> </span>vcan
+sudo<span class="w"> </span>ip<span class="w"> </span>link<span class="w"> </span><span class="nb">set</span><span class="w"> </span>vcan0<span class="w"> </span>txqueuelen<span class="w"> </span><span class="m">1000</span>
+sudo<span class="w"> </span>ip<span class="w"> </span>link<span class="w"> </span><span class="nb">set</span><span class="w"> </span>up<span class="w"> </span>vcan0
+</pre></div>
+</div>
+</div></blockquote>
 </section>
 <section id="explanation-of-the-test">
 <h2>Explanation of the test<a class="headerlink" href="#explanation-of-the-test" title="Permalink to this headline"></a></h2>
@@ -159,14 +168,28 @@ Generic system interface enables integration of values from the CAN Bus into ros
 </pre></div>
 </div>
 </li>
-<li><p>In a new terminal publish some data to the controller to write them to the CAN bus:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>topic<span class="w"> </span>pub<span class="w"> </span>--once<span class="w"> </span>/node_1_controller/tpdo<span class="w"> </span>canopen_interfaces/msg/COData<span class="w"> </span><span class="s2">&quot;</span>
-<span class="s2">index: 25</span>
-<span class="s2">subindex: 35</span>
-<span class="s2">data: 238&quot;</span>
+<li><p>Open a new terminal reset the state of nmt.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>service<span class="w"> </span>call<span class="w"> </span>/node_1_controller/nmt_reset_node<span class="w"> </span>std_srvs/srv/Trigger<span class="w"> </span><span class="o">{}</span>
 </pre></div>
 </div>
-<p>Now watch how data in the first two opened terminals are changing.</p>
+<p>You will expect changes in the <code class="docutils literal notranslate"><span class="pre">/dynamic_joint_states</span></code> topic.</p>
+</li>
+<li><p>In a new terminal publish some data to the controller to write them to the CAN bus:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>topic<span class="w"> </span>pub<span class="w"> </span>--once<span class="w"> </span>/node_1_controller/tpdo<span class="w"> </span>canopen_interfaces/msg/COData<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">index: 0x4000</span>
+<span class="s2">subindex: 0</span>
+<span class="s2">data: 0x1122&quot;</span>
+</pre></div>
+</div>
+<p>Now watch how data in the topic <code class="docutils literal notranslate"><span class="pre">/node_1_controller/rpdo</span></code> are changing. There is a mirror of the data on 0x4001.
+That is, the slave node will mirror the data on 0x4001 via its tpdo and the proxy device will get the data via its rpdo.
+You should see this</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>index:<span class="w"> </span><span class="m">16385</span><span class="w">  </span><span class="c1"># This is 0x4001</span>
+subindex:<span class="w"> </span><span class="m">0</span>
+data:<span class="w"> </span><span class="m">4386</span>
+---
+</pre></div>
+</div>
 </li>
 </ol>
 </section>

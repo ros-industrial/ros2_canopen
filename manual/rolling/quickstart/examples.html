@@ -51,7 +51,12 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Running Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#service-interface">Service Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#managed-service-interface">Managed Service Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ros2-control">ROS2 Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ros2-control">ROS2 Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#proxy-setup">Proxy Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cia402-setup">CiA402 Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robot-setup">Robot Setup</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -116,7 +121,7 @@
   <section id="running-examples">
 <h1>Running Examples<a class="headerlink" href="#running-examples" title="Permalink to this headline"></a></h1>
 <p>In order to tryout the library a few examples are provided in the <code class="docutils literal notranslate"><span class="pre">canopen_tests</span></code> directory.
-You can run them if you have started the vcan0 interface.</p>
+You can run them if you have <a class="reference internal" href="operation.html#quick-start-setup-can-controller"><span class="std std-ref">started the vcan0 interface</span></a>.</p>
 <section id="service-interface">
 <h2>Service Interface<a class="headerlink" href="#service-interface" title="Permalink to this headline"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>launch<span class="w"> </span>canopen_tests<span class="w"> </span>ci402_setup.launch.py
@@ -131,9 +136,24 @@ You can run them if you have started the vcan0 interface.</p>
 </section>
 <section id="ros2-control">
 <h2>ROS2 Control<a class="headerlink" href="#ros2-control" title="Permalink to this headline"></a></h2>
+<section id="proxy-setup">
+<h3>Proxy Setup<a class="headerlink" href="#proxy-setup" title="Permalink to this headline"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>launch<span class="w"> </span>canopen_tests<span class="w"> </span>canopen_system.launch.py
+</pre></div>
+</div>
+</section>
+<section id="cia402-setup">
+<h3>CiA402 Setup<a class="headerlink" href="#cia402-setup" title="Permalink to this headline"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>launch<span class="w"> </span>canopen_tests<span class="w"> </span>cia402_system.launch.py
+</pre></div>
+</div>
+</section>
+<section id="robot-setup">
+<h3>Robot Setup<a class="headerlink" href="#robot-setup" title="Permalink to this headline"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>launch<span class="w"> </span>canopen_tests<span class="w"> </span>robot_control_setup.launch.py
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 
