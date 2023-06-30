@@ -72,4 +72,3 @@ The next few lines show you some command to have exemplary usage of the ros2_con
       subindex: 0
       data: 4386
       ---
-
