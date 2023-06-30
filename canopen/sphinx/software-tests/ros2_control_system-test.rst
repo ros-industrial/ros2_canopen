@@ -38,11 +38,11 @@ The next few lines show you some command to have exemplary usage of the ros2_con
       ros2 topic echo /dynamic_joint_states
 
 
-2. Open a new terminal and echo data from the topic ``/proxy_device_1/rpdo``.
+2. Open a new terminal and echo data from the topic ``/node_1_controller/rpdo``.
 
    .. code-block:: bash
 
-      ros2 topic echo /proxy_device_1/rpdo
+      ros2 topic echo /node_1_controller/rpdo
 
 
 3. Open a new terminal reset the state of nmt.
@@ -63,13 +63,13 @@ The next few lines show you some command to have exemplary usage of the ros2_con
       subindex: 0
       data: 0x1122"
 
-   Now watch how data in the topic ``/proxy_device_1/rpdo`` are changing. There is a mirror of the data on 0x4001.
+   Now watch how data in the topic ``/node_1_controller/rpdo`` are changing. There is a mirror of the data on 0x4001.
    That is, the slave node will mirror the data on 0x4001 via its tpdo and the proxy device will get the data via its rpdo.
    You should see this
 
    .. code-block:: bash
 
-      index: 16385 # This is 0x4001
+      index: 16385  # This is 0x4001
       subindex: 0
       data: 4386
       ---
