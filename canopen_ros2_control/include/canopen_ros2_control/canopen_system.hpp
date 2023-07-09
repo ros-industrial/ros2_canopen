@@ -26,6 +26,7 @@
 
 #include <string>
 #include <vector>
+#include <queue>
 
 #include "canopen_core/device_container.hpp"
 #include "canopen_proxy_driver/proxy_driver.hpp"
@@ -140,6 +141,33 @@ struct CanopenNodeData
 
   WORos2ControlCoData rsdo;  // write-only
   WORos2ControlCoData wsdo;  // write-only
+
+  // Define a FIFO queue for read-only data 
+  std::queue<RORos2ControlCOData> rpdo_data_queue;
+
+  // Push data to the queue - FIFO
+  void set_rpdo_data(ros2_canopen::COData d)
+  {
+    RORos2ControlCOData rpdo_data_tmp;
+    rpdo_data_tmp.set_data(d);
+    rpdo_data_queue.push(rpdo_data_tmp);
+  }
+
+  // Clear the queue
+  void clear_rpdo_data()
+  {
+    std::queue<RORos2ControlCOData> empty;
+    std::swap(rpdo_data_queue, empty);
+  }
+
+  // Pop data from the queue
+  RORos2ControlCOData get_rpdo_data()
+  {
+    RORos2ControlCOData rpdo_data_tmp;
+    rpdo_data_tmp = rpdo_data_queue.front();
+    rpdo_data_queue.pop();
+    return rpdo_data_tmp;
+  }
 };
 
 class CanopenSystem : public hardware_interface::SystemInterface
