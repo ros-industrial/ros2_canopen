@@ -250,8 +250,7 @@ hardware_interface::return_type CanopenSystem::read(
   // rpdo has a queue of messages, we read the latest one
   for (auto it = canopen_data_.begin(); it != canopen_data_.end(); ++it)
   {
-
-    const auto rpdo_data = it->second.get_latest_rpdo_data();
+    const auto rpdo_data = it->second.get_rpdo_data();
     
     // Assign the latest rpdo data to the state interface
     it->second.rpdo_data.index = rpdo_data.index;
