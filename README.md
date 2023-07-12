@@ -2,6 +2,11 @@
 
 ## Status
 
+| Build Process | Status |
+|---------------|--------|
+| Industrial CI Build | [![CI Build Status](https://github.com/ros-industrial/ros2_canopen/workflows/rolling/badge.svg?branch=master)](https://github.com/ros-industrial/ros2_canopen/actions) |
+| Documentation Build | [![CI Documentation Status](https://github.com/ros-industrial/ros2_canopen/workflows/Documentation/badge.svg?branch=master)](https://github.com/ros-industrial/ros2_canopen/actions) |
+| Buildfarm Build | [![Buildfarm Status](https://build.ros2.org/job/Rdev__ros2_canopen__ubuntu_jammy_amd64/badge/icon)](https://build.ros2.org/job/Rdev__ros2_canopen__ubuntu_jammy_amd64/) |
 [![humble](https://github.com/ros-industrial/ros2_canopen/actions/workflows/humble.yml/badge.svg)](https://github.com/ros-industrial/ros2_canopen/actions/workflows/humble.yml)
 [![HUMBLE Documentation](https://github.com/ros-industrial/ros2_canopen/actions/workflows/humble_documentation.yml/badge.svg)](https://github.com/ros-industrial/ros2_canopen/actions/workflows/humble_documentation.yml)
 
