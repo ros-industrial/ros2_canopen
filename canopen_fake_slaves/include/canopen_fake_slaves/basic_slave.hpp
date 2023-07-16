@@ -36,16 +36,17 @@ class SimpleSlave : public canopen::BasicSlave
 {
 public:
   using BasicSlave::BasicSlave;
-  explicit SimpleSlave(
-    io::TimerBase & timer, io::CanChannelBase & chan, const ::std::string & dcf_txt,
-    const ::std::string & dcf_bin = "", uint8_t id = 0xff)
-  : canopen::BasicSlave(timer, chan, dcf_txt, dcf_bin, id) {
-
-    // Keep sending via TPDO, frequency is 25 Hz
-    std::thread(std::bind(&SimpleSlave::periodic_messages, this));
+  ~SimpleSlave()
+  {
+    if (message_thread.joinable())
+    {
+      message_thread.join();
+    }
   }
 
 protected:
+  std::thread message_thread;
+  int write_count = 0;
   /**
    * @brief This function is called when a value is written to the local object dictionary by an SDO
    * or RPDO. Also copies the RPDO value to TPDO. A function from the class Device
@@ -57,19 +58,21 @@ protected:
     uint32_t val = (*this)[idx][subidx];
     (*this)[0x4001][0] = val;
     this->TpdoEvent(0);
+    write_count++;
+    message_thread = std::thread(std::bind(&SimpleSlave::fake_periodic_messages, this));
   }
 
-  /**
-   * @brief This function triggers the sending of a PDO. Frequency is 25 Hz.
-   */
-  void periodic_messages()
+  void fake_periodic_messages()
   {
-    uint32_t val = 0;
-    (*this)[0x4002][0] = val;
-    this->TpdoEvent(0);
-    
-    // 40 ms sleep - 25 Hz
-    std::this_thread::sleep_for(std::chrono::milliseconds(40));
+    // If ros is running, send messages
+    while (rclcpp::ok())
+    {
+      uint32_t val = 0;
+      (*this)[0x4002][0] = val;
+      this->TpdoEvent(0);
+      // 40 ms sleep - 25 Hz
+      std::this_thread::sleep_for(std::chrono::milliseconds(40));
+    }
   }
 };
 
