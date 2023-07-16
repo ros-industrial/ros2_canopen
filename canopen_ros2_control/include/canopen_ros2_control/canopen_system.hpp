@@ -163,6 +163,12 @@ struct CanopenNodeData
   // Pop data from the queue
   RORos2ControlCOData get_rpdo_data()
   {
+    // If there is nothing new in the queue, return the old data
+    if (rpdo_data_queue.empty())
+    {
+      return rpdo_data;
+    }
+
     RORos2ControlCOData rpdo_data_tmp;
     rpdo_data_tmp = rpdo_data_queue.front();
     rpdo_data_queue.pop();
