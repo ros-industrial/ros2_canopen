@@ -36,11 +36,19 @@ class SimpleSlave : public canopen::BasicSlave
 {
 public:
   using BasicSlave::BasicSlave;
+  explicit SimpleSlave(
+    io::TimerBase & timer, io::CanChannelBase & chan, const ::std::string & dcf_txt,
+    const ::std::string & dcf_bin = "", uint8_t id = 0xff)
+  : canopen::BasicSlave(timer, chan, dcf_txt, dcf_bin, id) {
+
+    // Keep sending via TPDO, frequency is 25 Hz
+    std::thread(std::bind(&SimpleSlave::periodic_messages, this));
+  }
 
 protected:
   /**
    * @brief This function is called when a value is written to the local object dictionary by an SDO
-   * or RPDO. Also copies the RPDO value to TPDO.
+   * or RPDO. Also copies the RPDO value to TPDO. A function from the class Device
    * @param idx The index of the PDO.
    * @param subidx The subindex of the PDO.
    */
@@ -49,6 +57,19 @@ protected:
     uint32_t val = (*this)[idx][subidx];
     (*this)[0x4001][0] = val;
     this->TpdoEvent(0);
+  }
+
+  /**
+   * @brief This function triggers the sending of a PDO. Frequency is 25 Hz.
+   */
+  void periodic_messages()
+  {
+    uint32_t val = 0;
+    (*this)[0x4002][0] = val;
+    this->TpdoEvent(0);
+    
+    // 40 ms sleep - 25 Hz
+    std::this_thread::sleep_for(std::chrono::milliseconds(40));
   }
 };
 

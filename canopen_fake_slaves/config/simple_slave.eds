@@ -268,3 +268,9 @@ ParameterName=UNSIGNED32 sent from slave
 DataType=0x0007
 AccessType=rwr
 PDOMapping=1
+
+[4002]
+ParameterName=UNSIGNED32 sent from slave in fixed period
+DataType=0x0007
+AccessType=rwr
+PDOMapping=1
