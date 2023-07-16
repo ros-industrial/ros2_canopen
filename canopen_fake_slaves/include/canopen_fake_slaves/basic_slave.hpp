@@ -67,9 +67,9 @@ protected:
     // If ros is running, send messages
     while (rclcpp::ok())
     {
-      uint32_t val = 0;
+      uint32_t val = 1;
       (*this)[0x4002][0] = val;
-      this->TpdoEvent(0);
+      this->TpdoEvent(1);
       // 40 ms sleep - 25 Hz
       std::this_thread::sleep_for(std::chrono::milliseconds(40));
     }
