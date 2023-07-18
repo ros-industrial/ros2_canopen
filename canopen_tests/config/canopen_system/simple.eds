@@ -19,7 +19,7 @@ Granularity=1
 DynamicChannelsSupported=0
 GroupMessaging=0
 NrOfRxPDO=1
-NrOfTxPDO=1
+NrOfTxPDO=2
 LSS_Supported=1
 
 [DummyUsage]
@@ -49,7 +49,7 @@ SupportedObjects=3
 3=0x1018
 
 [OptionalObjects]
-SupportedObjects=12
+SupportedObjects=13
 1=0x1003
 2=0x1005
 3=0x1014
@@ -60,8 +60,9 @@ SupportedObjects=12
 8=0x1400
 9=0x1600
 10=0x1800
-11=0x1A00
-12=0x2A00
+11=0x1801
+12=0x1A00
+13=0x1A01
 
 [ManufacturerObjects]
 SupportedObjects=5
@@ -250,6 +251,49 @@ ParameterName=SYNC start value
 DataType=0x0005
 AccessType=rw
 
+[1801]
+SubNumber=7
+ParameterName=TPDO communication parameter 2
+ObjectType=0x09
+
+[1801sub0]
+ParameterName=highest sub-index supported
+DataType=0x0005
+AccessType=const
+DefaultValue=6
+
+[1801sub1]
+ParameterName=COB-ID used by TPDO 2
+DataType=0x0007
+AccessType=rw
+DefaultValue=$NODEID+0x280
+
+[1801sub2]
+ParameterName=transmission type 2
+DataType=0x0005
+AccessType=rw
+DefaultValue=0xFF
+
+[1801sub3]
+ParameterName=inhibit time 2
+DataType=0x0006
+AccessType=rw
+
+[1801sub4]
+ParameterName=reserved
+DataType=0x0005
+AccessType=rw
+
+[1801sub5]
+ParameterName=event timer 2
+DataType=0x0006
+AccessType=rw
+
+[1801sub6]
+ParameterName=SYNC start value 2
+DataType=0x0005
+AccessType=rw
+
 [1A00]
 ParameterName=TPDO mapping parameter
 ObjectType=0x08
@@ -261,14 +305,14 @@ CompactSubObj=1
 NrOfEntries=1
 1=0x40010020
 
-[2A00]
-ParameterName=TPDO mapping parameter
+[1A01]
+ParameterName=TPDO mapping parameter 2
 ObjectType=0x08
 DataType=0x0007
 AccessType=rw
 CompactSubObj=1
 
-[2A00Value]
+[1A01Value]
 NrOfEntries=1
 1=0x40040020
 
@@ -295,7 +339,7 @@ DataType=0x0003
 AccessType=rw
 
 [4004]
-ParameterName=UNSIGNED32 sent from slave for fixed period
+ParameterName=UNSIGNED32 sent from slave 2
 DataType=0x0007
 AccessType=rwr
 PDOMapping=1

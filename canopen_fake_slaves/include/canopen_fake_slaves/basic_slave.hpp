@@ -54,9 +54,9 @@ protected:
    */
   void OnWrite(uint16_t idx, uint8_t subidx) noexcept override
   {
-    // uint32_t val = (*this)[idx][subidx];
-    // (*this)[0x4001][0] = val;
-    // this->TpdoEvent(0);
+    uint32_t val = (*this)[idx][subidx];
+    (*this)[0x4001][0] = val;
+    this->TpdoEvent(0);
     // Publish periodic message
     message_thread = std::thread(std::bind(&SimpleSlave::fake_periodic_messages, this));
   }
@@ -68,9 +68,9 @@ protected:
     {
       uint32_t val = 0x1122;
       (*this)[0x4004][0] = val;
-      this->TpdoEvent(1);
+      this->TpdoEvent(0);
       // 40 ms sleep - 25 Hz
-      std::this_thread::sleep_for(std::chrono::milliseconds(40));
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   }
 };
