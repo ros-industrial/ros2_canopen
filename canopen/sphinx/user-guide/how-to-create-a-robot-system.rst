@@ -7,7 +7,7 @@ leveragin ros2_control.
 
   .. code-block:: console
 
-    $ ros2 pkg create --dependencies ros2_canopen lely_core_libraries --build-type ament_cmake {package_name}
+    $ ros2 pkg create --dependencies canopen lely_core_libraries --build-type ament_cmake {package_name}
     $ cd {package_name}
     $ rm -rf src
     $ rm -rf include
