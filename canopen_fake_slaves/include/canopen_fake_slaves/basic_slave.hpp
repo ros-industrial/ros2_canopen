@@ -46,7 +46,6 @@ public:
 
 protected:
   std::thread message_thread;
-  int write_count = 0;
   /**
    * @brief This function is called when a value is written to the local object dictionary by an SDO
    * or RPDO. Also copies the RPDO value to TPDO. A function from the class Device
@@ -55,10 +54,10 @@ protected:
    */
   void OnWrite(uint16_t idx, uint8_t subidx) noexcept override
   {
-    uint32_t val = (*this)[idx][subidx];
-    (*this)[0x4001][0] = val;
-    this->TpdoEvent(0);
-    write_count++;
+    // uint32_t val = (*this)[idx][subidx];
+    // (*this)[0x4001][0] = val;
+    // this->TpdoEvent(0);
+    // Publish periodic message
     message_thread = std::thread(std::bind(&SimpleSlave::fake_periodic_messages, this));
   }
 
@@ -67,8 +66,8 @@ protected:
     // If ros is running, send messages
     while (rclcpp::ok())
     {
-      uint32_t val = 1;
-      (*this)[0x4002][0] = val;
+      uint32_t val = 0x1122;
+      (*this)[0x4004][0] = val;
       this->TpdoEvent(1);
       // 40 ms sleep - 25 Hz
       std::this_thread::sleep_for(std::chrono::milliseconds(40));

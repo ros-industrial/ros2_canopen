@@ -168,7 +168,6 @@ struct CanopenNodeData
     {
       return rpdo_data;
     }
-
     RORos2ControlCOData rpdo_data_tmp;
     rpdo_data_tmp = rpdo_data_queue.front();
     rpdo_data_queue.pop();

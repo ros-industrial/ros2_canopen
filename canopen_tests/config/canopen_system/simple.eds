@@ -49,7 +49,7 @@ SupportedObjects=3
 3=0x1018
 
 [OptionalObjects]
-SupportedObjects=11
+SupportedObjects=12
 1=0x1003
 2=0x1005
 3=0x1014
@@ -61,13 +61,15 @@ SupportedObjects=11
 9=0x1600
 10=0x1800
 11=0x1A00
+12=0x2A00
 
 [ManufacturerObjects]
-SupportedObjects=4
+SupportedObjects=5
 1=0x4000
 2=0x4001
 3=0x4002
 4=0x4003
+5=0x4004
 
 [1000]
 ParameterName=Device type
@@ -259,6 +261,17 @@ CompactSubObj=1
 NrOfEntries=1
 1=0x40010020
 
+[2A00]
+ParameterName=TPDO mapping parameter
+ObjectType=0x08
+DataType=0x0007
+AccessType=rw
+CompactSubObj=1
+
+[2A00Value]
+NrOfEntries=1
+1=0x40040020
+
 [4000]
 ParameterName=UNSIGNED32 received by slave
 DataType=0x0007
@@ -280,3 +293,9 @@ AccessType=rw
 ParameterName=INTEGER16 test
 DataType=0x0003
 AccessType=rw
+
+[4004]
+ParameterName=UNSIGNED32 sent from slave for fixed period
+DataType=0x0007
+AccessType=rwr
+PDOMapping=1
