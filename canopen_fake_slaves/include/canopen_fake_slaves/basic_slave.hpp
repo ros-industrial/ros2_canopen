@@ -45,7 +45,7 @@ public:
   }
 
 protected:
-  std::thread message_thread;
+  std::thread message_thread = nullptr;
   /**
    * @brief This function is called when a value is written to the local object dictionary by an SDO
    * or RPDO. Also copies the RPDO value to TPDO. A function from the class Device
@@ -58,7 +58,8 @@ protected:
     (*this)[0x4001][0] = val;
     this->TpdoEvent(0);
     // Publish periodic message
-    message_thread = std::thread(std::bind(&SimpleSlave::fake_periodic_messages, this));
+    if not message_thread:
+        message_thread = std::thread(std::bind(&SimpleSlave::fake_periodic_messages, this));
   }
 
   void fake_periodic_messages()
