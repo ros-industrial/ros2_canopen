@@ -63,6 +63,10 @@ protected:
     }
   }
 
+  /**
+   * @brief This function is attached to a thread and sends periodic messages
+   * via 0x4004
+   */
   void fake_periodic_messages()
   {
     // If ros is running, send messages
@@ -71,7 +75,7 @@ protected:
       uint32_t val = 0x1122;
       (*this)[0x4004][0] = val;
       this->TpdoEvent(0);
-      // 40 ms sleep - 25 Hz
+      // 100 ms sleep - 10 Hz
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   }
