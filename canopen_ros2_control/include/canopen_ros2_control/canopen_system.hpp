@@ -24,9 +24,9 @@
 #ifndef CANOPEN_ROS2_CONTROL__CANOPEN_SYSTEM_HPP_
 #define CANOPEN_ROS2_CONTROL__CANOPEN_SYSTEM_HPP_
 
+#include <queue>
 #include <string>
 #include <vector>
-#include <queue>
 
 #include "canopen_core/device_container.hpp"
 #include "canopen_proxy_driver/proxy_driver.hpp"

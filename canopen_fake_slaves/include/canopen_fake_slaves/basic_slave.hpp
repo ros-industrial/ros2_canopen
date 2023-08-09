@@ -57,8 +57,10 @@ protected:
     uint32_t val = (*this)[idx][subidx];
     (*this)[0x4001][0] = val;
     this->TpdoEvent(0);
+
     // Publish periodic message
-    if (!message_thread.joinable()) {
+    if (!message_thread.joinable())
+    {
       message_thread = std::thread(std::bind(&SimpleSlave::fake_periodic_messages, this));
     }
   }
