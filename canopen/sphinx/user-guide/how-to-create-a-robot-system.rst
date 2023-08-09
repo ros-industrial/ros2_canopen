@@ -81,10 +81,10 @@ leveragin ros2_control.
         - {index: 0x607A, sub_index: 0} # target position
 
   nodes:
-    - joint_1:
-        node_id: 2
-    - joint_2:
-        node_id: 3
+    joint_1:
+      node_id: 2
+    joint_2:
+      node_id: 3
 
 5. Copy the ``cia402_slave.eds`` file from the ``canopen_tests/config/robot_control`` package to the ``config/robot_control`` folder.
 
