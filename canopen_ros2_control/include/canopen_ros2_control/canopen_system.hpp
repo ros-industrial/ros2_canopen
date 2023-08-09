@@ -142,7 +142,7 @@ struct CanopenNodeData
   WORos2ControlCoData rsdo;  // write-only
   WORos2ControlCoData wsdo;  // write-only
 
-  // Define a FIFO queue for read-only data 
+  // Define a FIFO queue for read-only data
   std::queue<RORos2ControlCOData> rpdo_data_queue;
 
   // Push data to the queue - FIFO
