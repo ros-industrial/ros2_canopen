@@ -130,6 +130,7 @@ leveragin ros2_control.
                   [
                       FindPackageShare("canopen_tests"),
                       "urdf",
+                      "robot_controller",
                       "robot_controller.urdf.xacro",
                   ]
               ),
