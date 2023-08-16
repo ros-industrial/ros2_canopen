@@ -248,15 +248,6 @@ hardware_interface::return_type CanopenSystem::read(
   // nmt state is set via Ros2ControlNmtState::set_state within nmt_state_cb
 
   // rpdo has a queue of messages, we read the latest one
-  for (auto it = canopen_data_.begin(); it != canopen_data_.end(); ++it)
-  {
-    const auto rpdo_data = it->second.get_rpdo_data();
-
-    // Assign the latest rpdo data to the state interface
-    it->second.rpdo_data.index = rpdo_data.index;
-    it->second.rpdo_data.subindex = rpdo_data.subindex;
-    it->second.rpdo_data.data = rpdo_data.data;
-  }
 
   return hardware_interface::return_type::OK;
 }
