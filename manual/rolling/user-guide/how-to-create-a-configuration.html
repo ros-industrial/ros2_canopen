@@ -130,7 +130,7 @@ you need to have (usually one per CAN interface) and which slaves you have.</p>
 <div class="line"><strong>bus_config_name</strong>: Name of the the bus configuration (you can have multiple)</div>
 </div>
 <p>You can use <code class="docutils literal notranslate"><span class="pre">ros2</span> <span class="pre">pkg</span> <span class="pre">create</span></code> command to create your package.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ros2<span class="w"> </span>pkg<span class="w"> </span>create<span class="w"> </span>--dependencies<span class="w"> </span>ros2_canopen<span class="w"> </span>lely_core_libraries<span class="w"> </span>--build-type<span class="w"> </span>ament_cmake<span class="w"> </span><span class="o">{</span>package_name<span class="o">}</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ros2<span class="w"> </span>pkg<span class="w"> </span>create<span class="w"> </span>--dependencies<span class="w"> </span>canopen<span class="w"> </span>lely_core_libraries<span class="w"> </span>--build-type<span class="w"> </span>ament_cmake<span class="w"> </span><span class="o">{</span>package_name<span class="o">}</span>
 <span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span><span class="o">{</span>package_name<span class="o">}</span>
 <span class="gp">$ </span>rm<span class="w"> </span>-rf<span class="w"> </span>src
 <span class="gp">$ </span>rm<span class="w"> </span>-rf<span class="w"> </span>include

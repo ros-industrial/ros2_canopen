@@ -7,7 +7,7 @@ leveragin ros2_control.
 
   .. code-block:: console
 
-    $ ros2 pkg create --dependencies ros2_canopen lely_core_libraries --build-type ament_cmake {package_name}
+    $ ros2 pkg create --dependencies canopen lely_core_libraries --build-type ament_cmake {package_name}
     $ cd {package_name}
     $ rm -rf src
     $ rm -rf include
@@ -81,10 +81,10 @@ leveragin ros2_control.
         - {index: 0x607A, sub_index: 0} # target position
 
   nodes:
-    - joint_1:
-        node_id: 2
-    - joint_2:
-        node_id: 3
+    joint_1:
+      node_id: 2
+    joint_2:
+      node_id: 3
 
 5. Copy the ``cia402_slave.eds`` file from the ``canopen_tests/config/robot_control`` package to the ``config/robot_control`` folder.
 
@@ -130,6 +130,7 @@ leveragin ros2_control.
                   [
                       FindPackageShare("canopen_tests"),
                       "urdf",
+                      "robot_controller",
                       "robot_controller.urdf.xacro",
                   ]
               ),
