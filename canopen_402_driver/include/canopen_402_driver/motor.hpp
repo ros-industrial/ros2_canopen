@@ -131,6 +131,23 @@ public:
   bool handleRecover();
 
   /**
+   * @brief Enable the drive
+   *
+   * This function enables the drive. This means it attempts
+   * to bring the device to operational state (CIA402), and does nothing else.
+   *
+   */
+  bool handleEnable();
+  /**
+   * @brief Disable the drive
+   *
+   * This function disables the drive. This means it attempts to bring the
+   * device to switched on disabled state (CIA402).
+   *
+   */
+  bool handleDisable();
+
+  /**
    * @brief Register a new operation mode for the drive
    *
    * This function will register an operation mode for the drive.
