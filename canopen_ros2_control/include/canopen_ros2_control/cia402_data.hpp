@@ -63,7 +63,7 @@ struct Cia402Data
     }
 
     node_id = config["node_id"].as<uint16_t>();
-    RCLCPP_ERROR(
+    RCLCPP_INFO(
       rclcpp::get_logger(joint_name), "Node id for '%s' is '%u'", joint.name.c_str(), node_id);
 
     if (config["position_mode"])
