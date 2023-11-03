@@ -86,7 +86,7 @@ protected:
   std::string master_bin_;
   std::string can_interface_name_;
   uint32_t timeout_;
-  
+
   std::thread spinner_;
 
 public:
@@ -167,14 +167,14 @@ public:
     this->configured_.store(true);
   }
 
-  virtual void configure(bool called_from_base) 
+  virtual void configure(bool called_from_base)
   {
     std::optional<int> timeout;
     try
     {
       timeout = this->config_["boot_timeout"].as<int>();
     }
-    catch(...)
+    catch (...)
     {
       RCLCPP_WARN(
         this->node_->get_logger(),

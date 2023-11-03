@@ -37,6 +37,17 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
 {
   try
   {
+    this->non_transmit_timeout_ =
+      std::chrono::milliseconds(this->config_["non_transmit_timeout"].as<int>());
+  }
+  catch (...)
+  {
+  }
+  RCLCPP_INFO(
+    this->node_->get_logger(), "Non transmit timeout %d", this->non_transmit_timeout_.count());
+
+  try
+  {
     polling_ = this->config_["polling"].as<bool>();
   }
   catch (...)
