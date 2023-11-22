@@ -364,7 +364,7 @@ protected:
     }
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Leaving run_profile_velocity_mode");
   }
-  
+
   void run_homing_mode()
   {
     bool homed = false;
@@ -648,13 +648,12 @@ protected:
     homing_mode = std::thread(std::bind(&CIA402MockSlave::run_homing_mode, this));
   }
 
-
   void start_profile_velocity_mode()
   {
     profiled_velocity_mode =
       std::thread(std::bind(&CIA402MockSlave::run_profile_velocity_mode, this));
   }
-  
+
   void on_quickstop_active()
   {
     if (is_enable_operation())
