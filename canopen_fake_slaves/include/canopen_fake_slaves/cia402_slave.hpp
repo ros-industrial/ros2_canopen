@@ -69,6 +69,11 @@ public:
       RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Joined interpolated_position_mode thread.");
       interpolated_position_mode.join();
     }
+    if (homing_mode.joinable())
+    {
+      RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Joined interpolated_position_mode thread.");
+      homing_mode.join();
+    }
   }
 
 protected:
@@ -156,6 +161,7 @@ protected:
   std::thread cyclic_position_mode;
   std::thread cyclic_velocity_mode;
   std::thread interpolated_position_mode;
+  std::thread homing_mode;
 
   double cycle_time;
 
@@ -328,7 +334,42 @@ protected:
     }
   }
 
-  void run_position_mode() {}
+  void run_homing_mode()
+  {
+    bool homed = false;
+    while ((state.load() == InternalState::Operation_Enable) && (operation_mode.load() == Homing) &&
+           (rclcpp::ok()))
+    {
+      bool start_homing = control_word & CW_Operation_mode_specific0;
+
+      if (start_homing && !homed)
+      {
+        set_status_bit(SW_Manufacturer_specific1);  // Motor active
+      }
+      else
+      {
+        homed = false;
+        continue;
+      }
+      {
+        std::lock_guard<std::mutex> lock(w_mutex);
+        (*this)[0x6041][0] = status_word;
+        this->TpdoEvent(1);
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+      if (start_homing)
+      {
+        clear_status_bit(SW_Manufacturer_specific1);  // Motor inactive
+        set_status_bit(SW_Target_reached);            // Homing complete
+        set_status_bit(SW_Operation_mode_specific0);  // Homing attained
+        (*this)[0x6041][0] = status_word;
+        (*this)[0x6064][0] = static_cast<int32_t>(0);
+        (*this)[0x606C][0] = static_cast<int32_t>(0);
+        homed = true;
+      }
+    }
+  }
 
   void set_new_status_word_and_state()
   {
@@ -518,6 +559,12 @@ protected:
           rclcpp::get_logger("cia402_slave"), "Joined interpolated_position_mode thread.");
         interpolated_position_mode.join();
       }
+      if (homing_mode.joinable())
+      {
+        RCLCPP_INFO(
+          rclcpp::get_logger("cia402_slave"), "Joined interpolated_position_mode thread.");
+        homing_mode.join();
+      }
       old_operation_mode.store(operation_mode.load());
       switch (operation_mode.load())
       {
@@ -551,6 +598,11 @@ protected:
   {
     interpolated_position_mode =
       std::thread(std::bind(&CIA402MockSlave::run_interpolated_position_mode, this));
+  }
+
+  void start_homing_mode()
+  {
+    homing_mode = std::thread(std::bind(&CIA402MockSlave::run_homing_mode, this));
   }
 
   void on_quickstop_active()
