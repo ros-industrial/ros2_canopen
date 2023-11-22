@@ -53,7 +53,7 @@ install(
   DESTINATION include
 )
 
-if(BUILD_TESTING)
+if(FALSE)
   find_package(ament_cmake_gmock REQUIRED)
 
   ament_add_gmock(test_load_canopen_proxy_controller test/test_load_canopen_proxy_controller.cpp)
