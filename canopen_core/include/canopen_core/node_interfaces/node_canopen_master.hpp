@@ -180,7 +180,7 @@ public:
         this->node_->get_logger(),
         "No timeout parameter found in config file. Using default value of 100ms.");
     }
-    this->timeout_ = timeout.value_or(100);
+    this->timeout_ = timeout.value_or(2000);
     RCLCPP_INFO_STREAM(
       this->node_->get_logger(), "Master boot timeout set to " << this->timeout_ << "ms.");
   }
