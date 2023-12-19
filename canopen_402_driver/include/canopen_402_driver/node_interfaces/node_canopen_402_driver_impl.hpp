@@ -184,6 +184,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   std::optional<double> scale_vel_to_dev;
   std::optional<double> scale_vel_from_dev;
   std::optional<int> switching_state;
+  std::optional<int> homing_timeout_seconds;
   try
   {
     scale_pos_to_dev = std::optional(this->config_["scale_pos_to_dev"].as<double>());
@@ -219,6 +220,13 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   catch (...)
   {
   }
+  try
+  {
+    homing_timeout_seconds = std::optional(this->config_["homing_timout_seconds"].as<int>());
+  }
+  catch (...)
+  {
+  }
 
   // auto period = this->config_["scale_eff_to_dev"].as<double>();
   // auto period = this->config_["scale_eff_from_dev"].as<double>();
@@ -228,6 +236,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   scale_vel_from_dev_ = scale_vel_from_dev.value_or(0.001);
   switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
     (int)ros2_canopen::State402::InternalState::Operation_Enable);
+  homing_timeout_seconds_ = homing_timeout_seconds.value_or(10);
   RCLCPP_INFO(
     this->node_->get_logger(),
     "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\n",
@@ -243,6 +252,7 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   std::optional<double> scale_vel_to_dev;
   std::optional<double> scale_vel_from_dev;
   std::optional<int> switching_state;
+  std::optional<int> homing_timeout_seconds;
   try
   {
     scale_pos_to_dev = std::optional(this->config_["scale_pos_to_dev"].as<double>());
@@ -278,6 +288,13 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   catch (...)
   {
   }
+  try
+  {
+    homing_timeout_seconds = std::optional(this->config_["homing_timeout_seconds"].as<int>());
+  }
+  catch (...)
+  {
+  }
 
   // auto period = this->config_["scale_eff_to_dev"].as<double>();
   // auto period = this->config_["scale_eff_from_dev"].as<double>();
@@ -287,6 +304,7 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   scale_vel_from_dev_ = scale_vel_from_dev.value_or(0.001);
   switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
     (int)ros2_canopen::State402::InternalState::Operation_Enable);
+  homing_timeout_seconds_ = homing_timeout_seconds.value_or(10);
   RCLCPP_INFO(
     this->node_->get_logger(),
     "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\n",
@@ -332,7 +350,7 @@ template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::add_to_master()
 {
   NodeCanopenProxyDriver<NODETYPE>::add_to_master();
-  motor_ = std::make_shared<Motor402>(this->lely_driver_, switching_state_);
+  motor_ = std::make_shared<Motor402>(this->lely_driver_, switching_state_, homing_timeout_seconds_);
 }
 
 template <class NODETYPE>
