@@ -61,7 +61,7 @@ class Motor402 : public MotorBase
 public:
   Motor402(
     std::shared_ptr<LelyDriverBridge> driver, ros2_canopen::State402::InternalState switching_state, int homing_timeout_seconds)
-  : MotorBase(), switching_state_(switching_state), monitor_mode_(true), state_switch_timeout_(5), homing_timeout_seconds_(10)
+  : MotorBase(), switching_state_(switching_state), monitor_mode_(true), state_switch_timeout_(5), homing_timeout_seconds_(homing_timeout_seconds)
   {
     this->driver = driver;
   }
