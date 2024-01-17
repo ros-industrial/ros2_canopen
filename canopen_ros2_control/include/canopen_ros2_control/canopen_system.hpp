@@ -139,13 +139,6 @@ struct pair_hash {
     auto h1 = std::hash<T1>{}(pair.first);
     auto h2 = std::hash<T2>{}(pair.second);
 
-    // // check if T2 is a pair, if so recursively compute hash
-    // if constexpr (std::is_same<T2, std::pair<uint16_t, uint8_t>>::value) {
-    //     h2 = pair_hash{}(pair.second);
-    // } else {
-    //     h2 = std::hash<T2>{}(pair.second);
-    // }
-
     return h1 ^ h2;
   }
 };
