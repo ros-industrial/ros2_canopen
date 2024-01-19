@@ -2,8 +2,8 @@
 Changelog for package canopen_ros2_controllers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.8 (2024-01-19)
+------------------
 * Remove controller tests (`#249 <https://github.com/ros-industrial/ros2_canopen/issues/249>`_)
 * Disable controller tests for now (`#231 <https://github.com/ros-industrial/ros2_canopen/issues/231>`_)
   * Disable controller tests for now

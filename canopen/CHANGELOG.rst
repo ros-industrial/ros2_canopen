@@ -2,8 +2,8 @@
 Changelog for package canopen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.8 (2024-01-19)
+------------------
 * Documentation: Fix launch file spelling (`#208 <https://github.com/ros-industrial/ros2_canopen/issues/208>`_)
 * Documentation: Fix package creation command.  (`#176 <https://github.com/ros-industrial/ros2_canopen/issues/176>`_)
   * Fix package creation
