@@ -2,6 +2,9 @@
 Changelog for package canopen_proxy_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.7 (2023-06-30)
 ------------------
 * Add missing license headers and activate ament_copyright

@@ -2,6 +2,17 @@
 Changelog for package canopen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Documentation: Fix launch file spelling (`#208 <https://github.com/ros-industrial/ros2_canopen/issues/208>`_)
+* Documentation: Fix package creation command.  (`#176 <https://github.com/ros-industrial/ros2_canopen/issues/176>`_)
+  * Fix package creation
+  * Fixed bus.yml nodes list
+  * docs: fixed launch file path in instructions
+  ---------
+  Co-authored-by: waterlinux <water@gmail.com>
+* Contributors: Lewe Christiansen, Vishnuprasad Prachandabhanu
+
 0.2.7 (2023-06-30)
 ------------------
 * Update ros2_control docs.
