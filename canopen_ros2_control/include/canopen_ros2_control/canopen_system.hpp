@@ -133,9 +133,11 @@ struct Ros2ControlNmtState
   double start_fbk;
 };
 
-struct pair_hash {
+struct pair_hash
+{
   template <class T1, class T2>
-  std::size_t operator () (const std::pair<T1, T2>& pair) const {
+  std::size_t operator()(const std::pair<T1, T2> & pair) const
+  {
     auto h1 = std::hash<T1>{}(pair.first);
     auto h2 = std::hash<T2>{}(pair.second);
 
@@ -152,7 +154,7 @@ struct CanopenNodeData
   WORos2ControlCoData rsdo;  // write-only
   WORos2ControlCoData wsdo;  // write-only
 
-  using PDO_INDICES = std::pair<uint16_t, uint8_t>; // Index, Subindex
+  using PDO_INDICES = std::pair<uint16_t, uint8_t>;  // Index, Subindex
   std::unordered_map<PDO_INDICES, double, pair_hash> rpdo_data_map;
 
   // Push data to the queue - FIFO
@@ -163,10 +165,13 @@ struct CanopenNodeData
     PDO_INDICES index_pair(d.index_, d.subindex_);
 
     // check if the index pair is already in the map
-    if (rpdo_data_map.find(index_pair) != rpdo_data_map.end()) {
+    if (rpdo_data_map.find(index_pair) != rpdo_data_map.end())
+    {
       // if it is, update the value
       rpdo_data_map[index_pair] = rpdo_data.data;
-    } else {
+    }
+    else
+    {
       // if it is not, add it to the map
       rpdo_data_map.emplace(index_pair, rpdo_data.data);
     }
