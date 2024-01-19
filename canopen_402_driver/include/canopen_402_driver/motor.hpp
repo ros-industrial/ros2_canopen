@@ -208,7 +208,10 @@ private:
   typedef std::function<void()> AllocFuncType;
   std::unordered_map<uint16_t, AllocFuncType> mode_allocators_;
 
+  // Mode handling object currently active.
   ModeSharedPtr selected_mode_;
+
+  // Mode id returned from drive.
   uint16_t mode_id_;
   std::condition_variable mode_cond_;
   std::mutex mode_mutex_;
