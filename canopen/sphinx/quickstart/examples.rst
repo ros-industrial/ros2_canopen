@@ -9,7 +9,7 @@ Service Interface
 
 .. code-block:: bash
 
-    ros2 launch canopen_tests ci402_setup.launch.py
+    ros2 launch canopen_tests cia402_setup.launch.py
 
 
 Managed Service Interface
@@ -17,7 +17,7 @@ Managed Service Interface
 
 .. code-block:: bash
 
-    ros2 launch canopen_tests ci402_lifecycle_setup.launch.py
+    ros2 launch canopen_tests cia402_lifecycle_setup.launch.py
 
 ROS2 Control
 ------------
