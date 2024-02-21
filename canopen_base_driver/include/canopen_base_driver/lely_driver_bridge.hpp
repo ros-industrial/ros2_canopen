@@ -398,6 +398,7 @@ public:
    * @param [in] id       NodeId to connect to
    * @param [in] eds      EDS file
    * @param [in] bin      BIN file (concise dcf)
+   * @param [in] timeout  Timeout in milliseconds for SDO reads/writes
    *
    */
   LelyDriverBridge(
