@@ -314,6 +314,8 @@ protected:
 
   uint8_t nodeid;
   std::string name_;
+  
+  std::chrono::milliseconds sdo_timeout;
 
   std::function<void()> on_sync_function_;
 
@@ -400,7 +402,7 @@ public:
    */
   LelyDriverBridge(
     ev_exec_t * exec, canopen::AsyncMaster & master, uint8_t id, std::string name, std::string eds,
-    std::string bin)
+    std::string bin, std::chrono::milliseconds timeout = 20ms)
   : FiberDriver(exec, master, id),
     rpdo_queue(new SafeQueue<COData>()),
     emcy_queue(new SafeQueue<COEmcy>())
@@ -417,6 +419,7 @@ public:
       dictionary_->readDCF(a, b, bin.c_str());
     }
     pdo_map_ = dictionary_->createPDOMapping();
+    sdo_timeout = timeout;
   }
 
   /**
@@ -476,7 +479,7 @@ public:
         this->running = false;
         this->sdo_cond.notify_one();
       },
-      20ms);
+      this->sdo_timeout);
     return prom->get_future();
   }
 
@@ -568,7 +571,7 @@ public:
         this->running = false;
         this->sdo_cond.notify_one();
       },
-      20ms);
+      this->sdo_timeout);
     return prom->get_future();
   }
 
@@ -736,7 +739,7 @@ public:
         this->running = false;
         this->sdo_cond.notify_one();
       },
-      20ms);
+      this->sdo_timeout);
   }
 
   template <typename T>
@@ -763,7 +766,7 @@ public:
         this->running = false;
         this->sdo_cond.notify_one();
       },
-      20ms);
+      this->sdo_timeout);
   }
 
   template <typename T>
