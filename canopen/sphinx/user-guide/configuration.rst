@@ -151,6 +151,7 @@ device.
   software_version;	The expected software version (default: 0x00000000, see object 1F55).
   configuration_file;	The name of the file containing the configuration (default: "<dcf_path>/<name>.bin" (where <name> is the section name), see object 1F22).
   restore_configuration;	The sub-index of object 1011 to be used when restoring the configuration (default: 0x00).
+  sdo_timeout_ms; The timeout to use for SDO reads/writes to this device. (default: 20ms) 
   sdo;	Additional SDO requests to be sent during configuration (see below).
 
 
