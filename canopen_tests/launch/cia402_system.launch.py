@@ -38,14 +38,16 @@ from launch_ros.substitutions import FindPackageShare
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
-from launch.actions import IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-
+from nav2_common.launch import ReplaceString
+from launch.actions import GroupAction
+from launch_ros.actions import PushROSNamespace
 
 def launch_setup(context, *args, **kwargs):
 
     name = LaunchConfiguration("name")
     prefix = LaunchConfiguration("prefix")
+
+    bot_ns = LaunchConfiguration("bot_ns")
 
     # bus configuration
     bus_config_package = LaunchConfiguration("bus_config_package")
@@ -111,31 +113,40 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
+    ros2_control_config = ReplaceString(
+        source_file=ros2_control_config,
+        replacements={"__namespace__/":(bot_ns, "/")}
+    )
+
     # nodes to start are listed below
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[robot_description, ros2_control_config],
         output="screen",
+        namespace=bot_ns,
     )
 
     # load one controller just to make sure it can connect to controller_manager
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=["joint_state_broadcaster", "--controller-manager", PathJoinSubstitution([bot_ns, "controller_manager"]),
+                   "-n", PathJoinSubstitution([bot_ns])],
     )
 
     cia402_device_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["cia402_device_1_controller", "--controller-manager", "/controller_manager"],
+        arguments=["cia402_device_1_controller", "--controller-manager", PathJoinSubstitution([bot_ns, "controller_manager"]),
+                   "-n", PathJoinSubstitution([bot_ns])],
     )
 
     forward_position_controller = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["forward_position_controller", "--controller-manager", "/controller_manager"],
+        arguments=["forward_position_controller", "--controller-manager", PathJoinSubstitution([bot_ns, "controller_manager"]),
+                   "-n", PathJoinSubstitution([bot_ns])],
     )
 
     robot_state_publisher_node = Node(
@@ -143,6 +154,7 @@ def launch_setup(context, *args, **kwargs):
         executable="robot_state_publisher",
         output="both",
         parameters=[robot_description],
+        namespace=bot_ns,
     )
 
     # hardcoded slave configuration form test package
@@ -161,6 +173,8 @@ def launch_setup(context, *args, **kwargs):
             "slave_config": slave_config,
         }.items(),
     )
+    slave_node_1 = GroupAction(actions=[PushROSNamespace(bot_ns),
+                                        slave_node_1])
 
     nodes_to_start = [
         control_node,
@@ -177,6 +191,11 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
 
     declared_arguments = []
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "bot_ns", description="Namespace for these nodes", default_value=""
+        )
+    )
     declared_arguments.append(
         DeclareLaunchArgument(
             "name", description="robot name", default_value="canopen_test_system"
