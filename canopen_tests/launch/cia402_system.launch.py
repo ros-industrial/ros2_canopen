@@ -30,6 +30,7 @@
 # Author: Lovro Ivanov lovro.ivanov@gmail.com
 
 from launch import LaunchDescription
+import launch.actions
 from launch.actions import DeclareLaunchArgument
 from launch.actions import OpaqueFunction
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
@@ -99,6 +100,7 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
     robot_description = {"robot_description": robot_description_content}
+
 
     # ros2 control configuration
     ros2_control_config_package = LaunchConfiguration("ros2_control_config_package")
@@ -185,7 +187,15 @@ def launch_setup(context, *args, **kwargs):
         forward_position_controller,
     ]
 
-    return nodes_to_start
+    logging = launch.actions.GroupAction(
+        actions=[
+            launch.actions.LogInfo(msg="----------------------------------------------"),
+            launch.actions.LogInfo(msg=robot_description_content),
+            launch.actions.LogInfo(msg="----------------------------------------------"),
+        ]
+    )
+
+    return nodes_to_start + [logging]
 
 
 def generate_launch_description():
