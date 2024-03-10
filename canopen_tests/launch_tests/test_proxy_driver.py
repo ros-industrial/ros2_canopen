@@ -144,6 +144,204 @@ class TestSDO(unittest.TestCase):
         self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
         time.sleep(0.01)
 
+    def test_sdo_write_signed8(self):
+        """Tests SDO writing to a SIGNED8 data object."""
+        index = 0x4004
+        subindex = 2
+        data = 100
+
+        req = COWrite.Request()
+        req.index = index
+        req.subindex = subindex
+        req.data = data
+
+        res = COWrite.Response()
+        res.success = True
+
+        rreq = CORead.Request()
+        rreq.index = index
+        rreq.subindex = subindex
+
+        rres = CORead.Response()
+        rres.success = True
+        rres.data = data
+
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_read", CORead, rreq, rres)
+        self.node.call_service("proxy_device_2/sdo_read", CORead, rreq, rres)
+        req.data = 0
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+
+    def test_sdo_write_signed16(self):
+        """Tests SDO writing to a SIGNED16 data object."""
+        index = 0x4004
+        subindex = 3
+        data = 100
+
+        req = COWrite.Request()
+        req.index = index
+        req.subindex = subindex
+        req.data = data
+
+        res = COWrite.Response()
+        res.success = True
+
+        rreq = CORead.Request()
+        rreq.index = index
+        rreq.subindex = subindex
+
+        rres = CORead.Response()
+        rres.success = True
+        rres.data = data
+
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_read", CORead, rreq, rres)
+        self.node.call_service("proxy_device_2/sdo_read", CORead, rreq, rres)
+        req.data = 0
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+
+    def test_sdo_write_signed32(self):
+        """Tests SDO writing to a SIGNED32 data object."""
+        index = 0x4004
+        subindex = 4
+        data = 100
+
+        req = COWrite.Request()
+        req.index = index
+        req.subindex = subindex
+        req.data = data
+
+        res = COWrite.Response()
+        res.success = True
+
+        rreq = CORead.Request()
+        rreq.index = index
+        rreq.subindex = subindex
+
+        rres = CORead.Response()
+        rres.success = True
+        rres.data = data
+
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_read", CORead, rreq, rres)
+        self.node.call_service("proxy_device_2/sdo_read", CORead, rreq, rres)
+        req.data = 0
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+
+    def test_sdo_write_unsigned8(self):
+        """Tests SDO writing to an UNSIGNED8 data object."""
+        index = 0x4004
+        subindex = 5
+        data = 100
+
+        req = COWrite.Request()
+        req.index = index
+        req.subindex = subindex
+        req.data = data
+
+        res = COWrite.Response()
+        res.success = True
+
+        rreq = CORead.Request()
+        rreq.index = index
+        rreq.subindex = subindex
+
+        rres = CORead.Response()
+        rres.success = True
+        rres.data = data
+
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_read", CORead, rreq, rres)
+        self.node.call_service("proxy_device_2/sdo_read", CORead, rreq, rres)
+        req.data = 0
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+
+    def test_sdo_write_unsigned16(self):
+        """Tests SDO writing to an UNSIGNED16 data object."""
+        index = 0x4004
+        subindex = 6
+        data = 100
+
+        req = COWrite.Request()
+        req.index = index
+        req.subindex = subindex
+        req.data = data
+
+        res = COWrite.Response()
+        res.success = True
+
+        rreq = CORead.Request()
+        rreq.index = index
+        rreq.subindex = subindex
+
+        rres = CORead.Response()
+        rres.success = True
+        rres.data = data
+
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_read", CORead, rreq, rres)
+        self.node.call_service("proxy_device_2/sdo_read", CORead, rreq, rres)
+        req.data = 0
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+
+    def test_sdo_write_unsigned32(self):
+        """Tests SDO writing to an UNSIGNED32 data object."""
+        index = 0x4004
+        subindex = 7
+        data = 100
+
+        req = COWrite.Request()
+        req.index = index
+        req.subindex = subindex
+        req.data = data
+
+        res = COWrite.Response()
+        res.success = True
+
+        rreq = CORead.Request()
+        rreq.index = index
+        rreq.subindex = subindex
+
+        rres = CORead.Response()
+        rres.success = True
+        rres.data = data
+
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_read", CORead, rreq, rres)
+        self.node.call_service("proxy_device_2/sdo_read", CORead, rreq, rres)
+        req.data = 0
+        time.sleep(0.01)
+        self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
+        self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
+        time.sleep(0.01)
+
 
 class TestSDOMaster(unittest.TestCase):
     def run_node(self):
