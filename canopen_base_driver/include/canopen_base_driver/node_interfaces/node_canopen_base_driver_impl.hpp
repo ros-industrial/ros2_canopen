@@ -37,11 +37,23 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
 {
   try
   {
+    this->non_transmit_timeout_ =
+      std::chrono::milliseconds(this->config_["non_transmit_timeout"].as<int>());
+  }
+  catch (...)
+  {
+  }
+  RCLCPP_INFO_STREAM(
+    this->node_->get_logger(),
+    "Non transmit timeout" << static_cast<int>(this->non_transmit_timeout_.count()) << "ms");
+
+  try
+  {
     polling_ = this->config_["polling"].as<bool>();
   }
   catch (...)
   {
-    RCLCPP_ERROR(this->node_->get_logger(), "Could not polling from config, setting to true.");
+    RCLCPP_WARN(this->node_->get_logger(), "Could not polling from config, setting to true.");
     polling_ = true;
   }
   if (polling_)
@@ -52,7 +64,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
     }
     catch (...)
     {
-      RCLCPP_ERROR(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
+      RCLCPP_WARN(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
       period_ms_ = 10;
     }
   }
@@ -64,7 +76,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
   }
   catch (...)
   {
-    RCLCPP_ERROR(
+    RCLCPP_WARN(
       this->node_->get_logger(),
       "Could not read enable diagnostics from config, setting to false.");
     diagnostic_enabled_ = false;
@@ -92,11 +104,23 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
 {
   try
   {
+    this->non_transmit_timeout_ =
+      std::chrono::milliseconds(this->config_["non_transmit_timeout"].as<int>());
+  }
+  catch (...)
+  {
+  }
+  RCLCPP_INFO_STREAM(
+    this->node_->get_logger(),
+    "Non transmit timeout" << static_cast<int>(this->non_transmit_timeout_.count()) << "ms");
+
+  try
+  {
     polling_ = this->config_["polling"].as<bool>();
   }
   catch (...)
   {
-    RCLCPP_ERROR(this->node_->get_logger(), "Could not polling from config, setting to true.");
+    RCLCPP_WARN(this->node_->get_logger(), "Could not polling from config, setting to true.");
     polling_ = true;
   }
   if (polling_)
@@ -107,7 +131,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
     }
     catch (...)
     {
-      RCLCPP_ERROR(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
+      RCLCPP_WARN(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
       period_ms_ = 10;
     }
   }
@@ -119,7 +143,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
   }
   catch (...)
   {
-    RCLCPP_ERROR(
+    RCLCPP_WARN(
       this->node_->get_logger(),
       "Could not read enable diagnostics from config, setting to false.");
     diagnostic_enabled_ = false;
@@ -132,7 +156,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
     }
     catch (...)
     {
-      RCLCPP_ERROR(
+      RCLCPP_WARN(
         this->node_->get_logger(),
         "Could not read diagnostics period from config, setting to 1000ms");
       diagnostic_period_ms_ = 1000;
