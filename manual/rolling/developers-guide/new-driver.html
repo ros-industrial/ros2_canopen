@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creating a new device driver &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -125,26 +128,26 @@
            <div itemprop="articleBody">
              
   <section id="creating-a-new-device-driver">
-<h1>Creating a new device driver<a class="headerlink" href="#creating-a-new-device-driver" title="Permalink to this headline"></a></h1>
+<h1>Creating a new device driver<a class="headerlink" href="#creating-a-new-device-driver" title="Link to this heading"></a></h1>
 <p>Creating your own device driver is fairly easy in ros2_canopen. You should do this if you
 need to create a driver for a specific device or a specific device profile that is not yet supported. If you create
 a driver for a device profile we are happy to integrate the package into this repository - simply create
 a PR.</p>
 <section id="what-you-need-to-do">
-<h2>What you need to do<a class="headerlink" href="#what-you-need-to-do" title="Permalink to this headline"></a></h2>
+<h2>What you need to do<a class="headerlink" href="#what-you-need-to-do" title="Link to this heading"></a></h2>
 <p>To create a new driver you need to implement at least two classes. One being the functional class,
 that contains your drivers functionalities. The other being a ROS2 wrapper node. Generally we recommend
 creating one ROS2 wrapper node and another ROS2 lifecycle wrapper node.</p>
 </section>
 <section id="how-you-do-it">
-<h2>How you do it<a class="headerlink" href="#how-you-do-it" title="Permalink to this headline"></a></h2>
+<h2>How you do it<a class="headerlink" href="#how-you-do-it" title="Link to this heading"></a></h2>
 <p>First you need to decide from which extension point you want to start. Usually, this is either the core interface, the base driver
 or the proxy driver. Base driver provides you with all necessary callbacks for CANopen functionalities but does
 not come with any ROS2 interface. Proxy driver has a simple forwarding ROS2 interface that is useful for any driver.
 The core interface comes without any functionality, you need to implement everything on your own.
 We recommend creating you driver based on Proxy driver, this will be explained here.</p>
 <section id="create-the-package">
-<h3>Create the package<a class="headerlink" href="#create-the-package" title="Permalink to this headline"></a></h3>
+<h3>Create the package<a class="headerlink" href="#create-the-package" title="Link to this heading"></a></h3>
 <p>Create your new package using the standard ros2 pkg commands. Make sure you add the following dependencies:</p>
 <ul class="simple">
 <li><p>rclcpp</p></li>
@@ -162,7 +165,7 @@ We recommend creating you driver based on Proxy driver, this will be explained h
 <p>Once done add a subfolder <code class="docutils literal notranslate"><span class="pre">node_interfaces</span></code> in the <code class="docutils literal notranslate"><span class="pre">src/</span></code> and the <code class="docutils literal notranslate"><span class="pre">include/[pacakge_name]/</span></code> folders.</p>
 </section>
 <section id="create-the-functionality-class">
-<h3>Create the functionality class<a class="headerlink" href="#create-the-functionality-class" title="Permalink to this headline"></a></h3>
+<h3>Create the functionality class<a class="headerlink" href="#create-the-functionality-class" title="Link to this heading"></a></h3>
 <p>The functionality class is structured similar to a LifecycleNode. The functionality class
 has the following callback functions that are related to lifecycle which you can override:</p>
 <ul class="simple">
@@ -173,7 +176,7 @@ has the following callback functions that are related to lifecycle which you can
 <li><p>void shutdown(bool called_from_base)</p></li>
 </ul>
 <section id="canopen-functionality">
-<h4>CANopen functionality<a class="headerlink" href="#canopen-functionality" title="Permalink to this headline"></a></h4>
+<h4>CANopen functionality<a class="headerlink" href="#canopen-functionality" title="Link to this heading"></a></h4>
 <p>In addition to the functions there are callbacks for CANopen functionality that you can
 override:</p>
 <ul class="simple">
@@ -197,7 +200,7 @@ use CANopen functionality, these have to be stopped in the deactivate function.<
 </div>
 </section>
 <section id="ros2-functionality">
-<h4>ROS2 functionality<a class="headerlink" href="#ros2-functionality" title="Permalink to this headline"></a></h4>
+<h4>ROS2 functionality<a class="headerlink" href="#ros2-functionality" title="Link to this heading"></a></h4>
 <p>ROS2 functionlity is available via the <code class="docutils literal notranslate"><span class="pre">node_</span></code> object of the functionality class. This
 object has a templated type and can either be a <code class="docutils literal notranslate"><span class="pre">rclcpp::Node</span></code> or <code class="docutils literal notranslate"><span class="pre">rclcpp_lifecycle::LifecycleNode</span></code>.
 You can use the standard functions like create_timer, create_publisher etc.</p>
@@ -246,7 +249,7 @@ need to create a template specialisation.</p>
 </section>
 </section>
 <section id="create-the-ros2-wrapper-classes">
-<h3>Create the ROS2 wrapper classes<a class="headerlink" href="#create-the-ros2-wrapper-classes" title="Permalink to this headline"></a></h3>
+<h3>Create the ROS2 wrapper classes<a class="headerlink" href="#create-the-ros2-wrapper-classes" title="Link to this heading"></a></h3>
 <p>The ROS2 wrapper classes are fairly easy to create once you wrote the functionality
 class. The wrappers simply use the functionality class to provide the functionality.
 The ROS2 wrapper class should always be derived from <code class="docutils literal notranslate"><span class="pre">ros2_canopen::CanopenDriver</span></code> or
@@ -289,7 +292,7 @@ The ROS2 wrapper class should always be derived from <code class="docutils liter
 </pre></div>
 </div>
 <section id="adapt-the-cmakelists-txt">
-<h4>Adapt the CMakeLists.txt<a class="headerlink" href="#adapt-the-cmakelists-txt" title="Permalink to this headline"></a></h4>
+<h4>Adapt the CMakeLists.txt<a class="headerlink" href="#adapt-the-cmakelists-txt" title="Link to this heading"></a></h4>
 <p>The CMakeLists.txt file should look like this:</p>
 <div class="highlight-CMAKE notranslate"><div class="highlight"><pre><span></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.8</span><span class="p">)</span>
 <span class="nb">project</span><span class="p">(</span><span class="s">canopen_xxx_driver</span><span class="p">)</span>

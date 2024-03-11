@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Operation &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -114,7 +117,7 @@
            <div itemprop="articleBody">
              
   <section id="operation">
-<h1>Operation<a class="headerlink" href="#operation" title="Permalink to this headline"></a></h1>
+<h1>Operation<a class="headerlink" href="#operation" title="Link to this heading"></a></h1>
 <p>The ros2_canopen stack can be used in three different ways:</p>
 <ul class="simple">
 <li><p>standard nodes container</p></li>
@@ -122,7 +125,7 @@
 <li><p>ros2_control system interface with standard nodes</p></li>
 </ul>
 <section id="simple-nodes-container">
-<h2>Simple nodes container<a class="headerlink" href="#simple-nodes-container" title="Permalink to this headline"></a></h2>
+<h2>Simple nodes container<a class="headerlink" href="#simple-nodes-container" title="Link to this heading"></a></h2>
 <p>The standard node container mode bundles the master and all slave driver nodes in one specialised
 container called device container. All nodes are simple ROS 2 nodes and expose a publish and subscribe
 as well as a service interfaces. Once the device container is started, all nodes are brought up
@@ -133,7 +136,7 @@ easy to launch interface and does not need any realtime control capabilities as 
 ros2_control.</p>
 </section>
 <section id="managed-nodes-container">
-<h2>Managed nodes container<a class="headerlink" href="#managed-nodes-container" title="Permalink to this headline"></a></h2>
+<h2>Managed nodes container<a class="headerlink" href="#managed-nodes-container" title="Link to this heading"></a></h2>
 <p>The managed nodes container has the same properties as the standard nodes container.
 The exception is, that all nodes are lifecycle nodes and there is a special node called
 lifecycle manager. The user can use the lifecycle manager to control the lifecycle of
@@ -143,7 +146,7 @@ The managed nodes container is thought for applications where the user wants to 
 more runtime recovery options than killing and restarting the container.</p>
 </section>
 <section id="ros-2-control-system-interface">
-<h2>ROS 2 control system interface<a class="headerlink" href="#ros-2-control-system-interface" title="Permalink to this headline"></a></h2>
+<h2>ROS 2 control system interface<a class="headerlink" href="#ros-2-control-system-interface" title="Link to this heading"></a></h2>
 <p>The ros2_control interface is currently build on top of the simple nodes container. In
 addition to the standard nodes container the ros2_control system interface provides a
 hardware interface that can be used to control the devices on the bus. Currently, three

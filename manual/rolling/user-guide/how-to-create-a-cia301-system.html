@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>How to create a cia301 system with ros2_control &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -115,7 +118,7 @@
            <div itemprop="articleBody">
              
   <section id="how-to-create-a-cia301-system-with-ros2-control">
-<h1>How to create a cia301 system with ros2_control<a class="headerlink" href="#how-to-create-a-cia301-system-with-ros2-control" title="Permalink to this headline"></a></h1>
+<h1>How to create a cia301 system with ros2_control<a class="headerlink" href="#how-to-create-a-cia301-system-with-ros2-control" title="Link to this heading"></a></h1>
 <p>The CiA 301 profile, also known as the CANopen application layer,
 is the foundation of the CANopen protocol. It defines the basic principles,
 communication services, and object dictionary used for device communication
@@ -133,7 +136,7 @@ device state control, and error handling.</p>
 <li><p>and finally preparing the launch file.</p></li>
 </ul>
 <section id="preparing-the-configuration">
-<h2>Preparing the configuration<a class="headerlink" href="#preparing-the-configuration" title="Permalink to this headline"></a></h2>
+<h2>Preparing the configuration<a class="headerlink" href="#preparing-the-configuration" title="Link to this heading"></a></h2>
 <p>To use the control system interface for CiA301 profile, we should prepare the following</p>
 <ul class="simple">
 <li><p>bus_conf</p></li>
@@ -190,7 +193,7 @@ device state control, and error handling.</p>
 <p>The example of master_dcf see <a class="reference external" href="https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_tests/config/simple/simple.eds">https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_tests/config/simple/simple.eds</a></p>
 </section>
 <section id="use-rpdo-to-access-the-current-state">
-<h2>Use RPDO to access the current state<a class="headerlink" href="#use-rpdo-to-access-the-current-state" title="Permalink to this headline"></a></h2>
+<h2>Use RPDO to access the current state<a class="headerlink" href="#use-rpdo-to-access-the-current-state" title="Link to this heading"></a></h2>
 <dl>
 <dt>Defining the Joint and CANopen Data Structure</dt><dd><p>The first step is to define a structure that will hold information about your joints and the associated CANopen data. This structure serves as the foundation for  your CANopen network, ensuring that all the relevant data is stored and accessible when needed.</p>
 </dd>
@@ -212,7 +215,7 @@ device state control, and error handling.</p>
 </dl>
 </section>
 <section id="use-tpdo-to-send-commands">
-<h2>Use TPDO to send commands<a class="headerlink" href="#use-tpdo-to-send-commands" title="Permalink to this headline"></a></h2>
+<h2>Use TPDO to send commands<a class="headerlink" href="#use-tpdo-to-send-commands" title="Link to this heading"></a></h2>
 <p>In order to send commands to hardware devices in a CANopen network, we first need to export the appropriate hardware interfaces. This is a critical step that enables us to effectively control each joint within our network.</p>
 <dl class="simple">
 <dt>Registering Transmit Process Data Objects (TPDOs)</dt><dd><p>Similar to how we handle state interfaces, we must register Transmit Process Data Objects (TPDOs) for each joint. These TPDOs are related to the following commands:</p>
@@ -238,7 +241,7 @@ device state control, and error handling.</p>
 <p>These NMT commands not only help in managing the state of devices but also in providing feedback (indicated by “fbk”) from the device to the control system after the execution of a command. This feedback mechanism is crucial for ensuring the successful execution of commands and managing the overall health of the network.</p>
 </section>
 <section id="how-to-launch-the-nodes">
-<h2>How to launch the nodes<a class="headerlink" href="#how-to-launch-the-nodes" title="Permalink to this headline"></a></h2>
+<h2>How to launch the nodes<a class="headerlink" href="#how-to-launch-the-nodes" title="Link to this heading"></a></h2>
 <p>Finally, we prepare the launch file for the interface. An example see: <a class="reference external" href="https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_ros2_control/launch/canopen_system.launch.py">https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_ros2_control/launch/canopen_system.launch.py</a></p>
 <p>For testing, please refer to following section.</p>
 </section>

@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hardware Interface &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=efd85694" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -107,7 +110,7 @@
            <div itemprop="articleBody">
              
   <section id="hardware-interface">
-<h1>Hardware Interface<a class="headerlink" href="#hardware-interface" title="Permalink to this headline"></a></h1>
+<h1>Hardware Interface<a class="headerlink" href="#hardware-interface" title="Link to this heading"></a></h1>
 <p>This package provides multiple hardware interfaces for testing. Mainly the following:</p>
 <ul class="simple">
 <li><p>canopen_ros2_control/CanopenSystem: A system interface for ProxyDrivers</p></li>
@@ -115,7 +118,7 @@
 <li><p>canopen_ros2_control/Cia402RobotSystem: A system interface for Cia402Drivers in a robot configuration (under development)</p></li>
 </ul>
 <section id="robot-system-interface">
-<h2>Robot System Interface<a class="headerlink" href="#robot-system-interface" title="Permalink to this headline"></a></h2>
+<h2>Robot System Interface<a class="headerlink" href="#robot-system-interface" title="Link to this heading"></a></h2>
 <p>The robot system interface takes a number of inputs from the robot description (urdf).
 It will make the Cia402Drivers available via the ros2_control hardware interface.
 The bus has to still be defined in the bus.yml file. In the urdf you can the choose the
@@ -149,7 +152,7 @@ For each joint in your urdf you can choose the attached CANopen device by using 
 </section>
 </section>
 <section id="ros2-controllers">
-<h1>ROS2 Controllers<a class="headerlink" href="#ros2-controllers" title="Permalink to this headline"></a></h1>
+<h1>ROS2 Controllers<a class="headerlink" href="#ros2-controllers" title="Link to this heading"></a></h1>
 <p>This package provides multiple controllers for testing. Mainly the following:</p>
 <ul class="simple">
 <li><p>canopen_ros2_controllers/Cia402RobotController: Works with Robot System Interface</p></li>
@@ -157,7 +160,7 @@ For each joint in your urdf you can choose the attached CANopen device by using 
 <li><p>canopen_ros2_controllers/CanopenProxyController: Works with CanopenSystem and Cia402System</p></li>
 </ul>
 <section id="robot-controller">
-<h2>Robot Controller<a class="headerlink" href="#robot-controller" title="Permalink to this headline"></a></h2>
+<h2>Robot Controller<a class="headerlink" href="#robot-controller" title="Link to this heading"></a></h2>
 <p>The robot controller enables bringing up the different joints of the robot automatically
 by using the ros2_controller lifecycle. There is no need for further action, once the
 controller is activated, the drives are ready to be used.</p>

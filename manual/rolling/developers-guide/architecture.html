@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Architecture &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -114,12 +117,12 @@
            <div itemprop="articleBody">
              
   <section id="architecture">
-<h1>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline"></a></h1>
+<h1>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h1>
 <p>The architecture of the ROS2 CANopen stack is based on the composition
 concept of ROS2. In ROS2 components are dynamically loadable ROS2 nodes
 which are loaded by a component manager.</p>
 <section id="device-container">
-<h2>Device Container<a class="headerlink" href="#device-container" title="Permalink to this headline"></a></h2>
+<h2>Device Container<a class="headerlink" href="#device-container" title="Link to this heading"></a></h2>
 <p>The core of the ROS2 CANopen stack is the ros2_canopen::DeviceContainer which implements
 the rclcpp::ComponentManager class. The DeviceContainer enables loading drivers for the
 CANopen master and the devices on the bus, that have been exported as rclcpp_components.
@@ -157,7 +160,7 @@ it will load the drivers specified in the bus configuration. If the master and d
 specified in the bus configuration are managed nodes it will as well load the ros2_canopen::LifecycleManager.</p>
 </section>
 <section id="canopen-master-driver-architecture">
-<h2>CANopen Master Driver Architecture<a class="headerlink" href="#canopen-master-driver-architecture" title="Permalink to this headline"></a></h2>
+<h2>CANopen Master Driver Architecture<a class="headerlink" href="#canopen-master-driver-architecture" title="Link to this heading"></a></h2>
 <p>The architecture for CANopen master drivers looks as depicted in the class diagram. All master drivers
 consist of three main classes.</p>
 <p>The first class is the functionality class that contains the drivers functionailities independently of
@@ -203,7 +206,7 @@ package &quot;canopen_master_driver&quot; {
 </p>
 </section>
 <section id="canopen-device-driver-architecture">
-<h2>CANopen Device Driver Architecture<a class="headerlink" href="#canopen-device-driver-architecture" title="Permalink to this headline"></a></h2>
+<h2>CANopen Device Driver Architecture<a class="headerlink" href="#canopen-device-driver-architecture" title="Link to this heading"></a></h2>
 <p>The architecture for CANopen device drivers looks as depicted in the class diagram. All device drivers
 consist of three main classes.</p>
 <p>The first class is the functionality class that contains the drivers functionailities independently of

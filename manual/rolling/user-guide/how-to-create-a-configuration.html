@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>How to create a configuration package &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -115,13 +118,13 @@
            <div itemprop="articleBody">
              
   <section id="how-to-create-a-configuration-package">
-<h1>How to create a configuration package<a class="headerlink" href="#how-to-create-a-configuration-package" title="Permalink to this headline"></a></h1>
+<h1>How to create a configuration package<a class="headerlink" href="#how-to-create-a-configuration-package" title="Link to this heading"></a></h1>
 <p>In order to use the ros2_canopen stack for your robot, you need to
 create a configuration package, that holds the configuration of the
 bus as well as you launch script. The following sections detail the
 steps to create such a package.</p>
 <section id="package-creation">
-<h2>Package creation<a class="headerlink" href="#package-creation" title="Permalink to this headline"></a></h2>
+<h2>Package creation<a class="headerlink" href="#package-creation" title="Link to this heading"></a></h2>
 <p>When you create your package, you have to first make some decisions.
 You will need to choose a package name, decide which bus configurations
 you need to have (usually one per CAN interface) and which slaves you have.</p>
@@ -139,16 +142,16 @@ you need to have (usually one per CAN interface) and which slaves you have.</p>
 </pre></div>
 </div>
 <p>Now your package directory should look like this.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>{package_name}
-├── config
-├── launch
-├── CMakeLists.txt
-└── package.xml
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">package_name</span><span class="p">}</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">config</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">launch</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">CMakeLists</span><span class="p">.</span><span class="n">txt</span>
+<span class="err">└──</span><span class="w"> </span><span class="n">package</span><span class="p">.</span><span class="n">xml</span>
 </pre></div>
 </div>
 </section>
 <section id="bus-configuration-creation">
-<h2>Bus configuration creation<a class="headerlink" href="#bus-configuration-creation" title="Permalink to this headline"></a></h2>
+<h2>Bus configuration creation<a class="headerlink" href="#bus-configuration-creation" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><dl>
 <dt><strong>Bus configuration decisions</strong></dt><dd><p>Decide how many bus configurations you need. Add one subfolder for each
@@ -163,18 +166,18 @@ bus configuration in your <cite>config</cite>-folder.</p>
 <dt><strong>Add device information to bus configurations</strong></dt><dd><p>Once you created the folders for your bus configurations add the .eds files
 for the devices that are in the bus configuration to the respective folder.</p>
 <p>Now your package directory should now look like this.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>{package_name}
-├── config
-│   ├── {bus_config_name_1}
-│   |   ├── {device1}.eds
-│   |   ├── {device...}.eds
-│   |   └── {slave_n}.eds
-│   └── {bus_config_name_2}
-│       ├── {device1}.eds
-│       ├── {device...}.eds
-│       └── {slave_n}.eds
-├── CMakeLists.txt
-└── package.xml
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">package_name</span><span class="p">}</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">config</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">bus_config_name_1</span><span class="p">}</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device1</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device</span><span class="p">...}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">slave_n</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">bus_config_name_2</span><span class="p">}</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device1</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device</span><span class="p">...}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">       </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">slave_n</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">CMakeLists</span><span class="p">.</span><span class="n">txt</span>
+<span class="err">└──</span><span class="w"> </span><span class="n">package</span><span class="p">.</span><span class="n">xml</span>
 </pre></div>
 </div>
 </dd>
@@ -186,20 +189,20 @@ bus.yml. Create the file in the respective bus configuration folder.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>touch<span class="w"> </span>bus.yml
 </pre></div>
 </div>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>{package_name}
-├── config
-│   ├── {bus_config_name_1}
-│   |   ├── bus.yml
-│   |   ├── {device1}.eds
-│   |   ├── {device...}.eds
-│   |   └── {slave_n}.eds
-│   └── {bus_config_name_2}
-│       ├── bus.yml
-│       ├── {device1}.eds
-│       ├── {device...}.eds
-│       └── {slave_n}.eds
-├── CMakeLists.txt
-└── package.xml
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">package_name</span><span class="p">}</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">config</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">bus_config_name_1</span><span class="p">}</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">bus</span><span class="p">.</span><span class="n">yml</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device1</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device</span><span class="p">...}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">slave_n</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">bus_config_name_2</span><span class="p">}</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="n">bus</span><span class="p">.</span><span class="n">yml</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device1</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device</span><span class="p">...}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">       </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">slave_n</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">CMakeLists</span><span class="p">.</span><span class="n">txt</span>
+<span class="err">└──</span><span class="w"> </span><span class="n">package</span><span class="p">.</span><span class="n">xml</span>
 </pre></div>
 </div>
 </dd>
@@ -241,7 +244,7 @@ The slave name is the node name that will be assigned to the driver.</p>
 </ol>
 </section>
 <section id="launch-configuration-creation">
-<h2>Launch configuration creation<a class="headerlink" href="#launch-configuration-creation" title="Permalink to this headline"></a></h2>
+<h2>Launch configuration creation<a class="headerlink" href="#launch-configuration-creation" title="Link to this heading"></a></h2>
 <p>Create a launch folder in your package directory and a launch file.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mkdir launch</span>
 <span class="go">touch {...}.launch.py</span>
@@ -293,7 +296,7 @@ The slave name is the node name that will be assigned to the driver.</p>
 </div>
 </section>
 <section id="cmake-configuration-creation">
-<h2>CMAKE Configuration creation<a class="headerlink" href="#cmake-configuration-creation" title="Permalink to this headline"></a></h2>
+<h2>CMAKE Configuration creation<a class="headerlink" href="#cmake-configuration-creation" title="Link to this heading"></a></h2>
 <p>Finally we need to adjust the CMakeLists.txt file to pick everything up correctly.</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.8</span><span class="p">)</span>
 <span class="nb">project</span><span class="p">(</span><span class="s">{package_name}</span><span class="p">)</span>
