@@ -49,6 +49,13 @@ bool DeviceContainer::load_component(
       opts.use_global_arguments(false);
       opts.use_intra_process_comms(true);
       std::vector<std::string> remap_rules;
+
+      std::string can_ns = this->get_namespace();
+      if (!can_ns.empty()) {
+        remap_rules.push_back("--ros-args");
+        remap_rules.push_back("-r");
+        remap_rules.push_back("__ns:=" + can_ns);
+      }
       remap_rules.push_back("--ros-args");
       // remap_rules.push_back("--log-level");
       // remap_rules.push_back("debug");
