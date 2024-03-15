@@ -1,4 +1,4 @@
-controller_manager:
+__namespace__/controller_manager:
   ros__parameters:
     update_rate: 10  # Hz
 
@@ -8,6 +8,6 @@ controller_manager:
     node_1_controller:
       type: canopen_ros2_controllers/CanopenProxyController
 
-node_1_controller:
+__namespace__/node_1_controller:
   ros__parameters:
     joint: node_1

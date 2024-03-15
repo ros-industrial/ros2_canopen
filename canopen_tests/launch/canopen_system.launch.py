@@ -40,10 +40,13 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import GroupAction
+from launch_ros.actions import PushROSNamespace
+from nav2_common.launch import ReplaceString
 
 
 def launch_setup(context, *args, **kwargs):
-
+    can_ns = LaunchConfiguration("can_ns")
     name = LaunchConfiguration("name")
     prefix = LaunchConfiguration("prefix")
 
@@ -111,6 +114,11 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
+    ros2_control_config = ReplaceString(
+        source_file=ros2_control_config,
+        replacements={"__namespace__/":(can_ns, "/")}
+    )
+
     # nodes to start are listed below
     control_node = Node(
         package="controller_manager",
@@ -123,13 +131,13 @@ def launch_setup(context, *args, **kwargs):
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=["joint_state_broadcaster"]
     )
 
     canopen_proxy_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["node_1_controller", "--controller-manager", "/controller_manager"],
+        arguments=["node_1_controller"]
     )
 
     robot_state_publisher_node = Node(
@@ -174,12 +182,21 @@ def launch_setup(context, *args, **kwargs):
         canopen_proxy_controller_spawner,
     ]
 
+    actions = [PushROSNamespace(can_ns)]
+    actions.extend(nodes_to_start)
+    return [GroupAction(actions=actions)]
+
     return nodes_to_start
 
 
 def generate_launch_description():
 
     declared_arguments = []
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "can_ns", description="namespace", default_value="",
+        )
+    )
     declared_arguments.append(
         DeclareLaunchArgument(
             "name", description="robot name", default_value="canopen_test_system"
