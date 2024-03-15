@@ -11,7 +11,7 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"  # Installation prefix
   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/build
   GIT_REPOSITORY https://gitlab.com/lely_industries/lely-core.git
-  GIT_TAG 7824cbb2ac08d091c4fa2fb397669b938de9e3f5
+  GIT_TAG b63a0b6f79d3ea91dc221724b42dae49894449fc
   TIMEOUT 60
   #UPDATE step apply patch to fix dcf-tools install
   UPDATE_COMMAND
