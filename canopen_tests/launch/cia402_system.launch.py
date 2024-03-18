@@ -187,15 +187,7 @@ def launch_setup(context, *args, **kwargs):
         forward_position_controller,
     ]
 
-    logging = launch.actions.GroupAction(
-        actions=[
-            launch.actions.LogInfo(msg="----------------------------------------------"),
-            launch.actions.LogInfo(msg=robot_description_content),
-            launch.actions.LogInfo(msg="----------------------------------------------"),
-        ]
-    )
-
-    return nodes_to_start + [logging]
+    return nodes_to_start
 
 
 def generate_launch_description():
