@@ -126,29 +126,25 @@ def launch_setup(context, *args, **kwargs):
         executable="ros2_control_node",
         parameters=[robot_description, ros2_control_config],
         output="screen",
-        namespace=bot_ns,
     )
 
     # load one controller just to make sure it can connect to controller_manager
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", PathJoinSubstitution([bot_ns, "controller_manager"]),
-                   "-n", PathJoinSubstitution([bot_ns])],
+        arguments=["joint_state_broadcaster"],
     )
 
     cia402_device_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["cia402_device_1_controller", "--controller-manager", PathJoinSubstitution([bot_ns, "controller_manager"]),
-                   "-n", PathJoinSubstitution([bot_ns])],
+        arguments=["cia402_device_1_controller",]
     )
 
     forward_position_controller = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["forward_position_controller", "--controller-manager", PathJoinSubstitution([bot_ns, "controller_manager"]),
-                   "-n", PathJoinSubstitution([bot_ns])],
+        arguments=["forward_position_controller",]
     )
 
     robot_state_publisher_node = Node(
@@ -156,7 +152,6 @@ def launch_setup(context, *args, **kwargs):
         executable="robot_state_publisher",
         output="both",
         parameters=[robot_description],
-        namespace=bot_ns,
     )
 
     # hardcoded slave configuration form test package
@@ -175,20 +170,15 @@ def launch_setup(context, *args, **kwargs):
             "slave_config": slave_config,
         }.items(),
     )
-    slave_node_1 = GroupAction(actions=[PushROSNamespace(bot_ns),
-                                        slave_node_1])
 
-    nodes_to_start = [
-        control_node,
-        robot_state_publisher_node,
-        joint_state_broadcaster_spawner,
-        slave_node_1,
-        cia402_device_controller_spawner,
-        forward_position_controller,
-    ]
-
-    return nodes_to_start
-
+    namespaced_nodes = [GroupAction(actions=[PushROSNamespace(bot_ns),
+                                            control_node,
+                                            robot_state_publisher_node,
+                                            joint_state_broadcaster_spawner,
+                                            slave_node_1,
+                                            cia402_device_controller_spawner,
+                                            forward_position_controller])]
+    return namespaced_nodes
 
 def generate_launch_description():
 
