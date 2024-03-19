@@ -115,6 +115,8 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
+    # Our controllers get their names from the control config, so we have to
+    # include their namespace here to get them to start up within it.
     ros2_control_config = ReplaceString(
         source_file=ros2_control_config,
         replacements={"__namespace__/":(bot_ns, "/")}
