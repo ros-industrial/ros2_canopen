@@ -1,4 +1,4 @@
-__namespace__/controller_manager:
+controller_manager:
   ros__parameters:
     update_rate: 10  # Hz
 
@@ -14,17 +14,17 @@ __namespace__/controller_manager:
     forward_position_controller:
       type: forward_command_controller/ForwardCommandController
 
-__namespace__/cia402_device_1_controller:
+cia402_device_1_controller:
   ros__parameters:
     joint: node_1
 
-__namespace__/forward_position_controller:
+forward_position_controller:
   ros__parameters:
     joints:
       - node_1
     interface_name: position
 
-__namespace__/joint_trajectory_controller:
+joint_trajectory_controller:
   ros__parameters:
     joints:
       - node_1
