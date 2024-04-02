@@ -5,6 +5,7 @@
   <version>0.2.8</version>
   <description>Meta-package aggregating the ros2_canopen packages and documentation</description>
   <maintainer email="christoph.hellmann.santos@ipa.fraunhofer.de">Christoph Hellmann Santos</maintainer>
+  <maintainer email="vishnuprasad.prachandabhanu@ipa.fraunhofer.de">Vishnuprasad Prachandabhanu</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
