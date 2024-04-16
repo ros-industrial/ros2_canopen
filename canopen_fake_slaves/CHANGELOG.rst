@@ -2,6 +2,9 @@
 Changelog for package canopen_fake_slaves
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.8 (2024-01-19)
 ------------------
 * Add fake profile velocity (`#230 <https://github.com/ros-industrial/ros2_canopen/issues/230>`_)

@@ -2,6 +2,11 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update the lely_core_libraries hash to the latest.
+* Contributors: Chris Lalancette, Vishnuprasad Prachandabhanu
+
 0.2.8 (2024-01-19)
 ------------------
 
