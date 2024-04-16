@@ -2,8 +2,8 @@
 Changelog for package canopen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.9 (2024-04-16)
+------------------
 * Update maintainer list
 * Update package.xml
 * Add timeouts
