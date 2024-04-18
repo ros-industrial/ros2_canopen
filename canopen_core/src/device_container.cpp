@@ -136,24 +136,24 @@ void DeviceContainer::configure()
 {
   if (!this->get_parameter("can_interface_name", can_interface_name_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter can_interface_name could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
   if (!this->get_parameter("master_config", dcf_txt_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter master_config could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
   if (!this->get_parameter("master_bin", dcf_bin_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter master_bin could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
 
   if (!this->get_parameter("bus_config", bus_config_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter bus_config could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
 
   if (can_interface_name_.length() == 0)
