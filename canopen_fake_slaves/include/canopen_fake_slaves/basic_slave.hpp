@@ -24,6 +24,7 @@
 #include <lely/io2/sys/timer.hpp>
 
 #include <thread>
+#include <typeinfo>
 
 #include "canopen_fake_slaves/base_slave.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
@@ -39,6 +40,59 @@ public:
 
 protected:
   /**
+   * @brief This function gets an object value through the typed interface.
+   * Only supports object types that can fit in a 32-bit container.
+   * @param idx The index of the PDO.
+   * @param subidx The subindex of the PDO.
+   * @return value of object stored in a 32-bit container
+   */
+  uint32_t GetValue(const uint16_t idx, const uint8_t subidx) const noexcept
+  {
+    auto & type = (*this)[idx][subidx].Type();
+
+    uint32_t value{0};
+
+    if (type == typeid(bool))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<bool>());
+    }
+    else if (type == typeid(int8_t))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<int8_t>());
+    }
+    else if (type == typeid(int16_t))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<int16_t>());
+    }
+    else if (type == typeid(int32_t))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<int32_t>());
+    }
+    else if (type == typeid(float))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<float>());
+    }
+    else if (type == typeid(uint8_t))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<uint8_t>());
+    }
+    else if (type == typeid(uint16_t))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<uint16_t>());
+    }
+    else if (type == typeid(uint32_t))
+    {
+      value = (*this)[idx][subidx].Get<uint32_t>();
+    }
+    else
+    {
+      value = (*this)[idx][subidx].Get<uint32_t>();
+    }
+
+    return value;
+  }
+
+  /**
    * @brief This function is called when a value is written to the local object dictionary by an SDO
    * or RPDO. Also copies the RPDO value to TPDO.
    * @param idx The index of the PDO.
@@ -46,8 +100,7 @@ protected:
    */
   void OnWrite(uint16_t idx, uint8_t subidx) noexcept override
   {
-    uint32_t val = (*this)[idx][subidx];
-    (*this)[0x4001][0] = val;
+    (*this)[0x4001][0] = this->GetValue(idx, subidx);
     this->TpdoEvent(0);
   }
 };
