@@ -104,7 +104,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
   {
     sdo_timeout_ms = std::optional(this->config_["sdo_timeout_ms"].as<int>());
   }
-  catch(...)
+  catch (...)
   {
   }
   sdo_timeout_ms_ = sdo_timeout_ms.value_or(20);
@@ -181,7 +181,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
   {
     sdo_timeout_ms = std::optional(this->config_["sdo_timeout_ms"].as<int>());
   }
-  catch(...)
+  catch (...)
   {
   }
   sdo_timeout_ms_ = sdo_timeout_ms.value_or(20);
