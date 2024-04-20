@@ -314,7 +314,7 @@ protected:
 
   uint8_t nodeid;
   std::string name_;
-  
+
   std::chrono::milliseconds sdo_timeout;
 
   std::function<void()> on_sync_function_;
