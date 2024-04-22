@@ -51,7 +51,8 @@ bool DeviceContainer::load_component(
       std::vector<std::string> remap_rules;
 
       std::string can_ns = this->get_namespace();
-      if (!can_ns.empty()) {
+      if (!can_ns.empty())
+      {
         remap_rules.push_back("--ros-args");
         remap_rules.push_back("-r");
         remap_rules.push_back("__ns:=" + can_ns);

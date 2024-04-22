@@ -43,6 +43,7 @@ from nav2_common.launch import ReplaceString
 from launch.actions import GroupAction
 from launch_ros.actions import PushROSNamespace
 
+
 def launch_setup(context, *args, **kwargs):
 
     name = LaunchConfiguration("name")
@@ -101,7 +102,6 @@ def launch_setup(context, *args, **kwargs):
     )
     robot_description = {"robot_description": robot_description_content}
 
-
     # ros2 control configuration
     ros2_control_config_package = LaunchConfiguration("ros2_control_config_package")
     ros2_control_config_directory = LaunchConfiguration("ros2_control_config_directory")
@@ -118,8 +118,7 @@ def launch_setup(context, *args, **kwargs):
     # Our controllers get their names from the control config, so we have to
     # include their namespace here to get them to start up within it.
     ros2_control_config = ReplaceString(
-        source_file=ros2_control_config,
-        replacements={"__namespace__/":(bot_ns, "/")}
+        source_file=ros2_control_config, replacements={"__namespace__/": (bot_ns, "/")}
     )
 
     # nodes to start are listed below
@@ -140,13 +139,17 @@ def launch_setup(context, *args, **kwargs):
     cia402_device_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["cia402_device_1_controller",]
+        arguments=[
+            "cia402_device_1_controller",
+        ],
     )
 
     forward_position_controller = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["forward_position_controller",]
+        arguments=[
+            "forward_position_controller",
+        ],
     )
 
     robot_state_publisher_node = Node(
@@ -173,22 +176,27 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
-    namespaced_nodes = [GroupAction(actions=[PushROSNamespace(bot_ns),
-                                            control_node,
-                                            robot_state_publisher_node,
-                                            joint_state_broadcaster_spawner,
-                                            slave_node_1,
-                                            cia402_device_controller_spawner,
-                                            forward_position_controller])]
+    namespaced_nodes = [
+        GroupAction(
+            actions=[
+                PushROSNamespace(bot_ns),
+                control_node,
+                robot_state_publisher_node,
+                joint_state_broadcaster_spawner,
+                slave_node_1,
+                cia402_device_controller_spawner,
+                forward_position_controller,
+            ]
+        )
+    ]
     return namespaced_nodes
+
 
 def generate_launch_description():
 
     declared_arguments = []
     declared_arguments.append(
-        DeclareLaunchArgument(
-            "bot_ns", description="Namespace for these nodes", default_value=""
-        )
+        DeclareLaunchArgument("bot_ns", description="Namespace for these nodes", default_value="")
     )
     declared_arguments.append(
         DeclareLaunchArgument(
