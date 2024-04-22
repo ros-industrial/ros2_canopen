@@ -2,15 +2,6 @@
 Changelog for package canopen_402_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.2.9 (2024-04-16)
-------------------
-* Update the lely_core_libraries hash to the latest.
-* fix ci build error
-* Contributors: Vishnuprasad Prachandabhanu
-
-0.2.8 (2024-01-19)
-------------------
-
 0.2.7 (2023-06-30)
 ------------------
 * Add missing license headers and activate ament_copyright

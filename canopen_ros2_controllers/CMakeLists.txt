@@ -56,6 +56,33 @@ install(
 if(FALSE)
   find_package(ament_cmake_gmock REQUIRED)
 
+  ament_add_gmock(test_load_canopen_proxy_controller test/test_load_canopen_proxy_controller.cpp)
+  target_include_directories(test_load_canopen_proxy_controller PRIVATE include)
+  ament_target_dependencies(
+    test_load_canopen_proxy_controller
+    controller_manager
+    hardware_interface
+    canopen_interfaces
+  )
+
+  ament_add_gmock(test_load_cia402_device_controller test/test_load_cia402_device_controller.cpp)
+  target_include_directories(test_load_cia402_device_controller PRIVATE include)
+  ament_target_dependencies(
+    test_load_cia402_device_controller
+    controller_manager
+    hardware_interface
+    canopen_interfaces
+  )
+
+  ament_add_gmock(test_load_cia402_robot_controller test/test_load_cia402_robot_controller.cpp)
+  target_include_directories(test_load_cia402_robot_controller PRIVATE include)
+  ament_target_dependencies(
+    test_load_cia402_robot_controller
+    controller_manager
+    hardware_interface
+    canopen_interfaces
+  )
+
 #   ament_add_gmock(test_load_canopen_proxy_controller test/test_load_canopen_proxy_controller.cpp)
 #   target_include_directories(test_load_canopen_proxy_controller PRIVATE include)
 #   ament_target_dependencies(
