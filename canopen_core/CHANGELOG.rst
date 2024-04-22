@@ -4,6 +4,8 @@ Changelog for package canopen_core
 
 Forthcoming
 -----------
+* catalogue for first release humble
+* Contributors: ipa-vsp
 
 0.2.10 (2024-04-22)
 -------------------
