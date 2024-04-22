@@ -13,6 +13,7 @@ target_include_directories(test_node_canopen_driver PUBLIC
 )
 target_link_libraries(test_node_canopen_driver
     node_canopen_driver
+    yaml-cpp
 )
 
 ament_add_gmock(test_node_canopen_master
@@ -30,6 +31,7 @@ target_include_directories(test_node_canopen_master PUBLIC
 )
 target_link_libraries(test_node_canopen_master
     node_canopen_master
+    yaml-cpp
 )
 
 # Temporary fixing ci build stability
@@ -62,6 +64,7 @@ target_include_directories(test_canopen_driver PUBLIC
 )
 target_link_libraries(test_canopen_driver
     node_canopen_driver
+    yaml-cpp
 )
 
 ament_add_gmock(test_lifecycle_canopen_driver
@@ -75,6 +78,7 @@ target_include_directories(test_lifecycle_canopen_driver PUBLIC
 )
 target_link_libraries(test_lifecycle_canopen_driver
     node_canopen_driver
+    yaml-cpp
 )
 
 ament_add_gmock(test_canopen_master
@@ -88,6 +92,7 @@ target_include_directories(test_canopen_master PUBLIC
 )
 target_link_libraries(test_canopen_master
     node_canopen_master
+    yaml-cpp
 )
 
 ament_add_gmock(test_lifecycle_canopen_master
@@ -101,6 +106,7 @@ target_include_directories(test_lifecycle_canopen_master PUBLIC
 )
 target_link_libraries(test_lifecycle_canopen_master
     node_canopen_master
+    yaml-cpp
 )
 
 ament_add_gmock(test_lifecycle_manager
