@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Configuration Package &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -117,42 +120,42 @@
            <div itemprop="articleBody">
              
   <section id="configuration-package">
-<h1>Configuration Package<a class="headerlink" href="#configuration-package" title="Permalink to this headline"></a></h1>
+<h1>Configuration Package<a class="headerlink" href="#configuration-package" title="Link to this heading"></a></h1>
 <p>A configuration package contains one or more configurations for the CANopen
 stack. The configuration package needs to hold the EDS/DCF files for each device,
 the bus configuration and the launch files for the different configurations.</p>
 <p>Consequently, the structure of the configuration package should look as follows:</p>
 <blockquote>
-<div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>{package_name}
-├── config
-│   ├── {bus_config_name_1}
-│   |   ├── bus.yml
-│   |   ├── {device1}.eds
-│   |   ├── {device...}.eds
-│   |   └── {slave_n}.eds
-│   └── {bus_config_name_2}
-│       ├── bus.yml
-│       ├── {device1}.eds
-│       ├── {device...}.eds
-│       └── {slave_n}.eds
-├── launch
-│   ├── {bus_config_name_1}.launch.py
-|   └── {bus_config_name_1}.launch.py
-├── CMakeLists.txt
-└── package.xml
+<div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">package_name</span><span class="p">}</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">config</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">bus_config_name_1</span><span class="p">}</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">bus</span><span class="p">.</span><span class="n">yml</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device1</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device</span><span class="p">...}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">slave_n</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">bus_config_name_2</span><span class="p">}</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="n">bus</span><span class="p">.</span><span class="n">yml</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device1</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">device</span><span class="p">...}.</span><span class="n">eds</span>
+<span class="err">│</span><span class="w">       </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">slave_n</span><span class="p">}.</span><span class="n">eds</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">launch</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="p">{</span><span class="n">bus_config_name_1</span><span class="p">}.</span><span class="n">launch</span><span class="p">.</span><span class="n">py</span>
+<span class="o">|</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="p">{</span><span class="n">bus_config_name_1</span><span class="p">}.</span><span class="n">launch</span><span class="p">.</span><span class="n">py</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">CMakeLists</span><span class="p">.</span><span class="n">txt</span>
+<span class="err">└──</span><span class="w"> </span><span class="n">package</span><span class="p">.</span><span class="n">xml</span>
 </pre></div>
 </div>
 </div></blockquote>
 </section>
 <section id="bus-configuration-file">
-<h1>Bus Configuration File<a class="headerlink" href="#bus-configuration-file" title="Permalink to this headline"></a></h1>
+<h1>Bus Configuration File<a class="headerlink" href="#bus-configuration-file" title="Link to this heading"></a></h1>
 <p>The ros2_canopen stack relies on a YAML configuration file that is used
 for configuring the bus topology and specifying configurations for
 each device. The file details which devices connected to the bus, which
 EDS/DCF file applies to them, which parameters of the EDS/DCF files should be
 overwritten and which drivers should be used to control the devices.</p>
 <section id="structure">
-<h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline"></a></h2>
+<h2>Structure<a class="headerlink" href="#structure" title="Link to this heading"></a></h2>
 <p>The YAML configuration file has the following sections:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">options</span><span class="p">:</span><span class="w"> </span><span class="c1"># General options especially dcf_path</span>
 <span class="w">  </span><span class="p p-Indicator">[</span><span class="nv">configuration item</span><span class="p p-Indicator">]:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">value</span><span class="p p-Indicator">]</span>
@@ -173,13 +176,13 @@ overwritten and which drivers should be used to control the devices.</p>
 </div>
 </section>
 <section id="options-section">
-<h2>Options Section<a class="headerlink" href="#options-section" title="Permalink to this headline"></a></h2>
+<h2>Options Section<a class="headerlink" href="#options-section" title="Link to this heading"></a></h2>
 <p>The options section holds general options. Right now these are only the following.</p>
-<table class="colwidths-given longtable docutils align-default" id="id1">
-<caption><span class="caption-text">Options Configuration</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<table class="longtable docutils align-default" id="id1">
+<caption><span class="caption-text">Options Configuration</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>configuration item</p></th>
@@ -194,14 +197,14 @@ overwritten and which drivers should be used to control the devices.</p>
 </table>
 </section>
 <section id="master-section">
-<h2>Master Section<a class="headerlink" href="#master-section" title="Permalink to this headline"></a></h2>
+<h2>Master Section<a class="headerlink" href="#master-section" title="Link to this heading"></a></h2>
 <p>The master section has a number of configuration options. These are not unique to ros2_canopen
 but come from the lely core library. Below you find a list of possible configuration items.</p>
-<table class="colwidths-given longtable docutils align-default" id="id2">
-<caption><span class="caption-text">Master Configuration</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<table class="longtable docutils align-default" id="id2">
+<caption><span class="caption-text">Master Configuration</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>configuration item</p></th>
@@ -278,11 +281,14 @@ but come from the lely core library. Below you find a list of possible configura
 <tr class="row-even"><td><p>boot_time</p></td>
 <td><p>The timeout for booting mandatory slaves in ms (default: 0, see object 1F89).</p></td>
 </tr>
+<tr class="row-odd"><td><p>boot_timeout</p></td>
+<td><p>The timeout for booting all slaves in ms (default: 2000ms).</p></td>
+</tr>
 </tbody>
 </table>
 </section>
 <section id="device-section">
-<h2>Device Section<a class="headerlink" href="#device-section" title="Permalink to this headline"></a></h2>
+<h2>Device Section<a class="headerlink" href="#device-section" title="Link to this heading"></a></h2>
 <p>The device configuration enables configuring the characteristics of the connected CANopen
 device.</p>
 <div class="admonition note">
@@ -291,11 +297,11 @@ device.</p>
 either only lifecycle drivers or only simple drivers.</p>
 <p><strong>Mixing them will not work!</strong></p>
 </div>
-<table class="colwidths-given longtable docutils align-default" id="id3">
-<caption><span class="caption-text">Device Configuration</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
+<table class="longtable docutils align-default" id="id3">
+<caption><span class="caption-text">Device Configuration</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>configuration item</p></th>
@@ -366,23 +372,26 @@ either only lifecycle drivers or only simple drivers.</p>
 <tr class="row-even"><td><p>restore_configuration</p></td>
 <td><p>The sub-index of object 1011 to be used when restoring the configuration (default: 0x00).</p></td>
 </tr>
-<tr class="row-odd"><td><p>sdo</p></td>
+<tr class="row-odd"><td><p>sdo_timeout_ms</p></td>
+<td><p>The timeout to use for SDO reads/writes to this device. (default: 20ms)</p></td>
+</tr>
+<tr class="row-even"><td><p>sdo</p></td>
 <td><p>Additional SDO requests to be sent during configuration (see below).</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="further-references">
-<h2>Further references<a class="headerlink" href="#further-references" title="Permalink to this headline"></a></h2>
+<h2>Further references<a class="headerlink" href="#further-references" title="Link to this heading"></a></h2>
 <p>The dcfgen documentation gives more details on the usage of the dcfgen tool for generating DCF: <a class="reference external" href="https://opensource.lely.com/canopen/docs/dcf-tools/">https://opensource.lely.com/canopen/docs/dcf-tools/</a></p>
 </section>
 <section id="variables">
-<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline"></a></h2>
+<h2>Variables<a class="headerlink" href="#variables" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;BUS_CONFIG_PATH&#64;:</span></code> Automatic config path definition if configuration package structure is followed.</p>
 </section>
 </section>
 <section id="configuration-package-cmake">
-<h1>Configuration Package CMake<a class="headerlink" href="#configuration-package-cmake" title="Permalink to this headline"></a></h1>
+<h1>Configuration Package CMake<a class="headerlink" href="#configuration-package-cmake" title="Link to this heading"></a></h1>
 <p>In order to build the configuration package and generate the necessary runtime artifacts from the
 bus configuration file and eds/dcf files, the lely_core_libraries package contains an extra
 CMAKE macro.</p>

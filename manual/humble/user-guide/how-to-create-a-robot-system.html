@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>How to create a robot system with ros2_control &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -109,14 +112,14 @@
            <div itemprop="articleBody">
              
   <section id="how-to-create-a-robot-system-with-ros2-control">
-<h1>How to create a robot system with ros2_control<a class="headerlink" href="#how-to-create-a-robot-system-with-ros2-control" title="Permalink to this headline"></a></h1>
+<h1>How to create a robot system with ros2_control<a class="headerlink" href="#how-to-create-a-robot-system-with-ros2-control" title="Link to this heading"></a></h1>
 <p>This guide describes how to create a simple robot using the robot system hardware interface
 leveragin ros2_control.</p>
 <ol class="arabic simple">
 <li><p>Create a new configuration package with the name <code class="docutils literal notranslate"><span class="pre">canopen_robot_control_example</span></code>.</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ros2<span class="w"> </span>pkg<span class="w"> </span>create<span class="w"> </span>--dependencies<span class="w"> </span>ros2_canopen<span class="w"> </span>lely_core_libraries<span class="w"> </span>--build-type<span class="w"> </span>ament_cmake<span class="w"> </span><span class="o">{</span>package_name<span class="o">}</span>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ros2<span class="w"> </span>pkg<span class="w"> </span>create<span class="w"> </span>--dependencies<span class="w"> </span>canopen<span class="w"> </span>lely_core_libraries<span class="w"> </span>--build-type<span class="w"> </span>ament_cmake<span class="w"> </span><span class="o">{</span>package_name<span class="o">}</span>
 <span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span><span class="o">{</span>package_name<span class="o">}</span>
 <span class="gp">$ </span>rm<span class="w"> </span>-rf<span class="w"> </span>src
 <span class="gp">$ </span>rm<span class="w"> </span>-rf<span class="w"> </span>include
@@ -195,10 +198,10 @@ leveragin ros2_control.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x607A</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># target position</span>
 
 <span class="nt">nodes</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">joint_1</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">joint_2</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">  </span><span class="nt">joint_1</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">  </span><span class="nt">joint_2</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
@@ -243,6 +246,7 @@ leveragin ros2_control.</p>
                 <span class="p">[</span>
                     <span class="n">FindPackageShare</span><span class="p">(</span><span class="s2">&quot;canopen_tests&quot;</span><span class="p">),</span>
                     <span class="s2">&quot;urdf&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;robot_controller&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;robot_controller.urdf.xacro&quot;</span><span class="p">,</span>
                 <span class="p">]</span>
             <span class="p">),</span>
