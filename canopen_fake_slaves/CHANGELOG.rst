@@ -5,8 +5,8 @@ Changelog for package canopen_fake_slaves
 0.2.9 (2024-04-16)
 ------------------
 
-Forthcoming
------------
+0.2.12 (2024-04-22)
+-------------------
 * Merge pull request `#265 <https://github.com/ros-industrial/ros2_canopen/issues/265>`_ from kurtist123/feature/expose-fake-slave-includes
   build: export include directories
 * build: export include directories

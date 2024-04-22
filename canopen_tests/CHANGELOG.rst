@@ -5,8 +5,8 @@ Changelog for package canopen_tests
 0.2.9 (2024-04-16)
 ------------------
 
-Forthcoming
------------
+0.2.12 (2024-04-22)
+-------------------
 * Merge pull request `#270 <https://github.com/ros-industrial/ros2_canopen/issues/270>`_ from gsalinas/can-namespace-pr
   Put components loaded by the device container into its namespace, if any.
 * pre-commit update

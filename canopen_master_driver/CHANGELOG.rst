@@ -7,8 +7,8 @@ Changelog for package canopen_master_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
-Forthcoming
------------
+0.2.12 (2024-04-22)
+-------------------
 * 0.2.9
 * forthcoming
 * Merge pull request `#220 <https://github.com/ros-industrial/ros2_canopen/issues/220>`_ from ipa-vsp/feature/timeout-config

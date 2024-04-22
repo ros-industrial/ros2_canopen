@@ -9,8 +9,8 @@ Changelog for package canopen
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
 
-Forthcoming
------------
+0.2.12 (2024-04-22)
+-------------------
 * Merge pull request `#280 <https://github.com/ros-industrial/ros2_canopen/issues/280>`_ from ipa-vsp/fix/yaml-build-error
   Fix undefined reference to yaml library
 * pre-commit update
