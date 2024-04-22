@@ -7,6 +7,17 @@ Changelog for package canopen_master_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
+Forthcoming
+-----------
+* 0.2.9
+* forthcoming
+* Merge pull request `#220 <https://github.com/ros-industrial/ros2_canopen/issues/220>`_ from ipa-vsp/feature/timeout-config
+  Add timeouts
+* Revert timeout change to master since I'm not providing a way to set that timeout.
+* Make 20ms a default argument of the master & driver bridges.
+* timeout for booting slave
+* Contributors: Gerry Salinas, Vishnuprasad Prachandabhanu, ipa-vsp
+
 0.2.8 (2024-01-19)
 ------------------
 

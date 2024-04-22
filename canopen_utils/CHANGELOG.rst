@@ -5,6 +5,12 @@ Changelog for package canopen_utils
 0.2.9 (2024-04-16)
 ------------------
 
+Forthcoming
+-----------
+* 0.2.9
+* forthcoming
+* Contributors: ipa-vsp
+
 0.2.8 (2024-01-19)
 ------------------
 

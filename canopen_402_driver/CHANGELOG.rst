@@ -8,6 +8,15 @@ Changelog for package canopen_402_driver
 * fix ci build error
 * Contributors: Vishnuprasad Prachandabhanu
 
+Forthcoming
+-----------
+* 0.2.9
+* forthcoming
+* Merge pull request `#267 <https://github.com/ros-industrial/ros2_canopen/issues/267>`_ from clalancette/clalancette/update-lely-core-hash
+  Update the lely_core_libraries hash to the latest.
+* fix ci build error
+* Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
+
 0.2.8 (2024-01-19)
 ------------------
 

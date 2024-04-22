@@ -7,6 +7,26 @@ Changelog for package canopen_base_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
+Forthcoming
+-----------
+* Merge pull request `#280 <https://github.com/ros-industrial/ros2_canopen/issues/280>`_ from ipa-vsp/fix/yaml-build-error
+  Fix undefined reference to yaml library
+* pre-commit update
+* Merge pull request `#261 <https://github.com/ros-industrial/ros2_canopen/issues/261>`_ from gsalinas/configurable-sdo-timeout
+  Configurable SDO timeout
+* 0.2.9
+* forthcoming
+* Merge pull request `#220 <https://github.com/ros-industrial/ros2_canopen/issues/220>`_ from ipa-vsp/feature/timeout-config
+  Add timeouts
+* Set SDO timeout from node config.
+* Replace two more hardcoded timeouts.
+* Include timeout in documentation comment for LelyDriverBridge.
+* Make 20ms a default argument of the master & driver bridges.
+* change error to warn for testing
+* remove build warings
+* non transmit time from bus.yml
+* Contributors: Gerry Salinas, Vishnuprasad Prachandabhanu, ipa-vsp
+
 0.2.8 (2024-01-19)
 ------------------
 

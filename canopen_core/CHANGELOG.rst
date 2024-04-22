@@ -7,6 +7,25 @@ Changelog for package canopen_core
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
 
+Forthcoming
+-----------
+* Merge pull request `#270 <https://github.com/ros-industrial/ros2_canopen/issues/270>`_ from gsalinas/can-namespace-pr
+  Put components loaded by the device container into its namespace, if any.
+* pre-commit update
+* Put components loaded by the device container into its namespace, if any.
+* Merge pull request `#280 <https://github.com/ros-industrial/ros2_canopen/issues/280>`_ from ipa-vsp/fix/yaml-build-error
+  Fix undefined reference to yaml library
+* fix undefined reference to yaml
+* Fix logging in device_container.cpp (`#277 <https://github.com/ros-industrial/ros2_canopen/issues/277>`_)
+* 0.2.9
+* forthcoming
+* Merge pull request `#220 <https://github.com/ros-industrial/ros2_canopen/issues/220>`_ from ipa-vsp/feature/timeout-config
+  Add timeouts
+* change from 100ms to 2000ms
+* non transmit time from bus.yml
+* timeout for booting slave
+* Contributors: Christoph Hellmann Santos, Gerry Salinas, Vishnuprasad Prachandabhanu, ipa-vsp
+
 0.2.8 (2024-01-19)
 ------------------
 

@@ -5,6 +5,12 @@ Changelog for package canopen_ros2_control
 0.2.9 (2024-04-16)
 ------------------
 
+Forthcoming
+-----------
+* 0.2.9
+* forthcoming
+* Contributors: ipa-vsp
+
 0.2.8 (2024-01-19)
 ------------------
 * Update robot_system.cpp (`#168 <https://github.com/ros-industrial/ros2_canopen/issues/168>`_)

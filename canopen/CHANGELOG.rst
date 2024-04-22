@@ -9,6 +9,25 @@ Changelog for package canopen
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
 
+Forthcoming
+-----------
+* Merge pull request `#280 <https://github.com/ros-industrial/ros2_canopen/issues/280>`_ from ipa-vsp/fix/yaml-build-error
+  Fix undefined reference to yaml library
+* pre-commit update
+* Merge pull request `#261 <https://github.com/ros-industrial/ros2_canopen/issues/261>`_ from gsalinas/configurable-sdo-timeout
+  Configurable SDO timeout
+* 0.2.9
+* forthcoming
+* Merge pull request `#272 <https://github.com/ros-industrial/ros2_canopen/issues/272>`_ from ros-industrial/ipa-vsp-patch-1
+  Update maintainer list
+* Update package.xml
+* Merge pull request `#220 <https://github.com/ros-industrial/ros2_canopen/issues/220>`_ from ipa-vsp/feature/timeout-config
+  Add timeouts
+* Add SDO timeout to device config documentation.
+* change from 100ms to 2000ms
+* timeout for booting slave
+* Contributors: Gerry Salinas, Vishnuprasad Prachandabhanu, ipa-vsp
+
 0.2.8 (2024-01-19)
 ------------------
 * Documentation: Fix launch file spelling (`#208 <https://github.com/ros-industrial/ros2_canopen/issues/208>`_)

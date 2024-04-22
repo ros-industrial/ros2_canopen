@@ -7,6 +7,17 @@ Changelog for package lely_core_libraries
 * Update the lely_core_libraries hash to the latest.
 * Contributors: Chris Lalancette, Vishnuprasad Prachandabhanu
 
+Forthcoming
+-----------
+* 0.2.9
+* forthcoming
+* Merge pull request `#267 <https://github.com/ros-industrial/ros2_canopen/issues/267>`_ from clalancette/clalancette/update-lely-core-hash
+  Update the lely_core_libraries hash to the latest.
+* Update the lely_core_libraries hash to the latest.
+  This will fix the building of the lely_core_libraries
+  on Ubuntu 24.04.
+* Contributors: Chris Lalancette, Vishnuprasad Prachandabhanu, ipa-vsp
+
 0.2.8 (2024-01-19)
 ------------------
 
