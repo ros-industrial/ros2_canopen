@@ -2,6 +2,14 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.9 (2024-04-16)
+------------------
+* Update the lely_core_libraries hash to the latest.
+* Contributors: Chris Lalancette, Vishnuprasad Prachandabhanu
+
+0.2.8 (2024-01-19)
+------------------
+
 0.2.7 (2023-06-30)
 ------------------
 * Add missing license headers and activate ament_copyright

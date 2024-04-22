@@ -1,4 +1,4 @@
-FROM ros:galactic-ros-core-focal
+FROM ros:rolling-ros-core
 
 
 RUN apt-get update \
@@ -14,7 +14,7 @@ WORKDIR /home/can_ws/src
 COPY . ros2_canopen
 
 WORKDIR /home/can_ws/
-RUN . /opt/ros/galactic/setup.sh \
+RUN . /opt/ros/rolling/setup.sh \
     && rosdep init && rosdep update \
     && rosdep install --from-paths src --ignore-src -r -y \
     && colcon build \

@@ -49,6 +49,14 @@ bool DeviceContainer::load_component(
       opts.use_global_arguments(false);
       opts.use_intra_process_comms(true);
       std::vector<std::string> remap_rules;
+
+      std::string can_ns = this->get_namespace();
+      if (!can_ns.empty())
+      {
+        remap_rules.push_back("--ros-args");
+        remap_rules.push_back("-r");
+        remap_rules.push_back("__ns:=" + can_ns);
+      }
       remap_rules.push_back("--ros-args");
       // remap_rules.push_back("--log-level");
       // remap_rules.push_back("debug");
@@ -136,24 +144,24 @@ void DeviceContainer::configure()
 {
   if (!this->get_parameter("can_interface_name", can_interface_name_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter can_interface_name could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
   if (!this->get_parameter("master_config", dcf_txt_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter master_config could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
   if (!this->get_parameter("master_bin", dcf_bin_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter master_bin could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
 
   if (!this->get_parameter("bus_config", bus_config_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter bus_config could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
 
   if (can_interface_name_.length() == 0)

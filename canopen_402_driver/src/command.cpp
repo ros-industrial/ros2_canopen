@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 #include "canopen_402_driver/command.hpp"
+#include <stdexcept>
 using namespace ros2_canopen;
 
 const Command402::TransitionTable Command402::transitions_;

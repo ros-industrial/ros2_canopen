@@ -100,9 +100,6 @@ hardware_interface::CallbackReturn RobotSystem::on_init(
       {
         robot_motor_data_.push_back(data);
       }
-      {
-        robot_motor_data_.push_back(data);
-      }
     }
     else
     {

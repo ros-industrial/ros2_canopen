@@ -2,6 +2,12 @@
 Changelog for package canopen_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.9 (2024-04-16)
+------------------
+
+0.2.8 (2024-01-19)
+------------------
+
 0.2.7 (2023-06-30)
 ------------------
 * Add missing license headers and activate ament_copyright

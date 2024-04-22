@@ -37,11 +37,23 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
 {
   try
   {
+    this->non_transmit_timeout_ =
+      std::chrono::milliseconds(this->config_["non_transmit_timeout"].as<int>());
+  }
+  catch (...)
+  {
+  }
+  RCLCPP_INFO_STREAM(
+    this->node_->get_logger(),
+    "Non transmit timeout" << static_cast<int>(this->non_transmit_timeout_.count()) << "ms");
+
+  try
+  {
     polling_ = this->config_["polling"].as<bool>();
   }
   catch (...)
   {
-    RCLCPP_ERROR(this->node_->get_logger(), "Could not polling from config, setting to true.");
+    RCLCPP_WARN(this->node_->get_logger(), "Could not polling from config, setting to true.");
     polling_ = true;
   }
   if (polling_)
@@ -52,7 +64,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
     }
     catch (...)
     {
-      RCLCPP_ERROR(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
+      RCLCPP_WARN(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
       period_ms_ = 10;
     }
   }
@@ -64,7 +76,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
   }
   catch (...)
   {
-    RCLCPP_ERROR(
+    RCLCPP_WARN(
       this->node_->get_logger(),
       "Could not read enable diagnostics from config, setting to false.");
     diagnostic_enabled_ = false;
@@ -86,17 +98,39 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
     diagnostic_updater_ = std::make_shared<diagnostic_updater::Updater>(this->node_);
     diagnostic_updater_->setHardwareID(std::to_string(this->node_id_));
   }
+
+  std::optional<int> sdo_timeout_ms;
+  try
+  {
+    sdo_timeout_ms = std::optional(this->config_["sdo_timeout_ms"].as<int>());
+  }
+  catch (...)
+  {
+  }
+  sdo_timeout_ms_ = sdo_timeout_ms.value_or(20);
 }
 template <>
 void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
 {
   try
   {
+    this->non_transmit_timeout_ =
+      std::chrono::milliseconds(this->config_["non_transmit_timeout"].as<int>());
+  }
+  catch (...)
+  {
+  }
+  RCLCPP_INFO_STREAM(
+    this->node_->get_logger(),
+    "Non transmit timeout" << static_cast<int>(this->non_transmit_timeout_.count()) << "ms");
+
+  try
+  {
     polling_ = this->config_["polling"].as<bool>();
   }
   catch (...)
   {
-    RCLCPP_ERROR(this->node_->get_logger(), "Could not polling from config, setting to true.");
+    RCLCPP_WARN(this->node_->get_logger(), "Could not polling from config, setting to true.");
     polling_ = true;
   }
   if (polling_)
@@ -107,7 +141,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
     }
     catch (...)
     {
-      RCLCPP_ERROR(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
+      RCLCPP_WARN(this->node_->get_logger(), "Could not read period from config, setting to 10ms");
       period_ms_ = 10;
     }
   }
@@ -119,7 +153,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
   }
   catch (...)
   {
-    RCLCPP_ERROR(
+    RCLCPP_WARN(
       this->node_->get_logger(),
       "Could not read enable diagnostics from config, setting to false.");
     diagnostic_enabled_ = false;
@@ -132,7 +166,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
     }
     catch (...)
     {
-      RCLCPP_ERROR(
+      RCLCPP_WARN(
         this->node_->get_logger(),
         "Could not read diagnostics period from config, setting to 1000ms");
       diagnostic_period_ms_ = 1000;
@@ -141,6 +175,16 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
     diagnostic_updater_ = std::make_shared<diagnostic_updater::Updater>(this->node_);
     diagnostic_updater_->setHardwareID(std::to_string(this->node_id_));
   }
+
+  std::optional<int> sdo_timeout_ms;
+  try
+  {
+    sdo_timeout_ms = std::optional(this->config_["sdo_timeout_ms"].as<int>());
+  }
+  catch (...)
+  {
+  }
+  sdo_timeout_ms_ = sdo_timeout_ms.value_or(20);
 }
 
 template <class NODETYPE>
@@ -211,7 +255,7 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
       std::scoped_lock<std::mutex> lock(this->driver_mutex_);
       this->lely_driver_ = std::make_shared<ros2_canopen::LelyDriverBridge>(
         *(this->exec_), *(this->master_), this->node_id_, this->node_->get_name(), this->eds_,
-        this->bin_);
+        this->bin_, std::chrono::milliseconds(this->sdo_timeout_ms_));
       this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(this->lely_driver_);
       prom->set_value(lely_driver_);
     });

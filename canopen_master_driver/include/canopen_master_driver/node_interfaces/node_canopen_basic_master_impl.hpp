@@ -16,7 +16,6 @@
 #ifndef NODE_CANOPEN_BASIC_MASTER_IMPL_HPP_
 #define NODE_CANOPEN_BASIC_MASTER_IMPL_HPP_
 
-#include "canopen_core/node_interfaces/node_canopen_master.hpp"
 #include "canopen_master_driver/lely_master_bridge.hpp"
 #include "canopen_master_driver/node_interfaces/node_canopen_basic_master.hpp"
 
@@ -28,6 +27,7 @@ void NodeCanopenBasicMaster<NODETYPE>::activate(bool called_from_base)
   master_bridge_ = std::make_shared<LelyMasterBridge>(
     *(this->exec_), *(this->timer_), *(this->chan_), this->master_dcf_, this->master_bin_,
     this->node_id_);
+  master_bridge_->SetTimeout(std::chrono::milliseconds(this->timeout_));
   this->master_ = std::static_pointer_cast<lely::canopen::AsyncMaster>(master_bridge_);
 }
 

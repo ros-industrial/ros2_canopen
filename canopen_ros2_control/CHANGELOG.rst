@@ -2,6 +2,14 @@
 Changelog for package canopen_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.9 (2024-04-16)
+------------------
+
+0.2.8 (2024-01-19)
+------------------
+* Update robot_system.cpp (`#168 <https://github.com/ros-industrial/ros2_canopen/issues/168>`_)
+* Contributors: Christoph Hellmann Santos
+
 0.2.7 (2023-06-30)
 ------------------
 * Correct Proxy controller after changes and update tests.
