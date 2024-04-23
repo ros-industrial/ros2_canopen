@@ -4,14 +4,14 @@ This package provides multiple hardware interfaces for testing. Mainly the follo
 
 - canopen_ros2_control/CanopenSystem: A system interface for ProxyDrivers
 - canopen_ros2_control/Cia402System: A system interface for Cia402Drivers
-- canopen_ros2_control/RobotSystem: A system interface for Cia402Drivers in a robot configuration. 
+- canopen_ros2_control/RobotSystem: A system interface for Cia402Drivers in a robot configuration.
 
 
 Robot System Interface
 ----------------------
-The Robot System Interface utilizes information from the robot's URDF (Unified Robot Description Format) to configure and manage Cia402Drivers 
-via the ros2_control hardware interface. The system configuration is determined by the `bus.yml` file, and each joint's associated CANopen device 
-is specified using the `node_id`.
+The Robot System Interface utilizes information from the robot's URDF (Unified Robot Description Format) to configure
+and manage Cia402Drivers via the ros2_control hardware interface. The system configuration is determined by the ``bus.yml``
+file, and each joint's associated CANopen device is specified using the ``node_id``.
 
 **Configuration Example**:
 
@@ -48,7 +48,7 @@ The package provides several controllers optimized for different setups within t
 
 Robot Controller Configuration
 ------------------------------
-The Robot Controller simplifies the operation of robotic joints, automatically managing their states through the ros2_controller lifecycle. 
+The Robot Controller simplifies the operation of robotic joints, automatically managing their states through the ros2_controller lifecycle.
 Once activated, the controller ensures that all drives are operational without requiring further user intervention.
 
 **Configuration Parameters**:

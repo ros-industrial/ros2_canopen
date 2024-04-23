@@ -47,13 +47,11 @@ To start with ROS2 CANOpen Stack, you need to have the following prerequisites:
 
 To effectively implement and utilize the ROS2 CANopen stack, certain prerequisites must be met. Below is a comprehensive list of these requirements:
 
-1. **EDS or DCF Files**: You'll need the Electronic Data Sheet (EDS) or Device Configuration File (DCF) for each CANopen device. These files contain 
-crucial device-specific parameters and configuration details necessary for communication and operational functionality.
+1. **EDS or DCF Files**: You'll need the Electronic Data Sheet (EDS) or Device Configuration File (DCF) for each CANopen device. These files contain
+    crucial device-specific parameters and configuration details necessary for communication and operational functionality.
 
-2. **bus.yml File Configuration**: Prepare the `bus.yml` file, which outlines the bus topology and device-specific settings. This configuration file 
-should specify details such as which devices are connected, the relevant EDS/DCF files, parameter overrides, and driver assignments for each device.
+2. **bus.yml File Configuration**: Prepare the ``bus.yml`` file, which outlines the bus topology and device-specific settings. This configuration file should specify details such as which devices are connected, the relevant EDS/DCF files, parameter overrides, and driver assignments for each device.
 
 3. **Network Configuration**: Set up and configure your network to match the requirements of your CANopen devices and the ROS2 CANopen stack. See :doc:`../quickstart/setup-network`
 
 These are the basic requirements, and continue with the following sections to learn more about the operation modes and how to set up the ROS2 CANopen stack.
-

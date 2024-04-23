@@ -27,7 +27,7 @@ Consequently, the structure of the configuration package should look as follows:
           ├── CMakeLists.txt
           └── package.xml
 
-See section :doc:`how-to-create-a-configuration` for more details.  
+See section :doc:`how-to-create-a-configuration` for more details.
 
 Bus Configuration File
 -----------------------
