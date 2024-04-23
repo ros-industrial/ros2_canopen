@@ -131,6 +131,6 @@ These NMT commands not only help in managing the state of devices but also in pr
 
 How to launch the nodes
 ----------------------------
-Finally, we prepare the launch file for the interface. An example see: https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_tests/launch/canopen_system.launch.py
+Finally, we prepare the launch file for the interface. An example see: https://github.com/ros-industrial/ros2_canopen/blob/master/canopen_ros2_control/launch/canopen_system.launch.py
 
 For testing, please refer to following section.
