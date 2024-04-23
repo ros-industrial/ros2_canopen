@@ -9,3 +9,15 @@ build with colcon and your done.
    $ cd ..
    $ rosdep install --from-paths src/ros2_canopen --ignore-src -r -y
    $ colcon build
+
+Testing with pre-release binaries
+---------------------------------
+To test the package with pre-release binaries, you must first set up your ROS2 workspace to use the ROS2 pre-release repositories.
+To do this, follow the instructions [here](https://docs.ros.org/en/rolling/Installation/Testing.html#debian-testing-repository).
+
+After that, you can install the packages using the following command,
+
+.. code-block:: console
+
+   $ sudo apt update
+   $ sudo apt install ros-<distro>-canopen # replace <distro> with your ROS2 distro

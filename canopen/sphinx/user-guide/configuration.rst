@@ -9,13 +9,13 @@ Consequently, the structure of the configuration package should look as follows:
 
     ::
 
-          {package_name}
+        {package_name}
           ├── config
           │   ├── {bus_config_name_1}
-          │   |   ├── bus.yml
-          │   |   ├── {device1}.eds
-          │   |   ├── {device...}.eds
-          │   |   └── {slave_n}.eds
+          │   │   ├── bus.yml
+          │   │   ├── {device1}.eds
+          │   │   ├── {device...}.eds
+          │   │   └── {slave_n}.eds
           │   └── {bus_config_name_2}
           │       ├── bus.yml
           │       ├── {device1}.eds
@@ -23,14 +23,14 @@ Consequently, the structure of the configuration package should look as follows:
           │       └── {slave_n}.eds
           ├── launch
           │   ├── {bus_config_name_1}.launch.py
-          |   └── {bus_config_name_1}.launch.py
+          │   └── {bus_config_name_1}.launch.py
           ├── CMakeLists.txt
           └── package.xml
 
-
+See section :doc:`how-to-create-a-configuration` for more details.  
 
 Bus Configuration File
-============================
+-----------------------
 
 The ros2_canopen stack relies on a YAML configuration file that is used
 for configuring the bus topology and specifying configurations for
@@ -39,7 +39,7 @@ EDS/DCF file applies to them, which parameters of the EDS/DCF files should be
 overwritten and which drivers should be used to control the devices.
 
 Structure
----------
+''''''''''
 
 The YAML configuration file has the following sections:
 
@@ -63,7 +63,7 @@ The YAML configuration file has the following sections:
 
 
 Options Section
----------------
+''''''''''''''''
 The options section holds general options. Right now these are only the following.
 
 .. csv-table:: Options Configuration
@@ -77,7 +77,7 @@ The options section holds general options. Right now these are only the followin
 
 
 Master Section
---------------
+''''''''''''''''
 The master section has a number of configuration options. These are not unique to ros2_canopen
 but come from the lely core library. Below you find a list of possible configuration items.
 
@@ -113,8 +113,8 @@ but come from the lely core library. Below you find a list of possible configura
   boot_time;	The timeout for booting mandatory slaves in ms (default: 0, see object 1F89).
   boot_timeout;	The timeout for booting all slaves in ms (default: 2000ms).
 
-Device Section
---------------
+Defaults Section
+''''''''''''''''''
 The device configuration enables configuring the characteristics of the connected CANopen
 device.
 
@@ -157,19 +157,11 @@ device.
 
 
 Further references
-------------------
+###################
 The dcfgen documentation gives more details on the usage of the dcfgen tool for generating DCF: https://opensource.lely.com/canopen/docs/dcf-tools/
 
-Variables
----------
-
-``@BUS_CONFIG_PATH@:`` Automatic config path definition if configuration package structure is followed.
-
-
-
-
 Configuration Package CMake
-===========================
+---------------------------
 
 In order to build the configuration package and generate the necessary runtime artifacts from the
 bus configuration file and eds/dcf files, the lely_core_libraries package contains an extra
@@ -177,7 +169,7 @@ CMAKE macro.
 
 **cogen_dcf(target)**
 
-Target: the name of the configuration (e.g. for config/{bus_config_name_1} is bus_config_name_1)
+*Target: the name of the configuration (e.g. for config/{bus_config_name_1} is bus_config_name_1)*
 
 .. code-block::
 

@@ -9,7 +9,7 @@ This is the documentation of the ROS2 CANopen stack.
   :glob:
 
   quickstart/installation
-  quickstart/operation
+  quickstart/setup-network
   quickstart/examples
 
 .. toctree::
