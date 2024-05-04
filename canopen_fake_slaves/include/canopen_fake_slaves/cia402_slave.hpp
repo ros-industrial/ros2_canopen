@@ -360,7 +360,7 @@ protected:
       (*this)[0x6064][0] =
         (int32_t)((actual_position + target_velocity * control_cycle_period_d) * 1000.0);
       std::this_thread::sleep_for(
-        std::chrono::milliseconds(((int32_t)control_cycle_period_d * 1000)));
+        std::chrono::milliseconds(((int32_t)(control_cycle_period_d * 1000.0))));
     }
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Leaving run_profile_velocity_mode");
   }
