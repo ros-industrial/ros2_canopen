@@ -55,6 +55,9 @@ Services
   * - ~/cyclic_velocity_mode
     - Trigger
     - Switches to cyclic velocity mode
+  * - ~/cyclic_torque_mode
+    - Trigger
+    - Switches to cyclic torque mode
   * - ~/interpolated_position_mode
     - Trigger
     - Switches to interpolated position mode, only linear mode with fixed time is supported
