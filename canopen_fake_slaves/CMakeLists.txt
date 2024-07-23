@@ -13,12 +13,12 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 
 add_library(
-  motion_generaor
+  motion_generator
   SHARED
   "src/motion_generator.cpp"
 )
-target_compile_features(motion_generaor  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-target_include_directories(motion_generaor  PUBLIC
+target_compile_features(motion_generator  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(motion_generator  PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
@@ -57,11 +57,15 @@ target_include_directories(cia402_slave_node  PUBLIC
 
 ament_target_dependencies(
   cia402_slave_node
-  motion_generaor
   ${dependencies}
 )
 
-install(TARGETS motion_generaor
+target_link_libraries(
+  cia402_slave_node
+  motion_generator
+)
+
+install(TARGETS motion_generator
 DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS basic_slave_node
