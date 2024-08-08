@@ -11,11 +11,14 @@ Getting started
 
 If you haven't already done so, follow the steps in the :doc:`../user-guide/configuration`.
 
+To know more about how to create a configuration follow this steps: :doc:`../user-guide/how-to-create-a-configuration`.
+
 Configuration
 -------------
-
+- Create new package named ``trinamic_pd42_can``. To know how to create a package follow the documentaion provided in `ROS2 <https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html>`_
+- Follow the configuration folder tree steps.
 - Create a new folder in the ``config`` folder of your configuration package. Name it ``single-pd42``.
-- Download ``.eds`` file from `Trinamic <https://www.trinamic.com/fileadmin/assets/Products/Drives_Software/TMCM-1270_CANopen_V326.zip>`_ and place ``TMCM-1270.eds`` in the ``single-pd42`` folder.
+- Download ``.eds`` file from `Trinamic <https://www.trinamic.com/fileadmin/assets/Products/Drives_Software/TMCM-1270_CANopen_V326.zip>`_ and place ``TMCM-1270.eds`` in the ``single-pd42`` folder. (Aparently can also be found int the github link given at the end of this page.)
 - Create a ``bus.yml`` file in the ``single-pd42`` folder with the following content:
 
     .. code-block:: yaml
@@ -50,7 +53,7 @@ Configuration
                 node_id: 1
 
 
-- Edit the ``CMakeLists.txt`` file in the ``config`` folder of your configuration package and add the following lines:
+- Edit the ``CMakeLists.txt`` file in the package and add the following lines:
 
     .. code-block:: cmake
 
@@ -93,7 +96,7 @@ Configuration
 
         ament_package()
 
-- Create launch file in folder ``launch`` and add the following content:
+- Create launch file ``file_name.launch.py`` in folder ``launch`` and add the following content:
 
     .. code-block:: python
 
@@ -168,7 +171,7 @@ Configuration
 Running the example
 -------------------
 
-To begin, follow the instructions for :doc:`../quickstart/operation`, which can be done using either a virtual or peak CAN interface.
+To begin, follow the instructions for :doc:`../quickstart/setup-network`, which can be done using either a virtual or peak CAN interface.
 
 If you prefer to use a real CAN interface, you will need to modify the launch file by changing the ``can_interface_name`` argument to ``can0``.
 Additionally, if you are using real hardware, you should comment out the fake slave launch by adding a *#* in front of the line *ld.add_action(slave_node_1)*.

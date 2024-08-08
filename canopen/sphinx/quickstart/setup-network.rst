@@ -11,6 +11,13 @@ Setup CAN Controller
   $ sudo ip link set vcan0 txqueuelen 1000
   $ sudo ip link set up vcan0
 
+To interect with the CAN controller you can use ``can-utils`` in order to know the output of the controller.
+
+.. code-block:: console
+
+  $ sudo apt install can-utils
+  $ candump
+  
 **Option 2**: Peak CANController
 
 .. code-block:: console
