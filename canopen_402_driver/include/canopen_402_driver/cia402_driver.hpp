@@ -91,6 +91,8 @@ public:
 
   bool set_mode_torque() { return node_canopen_402_driver_->set_mode_torque(); }
 
+  bool set_mode_cyclic_torque() { return node_canopen_402_driver_->set_mode_cyclic_torque(); }
+
   bool set_mode_interpolated_position()
   {
     return node_canopen_402_driver_->set_mode_interpolated_position();
