@@ -100,6 +100,12 @@ void NodeCanopen402Driver<rclcpp::Node>::init(bool called_from_base)
       &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_torque, this, std::placeholders::_1,
       std::placeholders::_2));
 
+  handle_set_mode_cyclic_torque_service = this->node_->create_service<std_srvs::srv::Trigger>(
+    std::string(this->node_->get_name()).append("/cyclic_torque_mode").c_str(),
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_cyclic_torque, this,
+      std::placeholders::_1, std::placeholders::_2));
+
   handle_set_target_service = this->node_->create_service<canopen_interfaces::srv::COTargetDouble>(
     std::string(this->node_->get_name()).append("/target").c_str(),
     std::bind(
@@ -166,6 +172,12 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::init(bool called_fro
     std::string(this->node_->get_name()).append("/torque_mode").c_str(),
     std::bind(
       &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_torque, this,
+      std::placeholders::_1, std::placeholders::_2));
+
+  handle_set_mode_cyclic_torque_service = this->node_->create_service<std_srvs::srv::Trigger>(
+    std::string(this->node_->get_name()).append("/cyclic_torque_mode").c_str(),
+    std::bind(
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_cyclic_torque, this,
       std::placeholders::_1, std::placeholders::_2));
 
   handle_set_target_service = this->node_->create_service<canopen_interfaces::srv::COTargetDouble>(
@@ -414,6 +426,14 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_torque(
 }
 
 template <class NODETYPE>
+void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_torque(
+  const std_srvs::srv::Trigger::Request::SharedPtr request,
+  std_srvs::srv::Trigger::Response::SharedPtr response)
+{
+  response->success = set_mode_cyclic_torque();
+}
+
+template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_target(
   const canopen_interfaces::srv::COTargetDouble::Request::SharedPtr request,
   canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response)
@@ -582,6 +602,26 @@ bool NodeCanopen402Driver<NODETYPE>::set_mode_cyclic_velocity()
     if (motor_->getMode() != MotorBase::Cyclic_Synchronous_Velocity)
     {
       return motor_->enterModeAndWait(MotorBase::Cyclic_Synchronous_Velocity);
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    return false;
+  }
+}
+
+template <class NODETYPE>
+bool NodeCanopen402Driver<NODETYPE>::set_mode_cyclic_torque()
+{
+  if (this->activated_.load())
+  {
+    if (motor_->getMode() != MotorBase::Cyclic_Synchronous_Torque)
+    {
+      return motor_->enterModeAndWait(MotorBase::Cyclic_Synchronous_Torque);
     }
     else
     {
