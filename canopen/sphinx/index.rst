@@ -18,6 +18,9 @@ This is the documentation of the ROS2 CANopen stack.
   :glob:
 
   user-guide/operation
+  user-guide/operation/service-interface
+  user-guide/operation/ros2-control-interface
+  user-guide/operation/managed-service-interface
   user-guide/configuration
   user-guide/master
   user-guide/proxy-driver
@@ -44,6 +47,7 @@ This is the documentation of the ROS2 CANopen stack.
   developers-guide/architecture
   developers-guide/new-driver
   developers-guide/new-master
+  developers-guide/new-device-manager
   API Reference <https://ros-industrial.github.io/ros2_canopen/api/rolling/>
 
 .. toctree::
