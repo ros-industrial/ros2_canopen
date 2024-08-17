@@ -509,7 +509,7 @@ bool NodeCanopen402Driver<NODETYPE>::set_operation_mode(uint16_t mode)
 {
   if (this->activated_.load())
   {
-    if(motor_->getMode() != mode)
+    if (motor_->getMode() != mode)
     {
       return motor_->enterModeAndWait(mode);
     }

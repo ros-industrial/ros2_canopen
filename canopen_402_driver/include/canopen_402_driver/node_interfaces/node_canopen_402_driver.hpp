@@ -161,7 +161,7 @@ public:
    *
    * Calls Motor402::enterModeAndWait with requested Operation Mode.
    *
-   * @param [in] request Requested Operation Mode as MotorBase::Profiled_Position or 
+   * @param [in] request Requested Operation Mode as MotorBase::Profiled_Position or
    * MotorBase::Profiled_Velocity or MotorBase::Profiled_Torque or MotorBase::Cyclic_Position or
    * MotorBase::Cyclic_Velocity or MotorBase::Cyclic_Torque or MotorBase::Interpolated_Position
    * @param [out] response

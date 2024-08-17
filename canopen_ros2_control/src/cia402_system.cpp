@@ -330,27 +330,32 @@ void Cia402System::switchModes(uint id, const std::shared_ptr<ros2_canopen::Cia4
 {
   if (motor_data_[id].position_mode.is_commanded())
   {
-    motor_data_[id].position_mode.set_response(driver->set_operation_mode(MotorBase::Profiled_Position));
+    motor_data_[id].position_mode.set_response(
+      driver->set_operation_mode(MotorBase::Profiled_Position));
   }
 
   if (motor_data_[id].cyclic_position_mode.is_commanded())
   {
-    motor_data_[id].cyclic_position_mode.set_response(driver->set_operation_mode(MotorBase::Cyclic_Synchronous_Position));
+    motor_data_[id].cyclic_position_mode.set_response(
+      driver->set_operation_mode(MotorBase::Cyclic_Synchronous_Position));
   }
 
   if (motor_data_[id].velocity_mode.is_commanded())
   {
-    motor_data_[id].velocity_mode.set_response(driver->set_operation_mode(MotorBase::Profiled_Velocity));
+    motor_data_[id].velocity_mode.set_response(
+      driver->set_operation_mode(MotorBase::Profiled_Velocity));
   }
 
   if (motor_data_[id].cyclic_velocity_mode.is_commanded())
   {
-    motor_data_[id].cyclic_velocity_mode.set_response(driver->set_operation_mode(MotorBase::Cyclic_Synchronous_Velocity));
+    motor_data_[id].cyclic_velocity_mode.set_response(
+      driver->set_operation_mode(MotorBase::Cyclic_Synchronous_Velocity));
   }
 
   if (motor_data_[id].torque_mode.is_commanded())
   {
-    motor_data_[id].torque_mode.set_response(driver->set_operation_mode(MotorBase::Profiled_Torque));
+    motor_data_[id].torque_mode.set_response(
+      driver->set_operation_mode(MotorBase::Profiled_Torque));
   }
 
   if (motor_data_[id].interpolated_position_mode.is_commanded())
