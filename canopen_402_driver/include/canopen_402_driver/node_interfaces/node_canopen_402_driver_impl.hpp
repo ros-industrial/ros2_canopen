@@ -383,7 +383,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  response->success = set_mode_position();
+  response->success = set_operation_mode(MotorBase::Profiled_Position);
 }
 
 template <class NODETYPE>
@@ -391,7 +391,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_velocity(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  response->success = set_mode_velocity();
+  response->success = set_operation_mode(MotorBase::Profiled_Velocity);
 }
 
 template <class NODETYPE>
@@ -399,7 +399,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  response->success = set_mode_cyclic_position();
+  response->success = set_operation_mode(MotorBase::Cyclic_Synchronous_Position);
 }
 
 template <class NODETYPE>
@@ -407,7 +407,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_interpolated_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  response->success = set_mode_interpolated_position();
+  response->success = set_operation_mode(MotorBase::Interpolated_Position);
 }
 
 template <class NODETYPE>
@@ -415,14 +415,14 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_velocity(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  response->success = set_mode_cyclic_velocity();
+  response->success = set_operation_mode(MotorBase::Cyclic_Synchronous_Velocity);
 }
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_mode_torque(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  response->success = set_mode_torque();
+  response->success = set_operation_mode(MotorBase::Profiled_Torque);
 }
 
 template <class NODETYPE>
@@ -430,7 +430,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_torque(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
   std_srvs::srv::Trigger::Response::SharedPtr response)
 {
-  response->success = set_mode_cyclic_torque();
+  response->success = set_operation_mode(MotorBase::Cyclic_Synchronous_Torque);
 }
 
 template <class NODETYPE>
@@ -509,149 +509,16 @@ bool NodeCanopen402Driver<NODETYPE>::set_operation_mode(uint16_t mode)
 {
   if (this->activated_.load())
   {
-    return motor_->enterModeAndWait(mode);
+    if (motor_->getMode() != mode)
+    {
+      return motor_->enterModeAndWait(mode);
+    }
+    else
+    {
+      return false;
+    }
   }
   return false;
-}
-
-template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::set_mode_position()
-{
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Profiled_Position)
-    {
-      return motor_->enterModeAndWait(MotorBase::Profiled_Position);
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
-}
-
-template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::set_mode_interpolated_position()
-{
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Interpolated_Position)
-    {
-      return motor_->enterModeAndWait(MotorBase::Interpolated_Position);
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
-}
-
-template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::set_mode_velocity()
-{
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Profiled_Velocity)
-    {
-      return motor_->enterModeAndWait(MotorBase::Profiled_Velocity);
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
-}
-
-template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::set_mode_cyclic_position()
-{
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Cyclic_Synchronous_Position)
-    {
-      return motor_->enterModeAndWait(MotorBase::Cyclic_Synchronous_Position);
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
-}
-
-template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::set_mode_cyclic_velocity()
-{
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Cyclic_Synchronous_Velocity)
-    {
-      return motor_->enterModeAndWait(MotorBase::Cyclic_Synchronous_Velocity);
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
-}
-
-template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::set_mode_cyclic_torque()
-{
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Cyclic_Synchronous_Torque)
-    {
-      return motor_->enterModeAndWait(MotorBase::Cyclic_Synchronous_Torque);
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
-}
-
-template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::set_mode_torque()
-{
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != MotorBase::Profiled_Torque)
-    {
-      return motor_->enterModeAndWait(MotorBase::Profiled_Torque);
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
 }
 
 template <class NODETYPE>
