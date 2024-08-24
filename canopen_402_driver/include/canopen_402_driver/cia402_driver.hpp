@@ -69,6 +69,8 @@ public:
     node_canopen_402_driver_->register_rpdo_cb(rpdo_cb);
   }
 
+  double get_effort() { return node_canopen_402_driver_->get_effort(); }
+
   double get_speed() { return node_canopen_402_driver_->get_speed(); }
 
   double get_position() { return node_canopen_402_driver_->get_position(); }

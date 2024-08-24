@@ -136,6 +136,10 @@ std::vector<hardware_interface::StateInterface> Cia402System::export_state_inter
     state_interfaces.emplace_back(hardware_interface::StateInterface(
       info_.joints[i].name, hardware_interface::HW_IF_VELOCITY,
       &motor_data_[node_id].actual_speed));
+    // actual effort
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      info_.joints[i].name, hardware_interface::HW_IF_EFFORT,
+      &motor_data_[node_id].actual_effort));
   }
 
   return state_interfaces;
@@ -253,6 +257,8 @@ hardware_interface::return_type Cia402System::read(
     motor_data_[it->first].actual_position = motion_controller_driver->get_position();
     // get speed
     motor_data_[it->first].actual_speed = motion_controller_driver->get_speed();
+    // get effort
+    motor_data_[it->first].actual_effort = motion_controller_driver->get_effort();
   }
 
   return ret_val;
