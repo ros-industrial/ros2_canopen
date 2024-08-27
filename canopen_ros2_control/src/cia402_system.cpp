@@ -138,8 +138,7 @@ std::vector<hardware_interface::StateInterface> Cia402System::export_state_inter
       &motor_data_[node_id].actual_speed));
     // actual effort
     state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_EFFORT,
-      &motor_data_[node_id].actual_effort));
+      info_.joints[i].name, hardware_interface::HW_IF_EFFORT, &motor_data_[node_id].actual_effort));
   }
 
   return state_interfaces;

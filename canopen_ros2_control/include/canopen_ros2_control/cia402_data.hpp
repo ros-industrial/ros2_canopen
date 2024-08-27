@@ -108,7 +108,7 @@ struct Cia402Data
     // actual speed
     state_interfaces.emplace_back(hardware_interface::StateInterface(
       joint_name, hardware_interface::HW_IF_VELOCITY, &actual_velocity));
-    
+
     // actual effort
     state_interfaces.emplace_back(hardware_interface::StateInterface(
       joint_name, hardware_interface::HW_IF_EFFORT, &actual_effort));
