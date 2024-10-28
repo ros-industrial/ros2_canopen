@@ -51,6 +51,7 @@ protected:
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_velocity_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_velocity_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_position_service;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_torque_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_interpolated_position_service;
   rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr handle_set_target_service;
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr publish_joint_state;
@@ -345,6 +346,33 @@ public:
    * @return bool
    */
   bool set_mode_torque();
+
+  /**
+   * @brief Service Callback to set cyclic torque mode
+   *
+   * Calls Motor402::enterModeAndWait with Cyclic Torque Mode as
+   * Target Operation Mode. If successful, the motor was transitioned
+   * to Cyclic Torque Mode.
+   *
+   * @param [in] request
+   * @param [out] response
+   */
+  void handle_set_mode_cyclic_torque(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
+
+  /**
+   * @brief Method to set cyclic torque mode
+   *
+   * Calls Motor402::enterModeAndWait with Profiled Torque Mode as
+   * Target Operation Mode. If successful, the motor was transitioned
+   * to Profiled Torque Mode.
+   *
+   * @param [in] void
+   *
+   * @return bool
+   */
+  bool set_mode_cyclic_torque();
 
   /**
    * @brief Service Callback to set target

@@ -2,6 +2,32 @@
 Changelog for package canopen_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.9 (2024-04-16)
+------------------
+
+0.2.12 (2024-04-22)
+-------------------
+* Merge pull request `#270 <https://github.com/ros-industrial/ros2_canopen/issues/270>`_ from gsalinas/can-namespace-pr
+  Put components loaded by the device container into its namespace, if any.
+* pre-commit update
+* Add node on namespaces.
+* Restore base version of canopen_system example.
+* Restore cia402_system launch to original.
+* Change cia402_system ros2_controllers back to original.
+* Add comment about the use of ReplaceString.
+* Push namespace to nodes in a group.
+* Separate out example of how to use a namespaced ros2_control/cia402 based system.
+* Remove commented-out arg and unneeded logging.
+* Update canopen test system launch to use a namespace.
+* Output robot_description_content to log during launch.
+* WIP adding namespace to cia402_system launch.
+* 0.2.9
+* forthcoming
+* Contributors: Gerry Salinas, Vishnuprasad Prachandabhanu, ipa-vsp
+
+0.2.8 (2024-01-19)
+------------------
+
 0.2.7 (2023-06-30)
 ------------------
 * Add missing license headers and activate ament_copyright
