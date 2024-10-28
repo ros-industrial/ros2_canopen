@@ -50,13 +50,13 @@ void NodeCanopen402Driver<rclcpp::Node>::init(bool called_from_base)
     std::bind(
       &NodeCanopen402Driver<rclcpp::Node>::handle_init, this, std::placeholders::_1,
       std::placeholders::_2));
-  
+
   handle_enable_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/enable").c_str(),
     std::bind(
       &NodeCanopen402Driver<rclcpp::Node>::handle_enable, this, std::placeholders::_1,
       std::placeholders::_2));
-  
+
   handle_disable_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/disable").c_str(),
     std::bind(
@@ -490,7 +490,6 @@ void NodeCanopen402Driver<NODETYPE>::handle_enable(
     response->success = temp;
   }
 }
-
 
 template <class NODETYPE>
 bool NodeCanopen402Driver<NODETYPE>::init_motor()
