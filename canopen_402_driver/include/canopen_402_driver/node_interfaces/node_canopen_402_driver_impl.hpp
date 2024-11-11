@@ -239,8 +239,10 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   homing_timeout_seconds_ = homing_timeout_seconds.value_or(10);
   RCLCPP_INFO(
     this->node_->get_logger(),
-    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\nhoming_timeout_seconds_ %i\n",
-    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_, homing_timeout_seconds_);
+    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
+    "%f\nhoming_timeout_seconds_ %i\n",
+    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
+    homing_timeout_seconds_);
 }
 
 template <>
@@ -307,8 +309,10 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   homing_timeout_seconds_ = homing_timeout_seconds.value_or(10);
   RCLCPP_INFO(
     this->node_->get_logger(),
-    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\nhoming_timeout_seconds_ %i\n",
-    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_, homing_timeout_seconds_);
+    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
+    "%f\nhoming_timeout_seconds_ %i\n",
+    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
+    homing_timeout_seconds_);
 }
 
 template <class NODETYPE>
@@ -350,7 +354,8 @@ template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::add_to_master()
 {
   NodeCanopenProxyDriver<NODETYPE>::add_to_master();
-  motor_ = std::make_shared<Motor402>(this->lely_driver_, switching_state_, homing_timeout_seconds_);
+  motor_ =
+    std::make_shared<Motor402>(this->lely_driver_, switching_state_, homing_timeout_seconds_);
 }
 
 template <class NODETYPE>

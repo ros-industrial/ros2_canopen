@@ -51,7 +51,11 @@ class DefaultHomingMode : public HomingMode
   }
 
 public:
-  DefaultHomingMode(std::shared_ptr<LelyDriverBridge> driver, int homing_timeout_seconds) : homing_timeout_seconds_(homing_timeout_seconds) { this->driver = driver; }
+  DefaultHomingMode(std::shared_ptr<LelyDriverBridge> driver, int homing_timeout_seconds)
+  : homing_timeout_seconds_(homing_timeout_seconds)
+  {
+    this->driver = driver;
+  }
   virtual bool start();
   virtual bool read(const uint16_t & sw);
   virtual bool write(OpModeAccesser & cw);
