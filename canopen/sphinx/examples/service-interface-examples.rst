@@ -1,7 +1,7 @@
 Service Interface Examples
 ==========================
 
-Before running these examples, ensure that to :ref:`start the vcan0 interface <quick-start-setup-can-controller>`. 
+Before running these examples, ensure that to :ref:`start the vcan0 interface <quick-start-setup-can-controller>`.
 You can find these examples in the ``canopen_test`` package.
 
 Proxy Driver Examples
@@ -13,7 +13,7 @@ Configuring ``bus.yaml``
 The configuration for the proxy driver is specified in the ``bus.yaml`` file. Here's an example configuration:
 
 .. code-block:: yaml
-    
+
     options:
         dcf_path: "@BUS_CONFIG_PATH@"
 
@@ -59,7 +59,7 @@ Check the output by running:
 
 .. note::
 
-    These examples use a fake slave device. Running on actual hardware may yield different results. 
+    These examples use a fake slave device. Running on actual hardware may yield different results.
     Always refer to the device's documentation for specific details.
 
 CiA402 Driver Examples

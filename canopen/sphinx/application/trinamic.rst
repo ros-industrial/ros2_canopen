@@ -15,7 +15,7 @@ To know more about how to create a configuration follow this steps: :doc:`../use
 
 Configuration
 -------------
-- Create new package named ``trinamic_pd42_can``. To know how to create a package follow the documentaion provided in `ROS2 <https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html>`_
+- Create new package named ``trinamic_pd42_can``. To know how to create a package follow the documentation provided in `ROS2 <https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html>`_
 - Follow the configuration folder tree steps as per the  :doc:`../user-guide/configuration`. .
 - Create a new folder in the ``config`` folder of your configuration package. Name it ``single-pd42``.
 - Download ``.eds`` file from `Trinamic Github <https://github.com/hellantos/trinamic_pd42_can/blob/master/config/single-pd42/TMCM-1270.eds>`_ and place ``TMCM-1270.eds`` in the ``single-pd42`` folder.
