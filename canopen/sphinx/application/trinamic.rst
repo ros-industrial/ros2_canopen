@@ -11,11 +11,14 @@ Getting started
 
 If you haven't already done so, follow the steps in the :doc:`../user-guide/configuration`.
 
+To know more about how to create a configuration follow this steps: :doc:`../user-guide/how-to-create-a-configuration`.
+
 Configuration
 -------------
-
+- Create new package named ``trinamic_pd42_can``. To know how to create a package follow the documentaion provided in `ROS2 <https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html>`_
+- Follow the configuration folder tree steps as per the  :doc:`../user-guide/configuration`. .
 - Create a new folder in the ``config`` folder of your configuration package. Name it ``single-pd42``.
-- Download ``.eds`` file from `Trinamic <https://www.trinamic.com/fileadmin/assets/Products/Drives_Software/TMCM-1270_CANopen_V326.zip>`_ and place ``TMCM-1270.eds`` in the ``single-pd42`` folder.
+- Download ``.eds`` file from `Trinamic Github <https://github.com/hellantos/trinamic_pd42_can/blob/master/config/single-pd42/TMCM-1270.eds>`_ and place ``TMCM-1270.eds`` in the ``single-pd42`` folder.
 - Create a ``bus.yml`` file in the ``single-pd42`` folder with the following content:
 
     .. code-block:: yaml
@@ -50,7 +53,7 @@ Configuration
                 node_id: 1
 
 
-- Edit the ``CMakeLists.txt`` file in the ``config`` folder of your configuration package and add the following lines:
+- Edit the ``CMakeLists.txt`` file in the package and add the following lines:
 
     .. code-block:: cmake
 
@@ -93,7 +96,91 @@ Configuration
 
         ament_package()
 
-- Create launch file in folder ``launch`` and add the following content:
+- Create a source file in the ``src`` folder ``position_tick_motor.cpp`` and add the follow lines.
+
+    .. code-block:: cpp
+
+
+        #include <chrono>
+        #include <cstdlib>
+        #include <memory>
+
+        #include "canopen_interfaces/srv/co_target_double.hpp"
+        #include "rclcpp/rclcpp.hpp"
+        #include "std_srvs/srv/trigger.hpp"
+        int main(int argc, char * argv[])
+        {
+            rclcpp::init(argc, argv);
+
+            std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("position_tick_motor_node");
+
+            RCLCPP_INFO(node->get_logger(), "Position Tick Motor Node Started");
+            rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr init_client =
+            node->create_client<std_srvs::srv::Trigger>("/trinamic_pd42/init");
+            rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr mode_client =
+            node->create_client<std_srvs::srv::Trigger>("/trinamic_pd42/cyclic_position_mode");
+            rclcpp::Client<canopen_interfaces::srv::COTargetDouble>::SharedPtr target_client =
+            node->create_client<canopen_interfaces::srv::COTargetDouble>("/trinamic_pd42/target");
+
+            while (!init_client->wait_for_service(std::chrono::seconds(1)) &&
+                    !mode_client->wait_for_service(std::chrono::seconds(1)) &&
+                    !target_client->wait_for_service(std::chrono::seconds(1)))
+            {
+            if (!rclcpp::ok())
+            {
+                RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.");
+                return 0;
+            }
+            RCLCPP_INFO(node->get_logger(), "service not available, waiting again...");
+            }
+
+            auto trigger_req = std::make_shared<std_srvs::srv::Trigger::Request>();
+            auto result = init_client->async_send_request(trigger_req);
+            if (rclcpp::spin_until_future_complete(node, result) == rclcpp::FutureReturnCode::SUCCESS)
+            {
+            RCLCPP_INFO(node->get_logger(), "Init service called successfully");
+            }
+            else
+            {
+            RCLCPP_ERROR(node->get_logger(), "Failed to call init service");
+            }
+
+            result = mode_client->async_send_request(trigger_req);
+            if (rclcpp::spin_until_future_complete(node, result) == rclcpp::FutureReturnCode::SUCCESS)
+            {
+            RCLCPP_INFO(node->get_logger(), "Config position mode service called successfully");
+            }
+            else
+            {
+            RCLCPP_ERROR(node->get_logger(), "Failed to call config service");
+            }
+
+            RCLCPP_INFO(node->get_logger(), "Starting to send target values");
+
+            auto targer_req = std::make_shared<canopen_interfaces::srv::COTargetDouble::Request>();
+            double target = 0;
+            while (rclcpp::ok())
+            {
+            targer_req->target = target;
+            auto res = target_client->async_send_request(targer_req);
+            if (rclcpp::spin_until_future_complete(node, res) == rclcpp::FutureReturnCode::SUCCESS)
+            {
+                RCLCPP_INFO(node->get_logger(), "Set Target: %.2f", target);
+            }
+            else
+            {
+                RCLCPP_ERROR(node->get_logger(), "Failed to call target service");
+            }
+            rclcpp::sleep_for(std::chrono::seconds(1));
+
+            target += 1.0;
+            if (target >= 105.0) target = 0;
+            }
+
+            return 0;
+        }
+
+- Create a launch file ``file_name.launch.py`` in folder ``launch`` and add the following content:
 
     .. code-block:: python
 
@@ -168,7 +255,7 @@ Configuration
 Running the example
 -------------------
 
-To begin, follow the instructions for :doc:`../quickstart/operation`, which can be done using either a virtual or peak CAN interface.
+To begin, follow the instructions for :doc:`../quickstart/setup-network`, which can be done using either a virtual or peak CAN interface.
 
 If you prefer to use a real CAN interface, you will need to modify the launch file by changing the ``can_interface_name`` argument to ``can0``.
 Additionally, if you are using real hardware, you should comment out the fake slave launch by adding a *#* in front of the line *ld.add_action(slave_node_1)*.
