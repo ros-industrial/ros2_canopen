@@ -10,7 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(lely_core_libraries REQUIRED)
 
 
-generate_dcf(simple)
+cogen_dcf(simple)
 generate_dcf(canopen_system)
 cogen_dcf(cia402_system)
 cogen_dcf(cia402_namespaced_system)

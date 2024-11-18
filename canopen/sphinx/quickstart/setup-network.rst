@@ -2,6 +2,16 @@ Setup CAN Controller
 ====================
 .. _quick-start-setup-can-controller:
 
+To interect with the CAN controller you can use ``can-utils`` in order to know the output of the controller.
+
+.. code-block:: console
+
+  $ sudo apt install can-utils
+  $ candump
+  
+.. note:: 
+  This step is only required in order to know the output of the controller. One can skip this step to proceed with the setup of the controller.
+
 **Option 1**: Virtual CANController
 
 .. code-block:: console
@@ -10,6 +20,7 @@ Setup CAN Controller
   $ sudo ip link add dev vcan0 type vcan
   $ sudo ip link set vcan0 txqueuelen 1000
   $ sudo ip link set up vcan0
+
 
 **Option 2**: Peak CANController
 
