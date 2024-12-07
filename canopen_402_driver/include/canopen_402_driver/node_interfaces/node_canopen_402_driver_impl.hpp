@@ -230,14 +230,14 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   {
     offset_pos_to_dev = std::optional(this->config_["offset_pos_to_dev"].as<double>());
   }
-  catch(...)
+  catch (...)
   {
   }
-   try
+  try
   {
     offset_pos_from_dev = std::optional(this->config_["offset_from_to_dev"].as<double>());
   }
-  catch(...)
+  catch (...)
   {
   }
   try
@@ -260,8 +260,10 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
     (int)ros2_canopen::State402::InternalState::Operation_Enable);
   RCLCPP_INFO(
     this->node_->get_logger(),
-    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ %f\n",
-    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_, offset_pos_to_dev_, offset_pos_from_dev_);
+    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
+    "%f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ %f\n",
+    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
+    offset_pos_to_dev_, offset_pos_from_dev_);
 }
 
 template <>
@@ -307,14 +309,14 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   {
     offset_pos_to_dev = std::optional(this->config_["offset_pos_to_dev"].as<double>());
   }
-  catch(...)
+  catch (...)
   {
   }
-   try
+  try
   {
     offset_pos_from_dev = std::optional(this->config_["offset_from_to_dev"].as<double>());
   }
-  catch(...)
+  catch (...)
   {
   }
   try
@@ -335,10 +337,12 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   offset_pos_from_dev_ = offset_pos_from_dev.value_or(0.0);
   switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
     (int)ros2_canopen::State402::InternalState::Operation_Enable);
-   RCLCPP_INFO(
+  RCLCPP_INFO(
     this->node_->get_logger(),
-    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ %f\n",
-    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_, offset_pos_to_dev_, offset_pos_from_dev_);
+    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
+    "%f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ %f\n",
+    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
+    offset_pos_to_dev_, offset_pos_from_dev_);
 }
 
 template <class NODETYPE>

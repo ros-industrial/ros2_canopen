@@ -76,7 +76,10 @@ public:
 
   virtual double get_speed() { return motor_->get_speed() * scale_vel_from_dev_; }
 
-  virtual double get_position() { return motor_->get_position() * scale_pos_from_dev_ + offset_pos_from_dev_; }
+  virtual double get_position()
+  {
+    return motor_->get_position() * scale_pos_from_dev_ + offset_pos_from_dev_;
+  }
 
   virtual uint16_t get_mode() { return motor_->getMode(); }
 
