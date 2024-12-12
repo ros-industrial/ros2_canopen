@@ -305,13 +305,21 @@ the drive status, operation mode and sending target values to the motion control
 <td><p>double</p></td>
 <td><p>Scaling factor to convert from SI units to device units for position.</p></td>
 </tr>
-<tr class="row-even"><td><p>scale_vel_to_dev</p></td>
+<tr class="row-even"><td><p>offset_pos_to_dev</p></td>
+<td><p>double</p></td>
+<td><p>Offset in device units added to scaled position commands sent to the device.</p></td>
+</tr>
+<tr class="row-odd"><td><p>scale_vel_to_dev</p></td>
 <td><p>double</p></td>
 <td><p>Scaling factor to convert from SI units to device units for velocity.</p></td>
 </tr>
-<tr class="row-odd"><td><p>scale_pos_from_dev</p></td>
+<tr class="row-even"><td><p>scale_pos_from_dev</p></td>
 <td><p>double</p></td>
 <td><p>Scaling factor to convert from device units to SI units for position.</p></td>
+</tr>
+<tr class="row-odd"><td><p>offset_pos_from_dev</p></td>
+<td><p>double</p></td>
+<td><p>Offset in SI units to added to scaled position reports from the device.</p></td>
 </tr>
 <tr class="row-even"><td><p>scale_vel_from_dev</p></td>
 <td><p>double</p></td>
