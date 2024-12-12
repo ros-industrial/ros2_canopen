@@ -195,8 +195,8 @@ public:
     node_->get_parameter("config", config);
     this->config_ = YAML::Load(config);
     this->non_transmit_timeout_ = std::chrono::milliseconds(non_transmit_timeout);
-    auto path = this->config_["dcf_path"].as<std::string>();
-    auto dcf = this->config_["dcf"].as<std::string>();
+    auto path = this->config_["dcf_path"].template as<std::string>();
+    auto dcf = this->config_["dcf"].template as<std::string>();
     auto name = this->node_->get_name();
     eds_ = path + "/" + dcf;
     bin_ = path + "/" + name + ".bin";
