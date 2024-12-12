@@ -5,8 +5,8 @@ Changelog for package canopen_tests
 0.2.9 (2024-04-16)
 ------------------
 
-Forthcoming
------------
+0.3.0 (2024-12-12)
+------------------
 * Add new line to get checking pipeline okay
 * Working version.
 * Periodic messages sent, but not received properly.

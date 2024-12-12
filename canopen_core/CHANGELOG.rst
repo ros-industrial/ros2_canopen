@@ -7,8 +7,8 @@ Changelog for package canopen_core
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
 
-Forthcoming
------------
+0.3.0 (2024-12-12)
+------------------
 
 0.2.12 (2024-04-22)
 -------------------

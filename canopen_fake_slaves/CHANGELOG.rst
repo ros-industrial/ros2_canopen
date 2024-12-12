@@ -5,8 +5,8 @@ Changelog for package canopen_fake_slaves
 0.2.9 (2024-04-16)
 ------------------
 
-Forthcoming
------------
+0.3.0 (2024-12-12)
+------------------
 * fix loop timer for run_velocity_mode
 * Fix clang format
 * Add comments for the fake slave function

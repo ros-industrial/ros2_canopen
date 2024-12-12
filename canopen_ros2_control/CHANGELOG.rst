@@ -5,8 +5,8 @@ Changelog for package canopen_ros2_control
 0.2.9 (2024-04-16)
 ------------------
 
-Forthcoming
------------
+0.3.0 (2024-12-12)
+------------------
 * pre-commit fix
 * impl operation mode
 * Add cyclic torque mode to cia402 driver and robot system controller (`#293 <https://github.com/ros-industrial/ros2_canopen/issues/293>`_)

@@ -9,8 +9,8 @@ Changelog for package canopen
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
 
-Forthcoming
------------
+0.3.0 (2024-12-12)
+------------------
 * Update CiA402 bus config docs
 * Remove set heartbeat service from master documentation (`#294 <https://github.com/ros-industrial/ros2_canopen/issues/294>`_)
   Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
