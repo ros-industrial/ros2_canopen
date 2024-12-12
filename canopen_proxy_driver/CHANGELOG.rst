@@ -5,6 +5,9 @@ Changelog for package canopen_proxy_driver
 0.2.9 (2024-04-16)
 ------------------
 
+Forthcoming
+-----------
+
 0.2.12 (2024-04-22)
 -------------------
 * 0.2.9
