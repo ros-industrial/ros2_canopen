@@ -453,3 +453,36 @@ bool Motor402::handleRecover()
   }
   return true;
 }
+bool Motor402::handleEnable()
+{
+  RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Enable: Read State");
+  if (!readState())
+  {
+    std::cout << "Could not read motor state" << std::endl;
+    return false;
+  }
+  RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Enable");
+  if (!switchState(State402::Operation_Enable))
+  {
+    std::cout << "Could not enable motor" << std::endl;
+    return false;
+  }
+  return true;
+}
+
+bool Motor402::handleDisable()
+{
+  RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Disable: Read State");
+  if (!readState())
+  {
+    std::cout << "Could not read motor state" << std::endl;
+    return false;
+  }
+  RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Disable");
+  if (!switchState(State402::Switched_On))
+  {
+    std::cout << "Could not disable motor" << std::endl;
+    return false;
+  }
+  return true;
+}

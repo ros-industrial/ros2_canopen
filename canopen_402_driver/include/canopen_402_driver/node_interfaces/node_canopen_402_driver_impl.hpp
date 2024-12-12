@@ -51,6 +51,18 @@ void NodeCanopen402Driver<rclcpp::Node>::init(bool called_from_base)
       &NodeCanopen402Driver<rclcpp::Node>::handle_init, this, std::placeholders::_1,
       std::placeholders::_2));
 
+  handle_enable_service = this->node_->create_service<std_srvs::srv::Trigger>(
+    std::string(this->node_->get_name()).append("/enable").c_str(),
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_enable, this, std::placeholders::_1,
+      std::placeholders::_2));
+
+  handle_disable_service = this->node_->create_service<std_srvs::srv::Trigger>(
+    std::string(this->node_->get_name()).append("/disable").c_str(),
+    std::bind(
+      &NodeCanopen402Driver<rclcpp::Node>::handle_disable, this, std::placeholders::_1,
+      std::placeholders::_2));
+
   handle_halt_service = this->node_->create_service<std_srvs::srv::Trigger>(
     std::string(this->node_->get_name()).append("/halt").c_str(),
     std::bind(
@@ -123,6 +135,18 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::init(bool called_fro
     std::string(this->node_->get_name()).append("/init").c_str(),
     std::bind(
       &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_init, this,
+      std::placeholders::_1, std::placeholders::_2));
+
+  handle_enable_service = this->node_->create_service<std_srvs::srv::Trigger>(
+    std::string(this->node_->get_name()).append("/enable").c_str(),
+    std::bind(
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_enable, this,
+      std::placeholders::_1, std::placeholders::_2));
+
+  handle_disable_service = this->node_->create_service<std_srvs::srv::Trigger>(
+    std::string(this->node_->get_name()).append("/disable").c_str(),
+    std::bind(
+      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_disable, this,
       std::placeholders::_1, std::placeholders::_2));
 
   handle_halt_service = this->node_->create_service<std_srvs::srv::Trigger>(
@@ -500,6 +524,30 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_target(
     }
 
     response->success = motor_->setTarget(target);
+  }
+}
+
+template <class NODETYPE>
+void NodeCanopen402Driver<NODETYPE>::handle_disable(
+  const std_srvs::srv::Trigger::Request::SharedPtr request,
+  std_srvs::srv::Trigger::Response::SharedPtr response)
+{
+  if (this->activated_.load())
+  {
+    bool temp = motor_->handleDisable();
+    response->success = temp;
+  }
+}
+
+template <class NODETYPE>
+void NodeCanopen402Driver<NODETYPE>::handle_enable(
+  const std_srvs::srv::Trigger::Request::SharedPtr request,
+  std_srvs::srv::Trigger::Response::SharedPtr response)
+{
+  if (this->activated_.load())
+  {
+    bool temp = motor_->handleEnable();
+    response->success = temp;
   }
 }
 
