@@ -127,12 +127,18 @@ Additional parameters that can be used in bus.yml for this driver.
   * - scale_pos_to_dev
     - double
     - Scaling factor to convert from SI units to device units for position.
+  * - offset_pos_to_dev
+    - double
+    - Offset in device units added to scaled position commands sent to the device.
   * - scale_vel_to_dev
     - double
     - Scaling factor to convert from SI units to device units for velocity.
   * - scale_pos_from_dev
     - double
     - Scaling factor to convert from device units to SI units for position.
+  * - offset_pos_from_dev
+    - double
+    - Offset in SI units to added to scaled position reports from the device.
   * - scale_vel_from_dev
     - double
     - Scaling factor to convert from device units to SI units for velocity.
