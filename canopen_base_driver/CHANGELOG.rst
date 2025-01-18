@@ -7,6 +7,9 @@ Changelog for package canopen_base_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
+0.3.0 (2024-12-12)
+------------------
+
 0.2.12 (2024-04-22)
 -------------------
 * Merge pull request `#280 <https://github.com/ros-industrial/ros2_canopen/issues/280>`_ from ipa-vsp/fix/yaml-build-error
