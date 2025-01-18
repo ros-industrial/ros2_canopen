@@ -5,6 +5,29 @@ Changelog for package canopen_ros2_control
 0.2.9 (2024-04-16)
 ------------------
 
+0.3.0 (2024-12-12)
+------------------
+* pre-commit fix
+* impl operation mode
+* Add cyclic torque mode to cia402 driver and robot system controller (`#293 <https://github.com/ros-industrial/ros2_canopen/issues/293>`_)
+  * Add base functions for switching to cyclic torque mode
+  * Add cyclic torque mode as effort interface to robot_system controller
+  * Add documentation about cyclic torque mode.
+  ---------
+  Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+* Fix clang format
+* Update canopen_system.hpp
+* Add pdo mapping support
+* Fix clang format
+* Fix pre-commit
+* Periodic messages sent, but not received properly.
+* Fix the bug that the rpdo queue keeps poping although it is empty.
+* Use proper function to get rpdo data
+* Fix bug in state interface indexing..
+* WIP: Extend the rpdo to have a queue (FIFO) to save the values.
+  The read function take the latest value out of the queue and assign to the system interface.
+  Need tests.
+
 0.2.12 (2024-04-22)
 -------------------
 * 0.2.9

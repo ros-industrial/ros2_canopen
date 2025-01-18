@@ -5,6 +5,12 @@ Changelog for package canopen_tests
 0.2.9 (2024-04-16)
 ------------------
 
+0.3.0 (2024-12-12)
+------------------
+* Add new line to get checking pipeline okay
+* Working version.
+* Periodic messages sent, but not received properly.
+
 0.2.12 (2024-04-22)
 -------------------
 * Merge pull request `#270 <https://github.com/ros-industrial/ros2_canopen/issues/270>`_ from gsalinas/can-namespace-pr
