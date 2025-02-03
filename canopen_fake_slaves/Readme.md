@@ -5,3 +5,6 @@
 Supported modes:
 * Cyclic Position
 * Profiled Position (Thanks to motion generator https://github.com/EFeru/MotionGenerator)
+* Interpolated Position
+* Homing
+* Profiled Velocity
