@@ -47,7 +47,7 @@ install(
     USE_SOURCE_PERMISSIONS)
 
 ament_export_include_directories(include)
-ament_export_libraries(lely-can lely-co lely-coapp lely-ev lely-io2 lely-io lely-libc lely-tap lely-util)
+ament_export_libraries(lely-can lely-co lely-coapp lely-ev lely-io2 lely-libc lely-tap lely-util)
 ament_package(
   CONFIG_EXTRAS
   "cmake/lely_core_libraries-extras.cmake"
