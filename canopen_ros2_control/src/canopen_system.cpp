@@ -48,7 +48,10 @@ void CanopenSystem::clean()
   device_container_.reset();
   executor_.reset();
 
-  init_thread_->join();
+  if (init_thread_->joinable())
+  {
+    init_thread_->join();
+  }
   init_thread_.reset();
 
   executor_.reset();
