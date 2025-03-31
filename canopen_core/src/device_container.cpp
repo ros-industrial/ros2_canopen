@@ -50,22 +50,29 @@ bool DeviceContainer::load_component(
       opts.use_global_arguments(false);
       opts.use_intra_process_comms(true);
       std::vector<std::string> remap_rules;
-      
+
       remap_rules.push_back("--ros-args");
       // remap_rules.push_back("--log-level");
       // remap_rules.push_back("debug");
       remap_rules.push_back("-r");
       remap_rules.push_back("__node:=" + node_name);
-      
+
       // Prefer node_namespace if provided, else fallback to container namespace
       std::string canopen_ns = node_namespace.empty() ? this->get_namespace() : node_namespace;
       remap_rules.push_back("-r");
       remap_rules.push_back("__ns:=" + canopen_ns);
 
-      if (node_namespace.empty()) {
-        RCLCPP_WARN(this->get_logger(), "Namespace not provided for node '%s', using container namespace: %s", node_name.c_str(), canopen_ns.c_str());
-      } else {
-        RCLCPP_INFO(this->get_logger(), "Namespace set for node '%s': %s", node_name.c_str(), node_namespace.c_str());
+      if (node_namespace.empty())
+      {
+        RCLCPP_WARN(
+          this->get_logger(), "Namespace not provided for node '%s', using container namespace: %s",
+          node_name.c_str(), canopen_ns.c_str());
+      }
+      else
+      {
+        RCLCPP_INFO(
+          this->get_logger(), "Namespace set for node '%s': %s", node_name.c_str(),
+          node_namespace.c_str());
       }
       opts.arguments(remap_rules);
       opts.parameter_overrides(params);
