@@ -134,6 +134,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7b6e37fcb12ce15d7eec92d493157c8c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1Motor402.html#a7b6e37fcb12ce15d7eec92d493157c8c">handleRecover</a> ()</td></tr>
 <tr class="memdesc:a7b6e37fcb12ce15d7eec92d493157c8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recovers the device from fault.  <a href="classros2__canopen_1_1Motor402.html#a7b6e37fcb12ce15d7eec92d493157c8c">More...</a><br /></td></tr>
 <tr class="separator:a7b6e37fcb12ce15d7eec92d493157c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dd7ba219d268cff867b69b781d6e832"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1Motor402.html#a6dd7ba219d268cff867b69b781d6e832">handleEnable</a> ()</td></tr>
+<tr class="memdesc:a6dd7ba219d268cff867b69b781d6e832"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable the drive.  <a href="classros2__canopen_1_1Motor402.html#a6dd7ba219d268cff867b69b781d6e832">More...</a><br /></td></tr>
+<tr class="separator:a6dd7ba219d268cff867b69b781d6e832"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a019b487bb285767accdae25ecc90218c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1Motor402.html#a019b487bb285767accdae25ecc90218c">handleDisable</a> ()</td></tr>
+<tr class="memdesc:a019b487bb285767accdae25ecc90218c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable the drive.  <a href="classros2__canopen_1_1Motor402.html#a019b487bb285767accdae25ecc90218c">More...</a><br /></td></tr>
+<tr class="separator:a019b487bb285767accdae25ecc90218c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfdc8215d316149e118a697a55938d65"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Args&gt; </td></tr>
 <tr class="memitem:adfdc8215d316149e118a697a55938d65"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1Motor402.html#adfdc8215d316149e118a697a55938d65">registerMode</a> (uint16_t mode, Args &amp;&amp;... args)</td></tr>
 <tr class="memdesc:adfdc8215d316149e118a697a55938d65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a new operation mode for the drive.  <a href="classros2__canopen_1_1Motor402.html#adfdc8215d316149e118a697a55938d65">More...</a><br /></td></tr>
@@ -513,6 +519,46 @@ false </dd></dl>
 
 <p>Recovers the device from fault. </p>
 <p>This function tries to reset faults and put the device back to operational state. </p>
+
+</div>
+</div>
+<a id="a6dd7ba219d268cff867b69b781d6e832"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6dd7ba219d268cff867b69b781d6e832">&#9670;&nbsp;</a></span>handleEnable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ros2_canopen::Motor402::handleEnable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enable the drive. </p>
+<p>This function enables the drive. This means it attempts to bring the device to operational state (CIA402), and does nothing else. </p>
+
+</div>
+</div>
+<a id="a019b487bb285767accdae25ecc90218c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a019b487bb285767accdae25ecc90218c">&#9670;&nbsp;</a></span>handleDisable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ros2_canopen::Motor402::handleDisable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Disable the drive. </p>
+<p>This function disables the drive. This means it attempts to bring the device to switched on disabled state (CIA402). </p>
 
 </div>
 </div>
