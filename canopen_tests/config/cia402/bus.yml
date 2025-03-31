@@ -54,6 +54,7 @@ defaults:
 nodes:
   cia402_device_1:
     node_id: 2
+    namespace: "/test1"
   cia402_device_2:
     node_id: 3
   cia402_device_3:
