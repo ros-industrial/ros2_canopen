@@ -122,9 +122,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a850b08acbc24613926afa015676b534e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a850b08acbc24613926afa015676b534e">load_manager</a> ()</td></tr>
 <tr class="memdesc:a850b08acbc24613926afa015676b534e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the device manager.  <a href="classros2__canopen_1_1DeviceContainer.html#a850b08acbc24613926afa015676b534e">More...</a><br /></td></tr>
 <tr class="separator:a850b08acbc24613926afa015676b534e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc87fe81f9ebafdf32481b56a345fc1e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#acc87fe81f9ebafdf32481b56a345fc1e">load_component</a> (std::string &amp;package_name, std::string &amp;driver_name, uint16_t node_id, std::string &amp;node_name, std::vector&lt; rclcpp::Parameter &gt; &amp;params)</td></tr>
-<tr class="memdesc:acc87fe81f9ebafdf32481b56a345fc1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load a component.  <a href="classros2__canopen_1_1DeviceContainer.html#acc87fe81f9ebafdf32481b56a345fc1e">More...</a><br /></td></tr>
-<tr class="separator:acc87fe81f9ebafdf32481b56a345fc1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a259b45ad59ea9ba165750d9ad616fa2c"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a259b45ad59ea9ba165750d9ad616fa2c">load_component</a> (const std::string package_name, const std::string driver_name, const uint16_t node_id, const std::string node_name, std::vector&lt; rclcpp::Parameter &gt; &amp;params, const std::string node_namespace=&quot;&quot;)</td></tr>
+<tr class="memdesc:a259b45ad59ea9ba165750d9ad616fa2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load a component.  <a href="classros2__canopen_1_1DeviceContainer.html#a259b45ad59ea9ba165750d9ad616fa2c">More...</a><br /></td></tr>
+<tr class="separator:a259b45ad59ea9ba165750d9ad616fa2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2472efb24ac6236f0788bd0eface56a3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a2472efb24ac6236f0788bd0eface56a3">shutdown</a> ()</td></tr>
 <tr class="memdesc:a2472efb24ac6236f0788bd0eface56a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shutdown all devices.  <a href="classros2__canopen_1_1DeviceContainer.html#a2472efb24ac6236f0788bd0eface56a3">More...</a><br /></td></tr>
 <tr class="separator:a2472efb24ac6236f0788bd0eface56a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -448,8 +448,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="acc87fe81f9ebafdf32481b56a345fc1e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc87fe81f9ebafdf32481b56a345fc1e">&#9670;&nbsp;</a></span>load_component()</h2>
+<a id="a259b45ad59ea9ba165750d9ad616fa2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a259b45ad59ea9ba165750d9ad616fa2c">&#9670;&nbsp;</a></span>load_component()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -460,32 +460,38 @@ false </dd></dl>
         <tr>
           <td class="memname">virtual bool ros2_canopen::DeviceContainer::load_component </td>
           <td>(</td>
-          <td class="paramtype">std::string &amp;&#160;</td>
+          <td class="paramtype">const std::string&#160;</td>
           <td class="paramname"><em>package_name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::string &amp;&#160;</td>
+          <td class="paramtype">const std::string&#160;</td>
           <td class="paramname"><em>driver_name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramtype">const uint16_t&#160;</td>
           <td class="paramname"><em>node_id</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::string &amp;&#160;</td>
+          <td class="paramtype">const std::string&#160;</td>
           <td class="paramname"><em>node_name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::vector&lt; rclcpp::Parameter &gt; &amp;&#160;</td>
-          <td class="paramname"><em>params</em>&#160;</td>
+          <td class="paramname"><em>params</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>node_namespace</em> = <code>&quot;&quot;</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

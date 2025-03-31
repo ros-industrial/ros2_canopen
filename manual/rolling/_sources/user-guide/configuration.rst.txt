@@ -91,6 +91,7 @@ but come from the lely core library. Below you find a list of possible configura
   node_id; The node-ID (default: 255)
   driver; The fully qualified class name of the master to use.
   package; The ros2 package name in which the master class can be found.
+  namespace; The namespace in which the master will be created (default: "/").
   baudrate; The baudrate in kbit/s (default: 1000)
   vendor_id;The vendor-ID (default: 0x00000000)
   product_code;The product code (default: 0x00000000)
@@ -133,6 +134,7 @@ device.
   configuration item; description
   driver; The fully qualified class name of the driver to use.
   package; The ros2 package name in which the driver class can be found.
+  namespace; The namespace in which the driver will be created (default: "/").
   enable_lazy_load; A flag that states whether the driver is loaded on start-up.
   dcf;	The filename of the EDS/DCF describing the slave (mandatory).
   dcf_path;	The directory in which the generated .bin file will be available at runtime (default: see options section).
