@@ -2,6 +2,27 @@
 Changelog for package canopen_ros2_controllers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.9 (2024-04-16)
+------------------
+
+0.3.0 (2024-12-12)
+------------------
+
+0.2.12 (2024-04-22)
+-------------------
+* 0.2.9
+* forthcoming
+* Contributors: ipa-vsp
+
+0.2.8 (2024-01-19)
+------------------
+* Remove controller tests (`#249 <https://github.com/ros-industrial/ros2_canopen/issues/249>`_)
+* Disable controller tests for now (`#231 <https://github.com/ros-industrial/ros2_canopen/issues/231>`_)
+  * Disable controller tests for now
+  * Update iron.yml
+  * Fix ci
+* Contributors: Christoph Hellmann Santos, Vishnuprasad Prachandabhanu
+
 0.2.7 (2023-06-30)
 ------------------
 * Correct Proxy controller after changes and update tests.

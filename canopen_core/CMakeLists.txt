@@ -107,6 +107,7 @@ ament_target_dependencies(device_container
 target_link_libraries(device_container
   node_canopen_master
   node_canopen_driver
+  yaml-cpp
 )
 
 add_executable(device_container_node

@@ -32,8 +32,9 @@ bool DeviceContainer::init_driver(uint16_t node_id)
 }
 
 bool DeviceContainer::load_component(
-  std::string & package_name, std::string & driver_name, uint16_t node_id, std::string & node_name,
-  std::vector<rclcpp::Parameter> & params)
+  const std::string package_name, const std::string driver_name, const uint16_t node_id,
+  const std::string node_name, std::vector<rclcpp::Parameter> & params,
+  const std::string node_namespace)
 {
   ComponentResource component;
   std::string resource_index("rclcpp_components");
@@ -49,12 +50,30 @@ bool DeviceContainer::load_component(
       opts.use_global_arguments(false);
       opts.use_intra_process_comms(true);
       std::vector<std::string> remap_rules;
+
       remap_rules.push_back("--ros-args");
       // remap_rules.push_back("--log-level");
       // remap_rules.push_back("debug");
       remap_rules.push_back("-r");
       remap_rules.push_back("__node:=" + node_name);
 
+      // Prefer node_namespace if provided, else fallback to container namespace
+      std::string canopen_ns = node_namespace.empty() ? this->get_namespace() : node_namespace;
+      remap_rules.push_back("-r");
+      remap_rules.push_back("__ns:=" + canopen_ns);
+
+      if (node_namespace.empty())
+      {
+        RCLCPP_WARN(
+          this->get_logger(), "Namespace not provided for node '%s', using container namespace: %s",
+          node_name.c_str(), canopen_ns.c_str());
+      }
+      else
+      {
+        RCLCPP_INFO(
+          this->get_logger(), "Namespace set for node '%s': %s", node_name.c_str(),
+          node_namespace.c_str());
+      }
       opts.arguments(remap_rules);
       opts.parameter_overrides(params);
 
@@ -136,24 +155,24 @@ void DeviceContainer::configure()
 {
   if (!this->get_parameter("can_interface_name", can_interface_name_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter can_interface_name could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
   if (!this->get_parameter("master_config", dcf_txt_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter master_config could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
   if (!this->get_parameter("master_bin", dcf_bin_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter master_bin could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
 
   if (!this->get_parameter("bus_config", bus_config_))
   {
-    throw DeviceContainerException("Fatal: Getting Parameter failed.");
     RCLCPP_ERROR(this->get_logger(), "Parameter bus_config could not be read.");
+    throw DeviceContainerException("Fatal: Getting Parameter failed.");
   }
 
   if (can_interface_name_.length() == 0)
@@ -210,7 +229,7 @@ bool DeviceContainer::load_master()
       auto node_id = config_->get_entry<uint16_t>(*it, "node_id");
       auto driver_name = config_->get_entry<std::string>(*it, "driver");
       auto package_name = config_->get_entry<std::string>(*it, "package");
-
+      auto node_namespace = config_->get_entry<std::string>(*it, "namespace").value_or("");
       if (!node_id.has_value() || !driver_name.has_value() || !package_name.has_value())
       {
         RCLCPP_ERROR(
@@ -227,7 +246,8 @@ bool DeviceContainer::load_master()
       params.push_back(rclcpp::Parameter("config", config_->dump_device(*it)));
 
       if (!this->load_component(
-            package_name.value(), driver_name.value(), node_id.value(), *it, params))
+            package_name.value(), driver_name.value(), node_id.value(), *it, params,
+            node_namespace))
       {
         RCLCPP_ERROR(this->get_logger(), "Error: Loading master failed.");
         return false;
@@ -266,6 +286,7 @@ bool DeviceContainer::load_drivers()
       auto node_id = config_->get_entry<uint16_t>(*it, "node_id");
       auto driver_name = config_->get_entry<std::string>(*it, "driver");
       auto package_name = config_->get_entry<std::string>(*it, "package");
+      auto node_namespace = config_->get_entry<std::string>(*it, "namespace").value_or("");
       if (!node_id.has_value() || !driver_name.has_value() || !package_name.has_value())
       {
         RCLCPP_ERROR(
@@ -301,7 +322,8 @@ bool DeviceContainer::load_drivers()
       params.push_back(rclcpp::Parameter("non_transmit_timeout", 100));
 
       if (!this->load_component(
-            package_name.value(), driver_name.value(), node_id.value(), *it, params))
+            package_name.value(), driver_name.value(), node_id.value(), *it, params,
+            node_namespace))
       {
         RCLCPP_ERROR(
           this->get_logger(),

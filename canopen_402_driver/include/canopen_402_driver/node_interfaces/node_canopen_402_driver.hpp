@@ -42,6 +42,8 @@ protected:
   std::shared_ptr<Motor402> motor_;
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_init_service;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_enable_service;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_disable_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_halt_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_recover_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_position_service;
@@ -49,6 +51,7 @@ protected:
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_velocity_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_velocity_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_position_service;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_torque_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_interpolated_position_service;
   rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr handle_set_target_service;
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr publish_joint_state;
@@ -56,6 +59,8 @@ protected:
   double scale_pos_from_dev_;
   double scale_vel_to_dev_;
   double scale_vel_from_dev_;
+  double offset_pos_to_dev_;
+  double offset_pos_from_dev_;
   ros2_canopen::State402::InternalState switching_state_;
   int homing_timeout_seconds_;
 
@@ -74,7 +79,10 @@ public:
 
   virtual double get_speed() { return motor_->get_speed() * scale_vel_from_dev_; }
 
-  virtual double get_position() { return motor_->get_position() * scale_pos_from_dev_; }
+  virtual double get_position()
+  {
+    return motor_->get_position() * scale_pos_from_dev_ + offset_pos_from_dev_;
+  }
 
   virtual uint16_t get_mode() { return motor_->getMode(); }
 
@@ -88,6 +96,32 @@ public:
    * @param [out] response
    */
   void handle_init(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
+
+  /**
+   * @brief Service Callback to enable device
+   *
+   * Calls Motor402::handleEnable function. Brings motor to enabled
+   * state.
+   *
+   * @param [in] request
+   * @param [out] response
+   */
+  void handle_enable(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
+
+  /**
+   * @brief Service Callback to disable device
+   *
+   * Calls Motor402::handleDisable function. Brings motor to switched on
+   * disabled state.
+   *
+   * @param [in] request
+   * @param [out] response
+   */
+  void handle_disable(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
     std_srvs::srv::Trigger::Response::SharedPtr response);
 
@@ -157,6 +191,18 @@ public:
   bool halt_motor();
 
   /**
+   * @brief Service Callback to set operation mode
+   *
+   * Calls Motor402::enterModeAndWait with requested Operation Mode.
+   *
+   * @param [in] request Requested Operation Mode as MotorBase::Profiled_Position or
+   * MotorBase::Profiled_Velocity or MotorBase::Profiled_Torque or MotorBase::Cyclic_Position or
+   * MotorBase::Cyclic_Velocity or MotorBase::Cyclic_Torque or MotorBase::Interpolated_Position
+   * @param [out] response
+   */
+  bool set_operation_mode(uint16_t mode);
+
+  /**
    * @brief Service Callback to set profiled position mode
    *
    * Calls Motor402::enterModeAndWait with Profiled Position Mode as
@@ -169,21 +215,6 @@ public:
   void handle_set_mode_position(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
     std_srvs::srv::Trigger::Response::SharedPtr response);
-
-  bool set_operation_mode(uint16_t mode);
-
-  /**
-   * @brief Method to set profiled position mode
-   *
-   * Calls Motor402::enterModeAndWait with Profiled Position Mode as
-   * Target Operation Mode. If successful, the motor was transitioned
-   * to Profiled Position Mode.
-   *
-   * @param [in] void
-   *
-   * @return bool
-   */
-  bool set_mode_position();
 
   /**
    * @brief Service Callback to set profiled velocity mode
@@ -198,19 +229,6 @@ public:
   void handle_set_mode_velocity(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
     std_srvs::srv::Trigger::Response::SharedPtr response);
-
-  /**
-   * @brief Method to set profiled velocity mode
-   *
-   * Calls Motor402::enterModeAndWait with Profiled Velocity Mode as
-   * Target Operation Mode. If successful, the motor was transitioned
-   * to Profiled Velocity Mode.
-   *
-   * @param [in] void
-   *
-   * @return bool
-   */
-  bool set_mode_velocity();
 
   /**
    * @brief Service Callback to set cyclic position mode
@@ -241,31 +259,6 @@ public:
     std_srvs::srv::Trigger::Response::SharedPtr response);
 
   /**
-   * @brief Method to set interpolated position mode
-   *
-   * Calls Motor402::enterModeAndWait with Interpolated Position Mode as
-   * Target Operation Mode. If successful, the motor was transitioned
-   * to Interpolated Position Mode. This only supports linear mode.
-   *
-   * @param [in] void
-   * @param [out] bool
-   */
-  bool set_mode_interpolated_position();
-
-  /**
-   * @brief Method to set cyclic position mode
-   *
-   * Calls Motor402::enterModeAndWait with Cyclic Position Mode as
-   * Target Operation Mode. If successful, the motor was transitioned
-   * to Cyclic Position Mode.
-   *
-   * @param [in] void
-   *
-   * @return bool
-   */
-  bool set_mode_cyclic_position();
-
-  /**
    * @brief Service Callback to set cyclic velocity mode
    *
    * Calls Motor402::enterModeAndWait with Cyclic Velocity Mode as
@@ -278,19 +271,6 @@ public:
   void handle_set_mode_cyclic_velocity(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
     std_srvs::srv::Trigger::Response::SharedPtr response);
-
-  /**
-   * @brief Method to set cyclic velocity mode
-   *
-   * Calls Motor402::enterModeAndWait with Cyclic Velocity Mode as
-   * Target Operation Mode. If successful, the motor was transitioned
-   * to Cyclic Velocity Mode.
-   *
-   * @param [in] void
-   *
-   * @return bool
-   */
-  bool set_mode_cyclic_velocity();
 
   /**
    * @brief Service Callback to set profiled torque mode
@@ -307,17 +287,18 @@ public:
     std_srvs::srv::Trigger::Response::SharedPtr response);
 
   /**
-   * @brief Method to set profiled torque mode
+   * @brief Service Callback to set cyclic torque mode
    *
-   * Calls Motor402::enterModeAndWait with Profiled Torque Mode as
+   * Calls Motor402::enterModeAndWait with Cyclic Torque Mode as
    * Target Operation Mode. If successful, the motor was transitioned
-   * to Profiled Torque Mode.
+   * to Cyclic Torque Mode.
    *
-   * @param [in] void
-   *
-   * @return bool
+   * @param [in] request
+   * @param [out] response
    */
-  bool set_mode_torque();
+  void handle_set_mode_cyclic_torque(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
 
   /**
    * @brief Service Callback to set target

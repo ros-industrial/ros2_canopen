@@ -2,6 +2,21 @@
 Changelog for package canopen_proxy_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.9 (2024-04-16)
+------------------
+
+0.3.0 (2024-12-12)
+------------------
+
+0.2.12 (2024-04-22)
+-------------------
+* 0.2.9
+* forthcoming
+* Contributors: ipa-vsp
+
+0.2.8 (2024-01-19)
+------------------
+
 0.2.7 (2023-06-30)
 ------------------
 * Add missing license headers and activate ament_copyright

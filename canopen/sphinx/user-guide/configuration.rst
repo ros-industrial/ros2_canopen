@@ -91,6 +91,7 @@ but come from the lely core library. Below you find a list of possible configura
   node_id; The node-ID (default: 255)
   driver; The fully qualified class name of the master to use.
   package; The ros2 package name in which the master class can be found.
+  namespace; The namespace in which the master will be created (default: "/").
   baudrate; The baudrate in kbit/s (default: 1000)
   vendor_id;The vendor-ID (default: 0x00000000)
   product_code;The product code (default: 0x00000000)
@@ -111,6 +112,7 @@ but come from the lely core library. Below you find a list of possible configura
   reset_all_nodes;	Specifies whether all slaves shall be reset in case of an error event on a mandatory slave (default: false, see bit 4 in object 1F80).
   stop_all_nodes;	Specifies whether all slaves shall be stopped in case of an error event on a mandatory slave (default: false, see bit 6 in object 1F80).
   boot_time;	The timeout for booting mandatory slaves in ms (default: 0, see object 1F89).
+  boot_timeout;	The timeout for booting all slaves in ms (default: 2000ms).
 
 Device Section
 --------------
@@ -132,6 +134,7 @@ device.
   configuration item; description
   driver; The fully qualified class name of the driver to use.
   package; The ros2 package name in which the driver class can be found.
+  namespace; The namespace in which the driver will be created (default: "/").
   enable_lazy_load; A flag that states whether the driver is loaded on start-up.
   dcf;	The filename of the EDS/DCF describing the slave (mandatory).
   dcf_path;	The directory in which the generated .bin file will be available at runtime (default: see options section).
@@ -151,6 +154,7 @@ device.
   software_version;	The expected software version (default: 0x00000000, see object 1F55).
   configuration_file;	The name of the file containing the configuration (default: "<dcf_path>/<name>.bin" (where <name> is the section name), see object 1F22).
   restore_configuration;	The sub-index of object 1011 to be used when restoring the configuration (default: 0x00).
+  sdo_timeout_ms; The timeout to use for SDO reads/writes to this device. (default: 20ms)
   sdo;	Additional SDO requests to be sent during configuration (see below).
 
 
