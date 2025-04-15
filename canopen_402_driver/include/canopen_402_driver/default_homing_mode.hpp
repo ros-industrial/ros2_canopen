@@ -35,6 +35,8 @@ class DefaultHomingMode : public HomingMode
   std::condition_variable cond_;
   uint16_t status_;
 
+  const int homing_timeout_seconds_;
+
   enum SW_masks
   {
     MASK_Reached = (1 << State402::SW_Target_reached),
@@ -49,7 +51,11 @@ class DefaultHomingMode : public HomingMode
   }
 
 public:
-  DefaultHomingMode(std::shared_ptr<LelyDriverBridge> driver) { this->driver = driver; }
+  DefaultHomingMode(std::shared_ptr<LelyDriverBridge> driver, int homing_timeout_seconds)
+  : homing_timeout_seconds_(homing_timeout_seconds)
+  {
+    this->driver = driver;
+  }
   virtual bool start();
   virtual bool read(const uint16_t & sw);
   virtual bool write(OpModeAccesser & cw);
