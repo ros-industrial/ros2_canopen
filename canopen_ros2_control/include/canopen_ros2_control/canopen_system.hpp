@@ -243,7 +243,7 @@ protected:
   std::shared_ptr<ros2_canopen::DeviceContainer> device_container_;
   std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> executor_;
   // can stuff
-  std::map<uint, CanopenNodeData> canopen_data_;
+  std::map<uint16_t, CanopenNodeData> canopen_data_;
   // threads
   std::unique_ptr<std::thread> spin_thread_;
   std::unique_ptr<std::thread> init_thread_;
