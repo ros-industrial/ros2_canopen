@@ -131,6 +131,7 @@ void CanopenSystem::initDeviceContainer()
     info_.hardware_parameters["bus_config"], tmp_master_bin);
   auto drivers = device_container_->get_registered_drivers();
   RCLCPP_INFO(kLogger, "Number of registered drivers: '%zu'", device_container_->count_drivers());
+  // TODO interate here also over Node_IDs (as below)
   for (auto it = drivers.begin(); it != drivers.end(); it++)
   {
     auto proxy_driver = std::static_pointer_cast<ros2_canopen::ProxyDriver>(it->second);
@@ -249,6 +250,11 @@ hardware_interface::return_type CanopenSystem::read(
 
   // rpdo has a queue of messages, we read the latest one
 
+  uint8_t node_id = 0x1E;
+
+  double stuff = canopen_data_[node_id].get_rpdo_data(0x211D, 0x00);
+  RCLCPP_INFO(kLogger, "NodeID: 0x%X; Stuff: %f", node_id, stuff);
+
   return hardware_interface::return_type::OK;
 }
 
@@ -257,8 +263,20 @@ hardware_interface::return_type CanopenSystem::write(
 {
   // TODO(anyone): write robot's commands'
   auto drivers = device_container_->get_registered_drivers();
+
+  for (const auto& entry : canopen_data_)
+  {
+    RCLCPP_INFO(kLogger, "Key in canopen_data_: 0x%X", entry.first);
+  }
+
   for (auto it = canopen_data_.begin(); it != canopen_data_.end(); ++it)
   {
+    if (drivers.find(it->first) == drivers.end())
+    {
+      // this is expeced for NodeID 0x00 - why do we have it at all? 
+      RCLCPP_DEBUG(kLogger, "Driver for NodeID 0x%X not found. Skipping...", it->first);
+      continue;
+    }
     auto proxy_driver = std::static_pointer_cast<ros2_canopen::ProxyDriver>(drivers[it->first]);
 
     // reset node nmt
@@ -273,11 +291,33 @@ hardware_interface::return_type CanopenSystem::write(
       it->second.nmt_state.start_fbk = static_cast<double>(proxy_driver->start_node_nmt_command());
     }
 
+    canopen_ros2_control::WORos2ControlCoData data;
+    data.index = 0x2110;
+    data.subindex = 0x00;
+    data.data = int16_t(123);
+    data.prepare_data();
+    RCLCPP_INFO(kLogger, "This is a debug message in HW-write().....");
+    RCLCPP_INFO(kLogger, "NodeID: 0x%X; Index: 0x%X; Subindex: 0x%X; Data: %u",
+      it->first,
+      data.original_data.index_,
+      data.original_data.subindex_,
+      data.original_data.data_);
+    RCLCPP_INFO(kLogger, "--- END of the debug message in HW-write()");
+    proxy_driver->tpdo_transmit(data.original_data);
+
     // tpdo data one shot mechanism
     if (it->second.tpdo_data.write_command())
     {
       it->second.tpdo_data.prepare_data();
-      proxy_driver->tpdo_transmit(it->second.tpdo_data.original_data);
+      try
+      {
+        proxy_driver->tpdo_transmit(it->second.tpdo_data.original_data);
+      }
+      catch(const std::exception& e)
+      {
+        std::cerr << e.what() << '\n';
+      }
+      
     }
   }
 

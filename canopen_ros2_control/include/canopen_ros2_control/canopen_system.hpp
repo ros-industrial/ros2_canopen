@@ -44,6 +44,8 @@ namespace canopen_ros2_control
 // needed auxiliary struct for ros2 control double registration
 struct Ros2ControlCOData
 {
+  // TODO(Dr.Denis): rename original data to canopen data
+  // Soon we can drop this as ros2_control support variants - we have to add support for all this types
   ros2_canopen::COData original_data;
 
   double index;     // cast to uint16_t
