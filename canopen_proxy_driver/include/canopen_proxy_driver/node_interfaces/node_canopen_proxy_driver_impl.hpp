@@ -120,7 +120,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
       case canopen::NmtState::BOOTUP:
         message.data = "BOOTUP";
         this->diagnostic_collector_->updateAll(
-          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT bootup", "NMT", "BOOTUP");
+          diagnostic_msgs::msg::DiagnosticStatus::OK, "NMT boot-up", "NMT", "BOOTUP");
         break;
       case canopen::NmtState::PREOP:
         message.data = "PREOP";
