@@ -3,7 +3,7 @@
 Welcome to the ROS2 canopen documentation.
 
 ## About
-ROS2 CANopen is being developed and maintainted by the [ROS-Industrial Consortium](rosindustrial.org). The package heavily builds on top of [Lely's canopen stack](https://opensource.lely.com/canopen/).
+ROS2 CANopen is being developed and maintained by the [ROS-Industrial Consortium](rosindustrial.org). The package heavily builds on top of [Lely's canopen stack](https://opensource.lely.com/canopen/).
 
 
 ## Getting started

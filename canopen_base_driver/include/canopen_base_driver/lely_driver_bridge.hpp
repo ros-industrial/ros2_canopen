@@ -510,7 +510,7 @@ public:
   }
 
   /**
-   * @brief Aynchronous SDO Read
+   * @brief Asynchronous SDO Read
    *
    * Reads the indicated SDO object from the connected
    * device.
