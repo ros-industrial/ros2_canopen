@@ -75,7 +75,7 @@ provides the following functions you should use in your driver:
 
 ROS2 functionality
 ******************
-ROS2 functionlity is available via the ``node_`` object of the functionality class. This
+ROS2 functionality is available via the ``node_`` object of the functionality class. This
 object has a templated type and can either be a ``rclcpp::Node`` or ``rclcpp_lifecycle::LifecycleNode``.
 You can use the standard functions like create_timer, create_publisher etc.
 

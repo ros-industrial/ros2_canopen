@@ -48,7 +48,7 @@ namespace node_interfaces
  * @brief Node Canopen Driver
  *
  * This class implements the NodeCanopenDriverInterface. It provides
- * core functionality and logic for CanopenDriver, indepentently of the
+ * core functionality and logic for CanopenDriver, independently of the
  * ROS node type. Currently rclcpp::Node and rclcpp_lifecycle::LifecycleNode
  * and derived classes are supported. Other node types will lead to compile
  * time error.
