@@ -320,9 +320,10 @@ void LelyDriverBridge::tpdo_transmit(COData data)
   lely::COSub * sub = this->dictionary_->find(data.index_, data.subindex_);
   if (sub == nullptr)
   {
-    std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
-              << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
-              << " object does not exist" << std::endl;
+    // TODO(Dr. Denis): Add here static logger and output to debug!
+    // std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
+    //           << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
+    //           << " object does not exist" << std::endl;
     return;
   }
   uint8_t co_def = (uint8_t)sub->getType();
@@ -377,15 +378,15 @@ void LelyDriverBridge::tpdo_transmit(COData data)
       sub->setVal<CO_DEFTYPE_INTEGER32>(val);
     }
     tpdo_mapped[data.index_][data.subindex_].WriteEvent();
-    std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
-              << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
-              << " data:" << (uint32_t)data.data_ << std::endl;
+    // std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
+    //           << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
+    //           << " data:" << (uint32_t)data.data_ << std::endl;
   }
   catch (lely::canopen::SdoError & e)
   {
-    std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
-              << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
-              << e.what() << std::endl;
+    // std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
+    //           << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
+    //           << e.what() << std::endl;
     return;
   }
 }
