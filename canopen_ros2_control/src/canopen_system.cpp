@@ -120,6 +120,8 @@ void CanopenSystem::spin()
   RCLCPP_INFO(kLogger, "Exiting spin thread...");
 }
 
+// TODO(Dr. Denis): this should be actually `on_configure` method and not a new thread. Why is this a separete thread?
+// Maybe because it could block, but this shouldn't be an issue, if mutliple hardware is used then `async` HW should be set for this!
 void CanopenSystem::initDeviceContainer()
 {
   std::string tmp_master_bin = (info_.hardware_parameters["master_bin"] == "\"\"")
@@ -250,10 +252,10 @@ hardware_interface::return_type CanopenSystem::read(
 
   // rpdo has a queue of messages, we read the latest one
 
-  uint8_t node_id = 0x1E;
+  // uint8_t node_id = 0x1E;
 
-  double stuff = canopen_data_[node_id].get_rpdo_data(0x211D, 0x00);
-  RCLCPP_INFO(kLogger, "NodeID: 0x%X; Stuff: %f", node_id, stuff);
+  // double stuff = canopen_data_[node_id].get_rpdo_data(0x211D, 0x00);
+  // RCLCPP_INFO(kLogger, "NodeID: 0x%X; Stuff: %f", node_id, stuff);
 
   return hardware_interface::return_type::OK;
 }
@@ -263,11 +265,6 @@ hardware_interface::return_type CanopenSystem::write(
 {
   // TODO(anyone): write robot's commands'
   auto drivers = device_container_->get_registered_drivers();
-
-  for (const auto& entry : canopen_data_)
-  {
-    RCLCPP_INFO(kLogger, "Key in canopen_data_: 0x%X", entry.first);
-  }
 
   for (auto it = canopen_data_.begin(); it != canopen_data_.end(); ++it)
   {
@@ -291,19 +288,19 @@ hardware_interface::return_type CanopenSystem::write(
       it->second.nmt_state.start_fbk = static_cast<double>(proxy_driver->start_node_nmt_command());
     }
 
-    canopen_ros2_control::WORos2ControlCoData data;
-    data.index = 0x2110;
-    data.subindex = 0x00;
-    data.data = int16_t(123);
-    data.prepare_data();
-    RCLCPP_INFO(kLogger, "This is a debug message in HW-write().....");
-    RCLCPP_INFO(kLogger, "NodeID: 0x%X; Index: 0x%X; Subindex: 0x%X; Data: %u",
-      it->first,
-      data.original_data.index_,
-      data.original_data.subindex_,
-      data.original_data.data_);
-    RCLCPP_INFO(kLogger, "--- END of the debug message in HW-write()");
-    proxy_driver->tpdo_transmit(data.original_data);
+    // canopen_ros2_control::WORos2ControlCoData data;
+    // data.index = 0x2110;
+    // data.subindex = 0x00;
+    // data.data = int16_t(123);
+    // data.prepare_data();
+    // RCLCPP_INFO(kLogger, "This is a debug message in HW-write().....");
+    // RCLCPP_INFO(kLogger, "NodeID: 0x%X; Index: 0x%X; Subindex: 0x%X; Data: %u",
+    //   it->first,
+    //   data.original_data.index_,
+    //   data.original_data.subindex_,
+    //   data.original_data.data_);
+    // RCLCPP_INFO(kLogger, "--- END of the debug message in HW-write()");
+    // proxy_driver->tpdo_transmit(data.original_data);
 
     // tpdo data one shot mechanism
     if (it->second.tpdo_data.write_command())
