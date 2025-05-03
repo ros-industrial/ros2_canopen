@@ -240,13 +240,25 @@ struct Ros2ControlEmcyData
   {
     original_emcy = e;
 
-    error_code = static_cast<double>(e.eec);
-    error_register = static_cast<double>(e.er);
-    manufacturer_error_code1 = static_cast<double>(e.msef[0]);
-    manufacturer_error_code2 = static_cast<double>(e.msef[1]);
-    manufacturer_error_code3 = static_cast<double>(e.msef[2]);
-    manufacturer_error_code4 = static_cast<double>(e.msef[3]);
-    manufacturer_error_code5 = static_cast<double>(e.msef[4]);
+    uint16_t eec_data;
+    std::memcpy(&eec_data, &e.eec, sizeof(uint16_t));
+    error_code = static_cast<double>(eec_data);
+
+    uint8_t er_data;
+    std::memcpy(&er_data, &e.er, sizeof(uint8_t));
+    error_register = static_cast<double>(er_data);
+
+    uint16_t msef_data;
+    std::memcpy(&msef_data, &e.msef[0], sizeof(uint16_t));
+    manufacturer_error_code1 = static_cast<double>(msef_data);
+    std::memcpy(&msef_data, &e.msef[1], sizeof(uint16_t));
+    manufacturer_error_code2 = static_cast<double>(msef_data);
+    std::memcpy(&msef_data, &e.msef[2], sizeof(uint16_t));
+    manufacturer_error_code3 = static_cast<double>(msef_data);
+    std::memcpy(&msef_data, &e.msef[3], sizeof(uint16_t));
+    manufacturer_error_code4 = static_cast<double>(msef_data);
+    std::memcpy(&msef_data, &e.msef[4], sizeof(uint16_t));
+    manufacturer_error_code5 = static_cast<double>(msef_data);
   }
 
   double error_code;             // read-only
@@ -353,7 +365,7 @@ struct CanopenNodeData
       // if it is not, add it to the map
       rpdo_raw_data_map.emplace(index_pair, d.data_);
     }
-    // TODO(Dr.Denis): kept for backward compatibility - should b removed
+    // TODO(Dr.Denis): kept for backward compatibility - should be removed
     // check if the index pair is already in the map
     if (rpdo_data_map.find(index_pair) != rpdo_data_map.end())
     {
