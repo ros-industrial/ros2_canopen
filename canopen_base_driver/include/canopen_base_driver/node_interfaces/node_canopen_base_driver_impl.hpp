@@ -108,6 +108,16 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
   {
   }
   sdo_timeout_ms_ = sdo_timeout_ms.value_or(20);
+
+  std::optional<int> boot_timeout_ms;
+  try
+  {
+    boot_timeout_ms = std::optional(this->config_["boot_timeout_ms"].as<int>());
+  }
+  catch (...)
+  {
+  }
+  boot_timeout_ms_ = boot_timeout_ms.value_or(20);
 }
 template <>
 void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
@@ -185,6 +195,16 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
   {
   }
   sdo_timeout_ms_ = sdo_timeout_ms.value_or(20);
+
+  std::optional<int> boot_timeout_ms;
+  try
+  {
+    boot_timeout_ms = std::optional(this->config_["boot_timeout_ms"].as<int>());
+  }
+  catch (...)
+  {
+  }
+  boot_timeout_ms_ = boot_timeout_ms.value_or(20);
 }
 
 template <class NODETYPE>
@@ -255,7 +275,8 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
       std::scoped_lock<std::mutex> lock(this->driver_mutex_);
       this->lely_driver_ = std::make_shared<ros2_canopen::LelyDriverBridge>(
         *(this->exec_), *(this->master_), this->node_id_, this->node_->get_name(), this->eds_,
-        this->bin_, std::chrono::milliseconds(this->sdo_timeout_ms_));
+        this->bin_, std::chrono::milliseconds(this->sdo_timeout_ms_),
+        std::chrono::milliseconds(this->boot_timeout_ms_));
       this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(this->lely_driver_);
       prom->set_value(lely_driver_);
     });
