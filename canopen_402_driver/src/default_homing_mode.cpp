@@ -87,8 +87,11 @@ bool DefaultHomingMode::executeHoming()
     return error("homing error at start");
   }
 
+  //  std::chrono::steady_clock::time_point finish_time =
+  //    std::chrono::steady_clock::now() + std::chrono::seconds(10);  //
+  //
   std::chrono::steady_clock::time_point finish_time =
-    std::chrono::steady_clock::now() + std::chrono::seconds(10);  //
+    std::chrono::steady_clock::now() + std::chrono::seconds(homing_timeout_seconds_);  //
 
   // wait for attained
   if (!cond_.wait_until(
