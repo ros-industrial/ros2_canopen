@@ -241,7 +241,8 @@ enum class LelyBridgeErrc
   NmtSlaveInitiallyOperational = 'L',
   ProductCodeDifference = 'M',
   RevisionCodeDifference = 'N',
-  SerialNumberDifference = 'O'
+  SerialNumberDifference = 'O',
+  TimeOut = 'T'
 };
 
 struct LelyBridgeErrCategory : std::error_category
@@ -388,6 +389,8 @@ protected:
    */
   void OnEmcy(uint16_t eec, uint8_t er, uint8_t msef[5]) noexcept override;
 
+  // void OnConfig(::std::function<void(::std::error_code ec)> res) noexcept override;
+
 public:
   using FiberDriver::FiberDriver;
 
@@ -404,7 +407,8 @@ public:
    */
   LelyDriverBridge(
     ev_exec_t * exec, canopen::AsyncMaster & master, uint8_t id, std::string name, std::string eds,
-    std::string bin, std::chrono::milliseconds timeout = 20ms, std::chrono::milliseconds boot_timeout = 20ms)
+    std::string bin, std::chrono::milliseconds timeout = 20ms,
+    std::chrono::milliseconds boot_timeout = 20ms)
   : FiberDriver(exec, master, id),
     rpdo_queue(new SafeQueue<COData>()),
     emcy_queue(new SafeQueue<COEmcy>())
@@ -422,7 +426,7 @@ public:
     }
     pdo_map_ = dictionary_->createPDOMapping();
     sdo_timeout = timeout;
-    boot_timeout = timeout;
+    boot_timeout = std::chrono::milliseconds(2000);
   }
 
   /**
@@ -674,22 +678,24 @@ public:
    */
   bool wait_for_boot()
   {
-    if (booted.load())
-    {
-      return true;
-    }
+    if (booted.load()) return true;
+
     std::unique_lock<std::mutex> lck(boot_mtex);
-    boot_cond.wait_for(lck, boot_timeout);
+    auto status = boot_cond.wait_for(lck, std::chrono::seconds(1));
+
+    if (status == std::cv_status::timeout)
+    {
+      throw std::system_error(
+        static_cast<int>(LelyBridgeErrc::TimeOut), LelyBridgeErrCategory(), "Boot Timeout");
+    }
+
     if ((boot_status != 0) && (boot_status != 'L'))
     {
-      throw std::system_error(boot_status, LelyBridgeErrCategory(), "Boot Issue");
+      throw std::system_error(static_cast<int>(boot_status), LelyBridgeErrCategory(), "Boot Issue");
     }
-    else
-    {
-      booted.store(true);
-      return true;
-    }
-    return false;
+
+    booted.store(true);
+    return true;
   }
 
   void set_sync_function(std::function<void()> on_sync_function)
