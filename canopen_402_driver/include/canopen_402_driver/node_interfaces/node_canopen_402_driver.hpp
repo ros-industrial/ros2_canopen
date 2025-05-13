@@ -62,6 +62,7 @@ protected:
   double offset_pos_to_dev_;
   double offset_pos_from_dev_;
   ros2_canopen::State402::InternalState switching_state_;
+  int homing_timeout_seconds_;
 
   void publish();
   virtual void poll_timer_callback() override;

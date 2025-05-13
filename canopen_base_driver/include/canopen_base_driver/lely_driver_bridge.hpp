@@ -311,6 +311,7 @@ protected:
   canopen::NmtState boot_state;
   std::condition_variable boot_cond;
   std::mutex boot_mtex;
+  std::chrono::milliseconds boot_timeout;
 
   uint8_t nodeid;
   std::string name_;
@@ -403,7 +404,7 @@ public:
    */
   LelyDriverBridge(
     ev_exec_t * exec, canopen::AsyncMaster & master, uint8_t id, std::string name, std::string eds,
-    std::string bin, std::chrono::milliseconds timeout = 20ms)
+    std::string bin, std::chrono::milliseconds timeout = 20ms, std::chrono::milliseconds boot_timeout = 20ms)
   : FiberDriver(exec, master, id),
     rpdo_queue(new SafeQueue<COData>()),
     emcy_queue(new SafeQueue<COEmcy>())
@@ -421,6 +422,7 @@ public:
     }
     pdo_map_ = dictionary_->createPDOMapping();
     sdo_timeout = timeout;
+    boot_timeout = timeout;
   }
 
   /**
@@ -677,7 +679,7 @@ public:
       return true;
     }
     std::unique_lock<std::mutex> lck(boot_mtex);
-    boot_cond.wait(lck);
+    boot_cond.wait_for(lck, boot_timeout);
     if ((boot_status != 0) && (boot_status != 'L'))
     {
       throw std::system_error(boot_status, LelyBridgeErrCategory(), "Boot Issue");
