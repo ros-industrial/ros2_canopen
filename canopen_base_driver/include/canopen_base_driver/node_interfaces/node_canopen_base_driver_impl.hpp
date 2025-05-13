@@ -291,17 +291,39 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
   this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(this->lely_driver_);
   if (!this->lely_driver_->IsReady())
   {
-    RCLCPP_WARN(this->node_->get_logger(), "Wait for device to boot.");
-    try
+    bool boot_success = false;
+    int boot_attempts = 0;
+    const int max_boot_attempts = 3;  // 1 retry allowed
+    RCLCPP_WARN(this->node_->get_logger(), "Wait for device to boot...");
+    while (!boot_success && boot_attempts < max_boot_attempts)
     {
-      this->lely_driver_->wait_for_boot();
-    }
-    catch (const std::exception & e)
-    {
-      RCLCPP_ERROR(this->node_->get_logger(), e.what());
+      boot_attempts++;
+      try
+      {
+        this->lely_driver_->wait_for_boot();  // This will block and throw on failure
+        boot_success = true;
+        RCLCPP_INFO(this->node_->get_logger(), "Driver booted and ready.");
+      }
+      catch (const std::exception & e)
+      {
+        RCLCPP_ERROR(
+          this->node_->get_logger(), "Boot attempt %d failed: %s", boot_attempts, e.what());
+
+        if (boot_attempts < max_boot_attempts)
+        {
+          this->lely_driver_->Boot();  // Trigger boot again
+          RCLCPP_WARN(this->node_->get_logger(), "Retrying boot configuration...");
+        }
+        else
+        {
+          RCLCPP_ERROR(this->node_->get_logger(), "Boot failed after %d attempts", boot_attempts);
+          // TODO: (ipa-vsp) Handle failure case
+          // You might want to set a flag or throw an exception here
+          // to indicate that the device is not ready.
+        }
+      }
     }
   }
-  RCLCPP_INFO(this->node_->get_logger(), "Driver booted and ready.");
 
   if (diagnostic_enabled_.load())
   {
