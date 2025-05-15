@@ -53,7 +53,7 @@ CANopen Master Driver Architecture
 The architecture for CANopen master drivers looks as depicted in the class diagram. All master drivers
 consist of three main classes.
 
-The first class is the functionality class that contains the drivers functionailities independently of
+The first class is the functionality class that contains the drivers functionalities independently of
 the ROS2 node type. This class needs to implement the ros2_canopen::node_interfaces::NodeCanopenMasterInterface.
 ros2_canopen::node_interfaces::NodeCanopenMaster is an abstract class that provides some useful functionality and
 implements the ros2_canopen::node_interfaces::NodeCanopenMasterInterface. Usually, master drivers will inherit from
@@ -106,7 +106,7 @@ CANopen Device Driver Architecture
 The architecture for CANopen device drivers looks as depicted in the class diagram. All device drivers
 consist of three main classes.
 
-The first class is the functionality class that contains the drivers functionailities independently of
+The first class is the functionality class that contains the drivers functionalities independently of
 the ROS2 node type. This class needs to implement the ros2_canopen::node_interfaces::NodeCanopenDriverInterface.
 ros2_canopen::node_interfaces::NodeCanopenDriver is an abstract class that provides some useful functionality and
 implements the ros2_canopen::node_interfaces::NodeCanopenDriverInterface. If you plan to write a driver from scratch
