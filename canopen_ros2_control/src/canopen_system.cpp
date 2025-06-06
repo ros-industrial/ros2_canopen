@@ -287,7 +287,7 @@ hardware_interface::return_type CanopenSystem::read(
     if (canopen_data.emcy_data.error_code != 0)
     {
       RCLCPP_ERROR(
-        kLogger, "NodeID: 0x%X; Error code: %u; Error register: %u; Manufacturer error code: [%u, %u, %u, %u, %u];",
+        kLogger, "NodeID: 0x%X; Error code: %X; Error register: %X; Manufacturer error code: [%X, %X, %X, %X, %X];",
         node_id, canopen_data.emcy_data.original_emcy.eec, canopen_data.emcy_data.original_emcy.er,
         canopen_data.emcy_data.original_emcy.msef[0], canopen_data.emcy_data.original_emcy.msef[1],
         canopen_data.emcy_data.original_emcy.msef[2], canopen_data.emcy_data.original_emcy.msef[3],
@@ -295,7 +295,7 @@ hardware_interface::return_type CanopenSystem::read(
     }
   }
 
-  return hardware_interface::return_type::OK;
+  return hardware_interface::return_type::ERROR;
 }
 
 hardware_interface::return_type CanopenSystem::write(
@@ -308,7 +308,7 @@ hardware_interface::return_type CanopenSystem::write(
   {
     if (drivers.find(it->first) == drivers.end())
     {
-      // this is expeced for NodeID 0x00 - why do we have it at all? 
+      // this is expeced for NodeID 0x00 - why do we have it at all?
       RCLCPP_DEBUG(kLogger, "Driver for NodeID 0x%X not found. Skipping...", it->first);
       continue;
     }
