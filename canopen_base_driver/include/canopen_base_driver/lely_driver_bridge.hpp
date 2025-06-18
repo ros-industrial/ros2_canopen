@@ -404,7 +404,8 @@ public:
    */
   LelyDriverBridge(
     ev_exec_t * exec, canopen::AsyncMaster & master, uint8_t id, std::string name, std::string eds,
-    std::string bin, std::chrono::milliseconds timeout = 20ms, std::chrono::milliseconds boot_timeout = 20ms)
+    std::string bin, std::chrono::milliseconds timeout = 20ms,
+    std::chrono::milliseconds boot_timeout = 20ms)
   : FiberDriver(exec, master, id),
     rpdo_queue(new SafeQueue<COData>()),
     emcy_queue(new SafeQueue<COEmcy>())
