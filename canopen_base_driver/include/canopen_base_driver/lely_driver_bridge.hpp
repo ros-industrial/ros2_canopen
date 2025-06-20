@@ -312,7 +312,7 @@ protected:
   canopen::NmtState boot_state;
   std::condition_variable boot_cond;
   std::mutex boot_mtex;
-  std::chrono::milliseconds boot_timeout;
+  std::chrono::milliseconds boot_timeout_;
 
   uint8_t nodeid;
   std::string name_;
@@ -426,7 +426,7 @@ public:
     }
     pdo_map_ = dictionary_->createPDOMapping();
     sdo_timeout = timeout;
-    boot_timeout = std::chrono::milliseconds(2000);
+    boot_timeout_ = boot_timeout;
   }
 
   /**
@@ -681,7 +681,7 @@ public:
     if (booted.load()) return true;
 
     std::unique_lock<std::mutex> lck(boot_mtex);
-    auto status = boot_cond.wait_for(lck, std::chrono::seconds(1));
+    auto status = boot_cond.wait_for(lck, boot_timeout_);
 
     if (status == std::cv_status::timeout)
     {
