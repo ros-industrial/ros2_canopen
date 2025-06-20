@@ -72,7 +72,7 @@ std::string LelyBridgeErrCategory::message(int ev) const
       return "Value of object 1018:04 from CANopen device is different to value in object 1F88 "
              "(Serial number).";
     case LelyBridgeErrc::TimeOut:
-      return "The boot configure process timed out (took more than 1 second).";
+      return "The boot configure process timeout!";
     default:
       return "(unrecognized error)";
   }
@@ -111,8 +111,6 @@ void LelyDriverBridge::OnBoot(canopen::NmtState st, char es, const ::std::string
   this->boot_state = st;
   this->boot_status = es;
   this->boot_what = what;
-  std::cout << "OnBoot: id=" << (unsigned int)this->get_id() << " state=" << (int)st
-            << " status=" << (int)es << " what=" << what << std::endl;
   boot_cond.notify_all();
 }
 

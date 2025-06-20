@@ -811,7 +811,7 @@ public:
     std::thread(
       [this]()
       {
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Now sending Boot-Up frame...");
         this->canopen::BasicSlave::Reset();
       })
