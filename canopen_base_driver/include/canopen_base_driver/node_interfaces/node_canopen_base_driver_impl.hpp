@@ -311,17 +311,21 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
 
         if (boot_attempts < max_boot_attempts)
         {
+          RCLCPP_INFO(this->node_->get_logger(), "Sending NMT reset before retrying boot");
+          this->lely_driver_->nmt_command(canopen::NmtCommand::RESET_NODE);
           this->lely_driver_->Boot();  // Trigger boot again
           RCLCPP_WARN(this->node_->get_logger(), "Retrying boot configuration...");
         }
         else
         {
           RCLCPP_ERROR(this->node_->get_logger(), "Boot failed after %d attempts", boot_attempts);
-          // TODO: (ipa-vsp) Handle failure case
-          // You might want to set a flag or throw an exception here
-          // to indicate that the device is not ready.
         }
       }
+    }
+    if (!boot_success)
+    {
+      throw DriverException(
+        std::string("Boot failed after ") + std::to_string(boot_attempts) + " attempts");
     }
   }
 
