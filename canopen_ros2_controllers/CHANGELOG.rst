@@ -5,8 +5,8 @@ Changelog for package canopen_ros2_controllers
 0.2.9 (2024-04-16)
 ------------------
 
-Forthcoming
------------
+0.3.1 (2025-06-23)
+------------------
 * Add boot timeout and retry
 * Fix command interfaces value missmatch.
 * Fix realtime-tools include header file
