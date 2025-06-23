@@ -102,7 +102,7 @@ Collaboration diagram for ros2_canopen::LelyDriverBridge:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab10c2db8eb5fc5b5f3ba61095f889766"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1LelyDriverBridge.html#ab10c2db8eb5fc5b5f3ba61095f889766">LelyDriverBridge</a> (ev_exec_t *exec, canopen::AsyncMaster &amp;master, uint8_t id, std::string name, std::string eds, std::string bin, std::chrono::milliseconds timeout=20ms, std::chrono::milliseconds <a class="el" href="classros2__canopen_1_1LelyDriverBridge.html#a242428fc54fb7638f17927d1ef62c0aa">boot_timeout</a>=20ms)</td></tr>
+<tr class="memitem:ab10c2db8eb5fc5b5f3ba61095f889766"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1LelyDriverBridge.html#ab10c2db8eb5fc5b5f3ba61095f889766">LelyDriverBridge</a> (ev_exec_t *exec, canopen::AsyncMaster &amp;master, uint8_t id, std::string name, std::string eds, std::string bin, std::chrono::milliseconds timeout=20ms, std::chrono::milliseconds boot_timeout=20ms)</td></tr>
 <tr class="memdesc:ab10c2db8eb5fc5b5f3ba61095f889766"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Lely Bridge object.  <a href="classros2__canopen_1_1LelyDriverBridge.html#ab10c2db8eb5fc5b5f3ba61095f889766">More...</a><br /></td></tr>
 <tr class="separator:ab10c2db8eb5fc5b5f3ba61095f889766"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0c6920f6e2b3c64b04553f2857d3daf"><td class="memItemLeft" align="right" valign="top">std::future&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1LelyDriverBridge.html#ab0c6920f6e2b3c64b04553f2857d3daf">async_sdo_write</a> (<a class="el" href="structros2__canopen_1_1COData.html">COData</a> data)</td></tr>
@@ -235,8 +235,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:ae1a124ca99ee3d1571ee0bd594acd684"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15ab371cf46052d5028bc2a8804440ee"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1LelyDriverBridge.html#a15ab371cf46052d5028bc2a8804440ee">boot_mtex</a></td></tr>
 <tr class="separator:a15ab371cf46052d5028bc2a8804440ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a242428fc54fb7638f17927d1ef62c0aa"><td class="memItemLeft" align="right" valign="top">std::chrono::milliseconds&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1LelyDriverBridge.html#a242428fc54fb7638f17927d1ef62c0aa">boot_timeout</a></td></tr>
-<tr class="separator:a242428fc54fb7638f17927d1ef62c0aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf695cd9a0b49629a1852629a82efe3b"><td class="memItemLeft" align="right" valign="top">std::chrono::milliseconds&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1LelyDriverBridge.html#adf695cd9a0b49629a1852629a82efe3b">boot_timeout_</a></td></tr>
+<tr class="separator:adf695cd9a0b49629a1852629a82efe3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb2119c15d6781425ea66714e3fd1c38"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1LelyDriverBridge.html#afb2119c15d6781425ea66714e3fd1c38">nodeid</a></td></tr>
 <tr class="separator:afb2119c15d6781425ea66714e3fd1c38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbd744c730f8e4721a85d3f59250be5e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1LelyDriverBridge.html#afbd744c730f8e4721a85d3f59250be5e">name_</a></td></tr>
@@ -1758,8 +1758,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a242428fc54fb7638f17927d1ef62c0aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a242428fc54fb7638f17927d1ef62c0aa">&#9670;&nbsp;</a></span>boot_timeout</h2>
+<a id="adf695cd9a0b49629a1852629a82efe3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf695cd9a0b49629a1852629a82efe3b">&#9670;&nbsp;</a></span>boot_timeout_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1768,7 +1768,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::chrono::milliseconds ros2_canopen::LelyDriverBridge::boot_timeout</td>
+          <td class="memname">std::chrono::milliseconds ros2_canopen::LelyDriverBridge::boot_timeout_</td>
         </tr>
       </table>
   </td>

@@ -364,231 +364,257 @@ $(function() {
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  this-&gt;driver_ = std::static_pointer_cast&lt;lely::canopen::BasicDriver&gt;(this-&gt;lely_driver_);</div>
 <div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  <span class="keywordflow">if</span> (!this-&gt;lely_driver_-&gt;IsReady())</div>
 <div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  {</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    RCLCPP_WARN(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Wait for device to boot.&quot;</span>);</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    <span class="keywordflow">try</span></div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    {</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;      this-&gt;lely_driver_-&gt;wait_for_boot();</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    }</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    {</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;      RCLCPP_ERROR(this-&gt;node_-&gt;get_logger(), e.what());</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    }</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;  }</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;  RCLCPP_INFO(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Driver booted and ready.&quot;</span>);</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;  <span class="keywordflow">if</span> (diagnostic_enabled_.load())</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;  {</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    diagnostic_collector_-&gt;updateAll(</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;      diagnostic_msgs::msg::DiagnosticStatus::OK, <span class="stringliteral">&quot;Device ready&quot;</span>, <span class="stringliteral">&quot;DEVICE&quot;</span>, <span class="stringliteral">&quot;Added to master.&quot;</span>);</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;  }</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;}</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160; </div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
-<div class="line"><a name="l00314"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ab7df5cf029eff06fc92645acc610ae44">  314</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ab7df5cf029eff06fc92645acc610ae44">NodeCanopenBaseDriver&lt;NODETYPE&gt;::remove_from_master</a>()</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;{</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;  std::shared_ptr&lt;std::promise&lt;void&gt;&gt; prom = std::make_shared&lt;std::promise&lt;void&gt;&gt;();</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;  <span class="keyword">auto</span> f = prom-&gt;get_future();</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;  this-&gt;exec_-&gt;post(</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    [<span class="keyword">this</span>, prom]()</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    {</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;      this-&gt;driver_.reset();</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;      this-&gt;lely_driver_.reset();</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;      prom-&gt;set_value();</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    });</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;  <span class="keyword">auto</span> future_status = f.wait_for(this-&gt;non_transmit_timeout_);</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;  <span class="keywordflow">if</span> (future_status != std::future_status::ready)</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;  {</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    <span class="keywordflow">throw</span> <a class="code" href="classros2__canopen_1_1DriverException.html">DriverException</a>(<span class="stringliteral">&quot;remove_from_master: removing timed out&quot;</span>);</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    <span class="keywordtype">bool</span> boot_success = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    <span class="keywordtype">int</span> boot_attempts = 0;</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">int</span> max_boot_attempts = 3;  <span class="comment">// 1 retry allowed</span></div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    RCLCPP_WARN(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Wait for device to boot...&quot;</span>);</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    <span class="keywordflow">while</span> (!boot_success &amp;&amp; boot_attempts &lt; max_boot_attempts)</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    {</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;      boot_attempts++;</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;      <span class="keywordflow">try</span></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;      {</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        this-&gt;lely_driver_-&gt;wait_for_boot();  <span class="comment">// This will block and throw on failure</span></div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        boot_success = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        RCLCPP_INFO(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Driver booted and ready.&quot;</span>);</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;      }</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;      <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;      {</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        RCLCPP_ERROR(</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;          this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Boot attempt %d failed: %s&quot;</span>, boot_attempts, e.what());</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160; </div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        <span class="keywordflow">if</span> (boot_attempts &lt; max_boot_attempts)</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        {</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;          RCLCPP_INFO(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Sending NMT reset before retrying boot&quot;</span>);</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;          this-&gt;lely_driver_-&gt;nmt_command(canopen::NmtCommand::RESET_NODE);</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;          this-&gt;lely_driver_-&gt;Boot();  <span class="comment">// Trigger boot again</span></div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;          RCLCPP_WARN(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Retrying boot configuration...&quot;</span>);</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        }</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        {</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;          RCLCPP_ERROR(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Boot failed after %d attempts&quot;</span>, boot_attempts);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        }</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;      }</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    }</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="keywordflow">if</span> (!boot_success)</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    {</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;      <span class="keywordflow">throw</span> <a class="code" href="classros2__canopen_1_1DriverException.html">DriverException</a>(</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        std::string(<span class="stringliteral">&quot;Boot failed after &quot;</span>) + std::to_string(boot_attempts) + <span class="stringliteral">&quot; attempts&quot;</span>);</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    }</div>
 <div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;  }</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;  <span class="keywordflow">if</span> (diagnostic_enabled_.load())</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;  {</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    diagnostic_collector_-&gt;updateAll(</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;      diagnostic_msgs::msg::DiagnosticStatus::ERROR, <span class="stringliteral">&quot;Device removed&quot;</span>, <span class="stringliteral">&quot;DEVICE&quot;</span>,</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;      <span class="stringliteral">&quot;Removed from master.&quot;</span>);</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160; </div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;  <span class="keywordflow">if</span> (diagnostic_enabled_.load())</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;  {</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    diagnostic_collector_-&gt;updateAll(</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;      diagnostic_msgs::msg::DiagnosticStatus::OK, <span class="stringliteral">&quot;Device ready&quot;</span>, <span class="stringliteral">&quot;DEVICE&quot;</span>, <span class="stringliteral">&quot;Added to master.&quot;</span>);</div>
 <div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;  }</div>
 <div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;}</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
-<div class="line"><a name="l00339"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a59d23c6597fc572779f50b8fba4a4c82">  339</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a59d23c6597fc572779f50b8fba4a4c82">NodeCanopenBaseDriver&lt;NODETYPE&gt;::nmt_listener</a>()</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;{</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;  <span class="keywordflow">while</span> (rclcpp::ok())</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;  {</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    std::future&lt;lely::canopen::NmtState&gt; f;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    {</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;      std::scoped_lock&lt;std::mutex&gt; lock(this-&gt;driver_mutex_);</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;      f = this-&gt;lely_driver_-&gt;async_request_nmt();</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    }</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    <span class="keywordflow">while</span> (f.wait_for(this-&gt;non_transmit_timeout_) != std::future_status::ready)</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    {</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;      <span class="keywordflow">if</span> (!this-&gt;activated_.load()) <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    }</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="keywordflow">try</span></div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    {</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;      <span class="keyword">auto</span> state = f.get();</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;      <span class="keywordflow">if</span> (nmt_state_cb_)</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;      {</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        nmt_state_cb_(state, this-&gt;lely_driver_-&gt;get_id());</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;      }</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;      on_nmt(state);</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    }</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::future_error &amp; e)</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    {</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    }</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;  }</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;}</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
-<div class="line"><a name="l00368"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#af89e2e8ff40597fd55b82d842cde42e0">  368</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#af89e2e8ff40597fd55b82d842cde42e0">NodeCanopenBaseDriver&lt;NODETYPE&gt;::on_nmt</a>(canopen::NmtState nmt_state)</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;{</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;}</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160; </div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
-<div class="line"><a name="l00373"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a77360b90f34908793ec7cef2e5910482">  373</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a77360b90f34908793ec7cef2e5910482">NodeCanopenBaseDriver&lt;NODETYPE&gt;::on_rpdo</a>(<a class="code" href="structros2__canopen_1_1COData.html">COData</a> data)</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;{</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;}</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
-<div class="line"><a name="l00378"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#affe4649a9853df18298eb9d18d4f81f9">  378</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#affe4649a9853df18298eb9d18d4f81f9">NodeCanopenBaseDriver&lt;NODETYPE&gt;::on_emcy</a>(<a class="code" href="structros2__canopen_1_1COEmcy.html">COEmcy</a> emcy)</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;{</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;  diagnostic_collector_-&gt;summary(</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    diagnostic_msgs::msg::DiagnosticStatus::ERROR, <span class="stringliteral">&quot;Emergency message received&quot;</span>);</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;  std::string emcy_msg = <span class="stringliteral">&quot;Emergency message: &quot;</span>;</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;  emcy_msg.append(<span class="stringliteral">&quot;eec: &quot;</span>);</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;  emcy_msg.append(std::to_string(emcy.<a class="code" href="structros2__canopen_1_1COEmcy.html#a54a1b26e29f80918d0ae5cbcd3e14ab2">eec</a>));</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;  emcy_msg.append(<span class="stringliteral">&quot; er: &quot;</span>);</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;  emcy_msg.append(std::to_string(emcy.<a class="code" href="structros2__canopen_1_1COEmcy.html#ab1c8a6a5ce61a49a05f5bf7b05167a0b">er</a>));</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;  emcy_msg.append(<span class="stringliteral">&quot; msef: &quot;</span>);</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp; msef : emcy.<a class="code" href="structros2__canopen_1_1COEmcy.html#ae9115e38aa205da9cad039fa0866523d">msef</a>)</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;  {</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    emcy_msg.append(std::to_string(msef));</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    emcy_msg.append(<span class="stringliteral">&quot; &quot;</span>);</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;  }</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;  diagnostic_collector_-&gt;add(<span class="stringliteral">&quot;EMCY&quot;</span>, emcy_msg);</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;}</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160; </div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
-<div class="line"><a name="l00397"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a3eaa7598175fb3f27618729aaae93de0">  397</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a3eaa7598175fb3f27618729aaae93de0">NodeCanopenBaseDriver&lt;NODETYPE&gt;::rdpo_listener</a>()</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;{</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;  RCLCPP_INFO(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Starting RPDO Listener&quot;</span>);</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;  <span class="keyword">auto</span> q = lely_driver_-&gt;get_rpdo_queue();</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;  <span class="keywordflow">while</span> (rclcpp::ok())</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;  {</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    <a class="code" href="structros2__canopen_1_1COData.html">ros2_canopen::COData</a> rpdo;</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    <span class="keywordflow">while</span> (!q-&gt;wait_and_pop_for(this-&gt;non_transmit_timeout_, rpdo))</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    {</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;      <span class="keywordflow">if</span> (!this-&gt;activated_.load()) <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    }</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    <span class="keywordflow">try</span></div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    {</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;      <span class="keywordflow">if</span> (rpdo_cb_)</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;      {</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        rpdo_cb_(rpdo, this-&gt;lely_driver_-&gt;get_id());</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;      }</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;      on_rpdo(rpdo);</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    }</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    {</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;      RCLCPP_ERROR_STREAM(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;RPDO Listener error: &quot;</span> &lt;&lt; e.what());</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;    }</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;  }</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;}</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
-<div class="line"><a name="l00424"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a7bfab7737e59154d4b0e4171e8a461da">  424</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a7bfab7737e59154d4b0e4171e8a461da">NodeCanopenBaseDriver&lt;NODETYPE&gt;::poll_timer_callback</a>()</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;{</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 10; i++)</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;  {</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    <span class="keyword">auto</span> opt = emcy_queue_-&gt;try_pop();</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    <span class="keywordflow">if</span> (!opt.has_value())</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    {</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    }</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    <span class="keywordflow">try</span></div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    {</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;      <span class="keywordflow">if</span> (emcy_cb_)</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;      {</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;        emcy_cb_(opt.value(), this-&gt;lely_driver_-&gt;get_id());</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;      }</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;      on_emcy(opt.value());</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    }</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    {</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;      RCLCPP_ERROR_STREAM(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;EMCY poll error: &quot;</span> &lt;&lt; e.what());</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;    }</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;  }</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 10; i++)</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;  {</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;    <span class="keyword">auto</span> opt = rpdo_queue_-&gt;try_pop();</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;    <span class="keywordflow">if</span> (!opt.has_value())</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    {</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    }</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    <span class="keywordflow">try</span></div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    {</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;      <span class="keywordflow">if</span> (rpdo_cb_)</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;      {</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        rpdo_cb_(opt.value(), this-&gt;lely_driver_-&gt;get_id());</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;      }</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;      on_rpdo(opt.value());</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;    }</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;    {</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;      RCLCPP_ERROR_STREAM(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;RPDO Poll error: &quot;</span> &lt;&lt; e.what());</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
+<div class="line"><a name="l00340"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ab7df5cf029eff06fc92645acc610ae44">  340</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ab7df5cf029eff06fc92645acc610ae44">NodeCanopenBaseDriver&lt;NODETYPE&gt;::remove_from_master</a>()</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;{</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;  std::shared_ptr&lt;std::promise&lt;void&gt;&gt; prom = std::make_shared&lt;std::promise&lt;void&gt;&gt;();</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  <span class="keyword">auto</span> f = prom-&gt;get_future();</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;  this-&gt;exec_-&gt;post(</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    [<span class="keyword">this</span>, prom]()</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    {</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;      this-&gt;driver_.reset();</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;      this-&gt;lely_driver_.reset();</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;      prom-&gt;set_value();</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    });</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160; </div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;  <span class="keyword">auto</span> future_status = f.wait_for(this-&gt;non_transmit_timeout_);</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;  <span class="keywordflow">if</span> (future_status != std::future_status::ready)</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;  {</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    <span class="keywordflow">throw</span> <a class="code" href="classros2__canopen_1_1DriverException.html">DriverException</a>(<span class="stringliteral">&quot;remove_from_master: removing timed out&quot;</span>);</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;  }</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;  <span class="keywordflow">if</span> (diagnostic_enabled_.load())</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;  {</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    diagnostic_collector_-&gt;updateAll(</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;      diagnostic_msgs::msg::DiagnosticStatus::ERROR, <span class="stringliteral">&quot;Device removed&quot;</span>, <span class="stringliteral">&quot;DEVICE&quot;</span>,</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;      <span class="stringliteral">&quot;Removed from master.&quot;</span>);</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;  }</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;}</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
+<div class="line"><a name="l00365"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a59d23c6597fc572779f50b8fba4a4c82">  365</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a59d23c6597fc572779f50b8fba4a4c82">NodeCanopenBaseDriver&lt;NODETYPE&gt;::nmt_listener</a>()</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;{</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;  <span class="keywordflow">while</span> (rclcpp::ok())</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;  {</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    std::future&lt;lely::canopen::NmtState&gt; f;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    {</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;      std::scoped_lock&lt;std::mutex&gt; lock(this-&gt;driver_mutex_);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;      f = this-&gt;lely_driver_-&gt;async_request_nmt();</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    }</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    <span class="keywordflow">while</span> (f.wait_for(this-&gt;non_transmit_timeout_) != std::future_status::ready)</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    {</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;      <span class="keywordflow">if</span> (!this-&gt;activated_.load()) <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    }</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    <span class="keywordflow">try</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    {</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;      <span class="keyword">auto</span> state = f.get();</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;      <span class="keywordflow">if</span> (nmt_state_cb_)</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;      {</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        nmt_state_cb_(state, this-&gt;lely_driver_-&gt;get_id());</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;      }</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;      on_nmt(state);</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    }</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::future_error &amp; e)</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    {</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    }</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;  }</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;}</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
+<div class="line"><a name="l00394"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#af89e2e8ff40597fd55b82d842cde42e0">  394</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#af89e2e8ff40597fd55b82d842cde42e0">NodeCanopenBaseDriver&lt;NODETYPE&gt;::on_nmt</a>(canopen::NmtState nmt_state)</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;{</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;}</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160; </div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
+<div class="line"><a name="l00399"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a77360b90f34908793ec7cef2e5910482">  399</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a77360b90f34908793ec7cef2e5910482">NodeCanopenBaseDriver&lt;NODETYPE&gt;::on_rpdo</a>(<a class="code" href="structros2__canopen_1_1COData.html">COData</a> data)</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;{</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;}</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160; </div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
+<div class="line"><a name="l00404"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#affe4649a9853df18298eb9d18d4f81f9">  404</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#affe4649a9853df18298eb9d18d4f81f9">NodeCanopenBaseDriver&lt;NODETYPE&gt;::on_emcy</a>(<a class="code" href="structros2__canopen_1_1COEmcy.html">COEmcy</a> emcy)</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;{</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;  diagnostic_collector_-&gt;summary(</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    diagnostic_msgs::msg::DiagnosticStatus::ERROR, <span class="stringliteral">&quot;Emergency message received&quot;</span>);</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;  std::string emcy_msg = <span class="stringliteral">&quot;Emergency message: &quot;</span>;</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;  emcy_msg.append(<span class="stringliteral">&quot;eec: &quot;</span>);</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;  emcy_msg.append(std::to_string(emcy.<a class="code" href="structros2__canopen_1_1COEmcy.html#a54a1b26e29f80918d0ae5cbcd3e14ab2">eec</a>));</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;  emcy_msg.append(<span class="stringliteral">&quot; er: &quot;</span>);</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;  emcy_msg.append(std::to_string(emcy.<a class="code" href="structros2__canopen_1_1COEmcy.html#ab1c8a6a5ce61a49a05f5bf7b05167a0b">er</a>));</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;  emcy_msg.append(<span class="stringliteral">&quot; msef: &quot;</span>);</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp; msef : emcy.<a class="code" href="structros2__canopen_1_1COEmcy.html#ae9115e38aa205da9cad039fa0866523d">msef</a>)</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;  {</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    emcy_msg.append(std::to_string(msef));</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    emcy_msg.append(<span class="stringliteral">&quot; &quot;</span>);</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;  }</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;  diagnostic_collector_-&gt;add(<span class="stringliteral">&quot;EMCY&quot;</span>, emcy_msg);</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;}</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160; </div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
+<div class="line"><a name="l00423"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a3eaa7598175fb3f27618729aaae93de0">  423</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a3eaa7598175fb3f27618729aaae93de0">NodeCanopenBaseDriver&lt;NODETYPE&gt;::rdpo_listener</a>()</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;{</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;  RCLCPP_INFO(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Starting RPDO Listener&quot;</span>);</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;  <span class="keyword">auto</span> q = lely_driver_-&gt;get_rpdo_queue();</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;  <span class="keywordflow">while</span> (rclcpp::ok())</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;  {</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    <a class="code" href="structros2__canopen_1_1COData.html">ros2_canopen::COData</a> rpdo;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    <span class="keywordflow">while</span> (!q-&gt;wait_and_pop_for(this-&gt;non_transmit_timeout_, rpdo))</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;    {</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;      <span class="keywordflow">if</span> (!this-&gt;activated_.load()) <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    }</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    <span class="keywordflow">try</span></div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    {</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;      <span class="keywordflow">if</span> (rpdo_cb_)</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;      {</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;        rpdo_cb_(rpdo, this-&gt;lely_driver_-&gt;get_id());</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;      }</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;      on_rpdo(rpdo);</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;    }</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    {</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;      RCLCPP_ERROR_STREAM(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;RPDO Listener error: &quot;</span> &lt;&lt; e.what());</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;    }</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;  }</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;}</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
+<div class="line"><a name="l00450"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a7bfab7737e59154d4b0e4171e8a461da">  450</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a7bfab7737e59154d4b0e4171e8a461da">NodeCanopenBaseDriver&lt;NODETYPE&gt;::poll_timer_callback</a>()</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;{</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 10; i++)</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;  {</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    <span class="keyword">auto</span> opt = emcy_queue_-&gt;try_pop();</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <span class="keywordflow">if</span> (!opt.has_value())</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;    {</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;    }</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    <span class="keywordflow">try</span></div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;    {</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;      <span class="keywordflow">if</span> (emcy_cb_)</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;      {</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        emcy_cb_(opt.value(), this-&gt;lely_driver_-&gt;get_id());</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;      }</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;      on_emcy(opt.value());</div>
 <div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;    }</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;  }</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;}</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160; </div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
-<div class="line"><a name="l00471"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ac2bc0c3d4d2daa6c4efbf3183bbca34b">  471</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ac2bc0c3d4d2daa6c4efbf3183bbca34b">NodeCanopenBaseDriver&lt;NODETYPE&gt;::emcy_listener</a>()</div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;{</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;  RCLCPP_INFO(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Starting EMCY Listener&quot;</span>);</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;  <span class="keyword">auto</span> q = lely_driver_-&gt;get_emcy_queue();</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;  <span class="keywordflow">while</span> (rclcpp::ok())</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;  {</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;    <a class="code" href="structros2__canopen_1_1COEmcy.html">ros2_canopen::COEmcy</a> emcy;</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;    <span class="keywordflow">while</span> (!q-&gt;wait_and_pop_for(this-&gt;non_transmit_timeout_, emcy))</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;    {</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;      <span class="keywordflow">if</span> (!this-&gt;activated_.load()) <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;    }</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;    <span class="keywordflow">try</span></div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;    {</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;      <span class="keywordflow">if</span> (emcy_cb_)</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;      {</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;        emcy_cb_(emcy, this-&gt;lely_driver_-&gt;get_id());</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;      }</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;      on_emcy(emcy);</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;    }</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;    {</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;      RCLCPP_ERROR_STREAM(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;EMCY Listener error: &quot;</span> &lt;&lt; e.what());</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;    }</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;  }</div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;}</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160; </div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
-<div class="line"><a name="l00499"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#aae52329f1c1b062e9605fae97031bd22">  499</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#aae52329f1c1b062e9605fae97031bd22">NodeCanopenBaseDriver&lt;NODETYPE&gt;::diagnostic_callback</a>(</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;  diagnostic_updater::DiagnosticStatusWrapper &amp; stat)</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;{</div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;}</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160; </div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;    {</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;      RCLCPP_ERROR_STREAM(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;EMCY poll error: &quot;</span> &lt;&lt; e.what());</div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;    }</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;  }</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 10; i++)</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;  {</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;    <span class="keyword">auto</span> opt = rpdo_queue_-&gt;try_pop();</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;    <span class="keywordflow">if</span> (!opt.has_value())</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;    {</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;    }</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;    <span class="keywordflow">try</span></div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;    {</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;      <span class="keywordflow">if</span> (rpdo_cb_)</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;      {</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        rpdo_cb_(opt.value(), this-&gt;lely_driver_-&gt;get_id());</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;      }</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;      on_rpdo(opt.value());</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;    }</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;    {</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;      RCLCPP_ERROR_STREAM(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;RPDO Poll error: &quot;</span> &lt;&lt; e.what());</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    }</div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;  }</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;}</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160; </div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
+<div class="line"><a name="l00497"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ac2bc0c3d4d2daa6c4efbf3183bbca34b">  497</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ac2bc0c3d4d2daa6c4efbf3183bbca34b">NodeCanopenBaseDriver&lt;NODETYPE&gt;::emcy_listener</a>()</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;{</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;  RCLCPP_INFO(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Starting EMCY Listener&quot;</span>);</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;  <span class="keyword">auto</span> q = lely_driver_-&gt;get_emcy_queue();</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;  <span class="keywordflow">while</span> (rclcpp::ok())</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;  {</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;    <a class="code" href="structros2__canopen_1_1COEmcy.html">ros2_canopen::COEmcy</a> emcy;</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    <span class="keywordflow">while</span> (!q-&gt;wait_and_pop_for(this-&gt;non_transmit_timeout_, emcy))</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;    {</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;      <span class="keywordflow">if</span> (!this-&gt;activated_.load()) <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;    }</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;    <span class="keywordflow">try</span></div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;    {</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;      <span class="keywordflow">if</span> (emcy_cb_)</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;      {</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;        emcy_cb_(emcy, this-&gt;lely_driver_-&gt;get_id());</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;      }</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;      on_emcy(emcy);</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;    }</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp; e)</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;    {</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;      RCLCPP_ERROR_STREAM(this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;EMCY Listener error: &quot;</span> &lt;&lt; e.what());</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;    }</div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;  }</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;}</div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160; </div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> NODETYPE&gt;</div>
+<div class="line"><a name="l00525"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#aae52329f1c1b062e9605fae97031bd22">  525</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#aae52329f1c1b062e9605fae97031bd22">NodeCanopenBaseDriver&lt;NODETYPE&gt;::diagnostic_callback</a>(</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;  diagnostic_updater::DiagnosticStatusWrapper &amp; stat)</div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;{</div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;}</div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160; </div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassros2__canopen_1_1DiagnosticsCollector_html"><div class="ttname"><a href="classros2__canopen_1_1DiagnosticsCollector.html">ros2_canopen::DiagnosticsCollector</a></div><div class="ttdoc">A class to collect diagnostic information.</div><div class="ttdef"><b>Definition:</b> diagnostic_collector.hpp:34</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1DriverException_html"><div class="ttname"><a href="classros2__canopen_1_1DriverException.html">ros2_canopen::DriverException</a></div><div class="ttdoc">Driver Exception.</div><div class="ttdef"><b>Definition:</b> driver_error.hpp:31</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html">ros2_canopen::node_interfaces::NodeCanopenBaseDriver</a></div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver.hpp:34</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a3eaa7598175fb3f27618729aaae93de0"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a3eaa7598175fb3f27618729aaae93de0">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::rdpo_listener</a></div><div class="ttdeci">void rdpo_listener()</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:397</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a3eaa7598175fb3f27618729aaae93de0"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a3eaa7598175fb3f27618729aaae93de0">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::rdpo_listener</a></div><div class="ttdeci">void rdpo_listener()</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:423</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a41ef542ac94a74c8716fad3180335301"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a41ef542ac94a74c8716fad3180335301">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::add_to_master</a></div><div class="ttdeci">virtual void add_to_master()</div><div class="ttdoc">Add the driver to master.</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:265</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a59d23c6597fc572779f50b8fba4a4c82"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a59d23c6597fc572779f50b8fba4a4c82">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::nmt_listener</a></div><div class="ttdeci">void nmt_listener()</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:339</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a77360b90f34908793ec7cef2e5910482"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a77360b90f34908793ec7cef2e5910482">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::on_rpdo</a></div><div class="ttdeci">virtual void on_rpdo(COData data)</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:373</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a7bfab7737e59154d4b0e4171e8a461da"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a7bfab7737e59154d4b0e4171e8a461da">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::poll_timer_callback</a></div><div class="ttdeci">virtual void poll_timer_callback()</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:424</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a59d23c6597fc572779f50b8fba4a4c82"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a59d23c6597fc572779f50b8fba4a4c82">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::nmt_listener</a></div><div class="ttdeci">void nmt_listener()</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:365</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a77360b90f34908793ec7cef2e5910482"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a77360b90f34908793ec7cef2e5910482">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::on_rpdo</a></div><div class="ttdeci">virtual void on_rpdo(COData data)</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:399</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a7bfab7737e59154d4b0e4171e8a461da"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a7bfab7737e59154d4b0e4171e8a461da">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::poll_timer_callback</a></div><div class="ttdeci">virtual void poll_timer_callback()</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:450</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_a9bf71f88673a0ed698fe97d746c76b58"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a9bf71f88673a0ed698fe97d746c76b58">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::NodeCanopenBaseDriver</a></div><div class="ttdeci">NodeCanopenBaseDriver(NODETYPE *node)</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:23</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_aae52329f1c1b062e9605fae97031bd22"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#aae52329f1c1b062e9605fae97031bd22">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::diagnostic_callback</a></div><div class="ttdeci">virtual void diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper &amp;stat)</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:499</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_ab7df5cf029eff06fc92645acc610ae44"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ab7df5cf029eff06fc92645acc610ae44">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::remove_from_master</a></div><div class="ttdeci">virtual void remove_from_master()</div><div class="ttdoc">Remove the driver from master.</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:314</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_ac2bc0c3d4d2daa6c4efbf3183bbca34b"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ac2bc0c3d4d2daa6c4efbf3183bbca34b">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::emcy_listener</a></div><div class="ttdeci">void emcy_listener()</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:471</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_af89e2e8ff40597fd55b82d842cde42e0"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#af89e2e8ff40597fd55b82d842cde42e0">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::on_nmt</a></div><div class="ttdeci">virtual void on_nmt(canopen::NmtState nmt_state)</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:368</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_affe4649a9853df18298eb9d18d4f81f9"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#affe4649a9853df18298eb9d18d4f81f9">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::on_emcy</a></div><div class="ttdeci">virtual void on_emcy(COEmcy emcy)</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:378</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_aae52329f1c1b062e9605fae97031bd22"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#aae52329f1c1b062e9605fae97031bd22">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::diagnostic_callback</a></div><div class="ttdeci">virtual void diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper &amp;stat)</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:525</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_ab7df5cf029eff06fc92645acc610ae44"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ab7df5cf029eff06fc92645acc610ae44">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::remove_from_master</a></div><div class="ttdeci">virtual void remove_from_master()</div><div class="ttdoc">Remove the driver from master.</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:340</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_ac2bc0c3d4d2daa6c4efbf3183bbca34b"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#ac2bc0c3d4d2daa6c4efbf3183bbca34b">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::emcy_listener</a></div><div class="ttdeci">void emcy_listener()</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:497</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_af89e2e8ff40597fd55b82d842cde42e0"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#af89e2e8ff40597fd55b82d842cde42e0">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::on_nmt</a></div><div class="ttdeci">virtual void on_nmt(canopen::NmtState nmt_state)</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:394</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver_html_affe4649a9853df18298eb9d18d4f81f9"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#affe4649a9853df18298eb9d18d4f81f9">ros2_canopen::node_interfaces::NodeCanopenBaseDriver::on_emcy</a></div><div class="ttdeci">virtual void on_emcy(COEmcy emcy)</div><div class="ttdef"><b>Definition:</b> node_canopen_base_driver_impl.hpp:404</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver_html"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver.html">ros2_canopen::node_interfaces::NodeCanopenDriver</a></div><div class="ttdoc">Node Canopen Driver.</div><div class="ttdef"><b>Definition:</b> node_canopen_driver.hpp:60</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver_html_a145a8d18b7f1ed1d58eb51effa9cacf6"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver.html#a145a8d18b7f1ed1d58eb51effa9cacf6">ros2_canopen::node_interfaces::NodeCanopenDriver::shutdown</a></div><div class="ttdeci">void shutdown()</div><div class="ttdoc">Shutdown the driver.</div><div class="ttdef"><b>Definition:</b> node_canopen_driver.hpp:344</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver_html_a1ea2198ae81e17a0f5609dee262be3ce"><div class="ttname"><a href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenDriver.html#a1ea2198ae81e17a0f5609dee262be3ce">ros2_canopen::node_interfaces::NodeCanopenDriver::deactivate</a></div><div class="ttdeci">void deactivate()</div><div class="ttdoc">Deactivate the driver.</div><div class="ttdef"><b>Definition:</b> node_canopen_driver.hpp:265</div></div>
