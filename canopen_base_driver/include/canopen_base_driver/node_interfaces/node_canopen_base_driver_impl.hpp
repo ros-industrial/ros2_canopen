@@ -291,17 +291,43 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
   this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(this->lely_driver_);
   if (!this->lely_driver_->IsReady())
   {
-    RCLCPP_WARN(this->node_->get_logger(), "Wait for device to boot.");
-    try
+    bool boot_success = false;
+    int boot_attempts = 0;
+    const int max_boot_attempts = 3;  // 1 retry allowed
+    RCLCPP_WARN(this->node_->get_logger(), "Wait for device to boot...");
+    while (!boot_success && boot_attempts < max_boot_attempts)
     {
-      this->lely_driver_->wait_for_boot();
+      boot_attempts++;
+      try
+      {
+        this->lely_driver_->wait_for_boot();  // This will block and throw on failure
+        boot_success = true;
+        RCLCPP_INFO(this->node_->get_logger(), "Driver booted and ready.");
+      }
+      catch (const std::exception & e)
+      {
+        RCLCPP_ERROR(
+          this->node_->get_logger(), "Boot attempt %d failed: %s", boot_attempts, e.what());
+
+        if (boot_attempts < max_boot_attempts)
+        {
+          RCLCPP_INFO(this->node_->get_logger(), "Sending NMT reset before retrying boot");
+          this->lely_driver_->nmt_command(canopen::NmtCommand::RESET_NODE);
+          this->lely_driver_->Boot();  // Trigger boot again
+          RCLCPP_WARN(this->node_->get_logger(), "Retrying boot configuration...");
+        }
+        else
+        {
+          RCLCPP_ERROR(this->node_->get_logger(), "Boot failed after %d attempts", boot_attempts);
+        }
+      }
     }
-    catch (const std::exception & e)
+    if (!boot_success)
     {
-      RCLCPP_ERROR(this->node_->get_logger(), e.what());
+      throw DriverException(
+        std::string("Boot failed after ") + std::to_string(boot_attempts) + " attempts");
     }
   }
-  RCLCPP_INFO(this->node_->get_logger(), "Driver booted and ready.");
 
   if (diagnostic_enabled_.load())
   {
