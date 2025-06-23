@@ -1,4 +1,4 @@
-name: Documentation Rolling
+name: Documentation
 
 # Controls when the workflow will run
 on:
@@ -14,7 +14,11 @@ jobs:
   # This workflow contains a single job called "build"
   build_documentation:
     # The type of runner that the job will run on
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ROS_DISTRO: [rolling, jazzy, kilted]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -46,10 +50,10 @@ jobs:
       - name: Create commit
         run: |
             git clone https://github.com/ros-industrial/ros2_canopen.git --branch gh-pages --single-branch gh-pages
-            mkdir -p gh-pages/manual/rolling/
-            mkdir -p gh-pages/api/rolling/
-            cp -r ./canopen/sphinx/_build/html/* gh-pages/manual/rolling/
-            cp -r ./canopen/doxygen/_build/html/* gh-pages/api/rolling/
+            mkdir -p gh-pages/manual/${{ matrix.ROS_DISTRO }}/
+            mkdir -p gh-pages/api/${{ matrix.ROS_DISTRO }}/
+            cp -r ./canopen/sphinx/_build/html/* gh-pages/manual/${{ matrix.ROS_DISTRO }}/
+            cp -r ./canopen/doxygen/_build/html/* gh-pages/api/${{ matrix.ROS_DISTRO }}/
             cd gh-pages
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
