@@ -7,6 +7,11 @@ Changelog for package canopen_core
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
 
+Forthcoming
+-----------
+* Add namespacing support
+* Contributors: Christoph Hellmann Santos, Gerry Salinas, Vishnuprasad Prachandabhanu, ipa-vsp
+
 0.3.0 (2024-12-12)
 ------------------
 
