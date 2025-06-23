@@ -1,10 +1,17 @@
 <map id="/home/runner/work/ros2_canopen/ros2_canopen/canopen_base_driver/include/canopen_base_driver/diagnostic_collector.hpp" name="/home/runner/work/ros2_canopen/ros2_canopen/canopen_base_driver/include/canopen_base_driver/diagnostic_collector.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="212,5,447,91"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,146,72,173"/>
-<area shape="rect" id="node3" title=" " alt="" coords="96,146,160,173"/>
-<area shape="rect" id="node4" title=" " alt="" coords="184,146,243,173"/>
-<area shape="rect" id="node5" title=" " alt="" coords="267,146,391,173"/>
-<area shape="rect" id="node6" title=" " alt="" coords="416,139,584,180"/>
-<area shape="rect" id="node7" title=" " alt="" coords="609,139,786,180"/>
-<area shape="rect" id="node8" title=" " alt="" coords="811,139,957,180"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="212,5,447,89"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,145,72,170"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="214,92,85,140,79,142,77,137,83,135,213,87"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="96,145,160,170"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="254,92,163,141,160,136,251,87"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="184,145,243,170"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="287,92,238,137,234,133,283,88"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="267,145,391,170"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="332,90,332,131,327,131,327,90"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="416,137,584,177"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="396,87,460,128,457,132,393,92"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="609,137,786,177"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="448,80,621,131,619,136,446,85"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="811,137,957,177"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="447,67,798,134,797,140,446,72"/>
 </map>

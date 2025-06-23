@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pilz manipulator PRBT 6 &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
@@ -332,21 +332,21 @@ Additionally, this guide is based on: <a class="reference external" href="https:
 </li>
 <li><p>Create a launch file with name <code class="docutils literal notranslate"><span class="pre">robot.launch.py</span></code> in the launch directory of your package. Follow the instructions <a class="reference internal" href="../user-guide/how-to-create-a-robot-system.html"><span class="doc">How to create a robot system with ros2_control</span></a>  to complete the launch file. The launch file should look like this:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ament_index_python</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_package_share_directory</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchDescription</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeclareLaunchArgument</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.substitutions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">FindExecutable</span><span class="p">,</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch_ros.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch_ros.substitutions</span><span class="w"> </span><span class="kn">import</span> <span class="n">FindPackageShare</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.launch_description_sources</span><span class="w"> </span><span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">ament_index_python</span> <span class="kn">import</span> <span class="n">get_package_share_directory</span>
+<span class="kn">from</span> <span class="nn">launch</span> <span class="kn">import</span> <span class="n">LaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">DeclareLaunchArgument</span>
+<span class="kn">from</span> <span class="nn">launch.substitutions</span> <span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">FindExecutable</span><span class="p">,</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span>
+<span class="kn">from</span> <span class="nn">launch_ros.actions</span> <span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">launch_ros.substitutions</span> <span class="kn">import</span> <span class="n">FindPackageShare</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.launch_description_sources</span> <span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.launch_description_sources</span><span class="w"> </span><span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">launch_ros</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.launch_description_sources</span> <span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+<span class="kn">import</span> <span class="nn">launch_ros</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">generate_launch_description</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">generate_launch_description</span><span class="p">():</span>
     <span class="n">declared_arguments</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">declared_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -496,19 +496,19 @@ and create the MoveIt2 package for your robot. The MoveIt2 package should be cre
 </li>
 <li><p>Create a launch file <code class="docutils literal notranslate"><span class="pre">moveit_planning_execution.launch.py</span></code> to launch moveit and robot components.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">launch</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchDescription</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeclareLaunchArgument</span><span class="p">,</span> <span class="n">IncludeLaunchDescription</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.substitutions</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch_ros.substitutions</span><span class="w"> </span><span class="kn">import</span> <span class="n">FindPackageShare</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.launch_description_sources</span><span class="w"> </span><span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">launch</span> <span class="kn">import</span> <span class="n">LaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">DeclareLaunchArgument</span><span class="p">,</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.substitutions</span> <span class="kn">import</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span>
+<span class="kn">from</span> <span class="nn">launch_ros.substitutions</span> <span class="kn">import</span> <span class="n">FindPackageShare</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.launch_description_sources</span> <span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimerAction</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">TimerAction</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">moveit_configs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">MoveItConfigsBuilder</span>
+<span class="kn">from</span> <span class="nn">moveit_configs_utils</span> <span class="kn">import</span> <span class="n">MoveItConfigsBuilder</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">generate_launch_description</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">generate_launch_description</span><span class="p">():</span>
     <span class="n">moveit_config</span> <span class="o">=</span> <span class="n">MoveItConfigsBuilder</span><span class="p">(</span>
         <span class="s2">&quot;prbt&quot;</span><span class="p">,</span> <span class="n">package_name</span><span class="o">=</span><span class="s2">&quot;prbt_robot_moveit_config&quot;</span>
     <span class="p">)</span><span class="o">.</span><span class="n">to_moveit_configs</span><span class="p">()</span>

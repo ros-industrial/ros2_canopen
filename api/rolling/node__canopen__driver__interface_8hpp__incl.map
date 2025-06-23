@@ -1,5 +1,7 @@
 <map id="/home/runner/work/ros2_canopen/ros2_canopen/canopen_core/include/canopen_core/node_interfaces/node_canopen_driver_interface.hpp" name="/home/runner/work/ros2_canopen/ros2_canopen/canopen_core/include/canopen_core/node_interfaces/node_canopen_driver_interface.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="61,5,287,91"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,139,172,165"/>
-<area shape="rect" id="node3" title=" " alt="" coords="197,139,325,165"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="61,5,287,89"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,137,172,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="141,91,109,129,105,125,137,88"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="197,137,325,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="211,88,244,125,240,129,207,91"/>
 </map>

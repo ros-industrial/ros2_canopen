@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>How to create a robot system with ros2_control &mdash; ros2_canopen 0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
@@ -226,16 +226,16 @@ leveragin ros2_control.</p>
 <ol class="arabic simple" start="7">
 <li><p>Create a launch file with the name <code class="docutils literal notranslate"><span class="pre">robot_control.launch.py</span></code> in the launch directory of your package and add the following content.</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">launch</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchDescription</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeclareLaunchArgument</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.substitutions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">FindExecutable</span><span class="p">,</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch_ros.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch_ros.substitutions</span><span class="w"> </span><span class="kn">import</span> <span class="n">FindPackageShare</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">launch.launch_description_sources</span><span class="w"> </span><span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">launch</span> <span class="kn">import</span> <span class="n">LaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">DeclareLaunchArgument</span>
+<span class="kn">from</span> <span class="nn">launch.substitutions</span> <span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">FindExecutable</span><span class="p">,</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span>
+<span class="kn">from</span> <span class="nn">launch_ros.actions</span> <span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">launch_ros.substitutions</span> <span class="kn">import</span> <span class="n">FindPackageShare</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.launch_description_sources</span> <span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">generate_launch_description</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">generate_launch_description</span><span class="p">():</span>
     <span class="n">robot_description_content</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="n">PathJoinSubstitution</span><span class="p">([</span><span class="n">FindExecutable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;xacro&quot;</span><span class="p">)]),</span>

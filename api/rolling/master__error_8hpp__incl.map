@@ -1,4 +1,5 @@
 <map id="/home/runner/work/ros2_canopen/ros2_canopen/canopen_core/include/canopen_core/master_error.hpp" name="/home/runner/work/ros2_canopen/ros2_canopen/canopen_core/include/canopen_core/master_error.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,232,76"/>
-<area shape="rect" id="node2" title=" " alt="" coords="65,124,173,151"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,232,75"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="65,123,173,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,75,121,109,116,109,116,75"/>
 </map>

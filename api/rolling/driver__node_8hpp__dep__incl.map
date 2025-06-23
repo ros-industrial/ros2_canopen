@@ -1,10 +1,17 @@
 <map id="/home/runner/work/ros2_canopen/ros2_canopen/canopen_core/include/canopen_core/driver_node.hpp" name="/home/runner/work/ros2_canopen/ros2_canopen/canopen_core/include/canopen_core/driver_node.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="789,5,1016,76"/>
-<area shape="rect" id="node2" href="$device__container_8hpp.html" title=" " alt="" coords="5,131,232,202"/>
-<area shape="rect" id="node3" href="$base__driver_8hpp.html" title=" " alt="" coords="257,131,527,202"/>
-<area shape="rect" id="node4" href="$lifecycle__base__driver_8hpp.html" title=" " alt="" coords="551,124,774,209"/>
-<area shape="rect" id="node5" href="$cia402__driver_8hpp.html" title=" " alt="" coords="799,124,1007,209"/>
-<area shape="rect" id="node6" href="$lifecycle__cia402__driver_8hpp.html" title=" " alt="" coords="1031,124,1247,209"/>
-<area shape="rect" id="node7" href="$lifecycle__proxy__driver_8hpp.html" title=" " alt="" coords="1271,124,1500,209"/>
-<area shape="rect" id="node8" href="$proxy__driver_8hpp.html" title=" " alt="" coords="1524,124,1745,209"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="771,5,997,75"/>
+<area shape="rect" id="Node000002" href="$cia402__driver_8hpp.html" title=" " alt="" coords="5,123,213,207"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="757,52,509,76,367,97,226,125,214,128,213,123,225,120,366,92,509,71,756,46"/>
+<area shape="rect" id="Node000003" href="$lifecycle__cia402__driver_8hpp.html" title=" " alt="" coords="237,123,453,207"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="758,64,617,90,466,125,454,128,453,123,465,120,616,85,757,59"/>
+<area shape="rect" id="Node000004" href="$base__driver_8hpp.html" title=" " alt="" coords="478,130,749,199"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="799,83,689,132,687,127,797,78"/>
+<area shape="rect" id="Node000005" href="$lifecycle__base__driver_8hpp.html" title=" " alt="" coords="773,123,995,207"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="887,88,887,123,881,123,881,88"/>
+<area shape="rect" id="Node000006" href="$device__container_8hpp.html" title=" " alt="" coords="1020,130,1247,199"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="965,78,1066,127,1064,132,963,83"/>
+<area shape="rect" id="Node000007" href="$lifecycle__proxy__driver_8hpp.html" title=" " alt="" coords="1271,123,1500,207"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1011,63,1132,89,1259,120,1271,123,1270,129,1258,125,1131,94,1010,68"/>
+<area shape="rect" id="Node000008" href="$proxy__driver_8hpp.html" title=" " alt="" coords="1524,123,1745,207"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1011,48,1246,73,1380,94,1513,120,1525,123,1523,128,1511,125,1379,99,1245,79,1011,53"/>
 </map>
