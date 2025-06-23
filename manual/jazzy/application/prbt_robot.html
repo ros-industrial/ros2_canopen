@@ -1,0 +1,617 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pilz manipulator PRBT 6 &mdash; ros2_canopen 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Trinamic Stepper Motor control" href="trinamic.html" />
+    <link rel="prev" title="ros2_control SystemInterface test" href="../software-tests/ros2_control_system-test.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ros2_canopen
+              <img src="../_static/ros2-canopen-logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Quickstart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/operation.html">Setup CAN Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/examples.html">Running Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html">Configuration Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html#bus-configuration-file">Bus Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/configuration.html#configuration-package-cmake">Configuration Package CMake</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/master.html">Master Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/proxy-driver.html">Proxy Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/cia402-driver.html">Cia402 Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-configuration.html">How to create a configuration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-cia301-system.html">How to create a cia301 system with ros2_control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/how-to-create-a-robot-system.html">How to create a robot system with ros2_control</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/design-objectives.html">Design Objectives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/new-driver.html">Creating a new device driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers-guide/new-master.html">Creating a new master</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ros-industrial.github.io/ros2_canopen/api/">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Software Tests</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html">Lifecycle Proxy Driver Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../software-tests/proxy-driver-test.html#proxy-driver-test">Proxy Driver Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../software-tests/ros2_control_system-test.html">ros2_control SystemInterface test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Application Demos</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pilz manipulator PRBT 6</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#package-creation-and-setup">Package creation and setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#moveit2-setup">MoveIt2 setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-prbt-robot">Running the PRBT robot</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="trinamic.html">Trinamic Stepper Motor control</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ros2_canopen</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pilz manipulator PRBT 6</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/application/prbt_robot.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pilz-manipulator-prbt-6">
+<h1>Pilz manipulator PRBT 6<a class="headerlink" href="#pilz-manipulator-prbt-6" title="Link to this heading"></a></h1>
+<p>This guide provides instructions on how to set up Pilz manipulators PRBT 6 using ros2_canopen.
+Before following this guide, make sure to refer to the user guide to <a class="reference internal" href="../user-guide/configuration.html"><span class="doc">Configuration Package</span></a>,
+<a class="reference internal" href="../user-guide/how-to-create-a-configuration.html"><span class="doc">How to create a configuration package</span></a> and <a class="reference internal" href="../user-guide/how-to-create-a-robot-system.html"><span class="doc">How to create a robot system with ros2_control</span></a>.
+Additionally, this guide is based on: <a class="reference external" href="https://github.com/PilzDE/pilz_robots">pilz_robots</a>.</p>
+<p>To configure the PRBT 6 using ros2_canopen, please refer to the pre-existing configuration in the <a class="reference external" href="https://github.com/ipa-cmh/prbt_robot.git">pilz_robot</a> package.</p>
+<section id="package-creation-and-setup">
+<h2>Package creation and setup<a class="headerlink" href="#package-creation-and-setup" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Create a new configuration package for the robot with the name <code class="docutils literal notranslate"><span class="pre">prbt_robot_support</span></code>.</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ros2<span class="w"> </span>pkg<span class="w"> </span>create<span class="w"> </span>--dependencies<span class="w"> </span>ros2_canopen<span class="w"> </span>lely_core_libraries<span class="w"> </span>--build-type<span class="w"> </span>ament_cmake<span class="w"> </span>prbt_robot_support
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>prbt_robot_support
+<span class="gp">$ </span>rm<span class="w"> </span>-rf<span class="w"> </span>src
+<span class="gp">$ </span>rm<span class="w"> </span>-rf<span class="w"> </span>include
+<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>launch
+<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>config
+<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>urdf
+<span class="gp">$ </span>touch<span class="w"> </span>config/prbt_ros2_control.yaml
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Create a new bus configuration folder with name <code class="docutils literal notranslate"><span class="pre">prbt</span></code>. And create <code class="docutils literal notranslate"><span class="pre">bus.yml</span></code> and copy <code class="docutils literal notranslate"><span class="pre">prbt_0_1.dcf</span></code> from <a class="reference external" href="https://github.com/PilzDE/pilz_robots/tree/noetic-devel/prbt_support/config">pilz_support</a> package.</p>
+<blockquote>
+<div><p>Now the package structure should look like this:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">prbt_robot_support</span>
+<span class="w">    </span><span class="err">├──</span><span class="w"> </span><span class="n">config</span>
+<span class="w">    </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">prbt</span>
+<span class="w">    </span><span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">bus</span><span class="p">.</span><span class="n">yml</span>
+<span class="w">    </span><span class="err">│</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">prbt_0_1</span><span class="p">.</span><span class="n">dcf</span>
+<span class="w">    </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">prbt_ros2_control</span><span class="p">.</span><span class="n">yaml</span>
+<span class="w">    </span><span class="err">├──</span><span class="w"> </span><span class="n">launch</span>
+<span class="w">    </span><span class="err">├──</span><span class="w"> </span><span class="n">urdf</span>
+<span class="w">    </span><span class="err">├──</span><span class="w"> </span><span class="n">CMakeLists</span><span class="p">.</span><span class="n">txt</span>
+<span class="w">    </span><span class="err">└──</span><span class="w"> </span><span class="n">package</span><span class="p">.</span><span class="n">xml</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Add the following to the <code class="docutils literal notranslate"><span class="pre">bus.yml</span></code></p>
+<blockquote>
+<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dcf_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@BUS_CONFIG_PATH@&quot;</span>
+<span class="w">    </span><span class="nt">master</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">        </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ros2_canopen::MasterDriver&quot;</span>
+<span class="w">        </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;canopen_master_driver&quot;</span>
+<span class="w">        </span><span class="nt">sync_period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+
+<span class="w">    </span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">dcf</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;prbt_0_1.dcf&quot;</span>
+<span class="w">        </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ros2_canopen::Cia402Driver&quot;</span>
+<span class="w">        </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;canopen_402_driver&quot;</span>
+<span class="w">        </span><span class="nt">period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">        </span><span class="nt">heartbeat_producer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">        </span><span class="nt">switching_state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">        </span><span class="nt">position_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7</span>
+<span class="w">        </span><span class="nt">scale_pos_from_dev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.00001745329252</span>
+<span class="w">        </span><span class="nt">scale_pos_to_dev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">57295.7795131</span>
+<span class="w">        </span><span class="nt">sdo</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6081</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">1000</span><span class="p p-Indicator">}</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x60C2</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="nt"> value</span><span class="p">:</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># Interpolation time period at 10 ms matches the period.</span>
+
+<span class="w">        </span><span class="nt">tpdo</span><span class="p">:</span><span class="w"> </span><span class="c1"># TPDO needed statusword, actual velocity, actual position, mode of operation</span>
+<span class="w">            </span><span class="nt">1</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">            </span><span class="nt">cob_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">            </span><span class="nt">transmission</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x01</span>
+<span class="w">            </span><span class="nt">mapping</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6041</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># status word</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6061</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># mode of operation display</span>
+<span class="w">            </span><span class="nt">2</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">            </span><span class="nt">cob_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">            </span><span class="nt">transmission</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x01</span>
+<span class="w">            </span><span class="nt">mapping</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6064</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># position actual value</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x606c</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># velocity actual position</span>
+<span class="w">            </span><span class="nt">3</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">            </span><span class="nt">4</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">        </span><span class="nt">rpdo</span><span class="p">:</span><span class="w"> </span><span class="c1"># RPDO needed controlword, target position, target velocity, mode of operation</span>
+<span class="w">            </span><span class="nt">1</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">            </span><span class="nt">cob_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">            </span><span class="nt">mapping</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6040</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># controlword</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x6060</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># mode of operation</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x60C1</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># interpolated position data</span>
+<span class="w">            </span><span class="nt">2</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">            </span><span class="nt">cob_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">            </span><span class="nt">mapping</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">index</span><span class="p">:</span><span class="w"> </span><span class="nv">0x607A</span><span class="p p-Indicator">,</span><span class="nt"> sub_index</span><span class="p">:</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">}</span><span class="w"> </span><span class="c1"># target position</span>
+
+<span class="w">    </span><span class="nt">nodes</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">prbt_joint_1</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">        </span><span class="nt">prbt_joint_2</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">        </span><span class="nt">prbt_joint_3</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">        </span><span class="nt">prbt_joint_4</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">        </span><span class="nt">prbt_joint_5</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7</span>
+<span class="w">        </span><span class="nt">prbt_joint_6</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">node_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">prbt.ros2_control.xacro</span></code> file in <code class="docutils literal notranslate"><span class="pre">urdf</span></code> folder and add the following to the file:</p>
+<blockquote>
+<div><div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="nt">&lt;robot</span><span class="w"> </span><span class="na">xmlns:xacro=</span><span class="s">&quot;http://www.ros.org/wiki/xacro&quot;</span><span class="nt">&gt;</span>
+
+<span class="w">    </span><span class="nt">&lt;xacro:macro</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;prbt_ros2_control&quot;</span><span class="w"> </span><span class="na">params=</span><span class="s">&quot;</span>
+<span class="s">        name</span>
+<span class="s">        prefix</span>
+<span class="s">        bus_config</span>
+<span class="s">        master_config</span>
+<span class="s">        can_interface_name</span>
+<span class="s">        master_bin&quot;</span><span class="nt">&gt;</span>
+
+<span class="w">        </span><span class="nt">&lt;ros2_control</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;${name}&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;system&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;hardware&gt;</span>
+<span class="w">                </span><span class="nt">&lt;plugin&gt;</span>canopen_ros2_control/RobotSystem<span class="nt">&lt;/plugin&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;bus_config&quot;</span><span class="nt">&gt;</span>${bus_config}<span class="nt">&lt;/param&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;master_config&quot;</span><span class="nt">&gt;</span>${master_config}<span class="nt">&lt;/param&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;can_interface_name&quot;</span><span class="nt">&gt;</span>${can_interface_name}<span class="nt">&lt;/param&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;master_bin&quot;</span><span class="nt">&gt;</span>&quot;${master_bin}&quot;<span class="nt">&lt;/param&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/hardware&gt;</span>
+<span class="w">            </span><span class="nt">&lt;joint</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;${prefix}joint_1&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;device_name&quot;</span><span class="nt">&gt;</span>prbt_joint_1<span class="nt">&lt;/param&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/joint&gt;</span>
+<span class="w">            </span><span class="nt">&lt;joint</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;${prefix}joint_2&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;device_name&quot;</span><span class="nt">&gt;</span>prbt_joint_2<span class="nt">&lt;/param&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/joint&gt;</span>
+<span class="w">            </span><span class="nt">&lt;joint</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;${prefix}joint_3&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;device_name&quot;</span><span class="nt">&gt;</span>prbt_joint_3<span class="nt">&lt;/param&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/joint&gt;</span>
+<span class="w">            </span><span class="nt">&lt;joint</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;${prefix}joint_4&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;device_name&quot;</span><span class="nt">&gt;</span>prbt_joint_4<span class="nt">&lt;/param&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/joint&gt;</span>
+<span class="w">            </span><span class="nt">&lt;joint</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;${prefix}joint_5&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;device_name&quot;</span><span class="nt">&gt;</span>prbt_joint_5<span class="nt">&lt;/param&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/joint&gt;</span>
+<span class="w">            </span><span class="nt">&lt;joint</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;${prefix}joint_6&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;device_name&quot;</span><span class="nt">&gt;</span>prbt_joint_6<span class="nt">&lt;/param&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/joint&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/ros2_control&gt;</span>
+
+<span class="w">    </span><span class="nt">&lt;/xacro:macro&gt;</span>
+
+<span class="nt">&lt;/robot&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Add the following to the <code class="docutils literal notranslate"><span class="pre">prbt_ros2_control.yaml</span></code> file:</p>
+<blockquote>
+<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">controller_manager</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ros__parameters</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">update_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w">  </span><span class="c1"># Hz</span>
+
+<span class="w">        </span><span class="nt">joint_state_broadcaster</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">joint_state_broadcaster/JointStateBroadcaster</span>
+
+<span class="w">        </span><span class="nt">arm_controller</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">joint_trajectory_controller/JointTrajectoryController</span>
+
+<span class="nt">arm_controller</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ros__parameters</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">joints</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_1</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_2</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_3</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_4</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_5</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_6</span>
+<span class="w">        </span><span class="nt">command_interfaces</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">position</span>
+<span class="w">        </span><span class="nt">state_interfaces</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">position</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">velocity</span>
+<span class="w">        </span><span class="nt">stop_trajectory_duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+<span class="w">        </span><span class="nt">state_publish_rate</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">100.0</span>
+<span class="w">        </span><span class="nt">action_monitor_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span>
+<span class="w">        </span><span class="nt">goal_time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span>
+<span class="w">        </span><span class="nt">limits</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">prbt_joint_1</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">has_acceleration_limits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">                </span><span class="nt">max_acceleration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6.0</span>
+<span class="w">            </span><span class="nt">prbt_joint_2</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">has_acceleration_limits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">                </span><span class="nt">max_acceleration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6.0</span>
+<span class="w">            </span><span class="nt">prbt_joint_3</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">has_acceleration_limits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">                </span><span class="nt">max_acceleration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6.0</span>
+<span class="w">            </span><span class="nt">prbt_joint_4</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">has_acceleration_limits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">                </span><span class="nt">max_acceleration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6.0</span>
+<span class="w">            </span><span class="nt">prbt_joint_5</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">has_acceleration_limits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">                </span><span class="nt">max_acceleration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6.0</span>
+<span class="w">            </span><span class="nt">prbt_joint_6</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">has_acceleration_limits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">                </span><span class="nt">max_acceleration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6.0</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Create a launch file with name <code class="docutils literal notranslate"><span class="pre">robot.launch.py</span></code> in the launch directory of your package. Follow the instructions <a class="reference internal" href="../user-guide/how-to-create-a-robot-system.html"><span class="doc">How to create a robot system with ros2_control</span></a>  to complete the launch file. The launch file should look like this:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">ament_index_python</span> <span class="kn">import</span> <span class="n">get_package_share_directory</span>
+<span class="kn">from</span> <span class="nn">launch</span> <span class="kn">import</span> <span class="n">LaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">DeclareLaunchArgument</span>
+<span class="kn">from</span> <span class="nn">launch.substitutions</span> <span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">FindExecutable</span><span class="p">,</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span>
+<span class="kn">from</span> <span class="nn">launch_ros.actions</span> <span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">launch_ros.substitutions</span> <span class="kn">import</span> <span class="n">FindPackageShare</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.launch_description_sources</span> <span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.launch_description_sources</span> <span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+<span class="kn">import</span> <span class="nn">launch_ros</span>
+
+<span class="k">def</span> <span class="nf">generate_launch_description</span><span class="p">():</span>
+    <span class="n">declared_arguments</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">declared_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+            <span class="s2">&quot;description_package&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Package where urdf file is stored.&quot;</span><span class="p">,</span>
+            <span class="n">default_value</span><span class="o">=</span><span class="s2">&quot;prbt_robot_support&quot;</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">declared_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+            <span class="s2">&quot;can_interface_name&quot;</span><span class="p">,</span>
+            <span class="n">default_value</span><span class="o">=</span><span class="s2">&quot;vcan0&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Interface name for can&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">declared_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+            <span class="s2">&quot;use_ros2_control&quot;</span><span class="p">,</span>
+            <span class="n">default_value</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use ros2_control&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">controller_config</span> <span class="o">=</span> <span class="n">PathJoinSubstitution</span><span class="p">([</span><span class="n">FindPackageShare</span><span class="p">(</span><span class="s2">&quot;prbt_robot_support&quot;</span><span class="p">),</span> <span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="s2">&quot;prbt_ros2_control.yaml&quot;</span><span class="p">])</span>
+    <span class="n">bus_config</span> <span class="o">=</span> <span class="n">PathJoinSubstitution</span><span class="p">([</span><span class="n">FindPackageShare</span><span class="p">(</span><span class="s2">&quot;prbt_robot_support&quot;</span><span class="p">),</span> <span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="s2">&quot;prbt&quot;</span><span class="p">,</span> <span class="s2">&quot;bus.yml&quot;</span><span class="p">])</span>
+    <span class="n">master_config</span> <span class="o">=</span> <span class="n">PathJoinSubstitution</span><span class="p">([</span><span class="n">FindPackageShare</span><span class="p">(</span><span class="s2">&quot;prbt_robot_support&quot;</span><span class="p">),</span> <span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="s2">&quot;prbt&quot;</span><span class="p">,</span> <span class="s2">&quot;master.dcf&quot;</span><span class="p">])</span>
+    <span class="n">can_interface_name</span> <span class="o">=</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s2">&quot;can_interface_name&quot;</span><span class="p">)</span>
+
+    <span class="n">master_bin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s2">&quot;prbt_robot_support&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;config&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;prbt&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;master.bin&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">master_bin_path</span><span class="p">):</span>
+        <span class="n">master_bin_path</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">robot_description_content</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">PathJoinSubstitution</span><span class="p">([</span><span class="n">FindExecutable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;xacro&quot;</span><span class="p">)]),</span>
+            <span class="s2">&quot; &quot;</span><span class="p">,</span>
+            <span class="n">PathJoinSubstitution</span><span class="p">([</span><span class="n">FindPackageShare</span><span class="p">(</span><span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s2">&quot;description_package&quot;</span><span class="p">)),</span> <span class="s2">&quot;urdf&quot;</span><span class="p">,</span> <span class="s2">&quot;prbt.xacro&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot; &quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bus_config:=&quot;</span><span class="p">,</span>
+            <span class="n">bus_config</span><span class="p">,</span>
+            <span class="s2">&quot; &quot;</span><span class="p">,</span>
+            <span class="s2">&quot;master_config:=&quot;</span><span class="p">,</span>
+            <span class="n">master_config</span><span class="p">,</span>
+            <span class="s2">&quot; &quot;</span><span class="p">,</span>
+            <span class="s2">&quot;master_bin:=&quot;</span><span class="p">,</span>
+            <span class="n">master_bin_path</span><span class="p">,</span>
+            <span class="s2">&quot; &quot;</span><span class="p">,</span>
+            <span class="s2">&quot;can_interface_name:=&quot;</span><span class="p">,</span>
+            <span class="n">can_interface_name</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">robot_description</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;robot_description&quot;</span><span class="p">:</span> <span class="n">launch_ros</span><span class="o">.</span><span class="n">descriptions</span><span class="o">.</span><span class="n">ParameterValue</span><span class="p">(</span><span class="n">robot_description_content</span><span class="p">,</span> <span class="n">value_type</span><span class="o">=</span><span class="nb">str</span><span class="p">)}</span>
+
+    <span class="n">robot_state_publisher_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;robot_state_publisher&quot;</span><span class="p">,</span>
+        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;robot_state_publisher&quot;</span><span class="p">,</span>
+        <span class="n">output</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="n">robot_description</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Controller manager</span>
+    <span class="n">controller_manager_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;controller_manager&quot;</span><span class="p">,</span>
+        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;ros2_control_node&quot;</span><span class="p">,</span>
+        <span class="n">output</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="n">robot_description</span><span class="p">,</span> <span class="n">controller_config</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="n">joint_state_broadcaster_spawner</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;controller_manager&quot;</span><span class="p">,</span>
+        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;spawner&quot;</span><span class="p">,</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;joint_state_broadcaster&quot;</span><span class="p">,</span> <span class="s2">&quot;--controller-manager&quot;</span><span class="p">,</span> <span class="s2">&quot;/controller_manager&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">arm_controller_spawner</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;controller_manager&quot;</span><span class="p">,</span>
+        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;spawner&quot;</span><span class="p">,</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;arm_controller&quot;</span><span class="p">,</span> <span class="s2">&quot;--controller-manager&quot;</span><span class="p">,</span> <span class="s2">&quot;/controller_manager&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="n">nodes_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">robot_state_publisher_node</span><span class="p">,</span>
+        <span class="n">controller_manager_node</span><span class="p">,</span>
+        <span class="n">joint_state_broadcaster_spawner</span><span class="p">,</span>
+        <span class="n">arm_controller_spawner</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">LaunchDescription</span><span class="p">(</span><span class="n">declared_arguments</span> <span class="o">+</span> <span class="n">nodes_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Edit the CMakeLists.txt file of your package and add the following lines after the find_package section.</p>
+<blockquote>
+<div><div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">cogen_dcf</span><span class="p">(</span><span class="s">prbt</span><span class="p">)</span>
+
+<span class="nb">install</span><span class="p">(</span><span class="s">DIRECTORY</span>
+<span class="s">launch</span><span class="w"> </span><span class="s">urdf</span><span class="w"> </span><span class="s">meshes</span>
+<span class="s">DESTINATION</span><span class="w"> </span><span class="s">share/</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span><span class="p">)</span>
+
+<span class="nb">install</span><span class="p">(</span><span class="s">FILES</span><span class="w"> </span><span class="s">config/prbt_ros2_control.yaml</span>
+<span class="s">DESTINATION</span><span class="w"> </span><span class="s">share/</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span><span class="s">/config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Build your package and source the setup file.</p></li>
+</ul>
+</section>
+<section id="moveit2-setup">
+<h2>MoveIt2 setup<a class="headerlink" href="#moveit2-setup" title="Link to this heading"></a></h2>
+<p>Follow the <a class="reference external" href="https://moveit.picknik.ai/main/doc/examples/setup_assistant/setup_assistant_tutorial.html?highlight=setup%20assistance">MoveIt Setup Assistance</a> tutorial
+and create the MoveIt2 package for your robot. The MoveIt2 package should be created in the same workspace as your robot package.</p>
+<ul>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">moveit_controller.yaml</span></code> file in the config directory of your MoveIt2 package. The file should look like this:</p>
+<blockquote>
+<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># MoveIt uses this configuration for controller management</span>
+<span class="nt">trajectory_execution</span><span class="p">:</span>
+<span class="nt">allowed_execution_duration_scaling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.2</span>
+<span class="nt">allowed_goal_duration_margin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="nt">allowed_start_tolerance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
+
+<span class="nt">moveit_controller_manager</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">moveit_simple_controller_manager/MoveItSimpleControllerManager</span>
+
+<span class="nt">moveit_simple_controller_manager</span><span class="p">:</span>
+<span class="nt">controller_names</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arm_controller</span>
+
+<span class="nt">arm_controller</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FollowJointTrajectory</span>
+<span class="w">    </span><span class="nt">action_ns</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">follow_joint_trajectory</span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">    </span><span class="nt">joints</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_1</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_2</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_3</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_4</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_5</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prbt_joint_6</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Create a launch file <code class="docutils literal notranslate"><span class="pre">moveit_planning_execution.launch.py</span></code> to launch moveit and robot components.</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">launch</span> <span class="kn">import</span> <span class="n">LaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">DeclareLaunchArgument</span><span class="p">,</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.substitutions</span> <span class="kn">import</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span>
+<span class="kn">from</span> <span class="nn">launch_ros.substitutions</span> <span class="kn">import</span> <span class="n">FindPackageShare</span>
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">IncludeLaunchDescription</span>
+<span class="kn">from</span> <span class="nn">launch.launch_description_sources</span> <span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+
+<span class="kn">from</span> <span class="nn">launch.actions</span> <span class="kn">import</span> <span class="n">TimerAction</span>
+
+<span class="kn">from</span> <span class="nn">moveit_configs_utils</span> <span class="kn">import</span> <span class="n">MoveItConfigsBuilder</span>
+
+
+<span class="k">def</span> <span class="nf">generate_launch_description</span><span class="p">():</span>
+    <span class="n">moveit_config</span> <span class="o">=</span> <span class="n">MoveItConfigsBuilder</span><span class="p">(</span>
+        <span class="s2">&quot;prbt&quot;</span><span class="p">,</span> <span class="n">package_name</span><span class="o">=</span><span class="s2">&quot;prbt_robot_moveit_config&quot;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_moveit_configs</span><span class="p">()</span>
+    <span class="n">declared_arguments</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">declared_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+            <span class="s2">&quot;can_interface_name&quot;</span><span class="p">,</span>
+            <span class="n">default_value</span><span class="o">=</span><span class="s2">&quot;can0&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Interface name for can&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">robot_hw_node</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">PathJoinSubstitution</span><span class="p">([</span><span class="n">FindPackageShare</span><span class="p">(</span><span class="s2">&quot;prbt_robot_support&quot;</span><span class="p">),</span> <span class="s2">&quot;launch&quot;</span><span class="p">,</span> <span class="s2">&quot;robot.launch.py&quot;</span><span class="p">])],</span>
+        <span class="p">),</span>
+        <span class="n">launch_arguments</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;can_interface_name&quot;</span><span class="p">:</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s2">&quot;can_interface_name&quot;</span><span class="p">),</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="n">virtual_joints</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span>
+                <span class="n">moveit_config</span><span class="o">.</span><span class="n">package_path</span> <span class="o">/</span> <span class="s2">&quot;launch/static_virtual_joint_tfs.launch.py&quot;</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">move_group</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">moveit_config</span><span class="o">.</span><span class="n">package_path</span> <span class="o">/</span> <span class="s2">&quot;launch/move_group.launch.py&quot;</span><span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">rviz</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">moveit_config</span><span class="o">.</span><span class="n">package_path</span> <span class="o">/</span> <span class="s2">&quot;launch/moveit_rviz.launch.py&quot;</span><span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+
+    <span class="n">node_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">robot_hw_node</span><span class="p">,</span>
+        <span class="n">virtual_joints</span><span class="p">,</span>
+        <span class="n">move_group</span><span class="p">,</span>
+        <span class="n">rviz</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">LaunchDescription</span><span class="p">(</span><span class="n">declared_arguments</span> <span class="o">+</span> <span class="n">node_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="running-the-prbt-robot">
+<h2>Running the PRBT robot<a class="headerlink" href="#running-the-prbt-robot" title="Link to this heading"></a></h2>
+<p>There are two ways to run the demo. First you can use <code class="docutils literal notranslate"><span class="pre">canopen_fake_slave</span></code> to simulate the robot using CAN interface <code class="docutils literal notranslate"><span class="pre">vcan0</span></code>. Second you can use the real robot.
+Refer <a class="reference internal" href="../quickstart/operation.html"><span class="doc">Setup CAN Controller</span></a> to configure CAN interface.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the demo using fake robot</span>
+ros2<span class="w"> </span>launch<span class="w"> </span>prbt_robot_moveit_config<span class="w"> </span>moveit_planning_execution.launch.py<span class="w"> </span>can_interface_name:<span class="o">=</span>vcan0
+
+<span class="c1"># Run the demo using real robot</span>
+ros2<span class="w"> </span>launch<span class="w"> </span>prbt_robot_moveit_config<span class="w"> </span>moveit_planning_execution.launch.py<span class="w"> </span>can_interface_name:<span class="o">=</span>can0
+</pre></div>
+</div>
+<p>Rviz2:</p>
+<a class="reference internal image-reference" href="../_images/prbt_rviz2.png"><img alt="../_images/prbt_rviz2.png" class="align-center" src="../_images/prbt_rviz2.png" style="width: 90%;" />
+</a>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../software-tests/ros2_control_system-test.html" class="btn btn-neutral float-left" title="ros2_control SystemInterface test" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="trinamic.html" class="btn btn-neutral float-right" title="Trinamic Stepper Motor control" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Christoph Hellmann Santos,  Harshavardhan Deshpande.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
