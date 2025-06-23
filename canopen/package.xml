@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>canopen</name>
-  <version>0.2.11</version>
+  <version>0.2.13</version>
   <description>Meta-package aggregating the ros2_canopen packages and documentation</description>
   <maintainer email="christoph.hellmann.santos@ipa.fraunhofer.de">Christoph Hellmann Santos</maintainer>
   <maintainer email="vishnuprasad.prachandabhanu@ipa.fraunhofer.de">Vishnuprasad Prachandabhanu</maintainer>

@@ -2,8 +2,8 @@
 Changelog for package canopen_fake_slaves
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.13 (2025-06-23)
+-------------------
 * Add boot timeout and retry
 * Add suported modes to `canopen_fake_slaves` README (`#337 <https://github.com/ros-industrial/ros2_canopen/issues/337>`_)
 * [FakeSlave] Extend slaves to provide period data for properly testing PDOs

@@ -2,8 +2,8 @@
 Changelog for package canopen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.13 (2025-06-23)
+-------------------
 * Add namespacing support
 * Implement configurable position offsets.
 * Remove set heartbeat service from master documentation (`#294 <https://github.com/ros-industrial/ros2_canopen/issues/294>`_)

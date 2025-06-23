@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>canopen_ros2_control</name>
-  <version>0.2.11</version>
+  <version>0.2.13</version>
   <description>ros2_control wrapper for ros2_canopen functionalities</description>
   <maintainer email="lovro.ivanov@gmail.com">Lovro Ivanov</maintainer>
   <maintainer email="denis.stogl@stoglrobotics.de">Denis Stogl</maintainer>
