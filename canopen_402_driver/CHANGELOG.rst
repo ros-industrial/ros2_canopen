@@ -8,6 +8,12 @@ Changelog for package canopen_402_driver
 * fix ci build error
 * Contributors: Vishnuprasad Prachandabhanu
 
+Forthcoming
+-----------
+* Homing timeout
+* Add services to disable/enable motor so that brake is usable.
+* Contributors: Vishnuprasad Prachandabhanu
+
 0.3.0 (2024-12-12)
 ------------------
 * Reformat using pre-commit

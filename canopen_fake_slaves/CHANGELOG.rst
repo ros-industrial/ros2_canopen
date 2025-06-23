@@ -5,6 +5,12 @@ Changelog for package canopen_fake_slaves
 0.2.9 (2024-04-16)
 ------------------
 
+Forthcoming
+-----------
+* Add boot timeout and retry
+* Add suported modes to `canopen_fake_slaves` README (`#337 <https://github.com/ros-industrial/ros2_canopen/issues/337>`_)
+* Contributors: Gerry Salinas, Patrick Roncagliolo, Vishnuprasad Prachandabhanu
+
 0.3.0 (2024-12-12)
 ------------------
 * fix loop timer for run_velocity_mode

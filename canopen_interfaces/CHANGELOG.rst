@@ -5,6 +5,9 @@ Changelog for package canopen_interfaces
 0.2.9 (2024-04-16)
 ------------------
 
+Forthcoming
+-----------
+
 0.3.0 (2024-12-12)
 ------------------
 

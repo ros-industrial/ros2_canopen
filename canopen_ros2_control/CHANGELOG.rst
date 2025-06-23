@@ -5,6 +5,11 @@ Changelog for package canopen_ros2_control
 0.2.9 (2024-04-16)
 ------------------
 
+Forthcoming
+-----------
+* Fixing ID type in storage of ros2_control system.
+* Contributors: Dr. Denis, Gerry Salinas, Vishnuprasad Prachandabhanu
+
 0.3.0 (2024-12-12)
 ------------------
 * pre-commit fix
