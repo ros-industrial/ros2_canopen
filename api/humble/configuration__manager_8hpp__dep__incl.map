@@ -1,5 +1,8 @@
 <map id="/home/runner/work/ros2_canopen/ros2_canopen/canopen_core/include/canopen_core/configuration_manager.hpp" name="/home/runner/work/ros2_canopen/ros2_canopen/canopen_core/include/canopen_core/configuration_manager.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,244,76"/>
-<area shape="rect" id="node2" href="$device__container_8hpp.html" title=" " alt="" coords="11,243,238,313"/>
-<area shape="rect" id="node3" href="$lifecycle__manager_8hpp.html" title=" " alt="" coords="87,124,314,195"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,244,75"/>
+<area shape="rect" id="Node000002" href="$device__container_8hpp.html" title=" " alt="" coords="11,240,238,309"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,87,78,123,72,157,78,191,88,216,101,238,96,241,83,218,73,193,66,157,73,122,89,85"/>
+<area shape="rect" id="Node000003" href="$lifecycle__manager_8hpp.html" title=" " alt="" coords="87,123,314,192"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="157,85,181,121,176,124,152,88"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="173,205,149,241,145,238,169,202"/>
 </map>

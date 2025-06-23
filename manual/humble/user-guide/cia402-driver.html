@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -6,20 +8,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cia402 Driver &mdash; ros2_canopen 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -204,11 +202,15 @@ the drive status, operation mode and sending target values to the motion control
 <td><p>Trigger</p></td>
 <td><p>Switches to cyclic velocity mode</p></td>
 </tr>
-<tr class="row-odd"><td><p>~/interpolated_position_mode</p></td>
+<tr class="row-odd"><td><p>~/cyclic_torque_mode</p></td>
+<td><p>Trigger</p></td>
+<td><p>Switches to cyclic torque mode</p></td>
+</tr>
+<tr class="row-even"><td><p>~/interpolated_position_mode</p></td>
 <td><p>Trigger</p></td>
 <td><p>Switches to interpolated position mode, only linear mode with fixed time is supported</p></td>
 </tr>
-<tr class="row-even"><td><p>~/target</p></td>
+<tr class="row-odd"><td><p>~/target</p></td>
 <td><p>CODouble</p></td>
 <td><p>Sets the target value. Only accepted when an operation mode is set.</p></td>
 </tr>
@@ -303,13 +305,21 @@ the drive status, operation mode and sending target values to the motion control
 <td><p>double</p></td>
 <td><p>Scaling factor to convert from SI units to device units for position.</p></td>
 </tr>
-<tr class="row-even"><td><p>scale_vel_to_dev</p></td>
+<tr class="row-even"><td><p>offset_pos_to_dev</p></td>
+<td><p>double</p></td>
+<td><p>Offset in device units added to scaled position commands sent to the device.</p></td>
+</tr>
+<tr class="row-odd"><td><p>scale_vel_to_dev</p></td>
 <td><p>double</p></td>
 <td><p>Scaling factor to convert from SI units to device units for velocity.</p></td>
 </tr>
-<tr class="row-odd"><td><p>scale_pos_from_dev</p></td>
+<tr class="row-even"><td><p>scale_pos_from_dev</p></td>
 <td><p>double</p></td>
 <td><p>Scaling factor to convert from device units to SI units for position.</p></td>
+</tr>
+<tr class="row-odd"><td><p>offset_pos_from_dev</p></td>
+<td><p>double</p></td>
+<td><p>Offset in SI units to added to scaled position reports from the device.</p></td>
 </tr>
 <tr class="row-even"><td><p>scale_vel_from_dev</p></td>
 <td><p>double</p></td>

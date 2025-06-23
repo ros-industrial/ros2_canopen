@@ -1,10 +1,17 @@
 <map id="ros2_canopen::Mode" name="ros2_canopen::Mode">
-<area shape="rect" id="node1" title=" " alt="" coords="5,107,161,134"/>
-<area shape="rect" id="node2" href="$classros2__canopen_1_1ModeTargetHelper.html" title=" " alt="" coords="215,5,411,47"/>
-<area shape="rect" id="node4" href="$classros2__canopen_1_1ModeTargetHelper.html" title=" " alt="" coords="215,71,411,112"/>
-<area shape="rect" id="node6" href="$classros2__canopen_1_1HomingMode.html" title=" " alt="" coords="209,137,416,163"/>
-<area shape="rect" id="node8" href="$classros2__canopen_1_1ModeTargetHelper.html" title=" " alt="" coords="215,188,411,229"/>
-<area shape="rect" id="node3" href="$classros2__canopen_1_1ProfiledPositionMode.html" title=" " alt="" coords="464,13,721,39"/>
-<area shape="rect" id="node5" href="$classros2__canopen_1_1ModeForwardHelper.html" title=" " alt="" coords="489,63,697,119"/>
-<area shape="rect" id="node7" href="$classros2__canopen_1_1DefaultHomingMode.html" title=" " alt="" coords="465,143,720,170"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,113,161,139"/>
+<area shape="rect" id="Node000002" href="$classros2__canopen_1_1ModeTargetHelper.html" title=" " alt="" coords="215,13,411,53"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="119,104,208,62,241,50,243,55,210,67,121,109"/>
+<area shape="rect" id="Node000004" href="$classros2__canopen_1_1ModeTargetHelper.html" title=" " alt="" coords="215,77,411,117"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="174,112,214,107,215,112,175,117"/>
+<area shape="rect" id="Node000006" href="$classros2__canopen_1_1HomingMode.html" title=" " alt="" coords="209,141,416,167"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="175,134,209,139,209,144,175,140"/>
+<area shape="rect" id="Node000008" href="$classros2__canopen_1_1ModeTargetHelper.html" title=" " alt="" coords="215,191,411,231"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="126,142,210,177,245,189,243,194,208,182,124,147"/>
+<area shape="rect" id="Node000003" href="$classros2__canopen_1_1ModeForwardHelper.html" title=" " alt="" coords="489,5,697,60"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="425,30,488,30,488,35,425,35"/>
+<area shape="rect" id="Node000005" href="$classros2__canopen_1_1ProfiledPositionMode.html" title=" " alt="" coords="464,84,721,109"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="425,94,464,94,464,99,425,99"/>
+<area shape="rect" id="Node000007" href="$classros2__canopen_1_1DefaultHomingMode.html" title=" " alt="" coords="465,141,720,167"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="430,151,465,151,465,157,430,157"/>
 </map>

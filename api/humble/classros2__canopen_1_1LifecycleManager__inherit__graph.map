@@ -1,4 +1,5 @@
 <map id="ros2_canopen::LifecycleManager" name="ros2_canopen::LifecycleManager">
-<area shape="rect" id="node1" title="Lifecycle Device Manager Node." alt="" coords="5,80,240,107"/>
-<area shape="rect" id="node2" title=" " alt="" coords="11,5,234,32"/>
+<area shape="rect" id="Node000001" title="Lifecycle Device Manager Node." alt="" coords="5,79,240,104"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="11,5,234,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="125,44,125,79,120,79,120,44"/>
 </map>

@@ -1,6 +1,9 @@
 <map id="/home/runner/work/ros2_canopen/ros2_canopen/canopen_402_driver/include/canopen_402_driver/state.hpp" name="/home/runner/work/ros2_canopen/ros2_canopen/canopen_402_driver/include/canopen_402_driver/state.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="57,5,279,76"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,124,72,151"/>
-<area shape="rect" id="node3" title=" " alt="" coords="97,124,239,151"/>
-<area shape="rect" id="node4" title=" " alt="" coords="264,124,328,151"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="57,5,279,75"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,123,72,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,77,68,116,65,112,120,73"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="97,123,239,148"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="171,75,171,109,165,109,165,75"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="264,123,328,148"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="216,73,270,112,267,116,213,77"/>
 </map>

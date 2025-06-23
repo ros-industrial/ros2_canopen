@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -6,20 +8,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Configuration Package &mdash; ros2_canopen 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -221,67 +219,70 @@ but come from the lely core library. Below you find a list of possible configura
 <tr class="row-even"><td><p>package</p></td>
 <td><p>The ros2 package name in which the master class can be found.</p></td>
 </tr>
-<tr class="row-odd"><td><p>baudrate</p></td>
+<tr class="row-odd"><td><p>namespace</p></td>
+<td><p>The namespace in which the master will be created (default: “/”).</p></td>
+</tr>
+<tr class="row-even"><td><p>baudrate</p></td>
 <td><p>The baudrate in kbit/s (default: 1000)</p></td>
 </tr>
-<tr class="row-even"><td><p>vendor_id</p></td>
+<tr class="row-odd"><td><p>vendor_id</p></td>
 <td><p>The vendor-ID (default: 0x00000000)</p></td>
 </tr>
-<tr class="row-odd"><td><p>product_code</p></td>
+<tr class="row-even"><td><p>product_code</p></td>
 <td><p>The product code (default: 0x00000000)</p></td>
 </tr>
-<tr class="row-even"><td><p>revision_number</p></td>
+<tr class="row-odd"><td><p>revision_number</p></td>
 <td><p>The revision number (default: 0x00000000).</p></td>
 </tr>
-<tr class="row-odd"><td><p>serial_number</p></td>
+<tr class="row-even"><td><p>serial_number</p></td>
 <td><p>The serial number (default: 0x00000000).</p></td>
 </tr>
-<tr class="row-even"><td><p>heartbeat_multiplier</p></td>
+<tr class="row-odd"><td><p>heartbeat_multiplier</p></td>
 <td><p>The multiplication factor used to obtain the slave heartbeat consumer time from the master heartbeat producer time (default: see options section).</p></td>
 </tr>
-<tr class="row-odd"><td><p>heartbeat_consumer</p></td>
+<tr class="row-even"><td><p>heartbeat_consumer</p></td>
 <td><p>Specifies whether the master should monitor the heartbeats of the slaves (default: true).</p></td>
 </tr>
-<tr class="row-even"><td><p>heartbeat_producer</p></td>
+<tr class="row-odd"><td><p>heartbeat_producer</p></td>
 <td><p>The heartbeat producer time in ms (default: 0).</p></td>
 </tr>
-<tr class="row-odd"><td><p>emcy_inhibit_time</p></td>
+<tr class="row-even"><td><p>emcy_inhibit_time</p></td>
 <td><p>The EMCY inhibit time in multiples of 100 μs (default: 0, see object 1015).</p></td>
 </tr>
-<tr class="row-even"><td><p>sync_period</p></td>
+<tr class="row-odd"><td><p>sync_period</p></td>
 <td><p>The SYNC interval in μs (default: 0).</p></td>
 </tr>
-<tr class="row-odd"><td><p>sync_window</p></td>
+<tr class="row-even"><td><p>sync_window</p></td>
 <td><p>The SYNC window length in μs (default: 0, see object 1007).</p></td>
 </tr>
-<tr class="row-even"><td><p>sync_overflow</p></td>
+<tr class="row-odd"><td><p>sync_overflow</p></td>
 <td><p>The SYNC counter overflow value (default: 0, see object 1019).</p></td>
 </tr>
-<tr class="row-odd"><td><p>error_behavior</p></td>
+<tr class="row-even"><td><p>error_behavior</p></td>
 <td><p>A dictionary of error behaviors for different classes or errors (default: {1: 0x00}, see object 1029).</p></td>
 </tr>
-<tr class="row-even"><td><p>nmt_inhibit_time</p></td>
+<tr class="row-odd"><td><p>nmt_inhibit_time</p></td>
 <td><p>The NMT inhibit time in multiples of 100 μs (default: 0, see object 102A).</p></td>
 </tr>
-<tr class="row-odd"><td><p>start</p></td>
+<tr class="row-even"><td><p>start</p></td>
 <td><p>Specifies whether the master shall switch into the NMT operational state by itself (default: true, see bit 2 in object 1F80).</p></td>
 </tr>
-<tr class="row-even"><td><p>start_nodes</p></td>
+<tr class="row-odd"><td><p>start_nodes</p></td>
 <td><p>Specifies whether the master shall start the slaves (default: true, see bit 3 in object 1F80).</p></td>
 </tr>
-<tr class="row-odd"><td><p>start_all_nodes</p></td>
+<tr class="row-even"><td><p>start_all_nodes</p></td>
 <td><p>Specifies whether the master shall start all nodes simultaneously (default: false, see bit 1 in object 1F80).</p></td>
 </tr>
-<tr class="row-even"><td><p>reset_all_nodes</p></td>
+<tr class="row-odd"><td><p>reset_all_nodes</p></td>
 <td><p>Specifies whether all slaves shall be reset in case of an error event on a mandatory slave (default: false, see bit 4 in object 1F80).</p></td>
 </tr>
-<tr class="row-odd"><td><p>stop_all_nodes</p></td>
+<tr class="row-even"><td><p>stop_all_nodes</p></td>
 <td><p>Specifies whether all slaves shall be stopped in case of an error event on a mandatory slave (default: false, see bit 6 in object 1F80).</p></td>
 </tr>
-<tr class="row-even"><td><p>boot_time</p></td>
+<tr class="row-odd"><td><p>boot_time</p></td>
 <td><p>The timeout for booting mandatory slaves in ms (default: 0, see object 1F89).</p></td>
 </tr>
-<tr class="row-odd"><td><p>boot_timeout</p></td>
+<tr class="row-even"><td><p>boot_timeout</p></td>
 <td><p>The timeout for booting all slaves in ms (default: 2000ms).</p></td>
 </tr>
 </tbody>
@@ -315,67 +316,70 @@ either only lifecycle drivers or only simple drivers.</p>
 <tr class="row-odd"><td><p>package</p></td>
 <td><p>The ros2 package name in which the driver class can be found.</p></td>
 </tr>
-<tr class="row-even"><td><p>enable_lazy_load</p></td>
+<tr class="row-even"><td><p>namespace</p></td>
+<td><p>The namespace in which the driver will be created (default: “/”).</p></td>
+</tr>
+<tr class="row-odd"><td><p>enable_lazy_load</p></td>
 <td><p>A flag that states whether the driver is loaded on start-up.</p></td>
 </tr>
-<tr class="row-odd"><td><p>dcf</p></td>
+<tr class="row-even"><td><p>dcf</p></td>
 <td><p>The filename of the EDS/DCF describing the slave (mandatory).</p></td>
 </tr>
-<tr class="row-even"><td><p>dcf_path</p></td>
+<tr class="row-odd"><td><p>dcf_path</p></td>
 <td><p>The directory in which the generated .bin file will be available at runtime (default: see options section).</p></td>
 </tr>
-<tr class="row-odd"><td><p>node_id</p></td>
+<tr class="row-even"><td><p>node_id</p></td>
 <td><p>The node-ID (default: 255, can be omitted if specified in the DCF).</p></td>
 </tr>
-<tr class="row-even"><td><p>revision_number</p></td>
+<tr class="row-odd"><td><p>revision_number</p></td>
 <td><p>The revision number (default: 0x00000000, can be omitted if specified in the DCF).</p></td>
 </tr>
-<tr class="row-odd"><td><p>serial_number</p></td>
+<tr class="row-even"><td><p>serial_number</p></td>
 <td><p>The serial number (default: 0x00000000, can be omitted if specified in the DCF).</p></td>
 </tr>
-<tr class="row-even"><td><p>heartbeat_multiplier</p></td>
+<tr class="row-odd"><td><p>heartbeat_multiplier</p></td>
 <td><p>The multiplication factor used to obtain master heartbeat consumer time from the slave heartbeat producer time (default: see options section).</p></td>
 </tr>
-<tr class="row-odd"><td><p>heartbeat_consumer</p></td>
+<tr class="row-even"><td><p>heartbeat_consumer</p></td>
 <td><p>Specifies whether the slave should monitor the heartbeat of the master (default: false).</p></td>
 </tr>
-<tr class="row-even"><td><p>heartbeat_producer</p></td>
+<tr class="row-odd"><td><p>heartbeat_producer</p></td>
 <td><p>The heartbeat producer time in ms (default: 0).</p></td>
 </tr>
-<tr class="row-odd"><td><p>error_behavior</p></td>
+<tr class="row-even"><td><p>error_behavior</p></td>
 <td><p>A dictionary of error behaviors for different classes or errors (default: {}, see object 1029).</p></td>
 </tr>
-<tr class="row-even"><td><p>rpdo</p></td>
+<tr class="row-odd"><td><p>rpdo</p></td>
 <td><p>The Receive-PDO configuration (see below).</p></td>
 </tr>
-<tr class="row-odd"><td><p>tpdo</p></td>
+<tr class="row-even"><td><p>tpdo</p></td>
 <td><p>The Transmit-PDO configuration (see below).</p></td>
 </tr>
-<tr class="row-even"><td><p>boot</p></td>
+<tr class="row-odd"><td><p>boot</p></td>
 <td><p>Specifies whether the slave will be configured and booted by the master (default: true, see bit 2 in object 1F81).</p></td>
 </tr>
-<tr class="row-odd"><td><p>mandatory</p></td>
+<tr class="row-even"><td><p>mandatory</p></td>
 <td><p>Specifies whether the slave is mandatory (default: false, see bit 3 in object 1F81).</p></td>
 </tr>
-<tr class="row-even"><td><p>reset_communication</p></td>
+<tr class="row-odd"><td><p>reset_communication</p></td>
 <td><p>Specifies whether the NMT reset communication command may be sent to the slave (default: true, see bit 4 in object 1F81).</p></td>
 </tr>
-<tr class="row-odd"><td><p>software_file</p></td>
+<tr class="row-even"><td><p>software_file</p></td>
 <td><p>The name of the file containing the firmware (default: “”, see object 1F58).</p></td>
 </tr>
-<tr class="row-even"><td><p>software_version</p></td>
+<tr class="row-odd"><td><p>software_version</p></td>
 <td><p>The expected software version (default: 0x00000000, see object 1F55).</p></td>
 </tr>
-<tr class="row-odd"><td><p>configuration_file</p></td>
+<tr class="row-even"><td><p>configuration_file</p></td>
 <td><p>The name of the file containing the configuration (default: “&lt;dcf_path&gt;/&lt;name&gt;.bin” (where &lt;name&gt; is the section name), see object 1F22).</p></td>
 </tr>
-<tr class="row-even"><td><p>restore_configuration</p></td>
+<tr class="row-odd"><td><p>restore_configuration</p></td>
 <td><p>The sub-index of object 1011 to be used when restoring the configuration (default: 0x00).</p></td>
 </tr>
-<tr class="row-odd"><td><p>sdo_timeout_ms</p></td>
+<tr class="row-even"><td><p>sdo_timeout_ms</p></td>
 <td><p>The timeout to use for SDO reads/writes to this device. (default: 20ms)</p></td>
 </tr>
-<tr class="row-even"><td><p>sdo</p></td>
+<tr class="row-odd"><td><p>sdo</p></td>
 <td><p>Additional SDO requests to be sent during configuration (see below).</p></td>
 </tr>
 </tbody>
