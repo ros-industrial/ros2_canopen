@@ -31,13 +31,11 @@ The documentation consists of two parts: a manual and an api reference.
 The documentation is built for rolling (master), iron and humble and hosted on github pages.
 Older ROS 2 releases are EOL and are not supported anymore.
 
+***Note:** Master branch works with ROS2 **Jazzy**, **Kilted** and **Rolling** distributions. For **Humble** distribution use the `humble` branch.*
+
 ### Rolling
 * Manual: https://ros-industrial.github.io/ros2_canopen/manual/rolling/
 * API reference: https://ros-industrial.github.io/ros2_canopen/api/rolling/
-
-### Iron
-* Manual: https://ros-industrial.github.io/ros2_canopen/manual/iron/
-* API reference: https://ros-industrial.github.io/ros2_canopen/api/iron/
 
 ### Humble
 * Manual: https://ros-industrial.github.io/ros2_canopen/manual/humble/
