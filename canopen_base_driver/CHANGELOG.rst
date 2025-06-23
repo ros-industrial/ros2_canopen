@@ -7,8 +7,8 @@ Changelog for package canopen_base_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
-Forthcoming
------------
+0.3.1 (2025-06-23)
+------------------
 * Add boot timeout and retry
 * Include driver exception when boot failed
 * Boot Timeout: Add parameter to base driver to pass to wait as timeout
