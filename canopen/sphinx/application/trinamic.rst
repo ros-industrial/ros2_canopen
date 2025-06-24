@@ -178,7 +178,7 @@ Once these changes have been made, you can launch the example.
 
     ros2 launch trinamic_pd42_can <your launch file>.launch.py
 
-Initilaize the motor by calling the service ``/trinamic_pd42/init``:
+Initialize the motor by calling the service ``/trinamic_pd42/init``:
 
 .. code-block:: console
 

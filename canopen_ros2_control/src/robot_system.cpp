@@ -313,7 +313,7 @@ void RobotSystem::spin()
 
 void RobotSystem::clean()
 {
-  printf("Cancel exectutor...");
+  printf("Cancel executor...");
   executor_->cancel();
   printf("Join spin thread...");
   spin_thread_->join();
