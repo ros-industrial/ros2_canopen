@@ -196,6 +196,10 @@ public:
     registerMode<CyclicSynchronousTorqueMode>(MotorBase::Cyclic_Synchronous_Torque, driver);
   }
 
+  double get_effort() const
+  {
+    return (double)this->driver->universal_get_value<int16_t>(0x6077, 0);
+  }
   double get_speed() const { return (double)this->driver->universal_get_value<int32_t>(0x606C, 0); }
   double get_position() const
   {
