@@ -260,7 +260,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   }
   try
   {
-    offset_pos_from_dev = std::optional(this->config_["offset_from_to_dev"].as<double>());
+    offset_pos_from_dev = std::optional(this->config_["offset_pos_from_dev"].as<double>());
   }
   catch (...)
   {
