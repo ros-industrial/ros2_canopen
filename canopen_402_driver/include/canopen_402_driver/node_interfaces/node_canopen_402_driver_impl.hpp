@@ -401,7 +401,11 @@ template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::deactivate(bool called_from_base)
 {
   NodeCanopenProxyDriver<NODETYPE>::deactivate(false);
-  timer_->cancel();
+  if(timer_ != nullptr){
+     timer_->cancel(); 
+  }
+  this->exec_->post([this]() { motor_.reset(); });
+
 }
 
 template <class NODETYPE>
