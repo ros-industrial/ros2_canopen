@@ -24,6 +24,7 @@
 #ifndef CANOPEN_ROS2_CONTROL__CANOPEN_SYSTEM_HPP_
 #define CANOPEN_ROS2_CONTROL__CANOPEN_SYSTEM_HPP_
 
+#include <queue>
 #include <string>
 #include <vector>
 
@@ -132,6 +133,18 @@ struct Ros2ControlNmtState
   double start_fbk;
 };
 
+struct pair_hash
+{
+  template <class T1, class T2>
+  std::size_t operator()(const std::pair<T1, T2> & pair) const
+  {
+    auto h1 = std::hash<T1>{}(pair.first);
+    auto h2 = std::hash<T2>{}(pair.second);
+
+    return h1 ^ h2;
+  }
+};
+
 struct CanopenNodeData
 {
   Ros2ControlNmtState nmt_state;  // read-write
@@ -140,6 +153,45 @@ struct CanopenNodeData
 
   WORos2ControlCoData rsdo;  // write-only
   WORos2ControlCoData wsdo;  // write-only
+
+  using PDO_INDICES = std::pair<uint16_t, uint8_t>;  // Index, Subindex
+  std::unordered_map<PDO_INDICES, double, pair_hash> rpdo_data_map;
+
+  // Push data to the queue - FIFO
+  void set_rpdo_data(ros2_canopen::COData d)
+  {
+    rpdo_data.set_data(d);
+
+    PDO_INDICES index_pair(d.index_, d.subindex_);
+
+    // check if the index pair is already in the map
+    if (rpdo_data_map.find(index_pair) != rpdo_data_map.end())
+    {
+      // if it is, update the value
+      rpdo_data_map[index_pair] = rpdo_data.data;
+    }
+    else
+    {
+      // if it is not, add it to the map
+      rpdo_data_map.emplace(index_pair, rpdo_data.data);
+    }
+  }
+
+  // Pop data from the queue
+  double get_rpdo_data(uint16_t index, uint8_t subindex)
+  {
+    PDO_INDICES index_pair(index, subindex);
+    if (rpdo_data_map.find(index_pair) != rpdo_data_map.end())
+    {
+      return rpdo_data_map[index_pair];
+    }
+    else
+    {
+      // // Log error
+      // RCLCPP_WARN(kLogger, "The index pair (%u, %u) is not in the map", index, subindex);
+      return 0;
+    }
+  }
 };
 
 class CanopenSystem : public hardware_interface::SystemInterface
@@ -191,7 +243,7 @@ protected:
   std::shared_ptr<ros2_canopen::DeviceContainer> device_container_;
   std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> executor_;
   // can stuff
-  std::map<uint, CanopenNodeData> canopen_data_;
+  std::map<uint16_t, CanopenNodeData> canopen_data_;
   // threads
   std::unique_ptr<std::thread> spin_thread_;
   std::unique_ptr<std::thread> init_thread_;

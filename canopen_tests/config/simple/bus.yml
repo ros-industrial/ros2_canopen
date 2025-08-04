@@ -13,6 +13,7 @@ proxy_device_1:
   package: "canopen_proxy_driver"
   polling: true
   period: 10
+  namespace: "/test1"
 
 proxy_device_2:
   node_id: 3
@@ -21,3 +22,4 @@ proxy_device_2:
   package: "canopen_proxy_driver"
   polling: true
   period: 10
+  namespace: "/test2"

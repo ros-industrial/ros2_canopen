@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>lely_core_libraries</name>
-  <version>0.2.11</version>
+  <version>0.2.13</version>
   <description>
     ROS wrapper for lely-core-libraries
   </description>
@@ -15,6 +15,7 @@
   <build_depend>automake</build_depend>
   <build_depend>libtool</build_depend>
   <depend>python3-empy</depend>
+  <depend>python3-yaml</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

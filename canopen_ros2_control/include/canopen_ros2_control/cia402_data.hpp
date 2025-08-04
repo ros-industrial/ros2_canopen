@@ -135,8 +135,7 @@ struct Cia402Data
       command_interface_to_operation_mode.end())
     {
       // target effort
-      command_interfaces.emplace_back(
-        joint_name, hardware_interface::HW_IF_EFFORT, &target_position);
+      command_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_EFFORT, &target_torque);
       interfaces.push_back(joint_name + "/" + "effort");
     }
   }
@@ -164,6 +163,7 @@ struct Cia402Data
         driver->set_target(target_velocity);
         break;
       case MotorBase::Profiled_Torque:
+      case MotorBase::Cyclic_Synchronous_Torque:
         driver->set_target(target_torque);
         break;
       default:

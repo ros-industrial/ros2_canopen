@@ -60,8 +60,13 @@ class Motor402 : public MotorBase
 {
 public:
   Motor402(
-    std::shared_ptr<LelyDriverBridge> driver, ros2_canopen::State402::InternalState switching_state)
-  : MotorBase(), switching_state_(switching_state), monitor_mode_(true), state_switch_timeout_(5)
+    std::shared_ptr<LelyDriverBridge> driver, ros2_canopen::State402::InternalState switching_state,
+    int homing_timeout_seconds)
+  : MotorBase(),
+    switching_state_(switching_state),
+    monitor_mode_(true),
+    state_switch_timeout_(5),
+    homing_timeout_seconds_(homing_timeout_seconds)
   {
     this->driver = driver;
   }
@@ -131,6 +136,23 @@ public:
   bool handleRecover();
 
   /**
+   * @brief Enable the drive
+   *
+   * This function enables the drive. This means it attempts
+   * to bring the device to operational state (CIA402), and does nothing else.
+   *
+   */
+  bool handleEnable();
+  /**
+   * @brief Disable the drive
+   *
+   * This function disables the drive. This means it attempts to bring the
+   * device to switched on disabled state (CIA402).
+   *
+   */
+  bool handleDisable();
+
+  /**
    * @brief Register a new operation mode for the drive
    *
    * This function will register an operation mode for the drive.
@@ -167,7 +189,7 @@ public:
     registerMode<VelocityMode>(MotorBase::Velocity, driver);
     registerMode<ProfiledVelocityMode>(MotorBase::Profiled_Velocity, driver);
     registerMode<ProfiledTorqueMode>(MotorBase::Profiled_Torque, driver);
-    registerMode<DefaultHomingMode>(MotorBase::Homing, driver);
+    registerMode<DefaultHomingMode>(MotorBase::Homing, driver, homing_timeout_seconds_);
     registerMode<InterpolatedPositionMode>(MotorBase::Interpolated_Position, driver);
     registerMode<CyclicSynchronousPositionMode>(MotorBase::Cyclic_Synchronous_Position, driver);
     registerMode<CyclicSynchronousVelocityMode>(MotorBase::Cyclic_Synchronous_Velocity, driver);
@@ -215,6 +237,7 @@ private:
   const State402::InternalState switching_state_;
   const bool monitor_mode_;
   const std::chrono::seconds state_switch_timeout_;
+  const int homing_timeout_seconds_;
 
   std::shared_ptr<LelyDriverBridge> driver;
   const uint16_t status_word_entry_index = 0x6041;

@@ -140,8 +140,9 @@ void CanopenSystem::initDeviceContainer()
     // register callback
     proxy_driver->register_nmt_state_cb(nmt_state_cb);
 
+    // The id here refer to the node id
     auto rpdo_cb = [&](ros2_canopen::COData data, uint8_t id)
-    { canopen_data_[id].rpdo_data.set_data(data); };
+    { canopen_data_[id].set_rpdo_data(data); };
     // register callback
     proxy_driver->register_rpdo_cb(rpdo_cb);
 
@@ -246,7 +247,7 @@ hardware_interface::return_type CanopenSystem::read(
 
   // nmt state is set via Ros2ControlNmtState::set_state within nmt_state_cb
 
-  // rpdo is set via RORos2ControlCOData::set_data within rpdo_cb
+  // rpdo has a queue of messages, we read the latest one
 
   return hardware_interface::return_type::OK;
 }

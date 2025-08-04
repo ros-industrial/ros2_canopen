@@ -83,19 +83,11 @@ public:
 
   bool halt_motor() { return node_canopen_402_driver_->halt_motor(); }
 
-  bool set_mode_position() { return node_canopen_402_driver_->set_mode_position(); }
+  uint16_t get_mode() { return node_canopen_402_driver_->get_mode(); }
 
-  bool set_mode_velocity() { return node_canopen_402_driver_->set_mode_velocity(); }
-
-  bool set_mode_cyclic_position() { return node_canopen_402_driver_->set_mode_cyclic_position(); }
-
-  bool set_mode_cyclic_velocity() { return node_canopen_402_driver_->set_mode_cyclic_velocity(); }
-
-  bool set_mode_torque() { return node_canopen_402_driver_->set_mode_torque(); }
-
-  bool set_mode_interpolated_position()
+  bool set_operation_mode(uint16_t mode)
   {
-    return node_canopen_402_driver_->set_mode_interpolated_position();
+    return node_canopen_402_driver_->set_operation_mode(mode);
   }
 };
 }  // namespace ros2_canopen

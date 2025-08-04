@@ -71,6 +71,8 @@ std::string LelyBridgeErrCategory::message(int ev) const
     case LelyBridgeErrc::SerialNumberDifference:
       return "Value of object 1018:04 from CANopen device is different to value in object 1F88 "
              "(Serial number).";
+    case LelyBridgeErrc::TimeOut:
+      return "The boot configure process timeout!";
     default:
       return "(unrecognized error)";
   }
@@ -111,6 +113,18 @@ void LelyDriverBridge::OnBoot(canopen::NmtState st, char es, const ::std::string
   this->boot_what = what;
   boot_cond.notify_all();
 }
+
+// void LelyDriverBridge::OnConfig(::std::function<void(::std::error_code ec)> res) noexcept
+// {
+//   std::cout << "OnConfig" << std::endl;
+//   this->SubmitWait(
+//     std::chrono::seconds(10),
+//     [this, res](std::error_code ec)
+//     {
+//       std::cout << "OnConfig" << std::endl;
+//       FiberDriver::OnConfig(res);
+//     });
+// }
 
 void LelyDriverBridge::OnRpdoWrite(uint16_t idx, uint8_t subidx) noexcept
 {

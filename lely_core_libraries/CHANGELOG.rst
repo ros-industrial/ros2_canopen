@@ -2,6 +2,14 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.13 (2025-06-23)
+-------------------
+* Do not export deprecated Lely IO library (`#318 <https://github.com/ros-industrial/ros2_canopen/issues/318>`_)
+* Stop SYNC timer and receiver in co_sync_stop()
+  Docker - adding back support for building docker images for old GCC
+* Add yaml dependency to package.xml of `lely_core_libraries` (`#290 <https://github.com/ros-industrial/ros2_canopen/issues/290>`_)
+* Contributors: Grvzard, Patrick Roncagliolo, mosfet80
+
 0.2.11 (2024-04-22)
 -------------------
 

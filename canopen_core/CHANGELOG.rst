@@ -2,6 +2,11 @@
 Changelog for package canopen_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.13 (2025-06-23)
+-------------------
+* Add namespacing support
+* Contributors: Vishnuprasad Prachandabhanu
+
 0.2.11 (2024-04-22)
 -------------------
 * catalogue for first release humble

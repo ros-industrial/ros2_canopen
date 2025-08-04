@@ -2,6 +2,20 @@
 Changelog for package canopen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.13 (2025-06-23)
+-------------------
+* Add namespacing support
+* Implement configurable position offsets.
+* Remove set heartbeat service from master documentation (`#294 <https://github.com/ros-industrial/ros2_canopen/issues/294>`_)
+  Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+* Add cyclic torque mode to cia402 driver and robot system controller (`#293 <https://github.com/ros-industrial/ros2_canopen/issues/293>`_)
+  * Add base functions for switching to cyclic torque mode
+  * Add cyclic torque mode as effort interface to robot_system controller
+  * Add documentation about cyclic torque mode.
+  ---------
+  Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+* Contributors: Christoph Hellmann Santos, Vishnuprasad Prachandabhanu
+
 0.2.11 (2024-04-22)
 -------------------
 
