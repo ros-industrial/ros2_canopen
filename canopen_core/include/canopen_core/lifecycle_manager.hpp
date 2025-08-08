@@ -12,8 +12,8 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
-#ifndef LIFECYCLE_DEVICE_MANAGER_NODE_HPP
-#define LIFECYCLE_DEVICE_MANAGER_NODE_HPP
+#ifndef CANOPEN_CORE__LIFECYCLE_MANAGER_HPP_
+#define CANOPEN_CORE__LIFECYCLE_MANAGER_HPP_
 
 #include <chrono>
 #include <memory>
@@ -286,4 +286,4 @@ protected:
 };
 }  // namespace ros2_canopen
 
-#endif
+#endif  // CANOPEN_CORE__LIFECYCLE_MANAGER_HPP_

@@ -13,8 +13,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-#ifndef LIFECYCLE_DEVICE_CONTAINER_NODE_HPP
-#define LIFECYCLE_DEVICE_CONTAINER_NODE_HPP
+#ifndef CANOPEN_CORE__DEVICE_CONTAINER_HPP_
+#define CANOPEN_CORE__DEVICE_CONTAINER_HPP_
 
 #include <chrono>
 #include <memory>
@@ -353,4 +353,4 @@ protected:
 };
 
 }  // namespace ros2_canopen
-#endif  // LIFECYCLE_DEVICE_CONTAINER_NODE_HPP
+#endif  // CANOPEN_CORE__DEVICE_CONTAINER_HPP_

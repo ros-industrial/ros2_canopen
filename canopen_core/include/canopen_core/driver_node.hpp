@@ -12,8 +12,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-#ifndef DRIVER_NODE_HPP_
-#define DRIVER_NODE_HPP_
+#ifndef CANOPEN_CORE__DRIVER_NODE_HPP_
+#define CANOPEN_CORE__DRIVER_NODE_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 #include "canopen_core/node_interfaces/node_canopen_driver.hpp"
@@ -325,4 +325,4 @@ public:
 
 }  // namespace ros2_canopen
 
-#endif
+#endif  // CANOPEN_CORE__DRIVER_NODE_HPP_
