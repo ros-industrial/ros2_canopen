@@ -149,11 +149,11 @@ public:
    */
   virtual void shutdown()
   {
-    for (auto it = registered_drivers_.begin(); it != registered_drivers_.end(); ++it)
+    for (auto & [_, interface] : registered_drivers_)
     {
       try
       {
-        it->second->shutdown();
+        interface->shutdown();
       }
       catch (const std::exception & e)
       {

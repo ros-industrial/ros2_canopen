@@ -70,20 +70,20 @@ void LifecycleManager::init(std::shared_ptr<ros2_canopen::ConfigurationManager> 
 
 bool LifecycleManager::load_from_config()
 {
-  std::vector<std::string> devices;
-  uint32_t count = this->config_->get_all_devices(devices);
+  std::vector<std::string> device_names;
+  uint32_t count = this->config_->get_all_devices(device_names);
   RCLCPP_INFO(this->get_logger(), "Configuring for %u devices.", count);
 
   // Find master in configuration
-  for (auto it = devices.begin(); it != devices.end(); it++)
+  for (const auto & device_name : device_names)
   {
-    uint8_t node_id = config_->get_entry<uint8_t>(*it, "node_id").value();
-    std::string change_state_client_name = *it;
-    std::string get_state_client_name = *it;
+    uint8_t node_id = config_->get_entry<uint8_t>(device, "node_id").value();
+    std::string change_state_client_name = device_name;
+    std::string get_state_client_name = device_name;
     get_state_client_name += "/get_state";
     change_state_client_name += "/change_state";
-    RCLCPP_INFO(this->get_logger(), "Found %s (node_id=%hu)", it->c_str(), node_id);
-    device_names_to_ids.emplace(*it, node_id);
+    RCLCPP_INFO(this->get_logger(), "Found %s (node_id=%hu)", device_name.c_str(), node_id);
+    device_names_to_ids.emplace(device, node_id);
     rclcpp::Client<lifecycle_msgs::srv::GetState>::SharedPtr get_state_client =
       this->create_client<lifecycle_msgs::srv::GetState>(
         get_state_client_name, rclcpp::QoS(10), cbg_clients);
@@ -95,7 +95,7 @@ bool LifecycleManager::load_from_config()
     this->drivers_get_state_clients.emplace(node_id, get_state_client);
     this->drivers_change_state_clients.emplace(node_id, change_state_client);
 
-    if (it->find("master") != std::string::npos)
+    if (device_name.find("master") != std::string::npos)
     {
       this->master_id_ = node_id;
     }
