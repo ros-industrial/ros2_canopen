@@ -267,7 +267,7 @@ public:
 protected:
   // Components
   std::map<uint16_t, std::shared_ptr<CanopenDriverInterface>>
-    registered_drivers_;  ///< Map of drivers registered in busconfiguration. Name is key.
+    registered_drivers_;  ///< Map of drivers registered in busconfiguration. NodeID is key.
   std::shared_ptr<ros2_canopen::CanopenMasterInterface>
     can_master_;  ///< Pointer to can master instance
   uint16_t can_master_id_;

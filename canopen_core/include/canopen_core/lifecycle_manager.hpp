@@ -248,8 +248,8 @@ protected:
   /**
    * @brief Brings up the drivers with specified node_id
    *
-   * This function bringsup the CANopen driver for the device with the specified
-   * node_id. The driver is transitioned twice,
+   * This function brings up the CANopen driver for the device with the specified
+   * name. The driver is transitioned twice,
    * first the configure transition is triggered. Once the transition is successfully
    * finished, the activate transition is triggered.
    *
@@ -263,7 +263,7 @@ protected:
    * @brief Brings down the driver with specified node_id
    *
    * This function brings down the CANopen driver for the device with the specified
-   * node_id. The driver is transitioned twice,
+   * name. The driver is transitioned twice,
    * first the deactivate transition is triggered. Once the transition is successfully
    * finished, the cleanup transition is triggered.
    *
