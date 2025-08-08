@@ -12,8 +12,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-#ifndef NODE_CANOPEN_MASTER_HPP_
-#define NODE_CANOPEN_MASTER_HPP_
+#ifndef CANOPEN_CORE__NODE_CANOPEN_MASTER_HPP_
+#define CANOPEN_CORE__NODE_CANOPEN_MASTER_HPP_
 
 #include <yaml-cpp/yaml.h>
 #include <atomic>
@@ -389,4 +389,4 @@ public:
 }  // namespace node_interfaces
 }  // namespace ros2_canopen
 
-#endif
+#endif  // CANOPEN_CORE__NODE_CANOPEN_MASTER_HPP_
