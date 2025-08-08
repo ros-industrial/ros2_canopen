@@ -212,9 +212,9 @@ bool LifecycleManager::bring_down_master()
 
 bool LifecycleManager::bring_up_driver(std::string device_name)
 {
-  auto node_id = this->device_names_to_ids[device_name];
+  const auto node_id = this->device_names_to_ids[device_name];
   RCLCPP_DEBUG(this->get_logger(), "Bringing up %s with id %u", device_name.c_str(), node_id);
-  auto master_state = this->get_state(master_id_, 3s);
+  const auto master_state = this->get_state(master_id_, 3s);
   if (master_state != lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE)
   {
     RCLCPP_ERROR(
