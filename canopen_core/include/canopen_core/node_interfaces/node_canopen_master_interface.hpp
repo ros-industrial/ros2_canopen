@@ -12,8 +12,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-#ifndef NODE_CANOPEN_MASTER_INTERFACE_HPP_
-#define NODE_CANOPEN_MASTER_INTERFACE_HPP_
+#ifndef CANOPEN_CORE__NODE_CANOPEN_MASTER_INTERFACE_HPP_
+#define CANOPEN_CORE__NODE_CANOPEN_MASTER_INTERFACE_HPP_
 
 #include <lely/coapp/master.hpp>
 #include <lely/ev/exec.hpp>
@@ -97,4 +97,5 @@ public:
 };
 }  // namespace node_interfaces
 }  // namespace ros2_canopen
-#endif
+
+#endif  // CANOPEN_CORE__NODE_CANOPEN_MASTER_INTERFACE_HPP_
