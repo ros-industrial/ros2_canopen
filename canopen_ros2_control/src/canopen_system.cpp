@@ -272,13 +272,6 @@ hardware_interface::return_type CanopenSystem::read(
 
   // rpdo has a queue of messages, we read the latest one
 
-  // uint8_t node_id = 0x1E;
-
-  // double stuff = canopen_data_[node_id].get_rpdo_data(0x211D, 0x00);
-  // RCLCPP_INFO(kLogger, "NodeID: 0x%X; Stuff: %f", node_id, stuff);
-
-  // TODO(Dr. Deni): don't forget to call `prepare_data()` after those are got from RPDO.
-
   for (const auto & [node_id, canopen_data] : canopen_data_)
   {
     if (canopen_data.emcy_data.error_code != 0)
