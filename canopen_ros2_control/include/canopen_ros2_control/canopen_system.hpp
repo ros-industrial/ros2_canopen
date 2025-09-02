@@ -162,9 +162,6 @@ struct WORos2ControlCoData : public Ros2ControlCOData
   // needed internally for write-only data
   double one_shot;
 
-  // Create the casters
-  std::map<std::string, std::function<void()>> copiers;
-
   bool write_command()
   {
     bool ret_val;
