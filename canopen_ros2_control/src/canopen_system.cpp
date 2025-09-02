@@ -120,8 +120,6 @@ void CanopenSystem::spin()
   RCLCPP_INFO(kLogger, "Exiting spin thread...");
 }
 
-// TODO(Dr. Denis): this should be actually `on_configure` method and not a new thread. Why is this a separete thread?
-// Maybe because it could block, but this shouldn't be an issue, if mutliple hardware is used then `async` HW should be set for this!
 void CanopenSystem::initDeviceContainer()
 {
   std::string tmp_master_bin = (info_.hardware_parameters["master_bin"] == "\"\"")
