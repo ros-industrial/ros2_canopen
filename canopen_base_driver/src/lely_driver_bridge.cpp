@@ -360,7 +360,6 @@ void LelyDriverBridge::tpdo_transmit(COData data)
   lely::COSub * sub = this->dictionary_->find(data.index_, data.subindex_);
   if (sub == nullptr)
   {
-    // TODO(Dr. Denis): Add here static logger and output to warn/error!
     std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
               << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
               << " object does not exist" << std::endl;
