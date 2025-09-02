@@ -330,7 +330,6 @@ struct pair_hash
 struct CanopenNodeData
 {
   Ros2ControlNmtState nmt_state;  // read-write
-  //TODO(Dr.Denis): we should have have a map that we can assign or somehow connect it to definition on interfaces - currently is the code not optimized, there are quite some duplications
   RORos2ControlCOData rpdo_data;  // read-only
   WORos2ControlCoData tpdo_data;  // write-only
 
