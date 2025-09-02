@@ -130,7 +130,6 @@ void CanopenSystem::initDeviceContainer()
     info_.hardware_parameters["can_interface_name"], info_.hardware_parameters["master_config"],
     info_.hardware_parameters["bus_config"], tmp_master_bin);
   RCLCPP_INFO(kLogger, "Number of registered drivers: '%zu'", device_container_->count_drivers());
-  // TODO interate here also over Node_IDs (as below)
   for (const auto & [node_id, driver] : device_container_->get_registered_drivers())
   {
     auto proxy_driver = std::static_pointer_cast<ros2_canopen::ProxyDriver>(driver);
