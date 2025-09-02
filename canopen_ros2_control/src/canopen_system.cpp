@@ -316,20 +316,6 @@ hardware_interface::return_type CanopenSystem::write(
       it->second.nmt_state.start_fbk = static_cast<double>(proxy_driver->start_node_nmt_command());
     }
 
-    // canopen_ros2_control::WORos2ControlCoData data;
-    // data.index = 0x2110;
-    // data.subindex = 0x00;
-    // data.data = int16_t(123);
-    // data.prepare_data();
-    // RCLCPP_INFO(kLogger, "This is a debug message in HW-write().....");
-    // RCLCPP_INFO(kLogger, "NodeID: 0x%X; Index: 0x%X; Subindex: 0x%X; Data: %u",
-    //   it->first,
-    //   data.original_data.index_,
-    //   data.original_data.subindex_,
-    //   data.original_data.data_);
-    // RCLCPP_INFO(kLogger, "--- END of the debug message in HW-write()");
-    // proxy_driver->tpdo_transmit(data.original_data);
-
     // tpdo data one shot mechanism
     if (it->second.tpdo_data.write_command())
     {
