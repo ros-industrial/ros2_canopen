@@ -159,11 +159,18 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    node_canopen_proxy_driver_-&gt;register_rpdo_cb(rpdo_cb);</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>  }</div>
 </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>};</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="foldopen" id="foldopen00070" data-start="{" data-end="}">
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1ProxyDriver.html#a65e753d41677f0d6d755937b5d3e2597">   70</a></span>  <span class="keywordtype">void</span> <a class="code hl_function" href="classros2__canopen_1_1ProxyDriver.html#a65e753d41677f0d6d755937b5d3e2597">register_emcy_cb</a>(std::function&lt;<span class="keywordtype">void</span>(<a class="code hl_struct" href="structros2__canopen_1_1COEmcy.html">COEmcy</a>, uint8_t)&gt; emcy_cb)</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>  {</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    node_canopen_proxy_driver_-&gt;register_emcy_cb(emcy_cb);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>  }</div>
 </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>}  <span class="comment">// namespace ros2_canopen</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="preprocessor">#endif  </span><span class="comment">// CANOPEN_PROXY_DRIVER__CANOPEN_PROXY_DRIVER_HPP_</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>};</div>
+</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>}  <span class="comment">// namespace ros2_canopen</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="preprocessor">#endif  </span><span class="comment">// CANOPEN_PROXY_DRIVER__CANOPEN_PROXY_DRIVER_HPP_</span></div>
 <div class="ttc" id="aclassros2__canopen_1_1CanopenDriver_html"><div class="ttname"><a href="classros2__canopen_1_1CanopenDriver.html">ros2_canopen::CanopenDriver</a></div><div class="ttdoc">Canopen Driver.</div><div class="ttdef"><b>Definition</b> driver_node.hpp:105</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1ProxyDriver_html"><div class="ttname"><a href="classros2__canopen_1_1ProxyDriver.html">ros2_canopen::ProxyDriver</a></div><div class="ttdoc">Abstract Class for a CANopen Device Node.</div><div class="ttdef"><b>Definition</b> proxy_driver.hpp:29</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1ProxyDriver_html_a09ef0eb010a2abbecfb638053da4d63f"><div class="ttname"><a href="classros2__canopen_1_1ProxyDriver.html#a09ef0eb010a2abbecfb638053da4d63f">ros2_canopen::ProxyDriver::register_rpdo_cb</a></div><div class="ttdeci">void register_rpdo_cb(std::function&lt; void(COData, uint8_t)&gt; rpdo_cb)</div><div class="ttdef"><b>Definition</b> proxy_driver.hpp:65</div></div>
@@ -172,12 +179,14 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassros2__canopen_1_1ProxyDriver_html_a4b87ac3d6d0e955db3036ef1111ba721"><div class="ttname"><a href="classros2__canopen_1_1ProxyDriver.html#a4b87ac3d6d0e955db3036ef1111ba721">ros2_canopen::ProxyDriver::reset_node_nmt_command</a></div><div class="ttdeci">virtual bool reset_node_nmt_command()</div><div class="ttdef"><b>Definition</b> proxy_driver.hpp:35</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1ProxyDriver_html_a5a18bac327280bb3e6a5d1df3551b9f6"><div class="ttname"><a href="classros2__canopen_1_1ProxyDriver.html#a5a18bac327280bb3e6a5d1df3551b9f6">ros2_canopen::ProxyDriver::sdo_write</a></div><div class="ttdeci">virtual bool sdo_write(ros2_canopen::COData &amp;data)</div><div class="ttdef"><b>Definition</b> proxy_driver.hpp:50</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1ProxyDriver_html_a5b42c6e098a1de68f9482f170aca1d1f"><div class="ttname"><a href="classros2__canopen_1_1ProxyDriver.html#a5b42c6e098a1de68f9482f170aca1d1f">ros2_canopen::ProxyDriver::sdo_read</a></div><div class="ttdeci">virtual bool sdo_read(ros2_canopen::COData &amp;data)</div><div class="ttdef"><b>Definition</b> proxy_driver.hpp:55</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1ProxyDriver_html_a65e753d41677f0d6d755937b5d3e2597"><div class="ttname"><a href="classros2__canopen_1_1ProxyDriver.html#a65e753d41677f0d6d755937b5d3e2597">ros2_canopen::ProxyDriver::register_emcy_cb</a></div><div class="ttdeci">void register_emcy_cb(std::function&lt; void(COEmcy, uint8_t)&gt; emcy_cb)</div><div class="ttdef"><b>Definition</b> proxy_driver.hpp:70</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1ProxyDriver_html_aaecb7402d90a97d19c6c8c146929d06c"><div class="ttname"><a href="classros2__canopen_1_1ProxyDriver.html#aaecb7402d90a97d19c6c8c146929d06c">ros2_canopen::ProxyDriver::register_nmt_state_cb</a></div><div class="ttdeci">void register_nmt_state_cb(std::function&lt; void(canopen::NmtState, uint8_t)&gt; nmt_state_cb)</div><div class="ttdef"><b>Definition</b> proxy_driver.hpp:60</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1ProxyDriver_html_ad21c3975ec66785c2d887f3b2f95580d"><div class="ttname"><a href="classros2__canopen_1_1ProxyDriver.html#ad21c3975ec66785c2d887f3b2f95580d">ros2_canopen::ProxyDriver::ProxyDriver</a></div><div class="ttdeci">ProxyDriver(rclcpp::NodeOptions node_options=rclcpp::NodeOptions())</div></div>
 <div class="ttc" id="adriver__node_8hpp_html"><div class="ttname"><a href="driver__node_8hpp.html">driver_node.hpp</a></div></div>
 <div class="ttc" id="anamespaceros2__canopen_html"><div class="ttname"><a href="namespaceros2__canopen.html">ros2_canopen</a></div><div class="ttdef"><b>Definition</b> configuration_manager.hpp:28</div></div>
 <div class="ttc" id="anode__canopen__proxy__driver_8hpp_html"><div class="ttname"><a href="node__canopen__proxy__driver_8hpp.html">node_canopen_proxy_driver.hpp</a></div></div>
 <div class="ttc" id="astructros2__canopen_1_1COData_html"><div class="ttname"><a href="structros2__canopen_1_1COData.html">ros2_canopen::COData</a></div><div class="ttdef"><b>Definition</b> exchange.hpp:26</div></div>
+<div class="ttc" id="astructros2__canopen_1_1COEmcy_html"><div class="ttname"><a href="structros2__canopen_1_1COEmcy.html">ros2_canopen::COEmcy</a></div><div class="ttdef"><b>Definition</b> exchange.hpp:34</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
