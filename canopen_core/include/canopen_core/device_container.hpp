@@ -13,8 +13,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-#ifndef LIFECYCLE_DEVICE_CONTAINER_NODE_HPP
-#define LIFECYCLE_DEVICE_CONTAINER_NODE_HPP
+#ifndef CANOPEN_CORE__DEVICE_CONTAINER_HPP_
+#define CANOPEN_CORE__DEVICE_CONTAINER_HPP_
 
 #include <chrono>
 #include <memory>
@@ -149,11 +149,11 @@ public:
    */
   virtual void shutdown()
   {
-    for (auto it = registered_drivers_.begin(); it != registered_drivers_.end(); ++it)
+    for (auto & [_, interface] : registered_drivers_)
     {
       try
       {
-        it->second->shutdown();
+        interface->shutdown();
       }
       catch (const std::exception & e)
       {
@@ -267,7 +267,7 @@ public:
 protected:
   // Components
   std::map<uint16_t, std::shared_ptr<CanopenDriverInterface>>
-    registered_drivers_;  ///< Map of drivers registered in busconfiguration. Name is key.
+    registered_drivers_;  ///< Map of drivers registered in busconfiguration. NodeID is key.
   std::shared_ptr<ros2_canopen::CanopenMasterInterface>
     can_master_;  ///< Pointer to can master instance
   uint16_t can_master_id_;
@@ -353,4 +353,4 @@ protected:
 };
 
 }  // namespace ros2_canopen
-#endif  // LIFECYCLE_DEVICE_CONTAINER_NODE_HPP
+#endif  // CANOPEN_CORE__DEVICE_CONTAINER_HPP_
