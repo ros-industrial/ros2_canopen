@@ -275,10 +275,10 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>{</div>
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>  <span class="keywordflow">if</span> (this-&gt;activated_.load())</div>
 <div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>  {</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    RCLCPP_INFO(</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    RCLCPP_DEBUG(</div>
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>      this-&gt;node_-&gt;get_logger(), <span class="stringliteral">&quot;Node ID 0x%X: Transmit PDO index %x, subindex %hhu, data %d&quot;</span>,</div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>      this-&gt;lely_driver_-&gt;get_id(), data.<a class="code hl_variable" href="structros2__canopen_1_1COData.html#a55faeba2e4693f404d50bbfbf037ae2b">index_</a>, data.<a class="code hl_variable" href="structros2__canopen_1_1COData.html#a4c0f0155b543c8458581033300cdf0d9">subindex_</a>,</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>      data.<a class="code hl_variable" href="structros2__canopen_1_1COData.html#a170bc01e0c38817f2f5f940a211abf0b">data_</a>);  <span class="comment">// ToDo: Remove or make debug</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>      data.<a class="code hl_variable" href="structros2__canopen_1_1COData.html#a170bc01e0c38817f2f5f940a211abf0b">data_</a>);</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    this-&gt;lely_driver_-&gt;tpdo_transmit(data);</div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>  }</div>
@@ -292,7 +292,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>{</div>
 <div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>  <span class="keywordflow">if</span> (this-&gt;activated_.load())</div>
 <div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>  {</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="comment">// RCLCPP_INFO(</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="comment">// RCLCPP_DEBUG(</span></div>
 <div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    <span class="comment">//   this-&gt;node_-&gt;get_logger(), &quot;Node ID 0x%X: Received PDO index %#04x, subindex %hhu, data</span></div>
 <div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    <span class="comment">//   %x&quot;, this-&gt;lely_driver_-&gt;get_id(), d.index_, d.subindex_, d.data_);</span></div>
 <div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>    <span class="keyword">auto</span> message = canopen_interfaces::msg::COData();</div>
