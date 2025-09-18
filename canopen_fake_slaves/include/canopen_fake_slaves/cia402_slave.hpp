@@ -149,6 +149,26 @@ protected:
     Cyclic_Synchronous_Velocity = 9,
     Cyclic_Synchronous_Torque = 10,
   };
+
+  enum CiaRegister : uint16_t
+  {
+    ControlWord = 0x6040,
+    StatusWord = 0x6041,
+    OperationMode = 0x6060,
+    ModeOfOperationDisplay = 0x6061,
+    ActualPosition = 0x6064,
+    ActualVelocity = 0x606C,
+    TargetPosition = 0x607A,
+    SoftwarePositionLimits = 0x607D,
+    ProfileVelocity = 0x6081,
+    ProfileAcceleration = 0x6083,
+    InterpolationDataRecord = 0x60C1,
+    InterpolationTimePeriod = 0x60C2,
+    PositionOffset = 0x60B0,
+    TargetVelocity = 0x60FF,
+  };
+
+
   std::atomic<bool> is_relative;
   std::atomic<bool> is_running;
   std::atomic<bool> is_halt;
@@ -179,11 +199,11 @@ protected:
   void run_profiled_position_mode()
   {
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "run_profiled_position_mode");
-    double profile_speed = static_cast<double>(((uint32_t)(*this)[0x6081][0])) / 1000;
-    double profile_accerlation = static_cast<double>(((uint32_t)(*this)[0x6083][0])) / 1000;
-    double actual_position = static_cast<double>(((int32_t)(*this)[0x6064][0])) / 1000.0;
-    double target_position = static_cast<double>(((int32_t)(*this)[0x607A][0])) / 1000.0;
-    double actual_speed = static_cast<double>(((int32_t)(*this)[0x606C][0])) / 1000.0;
+    double profile_speed = static_cast<double>(((uint32_t)(*this)[CiaRegister::ProfileVelocity][0])) / 1000;
+    double profile_accerlation = static_cast<double>(((uint32_t)(*this)[CiaRegister::ProfileAcceleration][0])) / 1000;
+    double actual_position = static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
+    double target_position = static_cast<double>(((int32_t)(*this)[CiaRegister::TargetPosition][0])) / 1000.0;
+    double actual_speed = static_cast<double>(((int32_t)(*this)[CiaRegister::ActualVelocity][0])) / 1000.0;
     RCLCPP_INFO(
       rclcpp::get_logger("cia402_slave"), "Profile_Speed %f, Profile Acceleration: %f",
       profile_speed, profile_accerlation);
@@ -192,14 +212,14 @@ protected:
            (operation_mode.load() == Profiled_Position) && (rclcpp::ok()))
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
-      target_position = static_cast<double>(((int32_t)(*this)[0x607A][0])) / 1000.0;
+      target_position = static_cast<double>(((int32_t)(*this)[CiaRegister::TargetPosition][0])) / 1000.0;
       if (target_position != actual_position)
       {
         clear_status_bit(SW_Operation_mode_specific0);
         clear_status_bit(SW_Target_reached);
         {
           std::scoped_lock<std::mutex> lock(w_mutex);
-          (*this)[0x6041][0] = status_word;
+          (*this)[CiaRegister::StatusWord][0] = status_word;
           this->TpdoEvent(1);
         }
         is_new_set_point.store(false);
@@ -214,8 +234,8 @@ protected:
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
             actual_position = gen.update(target_position);
             actual_speed = gen.getVelocity();
-            (*this)[0x6064][0] = (int32_t)(actual_position * 1000);
-            (*this)[0x606C][0] = (int32_t)(actual_speed * 1000);
+            (*this)[CiaRegister::ActualPosition][0] = (int32_t)(actual_position * 1000);
+            (*this)[CiaRegister::ActualVelocity][0] = (int32_t)(actual_speed * 1000);
           }
         }
         RCLCPP_INFO(
@@ -224,7 +244,7 @@ protected:
         set_status_bit(SW_Target_reached);
         {
           std::scoped_lock<std::mutex> lock(w_mutex);
-          (*this)[0x6041][0] = status_word;
+          (*this)[CiaRegister::StatusWord][0] = status_word;
           this->TpdoEvent(1);
         }
       }
@@ -233,11 +253,11 @@ protected:
   void run_cyclic_position_mode()
   {
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "run_cyclic_position_mode");
-    int32_t min_pos = (int32_t)(*this)[0x607D][1];
-    int32_t max_pos = (int32_t)(*this)[0x607D][2];
-    uint8_t int_period = (*this)[0x60C2][1];
-    int32_t offset = (*this)[0x60B0][0];
-    int8_t index = (*this)[0x60C2][2];
+    int32_t min_pos = (int32_t)(*this)[CiaRegister::SoftwarePositionLimits][1];
+    int32_t max_pos = (int32_t)(*this)[CiaRegister::SoftwarePositionLimits][2];
+    uint8_t int_period = (*this)[CiaRegister::InterpolationTimePeriod][1];
+    int32_t offset = (*this)[CiaRegister::PositionOffset][0];
+    int8_t index = (*this)[CiaRegister::InterpolationTimePeriod][2];
 
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Lower Software Limit: %d", min_pos);
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Upper Software Limit: %d", max_pos);
@@ -254,12 +274,12 @@ protected:
     while ((state.load() == InternalState::Operation_Enable) &&
            (operation_mode.load() == Cyclic_Synchronous_Position) && (rclcpp::ok()))
     {
-      act_pos = (*this)[0x607A][0];
+      act_pos = (*this)[CiaRegister::TargetPosition][0];
       double target_position = (act_pos) / 1000 - cp_offset;      // m
       double position_delta = target_position - actual_position;  // m
       double speed = position_delta / cp_interpolation_period;    // m/s
       double increment = control_cycle_period * speed;            // m
-      (*this)[0x606C][0] = (int32_t)speed * 1000;
+      (*this)[CiaRegister::ActualVelocity][0] = (int32_t)speed * 1000;
       if (
         (target_position < cp_max_position) && (target_position > cp_min_position) &&
         (std::abs(position_delta) > 0.001))
@@ -268,7 +288,7 @@ protected:
         {
           std::this_thread::sleep_for(std::chrono::milliseconds(ccp_millis));
           actual_position += increment;
-          (*this)[0x6064][0] = (int32_t)actual_position * 1000;
+          (*this)[CiaRegister::ActualPosition][0] = (int32_t)actual_position * 1000;
           if (std::abs(actual_position - target_position) < 0.001)
           {
             RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Reached Target %f", target_position);
@@ -283,15 +303,15 @@ protected:
   {
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "run_interpolated_position_mode");
     // Retrieve parameters from the object dictionary
-    double interpolation_period = static_cast<double>((uint8_t)(*this)[0x60C2][1]);
-    double target_position = static_cast<double>((int32_t)(*this)[0x60C1][1]);
+    double interpolation_period = static_cast<double>((uint8_t)(*this)[CiaRegister::InterpolationTimePeriod][1]);
+    double target_position = static_cast<double>((int32_t)(*this)[CiaRegister::InterpolationDataRecord][1]);
 
-    // int32_t offset = (*this)[0x60B0][0];
+    // int32_t offset = (*this)[CiaRegister::PositionOffset][0];
 
     // Convert parameters to SI units
-    interpolation_period *= std::pow(10.0, static_cast<double>((int8_t)(*this)[0x60C2][2]));
+    interpolation_period *= std::pow(10.0, static_cast<double>((int8_t)(*this)[CiaRegister::InterpolationTimePeriod][2]));
     target_position /= 1000.0;
-    double actual_position = static_cast<double>((int32_t)(*this)[0x6064][0]) / 1000.0;
+    double actual_position = static_cast<double>((int32_t)(*this)[CiaRegister::ActualPosition][0]) / 1000.0;
 
     RCLCPP_INFO(
       rclcpp::get_logger("cia402_slave"), "Interpolation Period: %f", interpolation_period);
@@ -303,7 +323,7 @@ protected:
       std::this_thread::sleep_for(
         std::chrono::milliseconds(static_cast<int>(interpolation_period * 1000)));
 
-      target_position = static_cast<double>((int32_t)(*this)[0x60C1][1]) / 1000.0;
+      target_position = static_cast<double>((int32_t)(*this)[CiaRegister::InterpolationDataRecord][1]) / 1000.0;
 
       if (target_position != actual_position)
       {
@@ -313,7 +333,7 @@ protected:
         clear_status_bit(SW_Target_reached);
         {
           std::scoped_lock<std::mutex> lock(w_mutex);
-          (*this)[0x6041][0] = status_word;
+          (*this)[CiaRegister::StatusWord][0] = status_word;
           this->TpdoEvent(1);
         }
 
@@ -321,8 +341,8 @@ protected:
         {
           std::this_thread::sleep_for(std::chrono::milliseconds(1));
           actual_position += position_increment;
-          (*this)[0x6064][0] = static_cast<int32_t>(actual_position * 1000);
-          (*this)[0x606C][0] = static_cast<int32_t>(position_increment * 1000);
+          (*this)[CiaRegister::ActualPosition][0] = static_cast<int32_t>(actual_position * 1000);
+          (*this)[CiaRegister::ActualVelocity][0] = static_cast<int32_t>(position_increment * 1000);
         }
 
         actual_position = target_position;
@@ -332,7 +352,7 @@ protected:
         set_status_bit(SW_Target_reached);
         {
           std::lock_guard<std::mutex> lock(w_mutex);
-          (*this)[0x6041][0] = status_word;
+          (*this)[CiaRegister::StatusWord][0] = status_word;
           this->TpdoEvent(1);
         }
       }
@@ -342,22 +362,22 @@ protected:
   void run_profile_velocity_mode()
   {
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "run_profile_velocity_mode");
-    double actual_position = static_cast<double>(((int32_t)(*this)[0x6064][0])) / 1000.0;
-    double target_velocity = static_cast<double>(((int32_t)(*this)[0x60FF][0])) / 1000.0;
+    double actual_position = static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
+    double target_velocity = static_cast<double>(((int32_t)(*this)[CiaRegister::TargetVelocity][0])) / 1000.0;
     double old_target = target_velocity;
     double control_cycle_period_d = 0.01;
     while ((state.load() == InternalState::Operation_Enable) &&
            (operation_mode.load() == Profiled_Velocity) && (rclcpp::ok()))
     {
-      actual_position = static_cast<double>(((int32_t)(*this)[0x6064][0])) / 1000.0;
-      target_velocity = static_cast<double>(((int32_t)(*this)[0x60FF][0])) / 1000.0;
+      actual_position = static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
+      target_velocity = static_cast<double>(((int32_t)(*this)[CiaRegister::TargetVelocity][0])) / 1000.0;
       if (old_target != target_velocity)
       {
         old_target = target_velocity;
         RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "New target velocity: %f", target_velocity);
       }
-      (*this)[0x606C][0] = (int32_t)(target_velocity * 1000);
-      (*this)[0x6064][0] =
+      (*this)[CiaRegister::ActualVelocity][0] = (int32_t)(target_velocity * 1000);
+      (*this)[CiaRegister::ActualPosition][0] =
         (int32_t)((actual_position + target_velocity * control_cycle_period_d) * 1000.0);
       std::this_thread::sleep_for(
         std::chrono::milliseconds(((int32_t)(control_cycle_period_d * 1000.0))));
@@ -384,7 +404,7 @@ protected:
       }
       {
         std::lock_guard<std::mutex> lock(w_mutex);
-        (*this)[0x6041][0] = status_word;
+        (*this)[CiaRegister::StatusWord][0] = status_word;
         this->TpdoEvent(1);
       }
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -394,9 +414,9 @@ protected:
         clear_status_bit(SW_Manufacturer_specific1);  // Motor inactive
         set_status_bit(SW_Target_reached);            // Homing complete
         set_status_bit(SW_Operation_mode_specific0);  // Homing attained
-        (*this)[0x6041][0] = status_word;
-        (*this)[0x6064][0] = static_cast<int32_t>(0);
-        (*this)[0x606C][0] = static_cast<int32_t>(0);
+        (*this)[CiaRegister::StatusWord][0] = status_word;
+        (*this)[CiaRegister::ActualPosition][0] = static_cast<int32_t>(0);
+        (*this)[CiaRegister::ActualVelocity][0] = static_cast<int32_t>(0);
         homed = true;
       }
     }
@@ -758,23 +778,23 @@ protected:
   void OnWrite(uint16_t idx, uint8_t subidx) noexcept override
   {
     // System State
-    if (idx == 0x6040 && subidx == 0)
+    if (idx == CiaRegister::ControlWord && subidx == 0)
     {
       {
         std::scoped_lock<std::mutex> lock(w_mutex);
-        control_word = (*this)[0x6040][0];
+        control_word = (*this)[CiaRegister::ControlWord][0];
       }
       set_new_status_word_and_state();
       {
         std::scoped_lock<std::mutex> lock(w_mutex);
-        (*this)[0x6041][0] = status_word;
+        (*this)[CiaRegister::StatusWord][0] = status_word;
         this->TpdoEvent(1);
       }
     }
     // Operation Mode
-    if (idx == 0x6060 && subidx == 0)
+    if (idx == CiaRegister::OperationMode && subidx == 0)
     {
-      int8_t mode = (*this)[0x6060][0];
+      int8_t mode = (*this)[CiaRegister::OperationMode][0];
       switch (mode)
       {
         case No_Mode:
@@ -794,7 +814,7 @@ protected:
           std::cout << "Error: Master tried to set unknown operation mode." << std::endl;
       }
       // RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Switched to mode %hhi.", mode);
-      (*this)[0x6061][0] = (int8_t)(mode);
+      (*this)[CiaRegister::ModeOfOperationDisplay][0] = (int8_t)(mode);
       this->TpdoEvent(1);
     }
   }
