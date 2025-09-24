@@ -38,9 +38,10 @@ Cia402System::Cia402System() : CanopenSystem() {}
 hardware_interface::CallbackReturn Cia402System::on_init(
   const hardware_interface::HardwareInfo & info)
 {
-  if (CanopenSystem::on_init(info) != CallbackReturn::SUCCESS)
+  auto ret_val = CanopenSystem::on_init(info);
+  if (ret_val != hardware_interface::CallbackReturn::SUCCESS)
   {
-    return CallbackReturn::ERROR;
+    return ret_val;
   }
 
   return CallbackReturn::SUCCESS;
