@@ -298,7 +298,7 @@ hardware_interface::return_type CanopenSystem::write(
   {
     if (drivers.find(it->first) == drivers.end())
     {
-      // this is expeced for NodeID 0x00 - why do we have it at all?
+      // this is expected for NodeID 0x00 - why do we have it at all?
       RCLCPP_DEBUG(kLogger, "Driver for NodeID 0x%X not found. Skipping...", it->first);
       continue;
     }

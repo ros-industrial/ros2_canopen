@@ -85,7 +85,7 @@ struct Ros2ControlCOData
     }
     else
     {
-      RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Type '%s' empty or not yet supported. Using 'int32_t' as default to cast directly to double. This might cause errornous data! Please contribute or by maintainers a cookie and hope they implement it for you!", type.c_str());
+      RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Type '%s' empty or not yet supported. Using 'int32_t' as default to cast directly to double. This might cause erroneous data! Please contribute or by maintainers a cookie and hope they implement it for you!", type.c_str());
       co_type = "int32_t";
     }
   }
@@ -149,7 +149,7 @@ struct RORos2ControlCOData : public Ros2ControlCOData
     }
     else
     {
-      RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Type '%s' not yet supported. Trying to cast directly to double. This might cause errornous data! Please contribute or by maintainers a cookie and hope they implement it for you!", co_type.c_str());
+      RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Type '%s' not yet supported. Trying to cast directly to double. This might cause erroneous data! Please contribute or by maintainers a cookie and hope they implement it for you!", co_type.c_str());
       data = static_cast<double>(original_data.data_);
     }
   }
@@ -214,7 +214,7 @@ struct WORos2ControlCoData : public Ros2ControlCOData
     }
     else
     {
-      RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Type '%s' not yet supported. Trying to cast directly to uint32_t. This might cause errornous data! Please contribute or by maintainers a cookie and hope they implement it for you!", co_type.c_str());
+      RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Type '%s' not yet supported. Trying to cast directly to uint32_t. This might cause erroneous data! Please contribute or by maintainers a cookie and hope they implement it for you!", co_type.c_str());
       original_data.data_ = static_cast<uint32_t>(data);
     }
   }

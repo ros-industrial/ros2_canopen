@@ -8,7 +8,7 @@
 | Documentation Build | [![Documentation](https://github.com/ros-industrial/ros2_canopen/actions/workflows/rolling_documentation.yml/badge.svg)](https://github.com/ros-industrial/ros2_canopen/actions/workflows/rolling_documentation.yml) |
 | Buildfarm Build (rolling) | [![Buildfarm Status](https://build.ros2.org/job/Rdev__ros2_canopen__ubuntu_noble_amd64/badge/icon)](https://build.ros2.org/job/Rdev__ros2_canopen__ubuntu_noble_amd64/) |
 | Buildfarm Build (kilted) | [![Buildfarm Status](https://build.ros2.org/job/Kdev__ros2_canopen__ubuntu_noble_amd64/badge/icon)](https://build.ros2.org/job/Kdev__ros2_canopen__ubuntu_noble_amd64/) |
-| Buildfarm Build (jazzy) | [![Buildfarm Status](https://build.ros2.org/job/Jdev__ros2_canopen__ubuntu_noble_amd64/badge/icon)](https://build.ros2.org/job/Jdev__ros2_canopen__ubuntu_noble_amd64/) | 
+| Buildfarm Build (jazzy) | [![Buildfarm Status](https://build.ros2.org/job/Jdev__ros2_canopen__ubuntu_noble_amd64/badge/icon)](https://build.ros2.org/job/Jdev__ros2_canopen__ubuntu_noble_amd64/) |
 
 The stack is currently under development and not yet ready for production use.
 
