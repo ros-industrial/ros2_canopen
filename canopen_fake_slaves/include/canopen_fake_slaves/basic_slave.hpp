@@ -15,6 +15,7 @@
 #ifndef BASIC_SLAVE_HPP
 #define BASIC_SLAVE_HPP
 #include <lely/coapp/slave.hpp>
+#include <lely/coapp/sdo_error.hpp>
 #include <lely/ev/co_task.hpp>
 #include <lely/ev/loop.hpp>
 #include <lely/io2/linux/can.hpp>
@@ -23,6 +24,8 @@
 #include <lely/io2/sys/sigset.hpp>
 #include <lely/io2/sys/timer.hpp>
 
+#include <fstream>
+#include <system_error>
 #include <thread>
 #include <typeinfo>
 
@@ -36,7 +39,44 @@ namespace ros2_canopen
 class SimpleSlave : public canopen::BasicSlave
 {
 public:
-  using BasicSlave::BasicSlave;
+  SimpleSlave(
+    io::TimerBase & timer,
+    io::CanChannelBase & chan,
+    const std::string & slave_config,
+    const std::string & slave_bin,
+    uint8_t node_id)
+  : canopen::BasicSlave(timer, chan, slave_config, slave_bin, node_id)
+  {
+    const auto vendor_id = parse_vendor_id(slave_config);
+    if (vendor_id != 0)
+    {
+      try
+      {
+        this->OnRead<uint32_t>(
+          0x1018,
+          0x01,
+          [vendor_id](uint16_t, uint8_t, uint32_t & value) -> std::error_code
+          {
+            value = vendor_id;
+            return {};
+          });
+      }
+      catch (const lely::canopen::SdoError &)
+      {
+        // Leave the dictionary untouched if the callback cannot be registered.
+      }
+    }
+  }
+
+  SimpleSlave(
+    io::TimerBase & timer,
+    io::CanChannelBase & chan,
+    const std::string & slave_config,
+    uint8_t node_id)
+  : SimpleSlave(timer, chan, slave_config, "", node_id)
+  {
+  }
+
   ~SimpleSlave()
   {
     if (message_thread.joinable())
@@ -47,6 +87,36 @@ public:
 
 protected:
   std::thread message_thread;
+  static uint32_t parse_vendor_id(const std::string & slave_config)
+  {
+    std::ifstream stream(slave_config);
+    if (!stream.is_open())
+    {
+      return 0;
+    }
+
+    std::string line;
+    while (std::getline(stream, line))
+    {
+      auto pos = line.find("VendorNumber=");
+      if (pos == std::string::npos)
+      {
+        continue;
+      }
+
+      auto value_part = line.substr(pos + std::string("VendorNumber=").length());
+      try
+      {
+        return static_cast<uint32_t>(std::stoul(value_part, nullptr, 0));
+      }
+      catch (const std::exception &)
+      {
+        return 0;
+      }
+    }
+
+    return 0;
+  }
   /**
    * @brief This function gets an object value through the typed interface.
    * Only supports object types that can fit in a 32-bit container.
@@ -128,7 +198,7 @@ protected:
     while (rclcpp::ok())
     {
       uint32_t val = 0x1122;
-      (*this)[0x4004][0] = val;
+      (*this)[0x4001][0] = val;  // refresh TPDO-mapped UNSIGNED32 without touching config entries
       this->TpdoEvent(0);
       // 100 ms sleep - 10 Hz
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
