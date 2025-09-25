@@ -14,8 +14,8 @@
 
 #ifndef BASIC_SLAVE_HPP
 #define BASIC_SLAVE_HPP
-#include <lely/coapp/slave.hpp>
 #include <lely/coapp/sdo_error.hpp>
+#include <lely/coapp/slave.hpp>
 #include <lely/ev/co_task.hpp>
 #include <lely/ev/loop.hpp>
 #include <lely/io2/linux/can.hpp>
@@ -40,11 +40,8 @@ class SimpleSlave : public canopen::BasicSlave
 {
 public:
   SimpleSlave(
-    io::TimerBase & timer,
-    io::CanChannelBase & chan,
-    const std::string & slave_config,
-    const std::string & slave_bin,
-    uint8_t node_id)
+    io::TimerBase & timer, io::CanChannelBase & chan, const std::string & slave_config,
+    const std::string & slave_bin, uint8_t node_id)
   : canopen::BasicSlave(timer, chan, slave_config, slave_bin, node_id)
   {
     const auto vendor_id = parse_vendor_id(slave_config);
@@ -53,8 +50,7 @@ public:
       try
       {
         this->OnRead<uint32_t>(
-          0x1018,
-          0x01,
+          0x1018, 0x01,
           [vendor_id](uint16_t, uint8_t, uint32_t & value) -> std::error_code
           {
             value = vendor_id;
@@ -69,9 +65,7 @@ public:
   }
 
   SimpleSlave(
-    io::TimerBase & timer,
-    io::CanChannelBase & chan,
-    const std::string & slave_config,
+    io::TimerBase & timer, io::CanChannelBase & chan, const std::string & slave_config,
     uint8_t node_id)
   : SimpleSlave(timer, chan, slave_config, "", node_id)
   {

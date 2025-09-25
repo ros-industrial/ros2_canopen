@@ -237,29 +237,43 @@ std::future<bool> LelyDriverBridge::async_sdo_write(COData data)
     switch (co_def)
     {
       case CO_DEFTYPE_BOOLEAN:
-        {this->submit_write<bool>(data);
-        break;}
+      {
+        this->submit_write<bool>(data);
+        break;
+      }
       case CO_DEFTYPE_UNSIGNED8:
-        {this->submit_write<uint8_t>(data);
-        break;}
+      {
+        this->submit_write<uint8_t>(data);
+        break;
+      }
       case CO_DEFTYPE_INTEGER8:
-        {this->submit_write<int8_t>(data);
-        break;}
+      {
+        this->submit_write<int8_t>(data);
+        break;
+      }
       case CO_DEFTYPE_UNSIGNED16:
-        {this->submit_write<uint16_t>(data);
-        break;}
+      {
+        this->submit_write<uint16_t>(data);
+        break;
+      }
       case CO_DEFTYPE_INTEGER16:
-        {this->submit_write<int16_t>(data);
-        break;}
+      {
+        this->submit_write<int16_t>(data);
+        break;
+      }
       case CO_DEFTYPE_UNSIGNED32:
-        {this->submit_write<uint32_t>(data);
-        break;}
+      {
+        this->submit_write<uint32_t>(data);
+        break;
+      }
       case CO_DEFTYPE_INTEGER32:
-        {this->submit_write<int32_t>(data);
-        break;}
+      {
+        this->submit_write<int32_t>(data);
+        break;
+      }
       default:
-      std::cerr << "Unsupported CO_DEFTYPE: " << std::hex << (unsigned int)co_def << std::endl;
-      break;
+        std::cerr << "Unsupported CO_DEFTYPE: " << std::hex << (unsigned int)co_def << std::endl;
+        break;
     }
   }
   catch (lely::canopen::SdoError & e)
@@ -435,14 +449,18 @@ void LelyDriverBridge::tpdo_transmit(COData data)
       }
       default:
         std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
-              << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_ << " type=" << std::hex << (unsigned int)co_def << " data:" << (uint32_t)data.data_ << "TYPE NOT IMPLEMENTED - DATA WILL NOT BE WRTITTEN!!"<< std::endl;
+                  << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
+                  << " type=" << std::hex << (unsigned int)co_def
+                  << " data:" << (uint32_t)data.data_
+                  << "TYPE NOT IMPLEMENTED - DATA WILL NOT BE WRTITTEN!!" << std::endl;
         break;
     }
     tpdo_mapped[data.index_][data.subindex_].WriteEvent();
     // Reduce the amount of output - this is not needed as it is on every write
     // std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
     //           << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
-    //           << " type=" << std::hex << (unsigned int)co_def << " data:" << (uint32_t)data.data_ << std::endl;
+    //           << " type=" << std::hex << (unsigned int)co_def << " data:" << (uint32_t)data.data_
+    //           << std::endl;
   }
   catch (lely::canopen::SdoError & e)
   {
