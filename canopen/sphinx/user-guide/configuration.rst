@@ -88,7 +88,7 @@ but come from the lely core library. Below you find a list of possible configura
   :widths: 1 1
 
   configuration item; description
-  node_id; The node-ID (default: 255)
+  node_id; The node-ID (e.g. 255)
   driver; The fully qualified class name of the master to use.
   package; The ros2 package name in which the master class can be found.
   namespace; The namespace in which the master will be created (default: "/").
