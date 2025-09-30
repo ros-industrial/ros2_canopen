@@ -45,7 +45,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
   }
   RCLCPP_INFO_STREAM(
     this->node_->get_logger(),
-    "Non transmit timeout" << static_cast<int>(this->non_transmit_timeout_.count()) << "ms");
+    "Non transmit timeout " << static_cast<int>(this->non_transmit_timeout_.count()) << "ms");
 
   try
   {
@@ -132,7 +132,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
   }
   RCLCPP_INFO_STREAM(
     this->node_->get_logger(),
-    "Non transmit timeout" << static_cast<int>(this->non_transmit_timeout_.count()) << "ms");
+    "Non transmit timeout " << static_cast<int>(this->non_transmit_timeout_.count()) << "ms");
 
   try
   {
