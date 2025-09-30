@@ -294,7 +294,7 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
     bool boot_success = false;
     int boot_attempts = 0;
     const int max_boot_attempts = 3;  // 1 retry allowed
-    RCLCPP_WARN(this->node_->get_logger(), "Wait for device to boot...");
+    RCLCPP_INFO(this->node_->get_logger(), "Wait for device to boot...");
     while (!boot_success && boot_attempts < max_boot_attempts)
     {
       boot_attempts++;
