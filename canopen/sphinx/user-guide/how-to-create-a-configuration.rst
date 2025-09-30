@@ -168,12 +168,6 @@ Add the following code:
                     "{bus_config_name}",
                     "master.dcf",
                 ),
-                "master_bin": os.path.join(
-                    get_package_share_directory("{package_name}"),
-                    "config",
-                    "{bus_config_name}",
-                    "master.bin",
-                ),
                 "bus_config": os.path.join(
                     get_package_share_directory("{package_name}"),
                     "config",
