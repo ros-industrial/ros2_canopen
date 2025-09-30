@@ -53,7 +53,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
   }
   catch (...)
   {
-    RCLCPP_WARN(this->node_->get_logger(), "Could not polling from config, setting to true.");
+    RCLCPP_WARN(this->node_->get_logger(), "Could not read polling from config, setting to true.");
     polling_ = true;
   }
   if (polling_)
@@ -78,7 +78,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
   {
     RCLCPP_WARN(
       this->node_->get_logger(),
-      "Could not read enable diagnostics from config, setting to false.");
+      "Could not read `diagnostics/enable` from config, setting to false.");
     diagnostic_enabled_ = false;
   }
   if (diagnostic_enabled_.load())
@@ -91,7 +91,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
     {
       RCLCPP_ERROR(
         this->node_->get_logger(),
-        "Could not read diagnostics period from config, setting to 1000ms");
+        "Could not read `diagnostics/period` from config, setting to 1000ms");
       diagnostic_period_ms_ = 1000;
     }
 
@@ -140,7 +140,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
   }
   catch (...)
   {
-    RCLCPP_WARN(this->node_->get_logger(), "Could not polling from config, setting to true.");
+    RCLCPP_WARN(this->node_->get_logger(), "Could not read polling from config, setting to true.");
     polling_ = true;
   }
   if (polling_)
@@ -165,7 +165,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
   {
     RCLCPP_WARN(
       this->node_->get_logger(),
-      "Could not read enable diagnostics from config, setting to false.");
+      "Could not read `diagnostics/enable` from config, setting to false.");
     diagnostic_enabled_ = false;
   }
   if (diagnostic_enabled_.load())
@@ -178,7 +178,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
     {
       RCLCPP_WARN(
         this->node_->get_logger(),
-        "Could not read diagnostics period from config, setting to 1000ms");
+        "Could not read `diagnostics/period` from config, setting to 1000ms");
       diagnostic_period_ms_ = 1000;
     }
 
