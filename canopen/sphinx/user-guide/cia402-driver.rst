@@ -122,7 +122,7 @@ Additional parameters that can be used in bus.yml for this driver.
     - Milliseconds
     - Refresh period for 402 state machine. Should be similar to sync period of master.
   * - switching_state
-    - see below
+    - ?
     - The state to switch the operation mode in.
   * - scale_pos_to_dev
     - double

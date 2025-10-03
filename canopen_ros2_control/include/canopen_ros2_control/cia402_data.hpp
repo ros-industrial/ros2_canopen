@@ -58,12 +58,12 @@ struct Cia402Data
 
     if (!config["node_id"])
     {
-      RCLCPP_ERROR(rclcpp::get_logger(joint_name), "No node id for '%s'", joint.name.c_str());
+      RCLCPP_INFO(rclcpp::get_logger(joint_name), "No node id for '%s'", joint.name.c_str());
       return false;
     }
 
     node_id = config["node_id"].as<uint16_t>();
-    RCLCPP_ERROR(
+    RCLCPP_INFO(
       rclcpp::get_logger(joint_name), "Node id for '%s' is '%u'", joint.name.c_str(), node_id);
 
     if (config["position_mode"])
