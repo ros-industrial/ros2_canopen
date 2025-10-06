@@ -192,17 +192,23 @@ std::vector<hardware_interface::StateInterface> CanopenSystem::export_state_inte
     state_interfaces.emplace_back(hardware_interface::StateInterface(
       info_.joints[i].name, "emcy/error_code", &canopen_data_[node_id].emcy_data.error_code));
     state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "emcy/error_register", &canopen_data_[node_id].emcy_data.error_register));
+      info_.joints[i].name, "emcy/error_register",
+      &canopen_data_[node_id].emcy_data.error_register));
     state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "emcy/manufacturer_error_code1", &canopen_data_[node_id].emcy_data.manufacturer_error_code1));
+      info_.joints[i].name, "emcy/manufacturer_error_code1",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code1));
     state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "emcy/manufacturer_error_code2", &canopen_data_[node_id].emcy_data.manufacturer_error_code2));
+      info_.joints[i].name, "emcy/manufacturer_error_code2",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code2));
     state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "emcy/manufacturer_error_code3", &canopen_data_[node_id].emcy_data.manufacturer_error_code3));
+      info_.joints[i].name, "emcy/manufacturer_error_code3",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code3));
     state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "emcy/manufacturer_error_code4", &canopen_data_[node_id].emcy_data.manufacturer_error_code4));
+      info_.joints[i].name, "emcy/manufacturer_error_code4",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code4));
     state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "emcy/manufacturer_error_code5", &canopen_data_[node_id].emcy_data.manufacturer_error_code5));
+      info_.joints[i].name, "emcy/manufacturer_error_code5",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code5));
   }
 
   return state_interfaces;
@@ -277,7 +283,9 @@ hardware_interface::return_type CanopenSystem::read(
     if (canopen_data.emcy_data.error_code != 0)
     {
       RCLCPP_ERROR(
-        kLogger, "NodeID: 0x%X; Error code: %X; Error register: %X; Manufacturer error code: [%X, %X, %X, %X, %X];",
+        kLogger,
+        "NodeID: 0x%X; Error code: %X; Error register: %X; Manufacturer error code: [%X, %X, %X, "
+        "%X, %X];",
         node_id, canopen_data.emcy_data.original_emcy.eec, canopen_data.emcy_data.original_emcy.er,
         canopen_data.emcy_data.original_emcy.msef[0], canopen_data.emcy_data.original_emcy.msef[1],
         canopen_data.emcy_data.original_emcy.msef[2], canopen_data.emcy_data.original_emcy.msef[3],
@@ -298,7 +306,7 @@ hardware_interface::return_type CanopenSystem::write(
   {
     if (drivers.find(it->first) == drivers.end())
     {
-      // this is expeced for NodeID 0x00 - why do we have it at all?
+      // this is expected for NodeID 0x00 - why do we have it at all?
       RCLCPP_DEBUG(kLogger, "Driver for NodeID 0x%X not found. Skipping...", it->first);
       continue;
     }
@@ -324,7 +332,7 @@ hardware_interface::return_type CanopenSystem::write(
       {
         proxy_driver->tpdo_transmit(it->second.tpdo_data.original_data);
       }
-      catch(const std::exception& e)
+      catch (const std::exception & e)
       {
         std::cerr << e.what() << '\n';
       }

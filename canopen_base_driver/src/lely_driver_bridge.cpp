@@ -447,14 +447,18 @@ void LelyDriverBridge::tpdo_transmit(COData data)
       }
       default:
         std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
-              << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_ << " type=" << std::hex << (unsigned int)co_def << " data:" << (uint32_t)data.data_ << "TYPE NOT IMPLEMENTED - DATA WILL NOT BE WRTITTEN!!"<< std::endl;
+                  << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
+                  << " type=" << std::hex << (unsigned int)co_def
+                  << " data:" << (uint32_t)data.data_
+                  << "TYPE NOT IMPLEMENTED - DATA WILL NOT BE WRTITTEN!!" << std::endl;
         break;
     }
     tpdo_mapped[data.index_][data.subindex_].WriteEvent();
     // Reduce the amount of output - this is not needed as it is on every write
     // std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
     //           << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
-    //           << " type=" << std::hex << (unsigned int)co_def << " data:" << (uint32_t)data.data_ << std::endl;
+    //           << " type=" << std::hex << (unsigned int)co_def << " data:" << (uint32_t)data.data_
+    //           << std::endl;
   }
   catch (lely::canopen::SdoError & e)
   {
