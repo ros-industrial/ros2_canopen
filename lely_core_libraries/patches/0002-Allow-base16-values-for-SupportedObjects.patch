@@ -1,0 +1,39 @@
+From 6e3fd39874a2e486b6725d824bf54210ec69864d Mon Sep 17 00:00:00 2001
+From: Alex Roy <alex.roy@fieldworkrobotics.com>
+Date: Wed, 18 Jun 2025 23:05:20 +0100
+Subject: [PATCH] Allow base16 values for SupportedObjects
+
+---
+ python/dcf-tools/dcf/device.py | 2 +-
+ python/dcf-tools/dcf/lint.py   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/python/dcf-tools/dcf/device.py b/python/dcf-tools/dcf/device.py
+index 4648b2b9..7620e0f5 100644
+--- a/python/dcf-tools/dcf/device.py
++++ b/python/dcf-tools/dcf/device.py
+@@ -25,7 +25,7 @@ class Device(dict):
+             )
+ 
+         for section in {"MandatoryObjects", "OptionalObjects", "ManufacturerObjects"}:
+-            for i in range(int(self.cfg[section]["SupportedObjects"], 10)):
++            for i in range(int(self.cfg[section]["SupportedObjects"], 0)):
+                 index = int(self.cfg[section][str(i + 1)], 0)
+                 self[index] = Object(self.cfg, index, self.env)
+ 
+diff --git a/python/dcf-tools/dcf/lint.py b/python/dcf-tools/dcf/lint.py
+index 48916603..b33e38d7 100644
+--- a/python/dcf-tools/dcf/lint.py
++++ b/python/dcf-tools/dcf/lint.py
+@@ -137,7 +137,7 @@ def __parse_objects(cfg: dict, section: str) -> bool:
+     for entry in cfg[section]:
+         if entry.lower() == "SupportedObjects".lower():
+             try:
+-                supported_objects = int(cfg[section][entry], 10)
++                supported_objects = int(cfg[section][entry], 0)
+             except ValueError:
+                 warnings.warn(
+                     "invalid value for SupportedObjects in [{}]: {}".format(
+-- 
+2.34.1
+
