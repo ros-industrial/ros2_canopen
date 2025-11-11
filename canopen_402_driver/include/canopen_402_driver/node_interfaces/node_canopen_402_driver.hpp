@@ -19,6 +19,7 @@
 #ifndef NODE_CANOPEN_402_DRIVER
 #define NODE_CANOPEN_402_DRIVER
 
+#include <cstdint>
 #include "canopen_402_driver/motor.hpp"
 #include "canopen_base_driver/lely_driver_bridge.hpp"
 #include "canopen_interfaces/srv/co_target_double.hpp"
@@ -39,22 +40,30 @@ class NodeCanopen402Driver : public NodeCanopenProxyDriver<NODETYPE>
     "NODETYPE must derive from rclcpp::Node or rclcpp_lifecycle::LifecycleNode");
 
 protected:
-  std::shared_ptr<Motor402> motor_;
+  std::vector<std::shared_ptr<Motor402>> motors_;
+  uint8_t num_channels_;
+  std::vector<std::string> channel_names_;
+
   rclcpp::TimerBase::SharedPtr timer_;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_init_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_enable_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_disable_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_halt_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_recover_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_position_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_torque_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_velocity_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_velocity_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_position_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_torque_service;
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_interpolated_position_service;
-  rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr handle_set_target_service;
+
+  // Per-channel service handles (Option B: one service per channel)
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_init_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_enable_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_disable_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_halt_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_recover_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_position_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_torque_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_velocity_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_cyclic_velocity_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_cyclic_position_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_cyclic_torque_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_interpolated_position_services_;
+  std::vector<rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr> handle_set_target_services_;
+
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr publish_joint_state;
+
+  // Global scale/offset (used as defaults)
   double scale_pos_to_dev_;
   double scale_pos_from_dev_;
   double scale_vel_to_dev_;
@@ -62,12 +71,25 @@ protected:
   double scale_eff_from_dev_;
   double offset_pos_to_dev_;
   double offset_pos_from_dev_;
+
+  // Per-channel scale/offset (optional overrides)
+  std::vector<double> channel_scale_pos_to_dev_;
+  std::vector<double> channel_scale_pos_from_dev_;
+  std::vector<double> channel_scale_vel_to_dev_;
+  std::vector<double> channel_scale_vel_from_dev_;
+  std::vector<double> channel_scale_eff_from_dev_;
+  std::vector<double> channel_offset_pos_to_dev_;
+  std::vector<double> channel_offset_pos_from_dev_;
+
   ros2_canopen::State402::InternalState switching_state_;
   int homing_timeout_seconds_;
 
   void publish();
   virtual void poll_timer_callback() override;
   void diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper & stat) override;
+
+  // Helper to create per-channel services after configure
+  void create_per_channel_services();
 
 public:
   NodeCanopen402Driver(NODETYPE * node);
@@ -78,16 +100,37 @@ public:
   virtual void deactivate(bool called_from_base) override;
   virtual void add_to_master() override;
 
-  virtual double get_effort() { return motor_->get_effort() * scale_eff_from_dev_; }
-
-  virtual double get_speed() { return motor_->get_speed() * scale_vel_from_dev_; }
-
-  virtual double get_position()
+  virtual double get_effort(uint8_t channel = 0)
   {
-    return motor_->get_position() * scale_pos_from_dev_ + offset_pos_from_dev_;
+    if (channel >= motors_.size()) return 0.0;
+    double scale = (channel < channel_scale_eff_from_dev_.size()) ?
+                   channel_scale_eff_from_dev_[channel] : scale_eff_from_dev_;
+    return motors_[channel]->get_effort() * scale;
   }
 
-  virtual uint16_t get_mode() { return motor_->getMode(); }
+  virtual double get_speed(uint8_t channel = 0)
+  {
+    if (channel >= motors_.size()) return 0.0;
+    double scale = (channel < channel_scale_vel_from_dev_.size()) ?
+                   channel_scale_vel_from_dev_[channel] : scale_vel_from_dev_;
+    return motors_[channel]->get_speed() * scale;
+  }
+
+  virtual double get_position(uint8_t channel = 0)
+  {
+    if (channel >= motors_.size()) return 0.0;
+    double scale = (channel < channel_scale_pos_from_dev_.size()) ?
+                   channel_scale_pos_from_dev_[channel] : scale_pos_from_dev_;
+    double offset = (channel < channel_offset_pos_from_dev_.size()) ?
+                    channel_offset_pos_from_dev_[channel] : offset_pos_from_dev_;
+    return motors_[channel]->get_position() * scale + offset;
+  }
+
+  virtual uint16_t get_mode(uint8_t channel = 0)
+  {
+    if (channel >= motors_.size()) return 0;
+    return motors_[channel]->getMode();
+  }
 
   /**
    * @brief Service Callback to initialise device
@@ -100,7 +143,7 @@ public:
    */
   void handle_init(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to enable device
@@ -113,7 +156,7 @@ public:
    */
   void handle_enable(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to disable device
@@ -126,7 +169,7 @@ public:
    */
   void handle_disable(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Method to initialise device
@@ -139,7 +182,7 @@ public:
    * @return  bool
    * Indicates initialisation procedure result
    */
-  bool init_motor();
+  bool init_motor(uint8_t channel = 0);
 
   /**
    * @brief Service Callback to recover device
@@ -152,7 +195,7 @@ public:
    */
   void handle_recover(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Method to recover device
@@ -164,7 +207,7 @@ public:
    *
    * @return bool
    */
-  bool recover_motor();
+  bool recover_motor(uint8_t channel = 0);
 
   /**
    * @brief Service Callback to halt device
@@ -178,7 +221,7 @@ public:
    */
   void handle_halt(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Method to halt device
@@ -191,7 +234,7 @@ public:
    *
    * @return bool
    */
-  bool halt_motor();
+  bool halt_motor(uint8_t channel = 0);
 
   /**
    * @brief Service Callback to set operation mode
@@ -203,7 +246,7 @@ public:
    * MotorBase::Cyclic_Velocity or MotorBase::Cyclic_Torque or MotorBase::Interpolated_Position
    * @param [out] response
    */
-  bool set_operation_mode(uint16_t mode);
+  bool set_operation_mode(uint16_t mode, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to set profiled position mode
@@ -217,7 +260,7 @@ public:
    */
   void handle_set_mode_position(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to set profiled velocity mode
@@ -231,7 +274,7 @@ public:
    */
   void handle_set_mode_velocity(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to set cyclic position mode
@@ -245,7 +288,7 @@ public:
    */
   void handle_set_mode_cyclic_position(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to set interpolated position mode
@@ -259,7 +302,7 @@ public:
    */
   void handle_set_mode_interpolated_position(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to set cyclic velocity mode
@@ -273,7 +316,7 @@ public:
    */
   void handle_set_mode_cyclic_velocity(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to set profiled torque mode
@@ -287,7 +330,7 @@ public:
    */
   void handle_set_mode_torque(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to set cyclic torque mode
@@ -301,7 +344,7 @@ public:
    */
   void handle_set_mode_cyclic_torque(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
-    std_srvs::srv::Trigger::Response::SharedPtr response);
+    std_srvs::srv::Trigger::Response::SharedPtr response, uint8_t channel = 0);
 
   /**
    * @brief Service Callback to set target
@@ -315,7 +358,7 @@ public:
    */
   void handle_set_target(
     const canopen_interfaces::srv::COTargetDouble::Request::SharedPtr request,
-    canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response);
+    canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response, const uint8_t channel = 0);
 
   /**
    * @brief Method to set target
@@ -325,10 +368,11 @@ public:
    * drives state.
    *
    * @param [in] double target value
+   * @param [in] uint8_t channel (default 0 for backward compatibility)
    *
    * @return bool
    */
-  bool set_target(double target);
+  bool set_target(double target, uint8_t channel = 0);
 };
 }  // namespace node_interfaces
 }  // namespace ros2_canopen

@@ -61,15 +61,37 @@ class Motor402 : public MotorBase
 public:
   Motor402(
     std::shared_ptr<LelyDriverBridge> driver, ros2_canopen::State402::InternalState switching_state,
-    int homing_timeout_seconds)
+    int homing_timeout_seconds, uint8_t channel = 0)
   : MotorBase(),
     switching_state_(switching_state),
     monitor_mode_(true),
     state_switch_timeout_(5),
-    homing_timeout_seconds_(homing_timeout_seconds)
+    homing_timeout_seconds_(homing_timeout_seconds),
+    channel_(channel)
   {
     this->driver = driver;
+    // Calculate channel offset according to CiA 402-2: base_index + (channel * 0x800)
+    channel_offset_ = channel * 0x800;
   }
+
+  /**
+   * @brief Get channel-specific object dictionary index
+   *
+   * According to CiA 402-2, multi-axis devices use offset indices:
+   * - Channel 0: 0x6000-0x67FF (standard, no offset)
+   * - Channel 1: 0x6800-0x6FFF (offset +0x800)
+   * - Channel 2: 0x7000-0x77FF (offset +0x1000)
+   * - etc.
+   *
+   * @param base_index The base object dictionary index
+   * @return The channel-specific index
+   */
+  uint16_t get_channel_index(uint16_t base_index) const
+  {
+    return base_index + channel_offset_;
+  }
+
+  uint8_t get_channel() const { return channel_; }
 
   virtual bool setTarget(double val);
   virtual bool enterModeAndWait(uint16_t mode);
@@ -185,25 +207,30 @@ public:
    */
   virtual void registerDefaultModes()
   {
-    registerMode<ProfiledPositionMode>(MotorBase::Profiled_Position, driver);
-    registerMode<VelocityMode>(MotorBase::Velocity, driver);
-    registerMode<ProfiledVelocityMode>(MotorBase::Profiled_Velocity, driver);
-    registerMode<ProfiledTorqueMode>(MotorBase::Profiled_Torque, driver);
-    registerMode<DefaultHomingMode>(MotorBase::Homing, driver, homing_timeout_seconds_);
-    registerMode<InterpolatedPositionMode>(MotorBase::Interpolated_Position, driver);
-    registerMode<CyclicSynchronousPositionMode>(MotorBase::Cyclic_Synchronous_Position, driver);
-    registerMode<CyclicSynchronousVelocityMode>(MotorBase::Cyclic_Synchronous_Velocity, driver);
-    registerMode<CyclicSynchronousTorqueMode>(MotorBase::Cyclic_Synchronous_Torque, driver);
+    // Pass channel_offset_ to all mode constructors for multi-axis support
+    registerMode<ProfiledPositionMode>(MotorBase::Profiled_Position, driver, channel_offset_);
+    registerMode<VelocityMode>(MotorBase::Velocity, driver, channel_offset_);
+    registerMode<ProfiledVelocityMode>(MotorBase::Profiled_Velocity, driver, channel_offset_);
+    registerMode<ProfiledTorqueMode>(MotorBase::Profiled_Torque, driver, channel_offset_);
+    registerMode<DefaultHomingMode>(MotorBase::Homing, driver, homing_timeout_seconds_, channel_offset_);
+    registerMode<InterpolatedPositionMode>(MotorBase::Interpolated_Position, driver, channel_offset_);
+    registerMode<CyclicSynchronousPositionMode>(MotorBase::Cyclic_Synchronous_Position, driver, channel_offset_);
+    registerMode<CyclicSynchronousVelocityMode>(MotorBase::Cyclic_Synchronous_Velocity, driver, channel_offset_);
+    registerMode<CyclicSynchronousTorqueMode>(MotorBase::Cyclic_Synchronous_Torque, driver, channel_offset_);
   }
 
   double get_effort() const
   {
-    return (double)this->driver->universal_get_value<int16_t>(0x6077, 0);
+    return (double)this->driver->universal_get_value<int16_t>(get_channel_index(0x6077), 0);
   }
-  double get_speed() const { return (double)this->driver->universal_get_value<int32_t>(0x606C, 0); }
+  double get_speed() const
+  {
+    return (double)this->driver->universal_get_value<int32_t>(get_channel_index(0x606C), 0);
+  }
+
   double get_position() const
   {
-    return (double)this->driver->universal_get_value<int32_t>(0x6064, 0);
+    return (double)this->driver->universal_get_value<int32_t>(get_channel_index(0x6064), 0);
   }
 
   void set_diagnostic_status_msgs(std::shared_ptr<DiagnosticsCollector> status, bool enable)
@@ -244,6 +271,12 @@ private:
   const int homing_timeout_seconds_;
 
   std::shared_ptr<LelyDriverBridge> driver;
+
+  // Channel support for multi-axis devices (CiA 402-2)
+  const uint8_t channel_;
+  uint16_t channel_offset_;
+
+  // Base object dictionary indices (will be offset by channel_offset_)
   const uint16_t status_word_entry_index = 0x6041;
   const uint16_t control_word_entry_index = 0x6040;
   const uint16_t op_mode_display_index = 0x6061;

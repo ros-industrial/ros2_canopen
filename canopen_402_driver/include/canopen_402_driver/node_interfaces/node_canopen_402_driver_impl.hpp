@@ -19,6 +19,7 @@
 #ifndef NODE_CANOPEN_402_DRIVER_IMPL_HPP_
 #define NODE_CANOPEN_402_DRIVER_IMPL_HPP_
 
+#include <sys/types.h>
 #include "canopen_402_driver/node_interfaces/node_canopen_402_driver.hpp"
 #include "canopen_core/driver_error.hpp"
 
@@ -45,84 +46,7 @@ void NodeCanopen402Driver<rclcpp::Node>::init(bool called_from_base)
   NodeCanopenProxyDriver<rclcpp::Node>::init(false);
   publish_joint_state =
     this->node_->create_publisher<sensor_msgs::msg::JointState>("~/joint_states", 1);
-  handle_init_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/init").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_init, this, std::placeholders::_1,
-      std::placeholders::_2));
-
-  handle_enable_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/enable").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_enable, this, std::placeholders::_1,
-      std::placeholders::_2));
-
-  handle_disable_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/disable").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_disable, this, std::placeholders::_1,
-      std::placeholders::_2));
-
-  handle_halt_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/halt").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_halt, this, std::placeholders::_1,
-      std::placeholders::_2));
-
-  handle_recover_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/recover").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_recover, this, std::placeholders::_1,
-      std::placeholders::_2));
-
-  handle_set_mode_position_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/position_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_position, this, std::placeholders::_1,
-      std::placeholders::_2));
-
-  handle_set_mode_velocity_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/velocity_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_velocity, this, std::placeholders::_1,
-      std::placeholders::_2));
-
-  handle_set_mode_cyclic_velocity_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/cyclic_velocity_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_cyclic_velocity, this,
-      std::placeholders::_1, std::placeholders::_2));
-
-  handle_set_mode_cyclic_position_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/cyclic_position_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_cyclic_position, this,
-      std::placeholders::_1, std::placeholders::_2));
-
-  handle_set_mode_interpolated_position_service =
-    this->node_->create_service<std_srvs::srv::Trigger>(
-      std::string(this->node_->get_name()).append("/interpolated_position_mode").c_str(),
-      std::bind(
-        &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_interpolated_position, this,
-        std::placeholders::_1, std::placeholders::_2));
-
-  handle_set_mode_torque_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/torque_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_torque, this, std::placeholders::_1,
-      std::placeholders::_2));
-
-  handle_set_mode_cyclic_torque_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/cyclic_torque_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_set_mode_cyclic_torque, this,
-      std::placeholders::_1, std::placeholders::_2));
-
-  handle_set_target_service = this->node_->create_service<canopen_interfaces::srv::COTargetDouble>(
-    std::string(this->node_->get_name()).append("/target").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp::Node>::handle_set_target, this, std::placeholders::_1,
-      std::placeholders::_2));
+  // Per-channel services will be created in configure() after num_channels_ is known
 }
 
 template <>
@@ -131,84 +55,158 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::init(bool called_fro
   NodeCanopenProxyDriver<rclcpp_lifecycle::LifecycleNode>::init(false);
   publish_joint_state =
     this->node_->create_publisher<sensor_msgs::msg::JointState>("~/joint_states", 10);
-  handle_init_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/init").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_init, this,
-      std::placeholders::_1, std::placeholders::_2));
+  // Per-channel services will be created in configure() after num_channels_ is known
+}
 
-  handle_enable_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/enable").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_enable, this,
-      std::placeholders::_1, std::placeholders::_2));
+// Helper method to create per-channel services (called from configure)
+template <class NODETYPE>
+void NodeCanopen402Driver<NODETYPE>::create_per_channel_services()
+{
+  // Resize service vectors
+  handle_init_services_.resize(num_channels_);
+  handle_enable_services_.resize(num_channels_);
+  handle_disable_services_.resize(num_channels_);
+  handle_halt_services_.resize(num_channels_);
+  handle_recover_services_.resize(num_channels_);
+  handle_set_mode_position_services_.resize(num_channels_);
+  handle_set_mode_torque_services_.resize(num_channels_);
+  handle_set_mode_velocity_services_.resize(num_channels_);
+  handle_set_mode_cyclic_velocity_services_.resize(num_channels_);
+  handle_set_mode_cyclic_position_services_.resize(num_channels_);
+  handle_set_mode_cyclic_torque_services_.resize(num_channels_);
+  handle_set_mode_interpolated_position_services_.resize(num_channels_);
+  handle_set_target_services_.resize(num_channels_);
 
-  handle_disable_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/disable").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_disable, this,
-      std::placeholders::_1, std::placeholders::_2));
+  // Create services for each channel
+  for (uint8_t ch = 0; ch < num_channels_; ++ch)
+  {
+    // Service naming:
+    // - Single-channel (num_channels_ == 1): Use legacy names like "init", "target", etc.
+    // - Multi-channel: Use channel_name as prefix like "channel_name/init"
+    std::string service_prefix;
+    if (num_channels_ == 1)
+    {
+      // Single-channel: no prefix, legacy behavior
+      service_prefix = "";
+    }
+    else
+    {
+      // Multi-channel: use channel_name as prefix
+      if (ch < channel_names_.size())
+      {
+        service_prefix = channel_names_[ch] + "/";
+      }
+      else
+      {
+        // Fallback if channel_names not configured
+        service_prefix = "ch" + std::to_string(ch) + "/";
+      }
+    }
 
-  handle_halt_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/halt").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_halt, this,
-      std::placeholders::_1, std::placeholders::_2));
+    // Init service
+    handle_init_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "init",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_init(request, response, ch);
+      });
 
-  handle_recover_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/recover").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_recover, this,
-      std::placeholders::_1, std::placeholders::_2));
+    // Enable service
+    handle_enable_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "enable",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_enable(request, response, ch);
+      });
 
-  handle_set_mode_position_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/position_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_position, this,
-      std::placeholders::_1, std::placeholders::_2));
+    // Disable service
+    handle_disable_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "disable",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_disable(request, response, ch);
+      });
 
-  handle_set_mode_velocity_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/velocity_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_velocity, this,
-      std::placeholders::_1, std::placeholders::_2));
+    // Halt service
+    handle_halt_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "halt",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_halt(request, response, ch);
+      });
 
-  handle_set_mode_cyclic_velocity_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/cyclic_velocity_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_cyclic_velocity, this,
-      std::placeholders::_1, std::placeholders::_2));
+    // Recover service
+    handle_recover_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "recover",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_recover(request, response, ch);
+      });
 
-  handle_set_mode_cyclic_position_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/cyclic_position_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_cyclic_position, this,
-      std::placeholders::_1, std::placeholders::_2));
+    // Position mode service
+    handle_set_mode_position_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "position_mode",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_set_mode_position(request, response, ch);
+      });
 
-  handle_set_mode_interpolated_position_service = this->node_->create_service<
-    std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/interpolated_position_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_interpolated_position,
-      this, std::placeholders::_1, std::placeholders::_2));
+    // Velocity mode service
+    handle_set_mode_velocity_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "velocity_mode",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_set_mode_velocity(request, response, ch);
+      });
 
-  handle_set_mode_torque_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/torque_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_torque, this,
-      std::placeholders::_1, std::placeholders::_2));
+    // Torque mode service
+    handle_set_mode_torque_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "torque_mode",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_set_mode_torque(request, response, ch);
+      });
 
-  handle_set_mode_cyclic_torque_service = this->node_->create_service<std_srvs::srv::Trigger>(
-    std::string(this->node_->get_name()).append("/cyclic_torque_mode").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_mode_cyclic_torque, this,
-      std::placeholders::_1, std::placeholders::_2));
+    // Cyclic velocity mode service
+    handle_set_mode_cyclic_velocity_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "cyclic_velocity_mode",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_set_mode_cyclic_velocity(request, response, ch);
+      });
 
-  handle_set_target_service = this->node_->create_service<canopen_interfaces::srv::COTargetDouble>(
-    std::string(this->node_->get_name()).append("/target").c_str(),
-    std::bind(
-      &NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::handle_set_target, this,
-      std::placeholders::_1, std::placeholders::_2));
+    // Cyclic position mode service
+    handle_set_mode_cyclic_position_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "cyclic_position_mode",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_set_mode_cyclic_position(request, response, ch);
+      });
+
+    // Cyclic torque mode service
+    handle_set_mode_cyclic_torque_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "cyclic_torque_mode",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_set_mode_cyclic_torque(request, response, ch);
+      });
+
+    // Interpolated position mode service
+    handle_set_mode_interpolated_position_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
+      service_prefix + "interpolated_position_mode",
+      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
+                 std_srvs::srv::Trigger::Response::SharedPtr response) {
+        this->handle_set_mode_interpolated_position(request, response, ch);
+      });
+
+    // Target service (uses COTargetDouble without channel field, since channel is in service name)
+    handle_set_target_services_[ch] = this->node_->template create_service<canopen_interfaces::srv::COTargetDouble>(
+      service_prefix + "target",
+      [this, ch](const canopen_interfaces::srv::COTargetDouble::Request::SharedPtr request,
+                 canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response) {
+        response->success = this->set_target(request->target, ch);
+      });
+  }
 }
 
 template <>
@@ -282,7 +280,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   }
   try
   {
-    homing_timeout_seconds = std::optional(this->config_["homing_timout_seconds"].as<int>());
+    homing_timeout_seconds = std::optional(this->config_["homing_timeout_seconds"].as<int>());
   }
   catch (...)
   {
@@ -300,13 +298,72 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
     (int)ros2_canopen::State402::InternalState::Operation_Enable);
   homing_timeout_seconds_ = homing_timeout_seconds.value_or(10);
+
+  // Multi-channel configuration
+  num_channels_ = 1;
+  try { num_channels_ = this->config_["num_channels"].as<uint8_t>(); } catch (...) {}
+
+  // Parse channel names
+  try
+  {
+    auto names_node = this->config_["channel_names"];
+    if (names_node.IsDefined() && names_node.IsSequence())
+    {
+      for (size_t i = 0; i < names_node.size(); ++i)
+      {
+        channel_names_.push_back(names_node[i].as<std::string>());
+      }
+    }
+  }
+  catch (...) {}
+
+  // Generate default names if not provided
+  if (channel_names_.empty())
+  {
+    for (uint8_t i = 0; i < num_channels_; ++i)
+    {
+      channel_names_.push_back(std::string(this->node_->get_name()) + "/" + std::to_string(i));
+    }
+  }
+
+  // Parse per-channel scales/offsets
+  try
+  {
+    auto channels_node = this->config_["channels"];
+    if (channels_node.IsDefined() && channels_node.IsSequence())
+    {
+      for (size_t i = 0; i < channels_node.size() && i < num_channels_; ++i)
+      {
+        auto ch = channels_node[i];
+        try { channel_scale_pos_to_dev_.push_back(ch["scale_pos_to_dev"].as<double>()); }
+        catch (...) { channel_scale_pos_to_dev_.push_back(scale_pos_to_dev_); }
+        try { channel_scale_pos_from_dev_.push_back(ch["scale_pos_from_dev"].as<double>()); }
+        catch (...) { channel_scale_pos_from_dev_.push_back(scale_pos_from_dev_); }
+        try { channel_scale_vel_to_dev_.push_back(ch["scale_vel_to_dev"].as<double>()); }
+        catch (...) { channel_scale_vel_to_dev_.push_back(scale_vel_to_dev_); }
+        try { channel_scale_vel_from_dev_.push_back(ch["scale_vel_from_dev"].as<double>()); }
+        catch (...) { channel_scale_vel_from_dev_.push_back(scale_vel_from_dev_); }
+        try { channel_scale_eff_from_dev_.push_back(ch["scale_eff_from_dev"].as<double>()); }
+        catch (...) { channel_scale_eff_from_dev_.push_back(scale_eff_from_dev_); }
+        try { channel_offset_pos_to_dev_.push_back(ch["offset_pos_to_dev"].as<double>()); }
+        catch (...) { channel_offset_pos_to_dev_.push_back(offset_pos_to_dev_); }
+        try { channel_offset_pos_from_dev_.push_back(ch["offset_pos_from_dev"].as<double>()); }
+        catch (...) { channel_offset_pos_from_dev_.push_back(offset_pos_from_dev_); }
+      }
+    }
+  }
+  catch (...) {}
+
   RCLCPP_INFO(
     this->node_->get_logger(),
-    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
-    "%f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
+    "num_channels: %u\nscale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
+    "%f\nscale_eff_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
     "%f\nhoming_timeout_seconds_ %i\n",
-    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
-    offset_pos_to_dev_, offset_pos_from_dev_, homing_timeout_seconds_);
+    num_channels_, scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
+    scale_eff_from_dev_, offset_pos_to_dev_, offset_pos_from_dev_, homing_timeout_seconds_);
+
+  // Create per-channel services
+  create_per_channel_services();
 }
 
 template <>
@@ -398,21 +455,84 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
     (int)ros2_canopen::State402::InternalState::Operation_Enable);
   homing_timeout_seconds_ = homing_timeout_seconds.value_or(10);
+
+  // Multi-channel configuration
+  num_channels_ = 1;
+  try { num_channels_ = this->config_["num_channels"].as<uint8_t>(); } catch (...) {}
+
+  // Parse channel names
+  try
+  {
+    auto names_node = this->config_["channel_names"];
+    if (names_node.IsDefined() && names_node.IsSequence())
+    {
+      for (size_t i = 0; i < names_node.size(); ++i)
+      {
+        channel_names_.push_back(names_node[i].as<std::string>());
+      }
+    }
+  }
+  catch (...) {}
+
+  // Generate default names if not provided
+  if (channel_names_.empty())
+  {
+    for (uint8_t i = 0; i < num_channels_; ++i)
+    {
+      channel_names_.push_back(std::string(this->node_->get_name()) + "/" + std::to_string(i));
+    }
+  }
+
+  // Parse per-channel scales/offsets
+  try
+  {
+    auto channels_node = this->config_["channels"];
+    if (channels_node.IsDefined() && channels_node.IsSequence())
+    {
+      for (size_t i = 0; i < channels_node.size() && i < num_channels_; ++i)
+      {
+        auto ch = channels_node[i];
+        try { channel_scale_pos_to_dev_.push_back(ch["scale_pos_to_dev"].as<double>()); }
+        catch (...) { channel_scale_pos_to_dev_.push_back(scale_pos_to_dev_); }
+        try { channel_scale_pos_from_dev_.push_back(ch["scale_pos_from_dev"].as<double>()); }
+        catch (...) { channel_scale_pos_from_dev_.push_back(scale_pos_from_dev_); }
+        try { channel_scale_vel_to_dev_.push_back(ch["scale_vel_to_dev"].as<double>()); }
+        catch (...) { channel_scale_vel_to_dev_.push_back(scale_vel_to_dev_); }
+        try { channel_scale_vel_from_dev_.push_back(ch["scale_vel_from_dev"].as<double>()); }
+        catch (...) { channel_scale_vel_from_dev_.push_back(scale_vel_from_dev_); }
+        try { channel_scale_eff_from_dev_.push_back(ch["scale_eff_from_dev"].as<double>()); }
+        catch (...) { channel_scale_eff_from_dev_.push_back(scale_eff_from_dev_); }
+        try { channel_offset_pos_to_dev_.push_back(ch["offset_pos_to_dev"].as<double>()); }
+        catch (...) { channel_offset_pos_to_dev_.push_back(offset_pos_to_dev_); }
+        try { channel_offset_pos_from_dev_.push_back(ch["offset_pos_from_dev"].as<double>()); }
+        catch (...) { channel_offset_pos_from_dev_.push_back(offset_pos_from_dev_); }
+      }
+    }
+  }
+  catch (...) {}
+
   RCLCPP_INFO(
     this->node_->get_logger(),
-    "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
+    "num_channels: %u\nscale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
     "%f\nscale_eff_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
     "%f\nhoming_timeout_seconds_ %i\n",
-    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
+    num_channels_, scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
     scale_eff_from_dev_, offset_pos_to_dev_, offset_pos_from_dev_, homing_timeout_seconds_);
+
+  // Create per-channel services
+  create_per_channel_services();
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::activate(bool called_from_base)
 {
   NodeCanopenProxyDriver<NODETYPE>::activate(false);
-  motor_->registerDefaultModes();
-  motor_->set_diagnostic_status_msgs(this->diagnostic_collector_, this->diagnostic_enabled_);
+  // Register default modes for all motor instances
+  for (auto& motor : motors_)
+  {
+    motor->registerDefaultModes();
+    motor->set_diagnostic_status_msgs(this->diagnostic_collector_, this->diagnostic_enabled_);
+  }
 }
 
 template <class NODETYPE>
@@ -426,8 +546,12 @@ template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::poll_timer_callback()
 {
   NodeCanopenProxyDriver<NODETYPE>::poll_timer_callback();
-  motor_->handleRead();
-  motor_->handleWrite();
+  // Handle read/write for all motors
+  for (auto& motor : motors_)
+  {
+    motor->handleRead();
+    motor->handleWrite();
+  }
   publish();
 }
 
@@ -435,10 +559,42 @@ template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::publish()
 {
   sensor_msgs::msg::JointState js_msg;
-  js_msg.name.push_back(this->node_->get_name());
-  js_msg.position.push_back(motor_->get_position() * scale_pos_from_dev_ + offset_pos_from_dev_);
-  js_msg.velocity.push_back(motor_->get_speed() * scale_vel_from_dev_);
-  js_msg.effort.push_back(motor_->get_effort() * scale_eff_from_dev_);
+  // Publish joint state for all channels
+  for (size_t ch = 0; ch < motors_.size(); ++ch)
+  {
+    std::string name;
+    if (num_channels_ == 1)
+    {
+      // Single-channel: use node name (legacy behavior)
+      name = std::string(this->node_->get_name());
+    }
+    else
+    {
+      // Multi-channel: use channel_name
+      if (ch < channel_names_.size())
+      {
+        name = channel_names_[ch];
+      }
+      else
+      {
+        // Fallback if channel_names not configured
+        name = std::string(this->node_->get_name()) + "/ch" + std::to_string(ch);
+      }
+    }
+
+    double scale_pos_from_dev = (ch < channel_scale_pos_from_dev_.size()) ?
+                       channel_scale_pos_from_dev_[ch] : scale_pos_from_dev_;
+    double offset_pos_from_dev = (ch < channel_offset_pos_from_dev_.size()) ?
+                        channel_offset_pos_from_dev_[ch] : offset_pos_from_dev_;
+    double scale_vel_from_dev = (ch < channel_scale_vel_from_dev_.size()) ?
+                       channel_scale_vel_from_dev_[ch] : scale_vel_from_dev_;
+    double scale_eff_from_dev = (ch < channel_scale_eff_from_dev_.size()) ?
+                       channel_scale_eff_from_dev_[ch] : scale_eff_from_dev_;
+    js_msg.name.push_back(name);
+    js_msg.position.push_back(motors_[ch]->get_position() * scale_pos_from_dev + offset_pos_from_dev);
+    js_msg.velocity.push_back(motors_[ch]->get_speed() * scale_vel_from_dev);
+    js_msg.effort.push_back(motors_[ch]->get_effort() * scale_eff_from_dev);
+  }
   publish_joint_state->publish(js_msg);
 }
 
@@ -446,157 +602,139 @@ template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::add_to_master()
 {
   NodeCanopenProxyDriver<NODETYPE>::add_to_master();
-  motor_ =
-    std::make_shared<Motor402>(this->lely_driver_, switching_state_, homing_timeout_seconds_);
+  // Create separate Motor402 instance for each channel
+  motors_.clear();
+  for (uint8_t ch = 0; ch < num_channels_; ++ch)
+  {
+    motors_.push_back(
+      std::make_shared<Motor402>(this->lely_driver_, switching_state_, homing_timeout_seconds_, ch)
+    );
+  }
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_init(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  if (this->activated_.load())
-  {
-    bool temp = motor_->handleInit();
-    response->success = temp;
-  }
+  response->success = this->init_motor(channel);
 }
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_recover(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  if (this->activated_.load())
-  {
-    response->success = motor_->handleRecover();
-  }
+  response->success = this->recover_motor(channel);
 }
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_halt(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  if (this->activated_.load())
-  {
-    response->success = motor_->handleHalt();
-  }
+  response->success = this->halt_motor(channel);
 }
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_mode_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  response->success = set_operation_mode(MotorBase::Profiled_Position);
+  response->success = set_operation_mode(MotorBase::Profiled_Position, channel);
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_mode_velocity(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  response->success = set_operation_mode(MotorBase::Profiled_Velocity);
+  response->success = set_operation_mode(MotorBase::Profiled_Velocity, channel);
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  response->success = set_operation_mode(MotorBase::Cyclic_Synchronous_Position);
+  response->success = set_operation_mode(MotorBase::Cyclic_Synchronous_Position, channel);
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_mode_interpolated_position(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  response->success = set_operation_mode(MotorBase::Interpolated_Position);
+  response->success = set_operation_mode(MotorBase::Interpolated_Position, channel);
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_velocity(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  response->success = set_operation_mode(MotorBase::Cyclic_Synchronous_Velocity);
+  response->success = set_operation_mode(MotorBase::Cyclic_Synchronous_Velocity, channel);
 }
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_mode_torque(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  response->success = set_operation_mode(MotorBase::Profiled_Torque);
+  response->success = set_operation_mode(MotorBase::Profiled_Torque, channel);
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_mode_cyclic_torque(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
-  response->success = set_operation_mode(MotorBase::Cyclic_Synchronous_Torque);
+  response->success = set_operation_mode(MotorBase::Cyclic_Synchronous_Torque, channel);
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_set_target(
   const canopen_interfaces::srv::COTargetDouble::Request::SharedPtr request,
-  canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response)
+  canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response, const uint8_t channel)
 {
-  if (this->activated_.load())
-  {
-    auto mode = motor_->getMode();
-    double target;
-    if (
-      (mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position) or
-      (mode == MotorBase::Interpolated_Position))
-    {
-      target = request->target * scale_pos_to_dev_ + offset_pos_to_dev_;
-    }
-    else if (
-      (mode == MotorBase::Velocity) or (mode == MotorBase::Profiled_Velocity) or
-      (mode == MotorBase::Cyclic_Synchronous_Velocity))
-    {
-      target = request->target * scale_vel_to_dev_;
-    }
-    else
-    {
-      target = request->target;
-    }
-
-    response->success = motor_->setTarget(target);
-  }
+    response->success = set_target(request->target, channel);
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_disable(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
   if (this->activated_.load())
   {
-    bool temp = motor_->handleDisable();
-    response->success = temp;
+    response->success = motors_[channel]->handleDisable();
+  }
+  else {
+    response->success = false;
   }
 }
 
 template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::handle_enable(
   const std_srvs::srv::Trigger::Request::SharedPtr request,
-  std_srvs::srv::Trigger::Response::SharedPtr response)
+  std_srvs::srv::Trigger::Response::SharedPtr response, const uint8_t channel)
 {
   if (this->activated_.load())
   {
-    bool temp = motor_->handleEnable();
-    response->success = temp;
+    response->success = motors_[channel]->handleEnable();
+  }
+  else {
+    response->success = false;
   }
 }
 
 template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::init_motor()
+bool NodeCanopen402Driver<NODETYPE>::init_motor(uint8_t channel)
 {
   if (this->activated_.load())
   {
-    bool temp = motor_->handleInit();
-    return temp;
+    if (channel >= motors_.size())
+    {
+      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      return false;
+    }
+    return motors_[channel]->handleInit();
   }
   else
   {
@@ -606,39 +744,55 @@ bool NodeCanopen402Driver<NODETYPE>::init_motor()
 }
 
 template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::recover_motor()
+bool NodeCanopen402Driver<NODETYPE>::recover_motor(uint8_t channel)
 {
   if (this->activated_.load())
   {
-    return motor_->handleRecover();
-  }
-  else
-  {
-    return false;
-  }
-}
-
-template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::halt_motor()
-{
-  if (this->activated_.load())
-  {
-    return motor_->handleHalt();
-  }
-  else
-  {
-    return false;
-  }
-}
-
-template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::set_operation_mode(uint16_t mode)
-{
-  if (this->activated_.load())
-  {
-    if (motor_->getMode() != mode)
+    if (channel >= motors_.size())
     {
-      return motor_->enterModeAndWait(mode);
+      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      return false;
+    }
+    return motors_[channel]->handleRecover();
+  }
+  else
+  {
+    return false;
+  }
+}
+
+template <class NODETYPE>
+bool NodeCanopen402Driver<NODETYPE>::halt_motor(uint8_t channel)
+{
+  if (this->activated_.load())
+  {
+    if (channel >= motors_.size())
+    {
+      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      return false;
+    }
+    return motors_[channel]->handleHalt();
+  }
+  else
+  {
+    return false;
+  }
+}
+
+template <class NODETYPE>
+bool NodeCanopen402Driver<NODETYPE>::set_operation_mode(uint16_t mode, uint8_t channel)
+{
+  if (this->activated_.load())
+  {
+    if (channel >= motors_.size())
+    {
+      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      return false;
+    }
+
+    if (motors_[channel]->getMode() != mode)
+    {
+      return motors_[channel]->enterModeAndWait(mode);
     }
     else
     {
@@ -649,30 +803,45 @@ bool NodeCanopen402Driver<NODETYPE>::set_operation_mode(uint16_t mode)
 }
 
 template <class NODETYPE>
-bool NodeCanopen402Driver<NODETYPE>::set_target(double target)
+bool NodeCanopen402Driver<NODETYPE>::set_target(double target, uint8_t channel)
 {
   if (this->activated_.load())
   {
-    auto mode = motor_->getMode();
+    if (channel >= motors_.size())
+    {
+      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      return false;
+    }
+
+    auto mode = motors_[channel]->getMode();
+
+    // Get per-channel scales/offsets (or use global as fallback)
+    double scale_pos_to_dev = (channel < channel_scale_pos_to_dev_.size()) ?
+                          channel_scale_pos_to_dev_[channel] : scale_pos_to_dev_;
+    double offset_pos_to_dev = (channel < channel_offset_pos_to_dev_.size()) ?
+                           channel_offset_pos_to_dev_[channel] : offset_pos_to_dev_;
+    double scale_vel_to_dev = (channel < channel_scale_vel_to_dev_.size()) ?
+                          channel_scale_vel_to_dev_[channel] : scale_vel_to_dev_;
+
     double scaled_target;
     if (
       (mode == MotorBase::Profiled_Position) or (mode == MotorBase::Cyclic_Synchronous_Position) or
       (mode == MotorBase::Interpolated_Position))
     {
-      scaled_target = target * scale_pos_to_dev_ + offset_pos_to_dev_;
+      scaled_target = target * scale_pos_to_dev + offset_pos_to_dev;
     }
     else if (
       (mode == MotorBase::Velocity) or (mode == MotorBase::Profiled_Velocity) or
       (mode == MotorBase::Cyclic_Synchronous_Velocity))
     {
-      scaled_target = target * scale_vel_to_dev_;
+      scaled_target = target * scale_vel_to_dev;
     }
     else
     {
       scaled_target = target;
     }
-    // RCLCPP_INFO(this->node_->get_logger(), "Scaled target %f", scaled_target);
-    return motor_->setTarget(scaled_target);
+
+    return motors_[channel]->setTarget(scaled_target);
   }
   else
   {
@@ -684,7 +853,11 @@ template <class NODETYPE>
 void NodeCanopen402Driver<NODETYPE>::diagnostic_callback(
   diagnostic_updater::DiagnosticStatusWrapper & stat)
 {
-  this->motor_->handleDiag();
+  // Handle diagnostics for all motors
+  for (size_t ch = 0; ch < motors_.size(); ++ch)
+  {
+    motors_[ch]->handleDiag();
+  }
 
   stat.summary(this->diagnostic_collector_->getLevel(), this->diagnostic_collector_->getMessage());
   stat.add("device_state", this->diagnostic_collector_->getValue("DEVICE"));
@@ -692,6 +865,14 @@ void NodeCanopen402Driver<NODETYPE>::diagnostic_callback(
   stat.add("emcy_state", this->diagnostic_collector_->getValue("EMCY"));
   stat.add("cia402_mode", this->diagnostic_collector_->getValue("cia402_mode"));
   stat.add("cia402_state", this->diagnostic_collector_->getValue("cia402_state"));
+
+  // Add per-channel diagnostic info
+  for (size_t ch = 0; ch < motors_.size(); ++ch)
+  {
+    std::string ch_prefix = "ch" + std::to_string(ch) + "_";
+    stat.add(ch_prefix + "mode", this->diagnostic_collector_->getValue((ch_prefix + "cia402_mode").c_str()));
+    stat.add(ch_prefix + "state", this->diagnostic_collector_->getValue((ch_prefix + "cia402_state").c_str()));
+  }
 }
 
 #endif
