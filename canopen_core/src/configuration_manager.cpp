@@ -13,6 +13,7 @@
 //    limitations under the License.
 
 #include "canopen_core/configuration_manager.hpp"
+#include <filesystem>
 #include <stdexcept>
 
 namespace ros2_canopen
@@ -20,7 +21,10 @@ namespace ros2_canopen
 
 void ConfigurationManager::init_config()
 {
-  std::string dcf_path = "";
+  // Get the directory of the bus config file for resolving relative paths
+  std::filesystem::path bus_config_dir = std::filesystem::path(file_).parent_path();
+
+  std::filesystem::path dcf_path = "";
   for (YAML::const_iterator it = root_.begin(); it != root_.end(); it++)
   {
     std::string driver_name = it->first.as<std::string>();
@@ -37,9 +41,23 @@ void ConfigurationManager::init_config()
     std::string driver_name = it->first.as<std::string>();
     if (driver_name == "options") continue;
     YAML::Node config_node = it->second;
-    if (!config_node["dcf_path"])
+
+    if (config_node["dcf_path"])
     {
-      config_node["dcf_path"] = dcf_path;
+      dcf_path = config_node["dcf_path"].as<std::string>();
+    }
+    // Resolve relative paths in individual device configs
+    if (dcf_path.is_relative())
+    {
+      dcf_path = bus_config_dir / dcf_path;
+      dcf_path = std::filesystem::absolute(dcf_path);
+      config_node["dcf_path"] = dcf_path.string();
+
+      RCLCPP_INFO(
+        rclcpp::get_logger("ConfigurationManager"),
+        "Resolved relative dcf_path for device '%s' to absolute path '%s' (relative to bus config "
+        "'%s')",
+        driver_name.c_str(), dcf_path.string().c_str(), file_.c_str());
     }
     devices_.insert({driver_name, config_node});
   }
