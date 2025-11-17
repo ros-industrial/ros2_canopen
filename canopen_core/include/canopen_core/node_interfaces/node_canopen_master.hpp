@@ -17,6 +17,8 @@
 
 #include <yaml-cpp/yaml.h>
 #include <atomic>
+#include <filesystem>
+#include <fstream>
 #include <lely/coapp/master.hpp>
 #include <lely/coapp/slave.hpp>
 #include <lely/ev/exec.hpp>
@@ -28,6 +30,8 @@
 #include <lely/io2/sys/timer.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
+#include <regex>
+#include <sstream>
 #include <thread>
 #include "canopen_core/master_error.hpp"
 #include "canopen_core/node_interfaces/node_canopen_master_interface.hpp"
@@ -88,6 +92,99 @@ protected:
   uint32_t timeout_;
 
   std::thread spinner_;
+
+  /**
+   * @brief Preprocess DCF file to resolve relative UploadFile paths
+   *
+   * Reads the DCF file, finds all UploadFile entries with relative paths,
+   * and converts them to absolute paths relative to the DCF file's directory.
+   * Returns the path to a temporary DCF file with resolved paths.
+   *
+   * @param dcf_path Path to the original DCF file
+   * @return Path to the preprocessed DCF file
+   */
+  std::string preprocess_dcf(const std::filesystem::path & dcf_file_path)
+  {
+    if (!std::filesystem::exists(dcf_file_path))
+    {
+      RCLCPP_ERROR(
+        this->node_->get_logger(), "DCF file does not exist: %s", dcf_file_path.string().c_str());
+      return dcf_file_path.string();
+    }
+
+    std::filesystem::path dcf_dir = dcf_file_path.parent_path();
+
+    // Read the DCF file
+    std::ifstream dcf_file(dcf_file_path);
+    if (!dcf_file.is_open())
+    {
+      RCLCPP_ERROR(
+        this->node_->get_logger(), "Failed to open DCF file: %s", dcf_file_path.string().c_str());
+      return dcf_file_path.string();
+    }
+
+    std::stringstream buffer;
+    std::string line;
+    std::regex upload_file_regex("^UploadFile=(.+)$");
+    bool modified = false;
+
+    while (std::getline(dcf_file, line))
+    {
+      std::smatch match;
+      if (std::regex_match(line, match, upload_file_regex))
+      {
+        std::string file_path_str = match[1].str();
+        std::filesystem::path file_path(file_path_str);
+
+        // Check if the path is relative
+        if (file_path.is_relative())
+        {
+          // Make it absolute relative to the DCF file directory
+          std::filesystem::path absolute_path = dcf_dir / file_path;
+          absolute_path = std::filesystem::absolute(absolute_path);
+
+          RCLCPP_INFO(
+            this->node_->get_logger(), "Resolved UploadFile: %s -> %s", file_path_str.c_str(),
+            absolute_path.string().c_str());
+
+          buffer << "UploadFile=" << absolute_path.string() << "\n";
+          modified = true;
+        }
+        else
+        {
+          buffer << line << "\n";
+        }
+      }
+      else
+      {
+        buffer << line << "\n";
+      }
+    }
+
+    // If no modifications were made, return the original path
+    if (!modified)
+    {
+      return dcf_file_path.string();
+    }
+
+    // Write to a temporary file
+    std::filesystem::path temp_dcf = dcf_dir / ("." + dcf_file_path.filename().string() + ".tmp");
+    std::ofstream temp_file(temp_dcf);
+    if (!temp_file.is_open())
+    {
+      RCLCPP_ERROR(
+        this->node_->get_logger(), "Failed to create temporary DCF file: %s",
+        temp_dcf.string().c_str());
+      return dcf_file_path.string();
+    }
+
+    temp_file << buffer.str();
+
+    RCLCPP_INFO(
+      this->node_->get_logger(), "Created preprocessed DCF file: %s", temp_dcf.string().c_str());
+
+    return temp_dcf.string();
+  }
 
 public:
   NodeCanopenMaster(NODETYPE * node)
@@ -159,6 +256,12 @@ public:
     node_->get_parameter("node_id", node_id_);
     node_->get_parameter("non_transmit_timeout", non_transmit_timeout);
     node_->get_parameter("config", config);
+
+    // Preprocess the DCF file to resolve relative UploadFile/DownloadFile paths
+    if (!master_dcf_.empty())
+    {
+      master_dcf_ = preprocess_dcf(master_dcf_);
+    }
 
     this->config_ = YAML::Load(config);
     this->non_transmit_timeout_ = std::chrono::milliseconds(non_transmit_timeout);
