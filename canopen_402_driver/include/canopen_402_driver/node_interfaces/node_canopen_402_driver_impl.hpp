@@ -255,6 +255,12 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   try
   {
     scale_eff_from_dev = std::optional(this->config_["scale_eff_from_dev"].as<double>());
+  }
+  catch (...)
+  {
+  }
+  try
+  {
     offset_pos_to_dev = std::optional(this->config_["offset_pos_to_dev"].as<double>());
   }
   catch (...)
@@ -262,7 +268,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   }
   try
   {
-    offset_pos_from_dev = std::optional(this->config_["offset_from_to_dev"].as<double>());
+    offset_pos_from_dev = std::optional(this->config_["offset_pos_from_dev"].as<double>());
   }
   catch (...)
   {
@@ -347,6 +353,12 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   try
   {
     scale_eff_from_dev = std::optional(this->config_["scale_eff_from_dev"].as<double>());
+  }
+  catch (...)
+  {
+  }
+  try
+  {
     offset_pos_to_dev = std::optional(this->config_["offset_pos_to_dev"].as<double>());
   }
   catch (...)
@@ -354,7 +366,7 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   }
   try
   {
-    offset_pos_from_dev = std::optional(this->config_["offset_from_to_dev"].as<double>());
+    offset_pos_from_dev = std::optional(this->config_["offset_pos_from_dev"].as<double>());
   }
   catch (...)
   {
@@ -389,13 +401,10 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   RCLCPP_INFO(
     this->node_->get_logger(),
     "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
-    "%f\nscale_eff_from_dev_ %f\n",
-    scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
-    scale_eff_from_dev_);
-    "%f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
+    "%f\nscale_eff_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
     "%f\nhoming_timeout_seconds_ %i\n",
     scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
-    offset_pos_to_dev_, offset_pos_from_dev_, homing_timeout_seconds_);
+    scale_eff_from_dev_, offset_pos_to_dev_, offset_pos_from_dev_, homing_timeout_seconds_);
 }
 
 template <class NODETYPE>
