@@ -89,7 +89,7 @@ hardware_interface::CallbackReturn RobotSystem::on_init(
   config.init_config();
 
   // Load joint data
-  for (auto joint : info.joints)
+  for (auto joint : info_.joints)
   {
     auto driver_type =
       config.get_entry<std::string>(joint.parameters["device_name"], "driver").value();

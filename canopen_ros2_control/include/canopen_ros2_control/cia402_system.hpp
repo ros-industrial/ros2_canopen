@@ -88,7 +88,8 @@ public:
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
   ~Cia402System() = default;
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareComponentInterfaceParams & params);
+  hardware_interface::CallbackReturn on_init(
+    const hardware_interface::HardwareComponentInterfaceParams & params);
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
   hardware_interface::CallbackReturn on_configure(const rclcpp_lifecycle::State & previous_state);
