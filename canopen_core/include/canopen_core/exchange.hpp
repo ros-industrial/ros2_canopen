@@ -12,8 +12,8 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
-#ifndef EXCHANGE_HPP
-#define EXCHANGE_HPP
+#ifndef CANOPEN_CORE__EXCHANGE_HPP_
+#define CANOPEN_CORE__EXCHANGE_HPP_
 
 #include <boost/lockfree/queue.hpp>
 #include <boost/optional.hpp>
@@ -151,4 +151,4 @@ public:
 };
 }  // namespace ros2_canopen
 
-#endif  // EXCHANGE_HPP
+#endif  // CANOPEN_CORE__EXCHANGE_HPP_
