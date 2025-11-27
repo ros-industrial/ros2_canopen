@@ -61,6 +61,7 @@ struct MotorNodeData
   // feedback
   double actual_position;
   double actual_speed;
+  double actual_effort;
 
   // basic control
   MotorTriggerCommand init;
