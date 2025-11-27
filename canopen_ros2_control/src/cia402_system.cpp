@@ -36,9 +36,9 @@ namespace canopen_ros2_control
 Cia402System::Cia402System() : CanopenSystem() {}
 
 hardware_interface::CallbackReturn Cia402System::on_init(
-  const hardware_interface::HardwareInfo & info)
+  const hardware_interface::HardwareComponentInterfaceParams & params)
 {
-  auto ret_val = CanopenSystem::on_init(info);
+  auto ret_val = CanopenSystem::on_init(params);
   if (ret_val != hardware_interface::CallbackReturn::SUCCESS)
   {
     return ret_val;
