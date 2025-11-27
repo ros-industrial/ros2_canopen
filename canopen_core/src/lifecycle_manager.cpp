@@ -78,8 +78,11 @@ bool LifecycleManager::load_from_config()
   for (auto it = devices.begin(); it != devices.end(); it++)
   {
     uint8_t node_id = config_->get_entry<uint8_t>(*it, "node_id").value();
-    std::string change_state_client_name = *it;
-    std::string get_state_client_name = *it;
+    std::string device_namespace = config_->get_entry<std::string>(*it, "namespace").value();
+    device_namespace += "/";
+    device_namespace += *it;
+    std::string change_state_client_name = device_namespace;
+    std::string get_state_client_name = device_namespace;
     get_state_client_name += "/get_state";
     change_state_client_name += "/change_state";
     RCLCPP_INFO(this->get_logger(), "Found %s (node_id=%hu)", it->c_str(), node_id);
