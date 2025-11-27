@@ -7,6 +7,16 @@ Changelog for package canopen_base_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
+0.3.1 (2025-06-23)
+------------------
+* Add boot timeout and retry
+* Include driver exception when boot failed
+* Boot Timeout: Add parameter to base driver to pass to wait as timeout
+* Contributors: Gerry Salinas, Luis Camero, Vishnuprasad Prachandabhanu, ipa-vsp
+
+0.3.0 (2024-12-12)
+------------------
+
 0.2.12 (2024-04-22)
 -------------------
 * Merge pull request `#280 <https://github.com/ros-industrial/ros2_canopen/issues/280>`_ from ipa-vsp/fix/yaml-build-error

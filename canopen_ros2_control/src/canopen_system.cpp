@@ -58,9 +58,9 @@ void CanopenSystem::clean()
 CanopenSystem::~CanopenSystem() { clean(); }
 
 hardware_interface::CallbackReturn CanopenSystem::on_init(
-  const hardware_interface::HardwareInfo & info)
+  const hardware_interface::HardwareComponentInterfaceParams & params)
 {
-  if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
+  if (hardware_interface::SystemInterface::on_init(params) != CallbackReturn::SUCCESS)
   {
     return CallbackReturn::ERROR;
   }
@@ -129,26 +129,34 @@ void CanopenSystem::initDeviceContainer()
   device_container_->init(
     info_.hardware_parameters["can_interface_name"], info_.hardware_parameters["master_config"],
     info_.hardware_parameters["bus_config"], tmp_master_bin);
-  auto drivers = device_container_->get_registered_drivers();
   RCLCPP_INFO(kLogger, "Number of registered drivers: '%zu'", device_container_->count_drivers());
-  for (auto it = drivers.begin(); it != drivers.end(); it++)
+  for (const auto & [node_id, driver] : device_container_->get_registered_drivers())
   {
-    auto proxy_driver = std::static_pointer_cast<ros2_canopen::ProxyDriver>(it->second);
+    auto proxy_driver = std::static_pointer_cast<ros2_canopen::ProxyDriver>(driver);
+    // initialize canopen data it not existing
+    if (canopen_data_.find(node_id) == canopen_data_.end())
+    {
+      canopen_data_[node_id] = CanopenNodeData();
+    }
 
     auto nmt_state_cb = [&](canopen::NmtState nmt_state, uint8_t id)
     { canopen_data_[id].nmt_state.set_state(nmt_state); };
     // register callback
     proxy_driver->register_nmt_state_cb(nmt_state_cb);
 
-    // The id here refer to the node id
     auto rpdo_cb = [&](ros2_canopen::COData data, uint8_t id)
     { canopen_data_[id].set_rpdo_data(data); };
     // register callback
     proxy_driver->register_rpdo_cb(rpdo_cb);
 
+    auto emcy_cb = [&](ros2_canopen::COEmcy data, uint8_t id)
+    { canopen_data_[id].emcy_data.set_emcy(data); };
+    // register callback
+    proxy_driver->register_emcy_cb(emcy_cb);
+
     RCLCPP_INFO(
       kLogger, "\nRegistered driver:\n    name: '%s'\n    node_id: '0x%X'",  //
-      it->second->get_node_base_interface()->get_name(), it->first);
+      driver->get_node_base_interface()->get_name(), node_id);
   }
 
   RCLCPP_INFO(device_container_->get_logger(), "Initialisation successful.");
@@ -180,6 +188,27 @@ std::vector<hardware_interface::StateInterface> CanopenSystem::export_state_inte
 
     state_interfaces.emplace_back(hardware_interface::StateInterface(
       info_.joints[i].name, "nmt/state", &canopen_data_[node_id].nmt_state.state));
+
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      info_.joints[i].name, "emcy/error_code", &canopen_data_[node_id].emcy_data.error_code));
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      info_.joints[i].name, "emcy/error_register",
+      &canopen_data_[node_id].emcy_data.error_register));
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      info_.joints[i].name, "emcy/manufacturer_error_code1",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code1));
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      info_.joints[i].name, "emcy/manufacturer_error_code2",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code2));
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      info_.joints[i].name, "emcy/manufacturer_error_code3",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code3));
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      info_.joints[i].name, "emcy/manufacturer_error_code4",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code4));
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      info_.joints[i].name, "emcy/manufacturer_error_code5",
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code5));
   }
 
   return state_interfaces;
@@ -249,7 +278,22 @@ hardware_interface::return_type CanopenSystem::read(
 
   // rpdo has a queue of messages, we read the latest one
 
-  return hardware_interface::return_type::OK;
+  for (const auto & [node_id, canopen_data] : canopen_data_)
+  {
+    if (canopen_data.emcy_data.error_code != 0)
+    {
+      RCLCPP_ERROR(
+        kLogger,
+        "NodeID: 0x%X; Error code: %X; Error register: %X; Manufacturer error code: [%X, %X, %X, "
+        "%X, %X];",
+        node_id, canopen_data.emcy_data.original_emcy.eec, canopen_data.emcy_data.original_emcy.er,
+        canopen_data.emcy_data.original_emcy.msef[0], canopen_data.emcy_data.original_emcy.msef[1],
+        canopen_data.emcy_data.original_emcy.msef[2], canopen_data.emcy_data.original_emcy.msef[3],
+        canopen_data.emcy_data.original_emcy.msef[4]);
+    }
+  }
+
+  return hardware_interface::return_type::ERROR;
 }
 
 hardware_interface::return_type CanopenSystem::write(
@@ -257,8 +301,15 @@ hardware_interface::return_type CanopenSystem::write(
 {
   // TODO(anyone): write robot's commands'
   auto drivers = device_container_->get_registered_drivers();
+
   for (auto it = canopen_data_.begin(); it != canopen_data_.end(); ++it)
   {
+    if (drivers.find(it->first) == drivers.end())
+    {
+      // this is expected for NodeID 0x00 - why do we have it at all?
+      RCLCPP_DEBUG(kLogger, "Driver for NodeID 0x%X not found. Skipping...", it->first);
+      continue;
+    }
     auto proxy_driver = std::static_pointer_cast<ros2_canopen::ProxyDriver>(drivers[it->first]);
 
     // reset node nmt
@@ -277,7 +328,14 @@ hardware_interface::return_type CanopenSystem::write(
     if (it->second.tpdo_data.write_command())
     {
       it->second.tpdo_data.prepare_data();
-      proxy_driver->tpdo_transmit(it->second.tpdo_data.original_data);
+      try
+      {
+        proxy_driver->tpdo_transmit(it->second.tpdo_data.original_data);
+      }
+      catch (const std::exception & e)
+      {
+        std::cerr << e.what() << '\n';
+      }
     }
   }
 

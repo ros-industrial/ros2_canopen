@@ -7,6 +7,15 @@ Changelog for package lely_core_libraries
 * Update the lely_core_libraries hash to the latest.
 * Contributors: Chris Lalancette, Vishnuprasad Prachandabhanu
 
+0.3.1 (2025-06-23)
+------------------
+* Do not export deprecated Lely IO library (`#318 <https://github.com/ros-industrial/ros2_canopen/issues/318>`_)
+* Contributors: Gerry Salinas, Patrick Roncagliolo
+
+0.3.0 (2024-12-12)
+------------------
+* Add yaml dependency to package.xml of `lely_core_libraries` (`#290 <https://github.com/ros-industrial/ros2_canopen/issues/290>`_)
+
 0.2.12 (2024-04-22)
 -------------------
 * 0.2.9

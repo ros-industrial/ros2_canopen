@@ -327,9 +327,12 @@ controller_interface::return_type CanopenProxyController::update(
   }
   else if (propagate_controller_command_msg(*current_cmd))
   {
-    command_interfaces_[CommandInterfaces::TPDO_INDEX].set_value((*current_cmd)->index);
-    command_interfaces_[CommandInterfaces::TPDO_SUBINDEX].set_value((*current_cmd)->subindex);
-    command_interfaces_[CommandInterfaces::TPDO_DATA].set_value((*current_cmd)->data);
+    command_interfaces_[CommandInterfaces::TPDO_INDEX].set_value(
+      static_cast<double>((*current_cmd)->index));
+    command_interfaces_[CommandInterfaces::TPDO_SUBINDEX].set_value(
+      static_cast<double>((*current_cmd)->subindex));
+    command_interfaces_[CommandInterfaces::TPDO_DATA].set_value(
+      static_cast<double>((*current_cmd)->data));
     // tpdo data one shot mechanism
     command_interfaces_[CommandInterfaces::TPDO_ONS].set_value(kCommandValue);
 

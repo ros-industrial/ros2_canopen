@@ -7,7 +7,27 @@ Changelog for package canopen
 * Update maintainer list
 * Update package.xml
 * Add timeouts
-* Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
+* Contributors: Vishnuprasad Prachandabhanu
+
+0.3.1 (2025-06-23)
+------------------
+* Sync upstream 'master' into homing_timeout_pr.
+  Fix homing info message to include both offset
+  and homing timeout information.
+* Add namespacing support
+* Contributors: Vishnuprasad Prachandabhanu
+
+0.3.0 (2024-12-12)
+------------------
+* Update CiA402 bus config docs
+* Remove set heartbeat service from master documentation (`#294 <https://github.com/ros-industrial/ros2_canopen/issues/294>`_)
+  Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+* Add cyclic torque mode to cia402 driver and robot system controller (`#293 <https://github.com/ros-industrial/ros2_canopen/issues/293>`_)
+  * Add base functions for switching to cyclic torque mode
+  * Add cyclic torque mode as effort interface to robot_system controller
+  * Add documentation about cyclic torque mode.
+  ---------
+  Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
 
 0.2.12 (2024-04-22)
 -------------------
