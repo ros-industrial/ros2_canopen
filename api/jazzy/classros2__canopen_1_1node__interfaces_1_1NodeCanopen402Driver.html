@@ -136,6 +136,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:affdef318cb7b3512d595d12edc327370" id="r_affdef318cb7b3512d595d12edc327370"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#affdef318cb7b3512d595d12edc327370">add_to_master</a> () override</td></tr>
 <tr class="memdesc:affdef318cb7b3512d595d12edc327370"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the driver to master.  <br /></td></tr>
 <tr class="separator:affdef318cb7b3512d595d12edc327370"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab544e2e44b4a04a7055c955f1969d0af" id="r_ab544e2e44b4a04a7055c955f1969d0af"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#ab544e2e44b4a04a7055c955f1969d0af">get_effort</a> ()</td></tr>
+<tr class="separator:ab544e2e44b4a04a7055c955f1969d0af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af78d059590519ccd347f3ac7c283ab1c" id="r_af78d059590519ccd347f3ac7c283ab1c"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#af78d059590519ccd347f3ac7c283ab1c">get_speed</a> ()</td></tr>
 <tr class="separator:af78d059590519ccd347f3ac7c283ab1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3fd69f3d9e2da2ef776060a650e04acb" id="r_a3fd69f3d9e2da2ef776060a650e04acb"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#a3fd69f3d9e2da2ef776060a650e04acb">get_position</a> ()</td></tr>
@@ -338,6 +340,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a10afca647c2266842ed62af9965843ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0babf8bf70c501f951c6b5f56106ac4f" id="r_a0babf8bf70c501f951c6b5f56106ac4f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#a0babf8bf70c501f951c6b5f56106ac4f">scale_vel_from_dev_</a></td></tr>
 <tr class="separator:a0babf8bf70c501f951c6b5f56106ac4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f4fbaf2258fafaf1445876817517acc" id="r_a4f4fbaf2258fafaf1445876817517acc"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#a4f4fbaf2258fafaf1445876817517acc">scale_eff_from_dev_</a></td></tr>
+<tr class="separator:a4f4fbaf2258fafaf1445876817517acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a158cacd39ef12ecab4cfd65bd4c3fd9a" id="r_a158cacd39ef12ecab4cfd65bd4c3fd9a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#a158cacd39ef12ecab4cfd65bd4c3fd9a">offset_pos_to_dev_</a></td></tr>
 <tr class="separator:a158cacd39ef12ecab4cfd65bd4c3fd9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afece2da0caa938790ca745f10165699b" id="r_afece2da0caa938790ca745f10165699b"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html#afece2da0caa938790ca745f10165699b">offset_pos_from_dev_</a></td></tr>
@@ -729,6 +733,33 @@ template&lt;class NODETYPE &gt; </div>
 <p>Add the driver to master. </p>
 
 <p>Reimplemented from <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopenBaseDriver.html#a41ef542ac94a74c8716fad3180335301">ros2_canopen::node_interfaces::NodeCanopenBaseDriver&lt; NODETYPE &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ab544e2e44b4a04a7055c955f1969d0af" name="ab544e2e44b4a04a7055c955f1969d0af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab544e2e44b4a04a7055c955f1969d0af">&#9670;&#160;</a></span>get_effort()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class NODETYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual double <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html">ros2_canopen::node_interfaces::NodeCanopen402Driver</a>&lt; NODETYPE &gt;::get_effort </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -1950,6 +1981,30 @@ template&lt;class NODETYPE &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">double <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html">ros2_canopen::node_interfaces::NodeCanopen402Driver</a>&lt; NODETYPE &gt;::scale_vel_from_dev_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4f4fbaf2258fafaf1445876817517acc" name="a4f4fbaf2258fafaf1445876817517acc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f4fbaf2258fafaf1445876817517acc">&#9670;&#160;</a></span>scale_eff_from_dev_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class NODETYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="classros2__canopen_1_1node__interfaces_1_1NodeCanopen402Driver.html">ros2_canopen::node_interfaces::NodeCanopen402Driver</a>&lt; NODETYPE &gt;::scale_eff_from_dev_</td>
         </tr>
       </table>
   </td>
