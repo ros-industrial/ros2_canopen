@@ -219,6 +219,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   std::optional<double> scale_pos_from_dev;
   std::optional<double> scale_vel_to_dev;
   std::optional<double> scale_vel_from_dev;
+  std::optional<double> scale_eff_from_dev;
   std::optional<double> offset_pos_to_dev;
   std::optional<double> offset_pos_from_dev;
   std::optional<int> switching_state;
@@ -253,6 +254,13 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   }
   try
   {
+    scale_eff_from_dev = std::optional(this->config_["scale_eff_from_dev"].as<double>());
+  }
+  catch (...)
+  {
+  }
+  try
+  {
     offset_pos_to_dev = std::optional(this->config_["offset_pos_to_dev"].as<double>());
   }
   catch (...)
@@ -260,7 +268,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   }
   try
   {
-    offset_pos_from_dev = std::optional(this->config_["offset_from_to_dev"].as<double>());
+    offset_pos_from_dev = std::optional(this->config_["offset_pos_from_dev"].as<double>());
   }
   catch (...)
   {
@@ -286,6 +294,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   scale_pos_from_dev_ = scale_pos_from_dev.value_or(0.001);
   scale_vel_to_dev_ = scale_vel_to_dev.value_or(1000.0);
   scale_vel_from_dev_ = scale_vel_from_dev.value_or(0.001);
+  scale_eff_from_dev_ = scale_eff_from_dev.value_or(0.001);
   offset_pos_to_dev_ = offset_pos_to_dev.value_or(0.0);
   offset_pos_from_dev_ = offset_pos_from_dev.value_or(0.0);
   switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
@@ -308,6 +317,7 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   std::optional<double> scale_pos_from_dev;
   std::optional<double> scale_vel_to_dev;
   std::optional<double> scale_vel_from_dev;
+  std::optional<double> scale_eff_from_dev;
   std::optional<double> offset_pos_to_dev;
   std::optional<double> offset_pos_from_dev;
   std::optional<int> switching_state;
@@ -342,6 +352,13 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   }
   try
   {
+    scale_eff_from_dev = std::optional(this->config_["scale_eff_from_dev"].as<double>());
+  }
+  catch (...)
+  {
+  }
+  try
+  {
     offset_pos_to_dev = std::optional(this->config_["offset_pos_to_dev"].as<double>());
   }
   catch (...)
@@ -349,7 +366,7 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   }
   try
   {
-    offset_pos_from_dev = std::optional(this->config_["offset_from_to_dev"].as<double>());
+    offset_pos_from_dev = std::optional(this->config_["offset_pos_from_dev"].as<double>());
   }
   catch (...)
   {
@@ -375,6 +392,7 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   scale_pos_from_dev_ = scale_pos_from_dev.value_or(0.001);
   scale_vel_to_dev_ = scale_vel_to_dev.value_or(1000.0);
   scale_vel_from_dev_ = scale_vel_from_dev.value_or(0.001);
+  scale_eff_from_dev_ = scale_eff_from_dev.value_or(0.001);
   offset_pos_to_dev_ = offset_pos_to_dev.value_or(0.0);
   offset_pos_from_dev_ = offset_pos_from_dev.value_or(0.0);
   switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
@@ -383,10 +401,10 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
   RCLCPP_INFO(
     this->node_->get_logger(),
     "scale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
-    "%f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
+    "%f\nscale_eff_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
     "%f\nhoming_timeout_seconds_ %i\n",
     scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
-    offset_pos_to_dev_, offset_pos_from_dev_, homing_timeout_seconds_);
+    scale_eff_from_dev_, offset_pos_to_dev_, offset_pos_from_dev_, homing_timeout_seconds_);
 }
 
 template <class NODETYPE>
@@ -420,7 +438,7 @@ void NodeCanopen402Driver<NODETYPE>::publish()
   js_msg.name.push_back(this->node_->get_name());
   js_msg.position.push_back(motor_->get_position() * scale_pos_from_dev_ + offset_pos_from_dev_);
   js_msg.velocity.push_back(motor_->get_speed() * scale_vel_from_dev_);
-  js_msg.effort.push_back(0.0);
+  js_msg.effort.push_back(motor_->get_effort() * scale_eff_from_dev_);
   publish_joint_state->publish(js_msg);
 }
 

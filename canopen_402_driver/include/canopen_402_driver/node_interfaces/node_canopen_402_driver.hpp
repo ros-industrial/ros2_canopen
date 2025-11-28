@@ -59,6 +59,7 @@ protected:
   double scale_pos_from_dev_;
   double scale_vel_to_dev_;
   double scale_vel_from_dev_;
+  double scale_eff_from_dev_;
   double offset_pos_to_dev_;
   double offset_pos_from_dev_;
   ros2_canopen::State402::InternalState switching_state_;
@@ -76,6 +77,8 @@ public:
   virtual void activate(bool called_from_base) override;
   virtual void deactivate(bool called_from_base) override;
   virtual void add_to_master() override;
+
+  virtual double get_effort() { return motor_->get_effort() * scale_eff_from_dev_; }
 
   virtual double get_speed() { return motor_->get_speed() * scale_vel_from_dev_; }
 

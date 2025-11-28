@@ -22,9 +22,9 @@ using namespace canopen_ros2_control;
 // auto robot_system_logger = rclcpp::get_logger("robot_system_interface");
 
 hardware_interface::CallbackReturn RobotSystem::on_init(
-  const hardware_interface::HardwareInfo & info)
+  const hardware_interface::HardwareComponentInterfaceParams & params)
 {
-  if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
+  if (hardware_interface::SystemInterface::on_init(params) != CallbackReturn::SUCCESS)
   {
     return CallbackReturn::ERROR;
   }
@@ -89,7 +89,7 @@ hardware_interface::CallbackReturn RobotSystem::on_init(
   config.init_config();
 
   // Load joint data
-  for (auto joint : info.joints)
+  for (auto joint : info_.joints)
   {
     auto driver_type =
       config.get_entry<std::string>(joint.parameters["device_name"], "driver").value();
