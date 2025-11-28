@@ -63,11 +63,12 @@ SupportedObjects=11
 11=0x1A00
 
 [ManufacturerObjects]
-SupportedObjects=4
+SupportedObjects=5
 1=0x4000
 2=0x4001
 3=0x4002
 4=0x4003
+5=0x4004
 
 [1000]
 ParameterName=Device type
@@ -279,4 +280,57 @@ AccessType=rw
 [4003]
 ParameterName=INTEGER16 test
 DataType=0x0003
+AccessType=rw
+
+[4004]
+ParameterName=Test Data
+ObjectType=0x9
+SubNumber=0x8
+
+[4004sub0]
+ParameterName=Highest sub-index supported
+ObjectType=0x7
+DataType=0x0005
+AccessType=ro
+
+[4004sub1]
+ParameterName=BOOL test data
+ObjectType=0x7
+DataType=0x0001
+AccessType=rw
+
+[4004sub2]
+ParameterName=SIGNED8 test data
+ObjectType=0x7
+DataType=0x0002
+AccessType=rw
+
+[4004sub3]
+ParameterName=SIGNED16 test data
+ObjectType=0x7
+DataType=0x0003
+AccessType=rw
+
+[4004sub4]
+ParameterName=SIGNED32 test data
+ObjectType=0x7
+DataType=0x0004
+AccessType=rw
+
+[4004sub5]
+ParameterName=UNSIGNED8 test data
+ObjectType=0x7
+DataType=0x0005
+AccessType=rw
+
+[4004sub6]
+ParameterName=UNSIGNED16 test data
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+
+[4004sub7]
+ParameterName=UNSIGNED32 test data
+ObjectType=0x7
+DataType=0x0007
 AccessType=rw

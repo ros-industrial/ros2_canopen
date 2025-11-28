@@ -184,8 +184,7 @@ bool NodeCanopenProxyDriver<NODETYPE>::tpdo_transmit(ros2_canopen::COData & data
   {
     RCLCPP_DEBUG(
       this->node_->get_logger(), "Node ID 0x%X: Transmit PDO index %x, subindex %hhu, data %d",
-      this->lely_driver_->get_id(), data.index_, data.subindex_,
-      data.data_);
+      this->lely_driver_->get_id(), data.index_, data.subindex_, data.data_);
     this->lely_driver_->tpdo_transmit(data);
     return true;
   }

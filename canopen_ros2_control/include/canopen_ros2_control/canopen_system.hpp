@@ -28,8 +28,8 @@
 #include <limits>
 #include <queue>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "canopen_core/device_container.hpp"
 #include "canopen_proxy_driver/proxy_driver.hpp"
@@ -44,31 +44,26 @@
 
 namespace canopen_ros2_control
 {
-template<typename TargetType, typename SourceType>
-auto makeMemcpyCaster(const SourceType& source)
+template <typename TargetType, typename SourceType>
+auto makeMemcpyCaster(const SourceType & source)
 {
-    return [&source]() -> TargetType {
-        TargetType target;
-        std::memcpy(&target, &source, sizeof(TargetType));
-        return target;
-    };
+  return [&source]() -> TargetType
+  {
+    TargetType target;
+    std::memcpy(&target, &source, sizeof(TargetType));
+    return target;
+  };
 }
 
-const std::vector<std::string> SUPPORTED_TYPES = {
-  "bool",
-  "int8_t",
-  "uint8_t",
-  "int16_t",
-  "uint16_t",
-  "int32_t",
-  "uint32_t"
-};
+const std::vector<std::string> SUPPORTED_TYPES = {"bool",     "int8_t",  "uint8_t", "int16_t",
+                                                  "uint16_t", "int32_t", "uint32_t"};
 
 // needed auxiliary struct for ros2 control double registration
 struct Ros2ControlCOData
 {
   // TODO(Dr.Denis): rename original data to canopen data
-  // Soon we can drop this as ros2_control support variants - we have to add support for all this types
+  // Soon we can drop this as ros2_control support variants - we have to add support for all this
+  // types
   ros2_canopen::COData original_data;
 
   double index;     // cast to uint16_t
@@ -79,26 +74,28 @@ struct Ros2ControlCOData
 
   void set_co_data_type(const std::string & type)
   {
-    if (type.empty() || std::find(SUPPORTED_TYPES.begin(), SUPPORTED_TYPES.end(), type) != SUPPORTED_TYPES.end())
+    if (
+      type.empty() ||
+      std::find(SUPPORTED_TYPES.begin(), SUPPORTED_TYPES.end(), type) != SUPPORTED_TYPES.end())
     {
       co_type = type;
     }
     else
     {
-      RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Type '%s' empty or not yet supported. Using 'int32_t' as default to cast directly to double. This might cause errornous data! Please contribute or by maintainers a cookie and hope they implement it for you!", type.c_str());
+      RCLCPP_WARN(
+        rclcpp::get_logger("rclcpp"),
+        "Type '%s' empty or not yet supported. Using 'int32_t' as default to cast directly to "
+        "double. This might cause erroneous data! Please contribute or by maintainers a cookie and "
+        "hope they implement it for you!",
+        type.c_str());
       co_type = "int32_t";
     }
   }
 };
 
-
-
 struct RORos2ControlCOData : public Ros2ControlCOData
 {
-  void set_data(ros2_canopen::COData d)
-  {
-    original_data = d;
-  }
+  void set_data(ros2_canopen::COData d) { original_data = d; }
 
   void prepare_data()
   {
@@ -149,7 +146,12 @@ struct RORos2ControlCOData : public Ros2ControlCOData
     }
     else
     {
-      RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Type '%s' not yet supported. Trying to cast directly to double. This might cause errornous data! Please contribute or by maintainers a cookie and hope they implement it for you!", co_type.c_str());
+      RCLCPP_WARN(
+        rclcpp::get_logger("rclcpp"),
+        "Type '%s' not yet supported. Trying to cast directly to double. This might cause "
+        "erroneous data! Please contribute or by maintainers a cookie and hope they implement it "
+        "for you!",
+        co_type.c_str());
       data = static_cast<double>(original_data.data_);
     }
   }
@@ -214,7 +216,12 @@ struct WORos2ControlCoData : public Ros2ControlCOData
     }
     else
     {
-      RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Type '%s' not yet supported. Trying to cast directly to uint32_t. This might cause errornous data! Please contribute or by maintainers a cookie and hope they implement it for you!", co_type.c_str());
+      RCLCPP_WARN(
+        rclcpp::get_logger("rclcpp"),
+        "Type '%s' not yet supported. Trying to cast directly to uint32_t. This might cause "
+        "erroneous data! Please contribute or by maintainers a cookie and hope they implement it "
+        "for you!",
+        co_type.c_str());
       original_data.data_ = static_cast<uint32_t>(data);
     }
   }
@@ -258,8 +265,8 @@ struct Ros2ControlEmcyData
     manufacturer_error_code5 = static_cast<double>(msef_data);
   }
 
-  double error_code;             // read-only
-  double error_register;         // read-only
+  double error_code;                // read-only
+  double error_register;            // read-only
   double manufacturer_error_code1;  // read-only
   double manufacturer_error_code2;  // read-only
   double manufacturer_error_code3;  // read-only
@@ -339,7 +346,8 @@ struct CanopenNodeData
   WORos2ControlCoData wsdo;  // write-only
 
   using PDO_INDICES = std::pair<uint16_t, uint8_t>;  // Index, Subindex
-  std::unordered_map<PDO_INDICES, double, pair_hash> rpdo_data_map;  // kept for backward compoatibility - should b removed
+  std::unordered_map<PDO_INDICES, double, pair_hash>
+    rpdo_data_map;  // kept for backward compoatibility - should b removed
   std::unordered_map<PDO_INDICES, uint32_t, pair_hash> rpdo_raw_data_map;
 
   // Push data to the queue - FIFO
@@ -416,7 +424,7 @@ public:
   ~CanopenSystem();
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
   hardware_interface::CallbackReturn on_init(
-    const hardware_interface::HardwareInfo & info) override;
+    const hardware_interface::HardwareComponentInterfaceParams & params) override;
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
