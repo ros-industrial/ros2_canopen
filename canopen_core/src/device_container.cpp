@@ -95,14 +95,14 @@ bool DeviceContainer::load_component(
               std::static_pointer_cast<CanopenDriverInterface>(wrapper.get_node_instance());
             if (!node->is_lifecycle())
             {
-              std::string execption_string;
-              execption_string.append("Driver ");
-              execption_string.append(driver_name);
-              execption_string.append(" for device ");
-              execption_string.append(node_name);
-              execption_string.append(" is not a lifecycle driver while the master is.");
-              RCLCPP_ERROR(this->get_logger(), execption_string.c_str());
-              throw DeviceContainerException(execption_string);
+              std::string exception_string;
+              exception_string.append("Driver ");
+              exception_string.append(driver_name);
+              exception_string.append(" for device ");
+              exception_string.append(node_name);
+              exception_string.append(" is not a lifecycle driver while the master is.");
+              RCLCPP_ERROR(this->get_logger(), exception_string.c_str());
+              throw DeviceContainerException(exception_string);
             }
             else
             {
@@ -115,14 +115,14 @@ bool DeviceContainer::load_component(
               std::static_pointer_cast<CanopenDriverInterface>(wrapper.get_node_instance());
             if (node->is_lifecycle())
             {
-              std::string execption_string;
-              execption_string.append("Driver ");
-              execption_string.append(driver_name);
-              execption_string.append(" for device ");
-              execption_string.append(node_name);
-              execption_string.append(" is a lifecycle driver while the master is not.");
-              RCLCPP_ERROR(this->get_logger(), execption_string.c_str());
-              throw DeviceContainerException(execption_string);
+              std::string exception_string;
+              exception_string.append("Driver ");
+              exception_string.append(driver_name);
+              exception_string.append(" for device ");
+              exception_string.append(node_name);
+              exception_string.append(" is a lifecycle driver while the master is not.");
+              RCLCPP_ERROR(this->get_logger(), exception_string.c_str());
+              throw DeviceContainerException(exception_string);
             }
             else
             {
