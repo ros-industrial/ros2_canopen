@@ -57,6 +57,8 @@ ament_target_dependencies(node_canopen_driver
   rclcpp
   rclcpp_lifecycle
   lely_core_libraries
+  yaml_cpp_vendor
+  yaml-cpp
   canopen_interfaces
   Boost
 )
