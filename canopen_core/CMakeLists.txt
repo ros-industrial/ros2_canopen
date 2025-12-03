@@ -26,6 +26,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
+find_package(yaml-cpp REQUIRED)
 include(ConfigExtras.cmake)
 
 set(dependencies
@@ -57,8 +58,12 @@ ament_target_dependencies(node_canopen_driver
   rclcpp_lifecycle
   lely_core_libraries
   yaml_cpp_vendor
+  yaml-cpp
   canopen_interfaces
   Boost
+)
+target_link_libraries(node_canopen_driver
+  yaml-cpp::yaml-cpp
 )
 
 add_library(node_canopen_master
@@ -77,11 +82,12 @@ ament_target_dependencies(node_canopen_master
   rclcpp
   rclcpp_lifecycle
   lely_core_libraries
-  yaml_cpp_vendor
   canopen_interfaces
   Boost
 )
-
+target_link_libraries(node_canopen_master
+  yaml-cpp::yaml-cpp
+)
 
 add_library(device_container
   SHARED
@@ -107,7 +113,7 @@ ament_target_dependencies(device_container
 target_link_libraries(device_container
   node_canopen_master
   node_canopen_driver
-  yaml-cpp
+  yaml-cpp::yaml-cpp
 )
 
 add_executable(device_container_node
