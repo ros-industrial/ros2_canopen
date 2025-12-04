@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-find_package(Boost REQUIRED system thread)
+find_package(Boost REQUIRED thread)

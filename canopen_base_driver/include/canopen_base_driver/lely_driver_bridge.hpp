@@ -37,10 +37,6 @@
 #include <thread>
 #include <vector>
 
-#include <boost/lockfree/queue.hpp>
-#include <boost/optional.hpp>
-#include <boost/thread.hpp>
-
 #include "canopen_core/exchange.hpp"
 
 using namespace std::chrono_literals;

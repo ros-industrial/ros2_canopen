@@ -9,14 +9,18 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <build_depend>libboost-all-dev</build_depend>
+
+  <build_export_depend>libboost-all-dev</build_export_depend>
+
   <depend>canopen_interfaces</depend>
   <depend>lely_core_libraries</depend>
+  <depend>libboost-thread</depend>
   <depend>lifecycle_msgs</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>
   <depend>rclcpp_lifecycle</depend>
   <depend>yaml_cpp_vendor</depend>
-  <depend>boost</depend>
 
   <test_depend>ament_lint_auto</test_depend>
 
