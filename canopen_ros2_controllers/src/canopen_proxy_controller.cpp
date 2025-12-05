@@ -124,7 +124,7 @@ controller_interface::CallbackReturn CanopenProxyController::on_configure(
     return controller_interface::CallbackReturn::ERROR;
   }
 
-  if(nmt_state_rt_publisher_)
+  if (nmt_state_rt_publisher_)
   {
     ControllerNMTStateMsg msg;
     msg.data = std::string();
@@ -132,12 +132,12 @@ controller_interface::CallbackReturn CanopenProxyController::on_configure(
     if (!published)
     {
       RCLCPP_WARN(
-        get_node()->get_logger(),
-        "Could not publish initial NMT state message on controller '%s'", joint_name_.c_str());
+        get_node()->get_logger(), "Could not publish initial NMT state message on controller '%s'",
+        joint_name_.c_str());
     }
   }
 
-  if(rpdo_rt_publisher_)
+  if (rpdo_rt_publisher_)
   {
     ControllerCommandMsg msg;
     msg.index = 0u;
@@ -147,8 +147,8 @@ controller_interface::CallbackReturn CanopenProxyController::on_configure(
     if (!published)
     {
       RCLCPP_WARN(
-        get_node()->get_logger(),
-        "Could not publish initial RPDO message on controller '%s'", joint_name_.c_str());
+        get_node()->get_logger(), "Could not publish initial RPDO message on controller '%s'",
+        joint_name_.c_str());
     }
   }
 
@@ -423,8 +423,8 @@ controller_interface::return_type CanopenProxyController::update(
       if (!ok)
       {
         RCLCPP_WARN_THROTTLE(
-          get_node()->get_logger(), *get_node()->get_clock(), 5000,
-          "Failed to set TPDO command %s", name);
+          get_node()->get_logger(), *get_node()->get_clock(), 5000, "Failed to set TPDO command %s",
+          name);
       }
     };
 

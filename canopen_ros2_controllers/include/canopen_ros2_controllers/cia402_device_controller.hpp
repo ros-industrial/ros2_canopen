@@ -101,13 +101,14 @@ protected:
           const bool sent = command_interfaces_[cmd].set_value(kCommandValue);
           if (!sent)
           {
-            RCLCPP_WARN(this->get_node()->get_logger(), "Failed to send command interface: %d request", cmd);
+            RCLCPP_WARN(
+              this->get_node()->get_logger(), "Failed to send command interface: %d request", cmd);
           }
 
           while (rclcpp::ok())
           {
             const auto fbk_value = command_interfaces_[fbk].get_optional<double>();
-            if(fbk_value && !std::isnan(*fbk_value))
+            if (fbk_value && !std::isnan(*fbk_value))
             {
               response->success = static_cast<bool>(*fbk_value);
               break;
@@ -116,11 +117,12 @@ protected:
           }
 
           // reset to nan
-          if(!command_interfaces_[fbk].set_value(std::numeric_limits<double>::quiet_NaN()))
+          if (!command_interfaces_[fbk].set_value(std::numeric_limits<double>::quiet_NaN()))
           {
-            RCLCPP_WARN(this->get_node()->get_logger(), "Failed to reset feedback for service %d", fbk);
+            RCLCPP_WARN(
+              this->get_node()->get_logger(), "Failed to reset feedback for service %d", fbk);
           }
-          if(!command_interfaces_[cmd].set_value(std::numeric_limits<double>::quiet_NaN()))
+          if (!command_interfaces_[cmd].set_value(std::numeric_limits<double>::quiet_NaN()))
           {
             RCLCPP_WARN(
               this->get_node()->get_logger(), "Failed to reset command for service %d", cmd);

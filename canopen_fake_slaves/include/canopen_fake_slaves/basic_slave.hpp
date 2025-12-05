@@ -27,8 +27,8 @@
 #include <fstream>
 #include <system_error>
 #include <thread>
-#include <typeinfo>
 #include <typeindex>
+#include <typeinfo>
 
 #include "canopen_fake_slaves/base_slave.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
@@ -118,7 +118,7 @@ protected:
    * @param idx The index of the PDO.
    * @param subidx The subindex of the PDO.
    * @return value of object stored in a 32-bit container
-  */
+   */
   uint32_t GetValue(const uint16_t idx, const uint8_t subidx) const noexcept
   {
     const std::type_index type((*this)[idx][subidx].Type());
