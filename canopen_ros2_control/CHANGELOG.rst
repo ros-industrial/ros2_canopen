@@ -2,13 +2,9 @@
 Changelog for package canopen_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.2.9 (2024-04-16)
-------------------
-
 Forthcoming
 -----------
 * add pdo 6077 torque actual value to the joint state interface as effort (`#316 <https://github.com/ros-industrial/ros2_canopen/issues/316>`_)
-  ---------
   Co-authored-by: Vishnuprasad Prachandabhanu <32260301+ipa-vsp@users.noreply.github.com>
 * Refactor on_init method for improved readability and consistency
 * Fix deprecated hardware_interface API (`#386 <https://github.com/ros-industrial/ros2_canopen/issues/386>`_)
@@ -34,7 +30,6 @@ Forthcoming
   * Add base functions for switching to cyclic torque mode
   * Add cyclic torque mode as effort interface to robot_system controller
   * Add documentation about cyclic torque mode.
-  ---------
   Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
 * Fix clang format
 * Update canopen_system.hpp
@@ -54,6 +49,9 @@ Forthcoming
 * 0.2.9
 * forthcoming
 * Contributors: ipa-vsp
+
+0.2.9 (2024-04-16)
+------------------
 
 0.2.8 (2024-01-19)
 ------------------

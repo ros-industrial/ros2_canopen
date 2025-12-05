@@ -2,13 +2,6 @@
 Changelog for package canopen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.2.9 (2024-04-16)
-------------------
-* Update maintainer list
-* Update package.xml
-* Add timeouts
-* Contributors: Vishnuprasad Prachandabhanu
-
 Forthcoming
 -----------
 
@@ -29,7 +22,6 @@ Forthcoming
   * Add base functions for switching to cyclic torque mode
   * Add cyclic torque mode as effort interface to robot_system controller
   * Add documentation about cyclic torque mode.
-  ---------
   Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
 
 0.2.12 (2024-04-22)
@@ -58,9 +50,15 @@ Forthcoming
   * Fix package creation
   * Fixed bus.yml nodes list
   * docs: fixed launch file path in instructions
-  ---------
   Co-authored-by: waterlinux <water@gmail.com>
 * Contributors: Lewe Christiansen, Vishnuprasad Prachandabhanu
+
+0.2.9 (2024-04-16)
+------------------
+* Update maintainer list
+* Update package.xml
+* Add timeouts
+* Contributors: Vishnuprasad Prachandabhanu
 
 0.2.7 (2023-06-30)
 ------------------

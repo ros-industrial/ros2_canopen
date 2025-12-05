@@ -2,17 +2,10 @@
 Changelog for package canopen_402_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.2.9 (2024-04-16)
-------------------
-* Update the lely_core_libraries hash to the latest.
-* fix ci build error
-* Contributors: Vishnuprasad Prachandabhanu
-
 Forthcoming
 -----------
 * Fix configuration parsing and logging
 * add pdo 6077 torque actual value to the joint state interface as effort (`#316 <https://github.com/ros-industrial/ros2_canopen/issues/316>`_)
-  ---------
 * Contributors: ipa-vsp, synsi23b
 
 0.3.1 (2025-06-23)
@@ -31,7 +24,6 @@ Forthcoming
   * Add base functions for switching to cyclic torque mode
   * Add cyclic torque mode as effort interface to robot_system controller
   * Add documentation about cyclic torque mode.
-  ---------
   Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
 
 0.2.12 (2024-04-22)
@@ -42,6 +34,12 @@ Forthcoming
   Update the lely_core_libraries hash to the latest.
 * fix ci build error
 * Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
+
+0.2.9 (2024-04-16)
+------------------
+* Update the lely_core_libraries hash to the latest.
+* fix ci build error
+* Contributors: Vishnuprasad Prachandabhanu
 
 0.2.8 (2024-01-19)
 ------------------

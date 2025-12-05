@@ -51,7 +51,6 @@ Forthcoming
   * Add simple sequence homing emulation
   * Add fake velocity mode
   * Formatting
-  ---------
 * Add simple sequence homing emulation (`#229 <https://github.com/ros-industrial/ros2_canopen/issues/229>`_)
 * Contributors: Christoph Hellmann Santos
 
