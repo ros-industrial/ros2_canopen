@@ -2,13 +2,13 @@
 Changelog for package canopen_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.2.9 (2024-04-16)
-------------------
-
 Forthcoming
 -----------
 * Enhance SimpleSlave class with vendor ID parsing and adjust bus configuration timeouts
 * Contributors: ipa-vsp
+
+0.2.9 (2024-04-16)
+------------------
 
 0.3.1 (2025-06-23)
 ------------------
