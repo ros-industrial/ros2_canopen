@@ -7,6 +7,9 @@ Changelog for package canopen_master_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
+Forthcoming
+-----------
+
 0.3.1 (2025-06-23)
 ------------------
 

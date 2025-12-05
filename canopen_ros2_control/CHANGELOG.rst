@@ -5,6 +5,22 @@ Changelog for package canopen_ros2_control
 0.2.9 (2024-04-16)
 ------------------
 
+Forthcoming
+-----------
+* add pdo 6077 torque actual value to the joint state interface as effort (`#316 <https://github.com/ros-industrial/ros2_canopen/issues/316>`_)
+  ---------
+  Co-authored-by: Vishnuprasad Prachandabhanu <32260301+ipa-vsp@users.noreply.github.com>
+* Refactor on_init method for improved readability and consistency
+* Fix deprecated hardware_interface API (`#386 <https://github.com/ros-industrial/ros2_canopen/issues/386>`_)
+* Fix typos in warning messages and comments for clarity
+* `#379 <https://github.com/ros-industrial/ros2_canopen/issues/379>`_: Fix data conversion in the Lely Bridge to enable more data types and proper handling of Emcy in ros2_control
+* Return error on Emcy.
+* Add correct data conversion for Emcy.
+* Fixed types handling in canopen_ros2_control.
+* Optimize debug output.
+* Fixed sending values.
+* Contributors: Christoph Fröhlich, Dr. Denis Stogl, Vishnuprasad Prachandabhanu, synsi23b
+
 0.3.1 (2025-06-23)
 ------------------
 * Fixing ID type in storage of ros2_control system.

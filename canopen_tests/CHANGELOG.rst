@@ -5,6 +5,14 @@ Changelog for package canopen_tests
 0.2.9 (2024-04-16)
 ------------------
 
+Forthcoming
+-----------
+* Enhance SimpleSlave class with vendor ID parsing and adjust bus configuration timeouts
+* Multiple SDO types for slaves (`#278 <https://github.com/ros-industrial/ros2_canopen/issues/278>`_)
+  ---------
+  Co-authored-by: Kurtis Thrush <kthrush@jlg.com>
+  Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+* Contributors: Christoph Hellmann Santos
 0.3.1 (2025-06-23)
 ------------------
 

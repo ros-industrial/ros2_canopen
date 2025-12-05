@@ -9,6 +9,9 @@ Changelog for package canopen
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
+Forthcoming
+-----------
+
 0.3.1 (2025-06-23)
 ------------------
 * Sync upstream 'master' into homing_timeout_pr.

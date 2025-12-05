@@ -8,6 +8,13 @@ Changelog for package canopen_402_driver
 * fix ci build error
 * Contributors: Vishnuprasad Prachandabhanu
 
+Forthcoming
+-----------
+* Fix configuration parsing and logging
+* add pdo 6077 torque actual value to the joint state interface as effort (`#316 <https://github.com/ros-industrial/ros2_canopen/issues/316>`_)
+  ---------
+* Contributors: ipa-vsp, synsi23b
+
 0.3.1 (2025-06-23)
 ------------------
 * Homing timeout
