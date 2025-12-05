@@ -29,6 +29,22 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
 #INSTALL lely_core_libraries - execute make install
 install(CODE "execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} install VERBOSE=1 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/build)")
 
+# Ensure dcf-tools entrypoints use an explicit python3 shebang on platforms
+# like RHEL9 where /usr/bin/python is disallowed.
+install(CODE "
+  foreach(script dcf2dev dcfchk dcfgen)
+    set(path \"${CMAKE_INSTALL_PREFIX}/bin/${script}\")
+    if(EXISTS \"${path}\")
+      file(READ \"${path}\" _content)
+      if(_content MATCHES \"^#! */usr/bin/python\\n\")
+        string(REGEX REPLACE \"^#! */usr/bin/python\\n\" \"#!/usr/bin/python3\\n\" _content \"${_content}\")
+        file(WRITE \"${path}\" \"${_content}\")
+        file(CHMOD \"${path}\" PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+      endif()
+    endif()
+  endforeach()
+")
+
 set(lely_core_cmake_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include("cmake/lely_core_libraries-extras.cmake" NO_POLICY_SCOPE)
 
