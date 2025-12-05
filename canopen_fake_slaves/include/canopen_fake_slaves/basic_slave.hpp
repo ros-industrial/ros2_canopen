@@ -28,6 +28,7 @@
 #include <system_error>
 #include <thread>
 #include <typeinfo>
+#include <typeindex>
 
 #include "canopen_fake_slaves/base_slave.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
@@ -117,42 +118,42 @@ protected:
    * @param idx The index of the PDO.
    * @param subidx The subindex of the PDO.
    * @return value of object stored in a 32-bit container
-   */
+  */
   uint32_t GetValue(const uint16_t idx, const uint8_t subidx) const noexcept
   {
-    auto & type = (*this)[idx][subidx].Type();
+    const std::type_index type((*this)[idx][subidx].Type());
 
     uint32_t value{0};
 
-    if (type == typeid(bool))
+    if (type == std::type_index(typeid(bool)))
     {
       value = static_cast<uint32_t>((*this)[idx][subidx].Get<bool>());
     }
-    else if (type == typeid(int8_t))
+    else if (type == std::type_index(typeid(int8_t)))
     {
       value = static_cast<uint32_t>((*this)[idx][subidx].Get<int8_t>());
     }
-    else if (type == typeid(int16_t))
+    else if (type == std::type_index(typeid(int16_t)))
     {
       value = static_cast<uint32_t>((*this)[idx][subidx].Get<int16_t>());
     }
-    else if (type == typeid(int32_t))
+    else if (type == std::type_index(typeid(int32_t)))
     {
       value = static_cast<uint32_t>((*this)[idx][subidx].Get<int32_t>());
     }
-    else if (type == typeid(float))
+    else if (type == std::type_index(typeid(float)))
     {
       value = static_cast<uint32_t>((*this)[idx][subidx].Get<float>());
     }
-    else if (type == typeid(uint8_t))
+    else if (type == std::type_index(typeid(uint8_t)))
     {
       value = static_cast<uint32_t>((*this)[idx][subidx].Get<uint8_t>());
     }
-    else if (type == typeid(uint16_t))
+    else if (type == std::type_index(typeid(uint16_t)))
     {
       value = static_cast<uint32_t>((*this)[idx][subidx].Get<uint16_t>());
     }
-    else if (type == typeid(uint32_t))
+    else if (type == std::type_index(typeid(uint32_t)))
     {
       value = (*this)[idx][subidx].Get<uint32_t>();
     }
