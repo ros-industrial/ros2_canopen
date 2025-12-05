@@ -4,6 +4,23 @@ Changelog for package canopen
 
 0.3.2 (2025-12-05)
 ------------------
+* add pdo 6077 torque actual value to the joint state interface as effort (`#316 <https://github.com/ros-industrial/ros2_canopen/issues/316>`_)
+* Fix configuration parsing and logging
+* Refactor on_init method for improved readability and consistency
+* Fix deprecated hardware_interface API (`#386 <https://github.com/ros-industrial/ros2_canopen/issues/386>`_)
+* Fix typos in warning messages and comments for clarity
+* `#379 <https://github.com/ros-industrial/ros2_canopen/issues/379>`_: Fix data conversion in the Lely Bridge to enable more data types and proper handling of Emcy in ros2_control
+* Return error on Emcy and add correct data conversion for Emcy
+* Fixed types handling in canopen_ros2_control and optimized debug output
+* Fixed sending values
+* `#376 <https://github.com/ros-industrial/ros2_canopen/issues/376>`_: increase boot timeout
+* `#400 <https://github.com/ros-industrial/ros2_canopen/issues/400>`_: Update controllers for ROS Rolling API changes and fix fake slave type handling
+* Refactor GetValue method to use std::type_index for type comparisons
+* `motion_generator` as shared library (`#295 <https://github.com/ros-industrial/ros2_canopen/issues/295>`_)
+* Enhance SimpleSlave class with vendor ID parsing and adjust bus configuration timeouts
+* Multiple SDO types for slaves (`#278 <https://github.com/ros-industrial/ros2_canopen/issues/278>`_)
+* Enhance command interface error handling and feedback reporting in CanopenProxyController
+* Contributors: Christoph Fröhlich, Christoph Hellmann Santos, Dr. Denis Stogl, Patrick Roncagliolo, Vishnuprasad Prachandabhanu, ipa-vsp, synsi23b
 
 0.3.1 (2025-06-23)
 ------------------
