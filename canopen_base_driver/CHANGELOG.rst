@@ -7,8 +7,8 @@ Changelog for package canopen_base_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
-Forthcoming
------------
+0.3.2 (2025-12-05)
+------------------
 * `#379 <https://github.com/ros-industrial/ros2_canopen/issues/379>`_: Fix data conversion in the Lely Bridge to enable more data types and proper handling of Emcy in ros2_control
 * Fixed types handling in canopen_ros2_control.
 * `#376 <https://github.com/ros-industrial/ros2_canopen/issues/376>`_: increase boot timout

@@ -2,8 +2,8 @@
 Changelog for package canopen_fake_slaves
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.2 (2025-12-05)
+------------------
 * `#400 <https://github.com/ros-industrial/ros2_canopen/issues/400>`_: Update controllers for ROS Rolling API changes and fix fake slave type handling
 * Refactor GetValue method to use std::type_index for type comparisons
 * `motion_generator` as shared library (`#295 <https://github.com/ros-industrial/ros2_canopen/issues/295>`_)

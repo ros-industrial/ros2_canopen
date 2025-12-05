@@ -2,8 +2,8 @@
 Changelog for package canopen_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.2 (2025-12-05)
+------------------
 * add pdo 6077 torque actual value to the joint state interface as effort (`#316 <https://github.com/ros-industrial/ros2_canopen/issues/316>`_)
   Co-authored-by: Vishnuprasad Prachandabhanu <32260301+ipa-vsp@users.noreply.github.com>
 * Refactor on_init method for improved readability and consistency
