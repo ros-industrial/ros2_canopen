@@ -31,9 +31,10 @@ macro(
 
     add_custom_command(
         TARGET ${TARGET} POST_BUILD
-        COMMAND sed 's|@BUS_CONFIG_PATH@|${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}|g'
+        COMMAND sed 's|@BUS_CONFIG_PATH@|.|g'
             ${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}/bus.yml > ${CMAKE_BINARY_DIR}/config/${TARGET}/bus.yml
         COMMAND dcfgen -v -d ${CMAKE_BINARY_DIR}/config/${TARGET}/ -rS ${CMAKE_BINARY_DIR}/config/${TARGET}/bus.yml
+        COMMAND sed -i 's|UploadFile=${CMAKE_BINARY_DIR}/config/${TARGET}/|UploadFile=|g' ${CMAKE_BINARY_DIR}/config/${TARGET}/master.dcf
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}/
     )
 
@@ -69,9 +70,10 @@ macro(
     add_custom_command(
         TARGET ${TARGET} POST_BUILD
         COMMAND cogen --input-file ${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}/bus.yml --output-file ${CMAKE_BINARY_DIR}/config/${TARGET}/preprocessed_bus.yml
-        COMMAND sed 's|@BUS_CONFIG_PATH@|${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}|g'
+        COMMAND sed 's|@BUS_CONFIG_PATH@|.|g'
             ${CMAKE_BINARY_DIR}/config/${TARGET}/preprocessed_bus.yml > ${CMAKE_BINARY_DIR}/config/${TARGET}/bus.yml
         COMMAND dcfgen -v -d ${CMAKE_BINARY_DIR}/config/${TARGET}/ -rS ${CMAKE_BINARY_DIR}/config/${TARGET}/bus.yml
+        COMMAND sed -i 's|UploadFile=${CMAKE_BINARY_DIR}/config/${TARGET}/|UploadFile=|g' ${CMAKE_BINARY_DIR}/config/${TARGET}/master.dcf
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}/
     )
 
