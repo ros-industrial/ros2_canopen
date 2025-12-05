@@ -20,7 +20,7 @@ Changelog for package canopen
 * Enhance SimpleSlave class with vendor ID parsing and adjust bus configuration timeouts
 * Multiple SDO types for slaves (`#278 <https://github.com/ros-industrial/ros2_canopen/issues/278>`_)
 * Enhance command interface error handling and feedback reporting in CanopenProxyController
-* Contributors: Christoph Fröhlich, Christoph Hellmann Santos, Dr. Denis Stogl, Patrick Roncagliolo, Vishnuprasad Prachandabhanu, ipa-vsp, synsi23b
+* Contributors: Christoph Fröhlich, Christoph Hellmann Santos, Dr. Denis Stogl, Patrick Roncagliolo, Vishnuprasad Prachandabhanu, synsi23b
 
 0.3.1 (2025-06-23)
 ------------------
