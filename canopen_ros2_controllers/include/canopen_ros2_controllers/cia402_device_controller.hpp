@@ -97,18 +97,36 @@ protected:
           const std_srvs::srv::Trigger::Request::SharedPtr request,
           std_srvs::srv::Trigger::Response::SharedPtr response)
         {
-          command_interfaces_[cmd].set_value(kCommandValue);
-
-          while (std::isnan(command_interfaces_[fbk].get_value()) && rclcpp::ok())
+          response->success = false;
+          const bool sent = command_interfaces_[cmd].set_value(kCommandValue);
+          if (!sent)
           {
+            RCLCPP_WARN(
+              this->get_node()->get_logger(), "Failed to send command interface: %d request", cmd);
+          }
+
+          while (rclcpp::ok())
+          {
+            const auto fbk_value = command_interfaces_[fbk].get_optional<double>();
+            if (fbk_value && !std::isnan(*fbk_value))
+            {
+              response->success = static_cast<bool>(*fbk_value);
+              break;
+            }
             std::this_thread::sleep_for(std::chrono::milliseconds(kLoopPeriodMS));
           }
 
-          // report success
-          response->success = static_cast<bool>(command_interfaces_[fbk].get_value());
           // reset to nan
-          command_interfaces_[fbk].set_value(std::numeric_limits<double>::quiet_NaN());
-          command_interfaces_[cmd].set_value(std::numeric_limits<double>::quiet_NaN());
+          if (!command_interfaces_[fbk].set_value(std::numeric_limits<double>::quiet_NaN()))
+          {
+            RCLCPP_WARN(
+              this->get_node()->get_logger(), "Failed to reset feedback for service %d", fbk);
+          }
+          if (!command_interfaces_[cmd].set_value(std::numeric_limits<double>::quiet_NaN()))
+          {
+            RCLCPP_WARN(
+              this->get_node()->get_logger(), "Failed to reset command for service %d", cmd);
+          }
         },
         service_profile);
 

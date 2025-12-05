@@ -14,9 +14,12 @@
 
 #include "canopen_ros2_controllers/canopen_proxy_controller.hpp"
 
+#include <chrono>
 #include <limits>
 #include <memory>
+#include <optional>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "controller_interface/helpers.hpp"
@@ -121,15 +124,33 @@ controller_interface::CallbackReturn CanopenProxyController::on_configure(
     return controller_interface::CallbackReturn::ERROR;
   }
 
-  nmt_state_rt_publisher_->lock();
-  nmt_state_rt_publisher_->msg_.data = std::string();
-  nmt_state_rt_publisher_->unlock();
+  if (nmt_state_rt_publisher_)
+  {
+    ControllerNMTStateMsg msg;
+    msg.data = std::string();
+    bool published = nmt_state_rt_publisher_->try_publish(msg);
+    if (!published)
+    {
+      RCLCPP_WARN(
+        get_node()->get_logger(), "Could not publish initial NMT state message on controller '%s'",
+        joint_name_.c_str());
+    }
+  }
 
-  rpdo_rt_publisher_->lock();
-  rpdo_rt_publisher_->msg_.index = 0u;
-  rpdo_rt_publisher_->msg_.subindex = 0u;
-  rpdo_rt_publisher_->msg_.data = 0u;
-  rpdo_rt_publisher_->unlock();
+  if (rpdo_rt_publisher_)
+  {
+    ControllerCommandMsg msg;
+    msg.index = 0u;
+    msg.subindex = 0u;
+    msg.data = 0u;
+    bool published = rpdo_rt_publisher_->try_publish(msg);
+    if (!published)
+    {
+      RCLCPP_WARN(
+        get_node()->get_logger(), "Could not publish initial RPDO message on controller '%s'",
+        joint_name_.c_str());
+    }
+  }
 
   // init services
 
@@ -138,19 +159,37 @@ controller_interface::CallbackReturn CanopenProxyController::on_configure(
                               const std_srvs::srv::Trigger::Request::SharedPtr request,
                               std_srvs::srv::Trigger::Response::SharedPtr response)
   {
-    command_interfaces_[CommandInterfaces::NMT_RESET].set_value(kCommandValue);
-
-    while (!std::isnan(command_interfaces_[CommandInterfaces::NMT_RESET].get_value()))
+    response->success = false;
+    const auto logger = get_node()->get_logger();
+    if (!command_interfaces_[CommandInterfaces::NMT_RESET].set_value(kCommandValue))
     {
+      RCLCPP_WARN(logger, "Failed to set NMT reset command");
+    }
+
+    while (rclcpp::ok())
+    {
+      const auto reset_cmd_value =
+        command_interfaces_[CommandInterfaces::NMT_RESET].get_optional<double>();
+      if (reset_cmd_value && std::isnan(*reset_cmd_value))
+      {
+        break;
+      }
       std::this_thread::sleep_for(std::chrono::milliseconds(kLoopPeriodMS));
     }
 
     // report success
-    response->success =
-      static_cast<bool>(command_interfaces_[CommandInterfaces::NMT_RESET_FBK].get_value());
+    const auto reset_feedback =
+      command_interfaces_[CommandInterfaces::NMT_RESET_FBK].get_optional<double>();
+    if (reset_feedback && !std::isnan(*reset_feedback))
+    {
+      response->success = static_cast<bool>(*reset_feedback);
+    }
     // reset to nan
-    command_interfaces_[CommandInterfaces::NMT_RESET_FBK].set_value(
-      std::numeric_limits<double>::quiet_NaN());
+    if (!command_interfaces_[CommandInterfaces::NMT_RESET_FBK].set_value(
+          std::numeric_limits<double>::quiet_NaN()))
+    {
+      RCLCPP_WARN(logger, "Failed to reset NMT reset feedback interface");
+    }
   };
 
   auto service_profile = rclcpp::QoS(1);
@@ -163,19 +202,37 @@ controller_interface::CallbackReturn CanopenProxyController::on_configure(
                               const std_srvs::srv::Trigger::Request::SharedPtr request,
                               std_srvs::srv::Trigger::Response::SharedPtr response)
   {
-    command_interfaces_[CommandInterfaces::NMT_START].set_value(kCommandValue);
-
-    while (!std::isnan(command_interfaces_[CommandInterfaces::NMT_START].get_value()))
+    response->success = false;
+    const auto logger = get_node()->get_logger();
+    if (!command_interfaces_[CommandInterfaces::NMT_START].set_value(kCommandValue))
     {
+      RCLCPP_WARN(logger, "Failed to send command for NMT start service");
+    }
+
+    while (rclcpp::ok())
+    {
+      const auto reset_fbk =
+        command_interfaces_[CommandInterfaces::NMT_START_FBK].get_optional<double>();
+      if (reset_fbk && !std::isnan(*reset_fbk))
+      {
+        break;
+      }
       std::this_thread::sleep_for(std::chrono::milliseconds(kLoopPeriodMS));
     }
 
     // report success
-    response->success =
-      static_cast<bool>(command_interfaces_[CommandInterfaces::NMT_START_FBK].get_value());
+    const auto start_feedback =
+      command_interfaces_[CommandInterfaces::NMT_START_FBK].get_optional<double>();
+    if (start_feedback && !std::isnan(*start_feedback))
+    {
+      response->success = static_cast<bool>(*start_feedback);
+    }
     // reset to nan
-    command_interfaces_[CommandInterfaces::NMT_START_FBK].set_value(
-      std::numeric_limits<double>::quiet_NaN());
+    if (!command_interfaces_[CommandInterfaces::NMT_START_FBK].set_value(
+          std::numeric_limits<double>::quiet_NaN()))
+    {
+      RCLCPP_WARN(logger, "Failed to reset NMT start feedback interface");
+    }
   };
   nmt_state_start_service_ = get_node()->create_service<ControllerStartResetSrvType>(
     "~/nmt_start_node", on_nmt_state_start, service_profile);
@@ -252,9 +309,20 @@ controller_interface::CallbackReturn CanopenProxyController::on_deactivate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   // instead of a loop
+  auto warn_on_failure = [&](bool ok, const char * name)
+  {
+    if (!ok)
+    {
+      RCLCPP_WARN_THROTTLE(
+        get_node()->get_logger(), *get_node()->get_clock(), 5000,
+        "Failed to reset command interface %s during deactivate", name);
+    }
+  };
   for (size_t i = 0; i < command_interfaces_.size(); ++i)
   {
-    command_interfaces_[i].set_value(std::numeric_limits<double>::quiet_NaN());
+    warn_on_failure(
+      command_interfaces_[i].set_value(std::numeric_limits<double>::quiet_NaN()),
+      command_interfaces_[i].get_name().c_str());
   }
   return controller_interface::CallbackReturn::SUCCESS;
 }
@@ -266,57 +334,80 @@ controller_interface::return_type CanopenProxyController::update(
   if (nmt_state_rt_publisher_)
   {
     auto message = std_msgs::msg::String();
-    auto nmt_state = static_cast<int>(state_interfaces_[StateInterfaces::NMT_STATE].get_value());
+    const auto nmt_state_optional =
+      state_interfaces_[StateInterfaces::NMT_STATE].get_optional<double>();
 
-    switch (static_cast<canopen::NmtState>(nmt_state))
+    if (nmt_state_optional)
     {
-      case canopen::NmtState::BOOTUP:
-        message.data = "BOOTUP";
-        break;
-      case canopen::NmtState::PREOP:
-        message.data = "PREOP";
-        break;
-      case canopen::NmtState::RESET_COMM:
-        message.data = "RESET_COMM";
-        break;
-      case canopen::NmtState::RESET_NODE:
-        message.data = "RESET_NODE";
-        break;
-      case canopen::NmtState::START:
-        message.data = "START";
-        break;
-      case canopen::NmtState::STOP:
-        message.data = "STOP";
-        break;
-      case canopen::NmtState::TOGGLE:
-        message.data = "TOGGLE";
-        break;
-      default:
-        RCLCPP_ERROR(get_node()->get_logger(), "Unknown NMT State.");
-        message.data = "ERROR";
-        break;
-    }
+      auto nmt_state = static_cast<int>(*nmt_state_optional);
 
-    if (nmt_state_actual_ != message.data && nmt_state_rt_publisher_->trylock())
-    {
-      // publish on change only
-      nmt_state_actual_ = std::string(message.data);
-      nmt_state_rt_publisher_->msg_.data = nmt_state_actual_;
-      nmt_state_rt_publisher_->unlockAndPublish();
+      switch (static_cast<canopen::NmtState>(nmt_state))
+      {
+        case canopen::NmtState::BOOTUP:
+          message.data = "BOOTUP";
+          break;
+        case canopen::NmtState::PREOP:
+          message.data = "PREOP";
+          break;
+        case canopen::NmtState::RESET_COMM:
+          message.data = "RESET_COMM";
+          break;
+        case canopen::NmtState::RESET_NODE:
+          message.data = "RESET_NODE";
+          break;
+        case canopen::NmtState::START:
+          message.data = "START";
+          break;
+        case canopen::NmtState::STOP:
+          message.data = "STOP";
+          break;
+        case canopen::NmtState::TOGGLE:
+          message.data = "TOGGLE";
+          break;
+        default:
+          RCLCPP_ERROR(get_node()->get_logger(), "Unknown NMT State.");
+          message.data = "ERROR";
+          break;
+      }
+
+      if (nmt_state_actual_ != message.data)
+      {
+        // publish on change only
+        nmt_state_actual_ = std::string(message.data);
+        const bool published = nmt_state_rt_publisher_->try_publish(message);
+        if (!published)
+        {
+          RCLCPP_WARN_THROTTLE(
+            get_node()->get_logger(), *get_node()->get_clock(), 5000,
+            "Failed to publish NMT state");
+        }
+      }
     }
   }
 
   // exposing rpdo data via real-time publisher
-  if (rpdo_rt_publisher_ && rpdo_rt_publisher_->trylock())
+  if (rpdo_rt_publisher_)
   {
-    rpdo_rt_publisher_->msg_.index =
-      static_cast<uint16_t>(state_interfaces_[StateInterfaces::RPDO_INDEX].get_value());
-    rpdo_rt_publisher_->msg_.subindex =
-      static_cast<uint8_t>(state_interfaces_[StateInterfaces::RPDO_SUBINDEX].get_value());
-    rpdo_rt_publisher_->msg_.data =
-      static_cast<uint32_t>(state_interfaces_[StateInterfaces::RPDO_DATA].get_value());
+    const auto rpdo_index = state_interfaces_[StateInterfaces::RPDO_INDEX].get_optional<double>();
+    const auto rpdo_subindex =
+      state_interfaces_[StateInterfaces::RPDO_SUBINDEX].get_optional<double>();
+    const auto rpdo_data = state_interfaces_[StateInterfaces::RPDO_DATA].get_optional<double>();
 
-    rpdo_rt_publisher_->unlockAndPublish();
+    if (rpdo_index && rpdo_subindex && rpdo_data)
+    {
+      ControllerCommandMsg msg;
+      msg.index = static_cast<uint16_t>(*rpdo_index);
+      msg.subindex = static_cast<uint8_t>(*rpdo_subindex);
+      msg.data = static_cast<uint32_t>(*rpdo_data);
+
+      const bool published = rpdo_rt_publisher_->try_publish(msg);
+      if (!published)
+      {
+        RCLCPP_WARN_THROTTLE(
+          get_node()->get_logger(), *get_node()->get_clock(), 5000,
+          "Failed to publish RPDO message");
+      }
+    }
   }
 
   // tpdo data is the main controller data retrieved via subscription
@@ -327,14 +418,31 @@ controller_interface::return_type CanopenProxyController::update(
   }
   else if (propagate_controller_command_msg(*current_cmd))
   {
-    command_interfaces_[CommandInterfaces::TPDO_INDEX].set_value(
-      static_cast<double>((*current_cmd)->index));
-    command_interfaces_[CommandInterfaces::TPDO_SUBINDEX].set_value(
-      static_cast<double>((*current_cmd)->subindex));
-    command_interfaces_[CommandInterfaces::TPDO_DATA].set_value(
-      static_cast<double>((*current_cmd)->data));
+    auto warn_on_failure = [&](bool ok, const char * name)
+    {
+      if (!ok)
+      {
+        RCLCPP_WARN_THROTTLE(
+          get_node()->get_logger(), *get_node()->get_clock(), 5000, "Failed to set TPDO command %s",
+          name);
+      }
+    };
+
+    warn_on_failure(
+      command_interfaces_[CommandInterfaces::TPDO_INDEX].set_value(
+        static_cast<double>((*current_cmd)->index)),
+      "index");
+    warn_on_failure(
+      command_interfaces_[CommandInterfaces::TPDO_SUBINDEX].set_value(
+        static_cast<double>((*current_cmd)->subindex)),
+      "subindex");
+    warn_on_failure(
+      command_interfaces_[CommandInterfaces::TPDO_DATA].set_value(
+        static_cast<double>((*current_cmd)->data)),
+      "data");
     // tpdo data one shot mechanism
-    command_interfaces_[CommandInterfaces::TPDO_ONS].set_value(kCommandValue);
+    warn_on_failure(
+      command_interfaces_[CommandInterfaces::TPDO_ONS].set_value(kCommandValue), "ons");
 
     *(input_cmd_.readFromRT()) = nullptr;
   }

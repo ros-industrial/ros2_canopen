@@ -16,6 +16,7 @@
 
 #include <limits>
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -124,13 +125,20 @@ TEST_F(CanopenProxyControllerTest, reactivate_success)
 
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), NODE_SUCCESS);
   ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), NODE_SUCCESS);
-  ASSERT_EQ(controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_value(), 101.101);
+  const auto tpdo_data_initial =
+    controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_optional<double>();
+  ASSERT_TRUE(tpdo_data_initial);
+  ASSERT_DOUBLE_EQ(*tpdo_data_initial, 101.101);
   ASSERT_EQ(controller_->on_deactivate(rclcpp_lifecycle::State()), NODE_SUCCESS);
-  ASSERT_TRUE(
-    std::isnan(controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_value()));
+  const auto tpdo_data_after_deactivate =
+    controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_optional<double>();
+  ASSERT_TRUE(tpdo_data_after_deactivate);
+  ASSERT_TRUE(std::isnan(*tpdo_data_after_deactivate));
   ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), NODE_SUCCESS);
-  ASSERT_TRUE(
-    std::isnan(controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_value()));
+  const auto tpdo_data_after_activate =
+    controller_->command_interfaces_[CommandInterfaces::TPDO_DATA].get_optional<double>();
+  ASSERT_TRUE(tpdo_data_after_activate);
+  ASSERT_TRUE(std::isnan(*tpdo_data_after_activate));
 
   ASSERT_EQ(
     controller_->update(rclcpp::Time(0), rclcpp::Duration::from_seconds(0.01)),
