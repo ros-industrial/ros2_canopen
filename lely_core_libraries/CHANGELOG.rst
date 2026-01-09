@@ -2,10 +2,8 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.2.9 (2024-04-16)
+0.3.2 (2025-12-05)
 ------------------
-* Update the lely_core_libraries hash to the latest.
-* Contributors: Chris Lalancette, Vishnuprasad Prachandabhanu
 
 0.3.1 (2025-06-23)
 ------------------
@@ -26,6 +24,11 @@ Changelog for package lely_core_libraries
   This will fix the building of the lely_core_libraries
   on Ubuntu 24.04.
 * Contributors: Chris Lalancette, Vishnuprasad Prachandabhanu, ipa-vsp
+
+0.2.9 (2024-04-16)
+------------------
+* Update the lely_core_libraries hash to the latest.
+* Contributors: Chris Lalancette, Vishnuprasad Prachandabhanu
 
 0.2.8 (2024-01-19)
 ------------------
