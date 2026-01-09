@@ -168,7 +168,6 @@ protected:
     TargetVelocity = 0x60FF,
   };
 
-
   std::atomic<bool> is_relative;
   std::atomic<bool> is_running;
   std::atomic<bool> is_halt;
@@ -199,11 +198,16 @@ protected:
   void run_profiled_position_mode()
   {
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "run_profiled_position_mode");
-    double profile_speed = static_cast<double>(((uint32_t)(*this)[CiaRegister::ProfileVelocity][0])) / 1000;
-    double profile_accerlation = static_cast<double>(((uint32_t)(*this)[CiaRegister::ProfileAcceleration][0])) / 1000;
-    double actual_position = static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
-    double target_position = static_cast<double>(((int32_t)(*this)[CiaRegister::TargetPosition][0])) / 1000.0;
-    double actual_speed = static_cast<double>(((int32_t)(*this)[CiaRegister::ActualVelocity][0])) / 1000.0;
+    double profile_speed =
+      static_cast<double>(((uint32_t)(*this)[CiaRegister::ProfileVelocity][0])) / 1000;
+    double profile_accerlation =
+      static_cast<double>(((uint32_t)(*this)[CiaRegister::ProfileAcceleration][0])) / 1000;
+    double actual_position =
+      static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
+    double target_position =
+      static_cast<double>(((int32_t)(*this)[CiaRegister::TargetPosition][0])) / 1000.0;
+    double actual_speed =
+      static_cast<double>(((int32_t)(*this)[CiaRegister::ActualVelocity][0])) / 1000.0;
     RCLCPP_INFO(
       rclcpp::get_logger("cia402_slave"), "Profile_Speed %f, Profile Acceleration: %f",
       profile_speed, profile_accerlation);
@@ -212,7 +216,8 @@ protected:
            (operation_mode.load() == Profiled_Position) && (rclcpp::ok()))
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
-      target_position = static_cast<double>(((int32_t)(*this)[CiaRegister::TargetPosition][0])) / 1000.0;
+      target_position =
+        static_cast<double>(((int32_t)(*this)[CiaRegister::TargetPosition][0])) / 1000.0;
       if (target_position != actual_position)
       {
         clear_status_bit(SW_Operation_mode_specific0);
@@ -303,15 +308,19 @@ protected:
   {
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "run_interpolated_position_mode");
     // Retrieve parameters from the object dictionary
-    double interpolation_period = static_cast<double>((uint8_t)(*this)[CiaRegister::InterpolationTimePeriod][1]);
-    double target_position = static_cast<double>((int32_t)(*this)[CiaRegister::InterpolationDataRecord][1]);
+    double interpolation_period =
+      static_cast<double>((uint8_t)(*this)[CiaRegister::InterpolationTimePeriod][1]);
+    double target_position =
+      static_cast<double>((int32_t)(*this)[CiaRegister::InterpolationDataRecord][1]);
 
     // int32_t offset = (*this)[CiaRegister::PositionOffset][0];
 
     // Convert parameters to SI units
-    interpolation_period *= std::pow(10.0, static_cast<double>((int8_t)(*this)[CiaRegister::InterpolationTimePeriod][2]));
+    interpolation_period *=
+      std::pow(10.0, static_cast<double>((int8_t)(*this)[CiaRegister::InterpolationTimePeriod][2]));
     target_position /= 1000.0;
-    double actual_position = static_cast<double>((int32_t)(*this)[CiaRegister::ActualPosition][0]) / 1000.0;
+    double actual_position =
+      static_cast<double>((int32_t)(*this)[CiaRegister::ActualPosition][0]) / 1000.0;
 
     RCLCPP_INFO(
       rclcpp::get_logger("cia402_slave"), "Interpolation Period: %f", interpolation_period);
@@ -323,7 +332,8 @@ protected:
       std::this_thread::sleep_for(
         std::chrono::milliseconds(static_cast<int>(interpolation_period * 1000)));
 
-      target_position = static_cast<double>((int32_t)(*this)[CiaRegister::InterpolationDataRecord][1]) / 1000.0;
+      target_position =
+        static_cast<double>((int32_t)(*this)[CiaRegister::InterpolationDataRecord][1]) / 1000.0;
 
       if (target_position != actual_position)
       {
@@ -362,15 +372,19 @@ protected:
   void run_profile_velocity_mode()
   {
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "run_profile_velocity_mode");
-    double actual_position = static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
-    double target_velocity = static_cast<double>(((int32_t)(*this)[CiaRegister::TargetVelocity][0])) / 1000.0;
+    double actual_position =
+      static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
+    double target_velocity =
+      static_cast<double>(((int32_t)(*this)[CiaRegister::TargetVelocity][0])) / 1000.0;
     double old_target = target_velocity;
     double control_cycle_period_d = 0.01;
     while ((state.load() == InternalState::Operation_Enable) &&
            (operation_mode.load() == Profiled_Velocity) && (rclcpp::ok()))
     {
-      actual_position = static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
-      target_velocity = static_cast<double>(((int32_t)(*this)[CiaRegister::TargetVelocity][0])) / 1000.0;
+      actual_position =
+        static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
+      target_velocity =
+        static_cast<double>(((int32_t)(*this)[CiaRegister::TargetVelocity][0])) / 1000.0;
       if (old_target != target_velocity)
       {
         old_target = target_velocity;

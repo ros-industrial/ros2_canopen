@@ -10,7 +10,7 @@
 | Buildfarm Build (kilted) | [![Buildfarm Status](https://build.ros2.org/job/Kdev__ros2_canopen__ubuntu_noble_amd64/badge/icon)](https://build.ros2.org/job/Kdev__ros2_canopen__ubuntu_noble_amd64/) |
 | Buildfarm Build (jazzy) | [![Buildfarm Status](https://build.ros2.org/job/Jdev__ros2_canopen__ubuntu_noble_amd64/badge/icon)](https://build.ros2.org/job/Jdev__ros2_canopen__ubuntu_noble_amd64/) |
 
-The stack is currently under development and not yet ready for production use. 
+The stack is currently under development and not yet ready for production use.
 
 ## Documentation
 The documentation consists of two parts: a manual and an api reference.
