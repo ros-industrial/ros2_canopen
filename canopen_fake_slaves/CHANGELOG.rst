@@ -2,6 +2,17 @@
 Changelog for package canopen_fake_slaves
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.2 (2025-12-05)
+------------------
+* `#400 <https://github.com/ros-industrial/ros2_canopen/issues/400>`_: Update controllers for ROS Rolling API changes and fix fake slave type handling
+* Refactor GetValue method to use std::type_index for type comparisons
+* `motion_generator` as shared library (`#295 <https://github.com/ros-industrial/ros2_canopen/issues/295>`_)
+* Enhance SimpleSlave class with vendor ID parsing and adjust bus configuration timeouts
+* Multiple SDO types for slaves (`#278 <https://github.com/ros-industrial/ros2_canopen/issues/278>`_)
+  Co-authored-by: Kurtis Thrush <kthrush@jlg.com>
+  Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+* Contributors: Christoph Hellmann Santos, Patrick Roncagliolo, Vishnuprasad Prachandabhanu
+
 0.2.9 (2024-04-16)
 ------------------
 
@@ -40,7 +51,6 @@ Changelog for package canopen_fake_slaves
   * Add simple sequence homing emulation
   * Add fake velocity mode
   * Formatting
-  ---------
 * Add simple sequence homing emulation (`#229 <https://github.com/ros-industrial/ros2_canopen/issues/229>`_)
 * Contributors: Christoph Hellmann Santos
 
