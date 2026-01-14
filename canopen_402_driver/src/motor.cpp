@@ -90,7 +90,8 @@ bool Motor402::switchMode(uint16_t mode)
     }
     if (enable_diagnostics_.load())
     {
-      this->diag_collector_->addf("cia402_mode", "No mode selected: %d (channel %u)", mode, channel_);
+      this->diag_collector_->addf(
+        "cia402_mode", "No mode selected: %d (channel %u)", mode, channel_);
     }
     return true;
   }
@@ -141,9 +142,9 @@ bool Motor402::switchMode(uint16_t mode)
     {
       while (mode_id_ != mode && std::chrono::steady_clock::now() < abstime)
       {
-        lock.unlock();                                                    // unlock inside loop
+        lock.unlock();  // unlock inside loop
         driver->universal_get_value<int8_t>(get_channel_index(op_mode_display_index), 0x0);  // poll
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));       // wait some time
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));  // wait some time
         lock.lock();
       }
     }
@@ -154,7 +155,8 @@ bool Motor402::switchMode(uint16_t mode)
       okay = true;
       if (enable_diagnostics_.load())
       {
-        this->diag_collector_->addf("cia402_mode", "Mode switched to: %d (channel %u)", mode, channel_);
+        this->diag_collector_->addf(
+          "cia402_mode", "Mode switched to: %d (channel %u)", mode, channel_);
       }
     }
     else
@@ -163,7 +165,8 @@ bool Motor402::switchMode(uint16_t mode)
       driver->universal_set_value<int8_t>(get_channel_index(op_mode_index), 0x0, mode_id_);
       if (enable_diagnostics_.load())
       {
-        this->diag_collector_->addf("cia402_mode", "Mode switch timed out: %d (channel %u)", mode, channel_);
+        this->diag_collector_->addf(
+          "cia402_mode", "Mode switch timed out: %d (channel %u)", mode, channel_);
       }
     }
   }
@@ -210,8 +213,9 @@ bool Motor402::switchState(const State402::InternalState & target)
 
 bool Motor402::readState()
 {
-  uint16_t old_sw, sw = driver->universal_get_value<uint16_t>(
-                     get_channel_index(status_word_entry_index), 0x0);  // TODO: added error handling
+  uint16_t old_sw,
+    sw = driver->universal_get_value<uint16_t>(
+      get_channel_index(status_word_entry_index), 0x0);  // TODO: added error handling
   old_sw = status_word_.exchange(sw);
 
   state_handler_.read(sw);
@@ -278,13 +282,15 @@ void Motor402::handleWrite()
   {
     RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Fault reset (channel %u)", channel_);
     this->driver->universal_set_value<uint16_t>(
-      get_channel_index(control_word_entry_index), 0x0, control_word_ & ~(1 << Command402::CW_Fault_Reset));
+      get_channel_index(control_word_entry_index), 0x0,
+      control_word_ & ~(1 << Command402::CW_Fault_Reset));
   }
   else
   {
     // RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Control Word %s",
     // std::bitset<16>{control_word_}.to_string());
-    this->driver->universal_set_value<uint16_t>(get_channel_index(control_word_entry_index), 0x0, control_word_);
+    this->driver->universal_set_value<uint16_t>(
+      get_channel_index(control_word_entry_index), 0x0, control_word_);
   }
 }
 void Motor402::handleDiag()

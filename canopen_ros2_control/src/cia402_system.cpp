@@ -365,7 +365,8 @@ hardware_interface::return_type Cia402System::write(
   return hardware_interface::return_type::OK;
 }
 
-void Cia402System::switchModes(uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver)
+void Cia402System::switchModes(
+  uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver)
 {
   auto motor_key = getMotorKey(id, channel);
 
@@ -406,7 +407,8 @@ void Cia402System::switchModes(uint id, uint channel, const std::shared_ptr<ros2
   }
 }
 
-void Cia402System::handleInit(uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver)
+void Cia402System::handleInit(
+  uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver)
 {
   auto motor_key = getMotorKey(id, channel);
   if (motor_data_[motor_key].init.is_commanded())
@@ -425,7 +427,8 @@ void Cia402System::handleRecover(
   }
 }
 
-void Cia402System::handleHalt(uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver)
+void Cia402System::handleHalt(
+  uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver)
 {
   auto motor_key = getMotorKey(id, channel);
   if (motor_data_[motor_key].halt.is_commanded())

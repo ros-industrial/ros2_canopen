@@ -105,107 +105,109 @@ void NodeCanopen402Driver<NODETYPE>::create_per_channel_services()
 
     // Init service
     handle_init_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "init",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_init(request, response, ch);
-      });
+      service_prefix + "init", [this, ch](
+                                 const std_srvs::srv::Trigger::Request::SharedPtr request,
+                                 std_srvs::srv::Trigger::Response::SharedPtr response)
+      { this->handle_init(request, response, ch); });
 
     // Enable service
     handle_enable_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "enable",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_enable(request, response, ch);
-      });
+      service_prefix + "enable", [this, ch](
+                                   const std_srvs::srv::Trigger::Request::SharedPtr request,
+                                   std_srvs::srv::Trigger::Response::SharedPtr response)
+      { this->handle_enable(request, response, ch); });
 
     // Disable service
     handle_disable_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "disable",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_disable(request, response, ch);
-      });
+      service_prefix + "disable", [this, ch](
+                                    const std_srvs::srv::Trigger::Request::SharedPtr request,
+                                    std_srvs::srv::Trigger::Response::SharedPtr response)
+      { this->handle_disable(request, response, ch); });
 
     // Halt service
     handle_halt_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "halt",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_halt(request, response, ch);
-      });
+      service_prefix + "halt", [this, ch](
+                                 const std_srvs::srv::Trigger::Request::SharedPtr request,
+                                 std_srvs::srv::Trigger::Response::SharedPtr response)
+      { this->handle_halt(request, response, ch); });
 
     // Recover service
     handle_recover_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "recover",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_recover(request, response, ch);
-      });
+      service_prefix + "recover", [this, ch](
+                                    const std_srvs::srv::Trigger::Request::SharedPtr request,
+                                    std_srvs::srv::Trigger::Response::SharedPtr response)
+      { this->handle_recover(request, response, ch); });
 
     // Position mode service
-    handle_set_mode_position_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "position_mode",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_set_mode_position(request, response, ch);
-      });
+    handle_set_mode_position_services_[ch] =
+      this->node_->template create_service<std_srvs::srv::Trigger>(
+        service_prefix + "position_mode",
+        [this, ch](
+          const std_srvs::srv::Trigger::Request::SharedPtr request,
+          std_srvs::srv::Trigger::Response::SharedPtr response)
+        { this->handle_set_mode_position(request, response, ch); });
 
     // Velocity mode service
-    handle_set_mode_velocity_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "velocity_mode",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_set_mode_velocity(request, response, ch);
-      });
+    handle_set_mode_velocity_services_[ch] =
+      this->node_->template create_service<std_srvs::srv::Trigger>(
+        service_prefix + "velocity_mode",
+        [this, ch](
+          const std_srvs::srv::Trigger::Request::SharedPtr request,
+          std_srvs::srv::Trigger::Response::SharedPtr response)
+        { this->handle_set_mode_velocity(request, response, ch); });
 
     // Torque mode service
-    handle_set_mode_torque_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "torque_mode",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_set_mode_torque(request, response, ch);
-      });
+    handle_set_mode_torque_services_[ch] =
+      this->node_->template create_service<std_srvs::srv::Trigger>(
+        service_prefix + "torque_mode", [this, ch](
+                                          const std_srvs::srv::Trigger::Request::SharedPtr request,
+                                          std_srvs::srv::Trigger::Response::SharedPtr response)
+        { this->handle_set_mode_torque(request, response, ch); });
 
     // Cyclic velocity mode service
-    handle_set_mode_cyclic_velocity_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "cyclic_velocity_mode",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_set_mode_cyclic_velocity(request, response, ch);
-      });
+    handle_set_mode_cyclic_velocity_services_[ch] =
+      this->node_->template create_service<std_srvs::srv::Trigger>(
+        service_prefix + "cyclic_velocity_mode",
+        [this, ch](
+          const std_srvs::srv::Trigger::Request::SharedPtr request,
+          std_srvs::srv::Trigger::Response::SharedPtr response)
+        { this->handle_set_mode_cyclic_velocity(request, response, ch); });
 
     // Cyclic position mode service
-    handle_set_mode_cyclic_position_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "cyclic_position_mode",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_set_mode_cyclic_position(request, response, ch);
-      });
+    handle_set_mode_cyclic_position_services_[ch] =
+      this->node_->template create_service<std_srvs::srv::Trigger>(
+        service_prefix + "cyclic_position_mode",
+        [this, ch](
+          const std_srvs::srv::Trigger::Request::SharedPtr request,
+          std_srvs::srv::Trigger::Response::SharedPtr response)
+        { this->handle_set_mode_cyclic_position(request, response, ch); });
 
     // Cyclic torque mode service
-    handle_set_mode_cyclic_torque_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "cyclic_torque_mode",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_set_mode_cyclic_torque(request, response, ch);
-      });
+    handle_set_mode_cyclic_torque_services_[ch] =
+      this->node_->template create_service<std_srvs::srv::Trigger>(
+        service_prefix + "cyclic_torque_mode",
+        [this, ch](
+          const std_srvs::srv::Trigger::Request::SharedPtr request,
+          std_srvs::srv::Trigger::Response::SharedPtr response)
+        { this->handle_set_mode_cyclic_torque(request, response, ch); });
 
     // Interpolated position mode service
-    handle_set_mode_interpolated_position_services_[ch] = this->node_->template create_service<std_srvs::srv::Trigger>(
-      service_prefix + "interpolated_position_mode",
-      [this, ch](const std_srvs::srv::Trigger::Request::SharedPtr request,
-                 std_srvs::srv::Trigger::Response::SharedPtr response) {
-        this->handle_set_mode_interpolated_position(request, response, ch);
-      });
+    handle_set_mode_interpolated_position_services_[ch] =
+      this->node_->template create_service<std_srvs::srv::Trigger>(
+        service_prefix + "interpolated_position_mode",
+        [this, ch](
+          const std_srvs::srv::Trigger::Request::SharedPtr request,
+          std_srvs::srv::Trigger::Response::SharedPtr response)
+        { this->handle_set_mode_interpolated_position(request, response, ch); });
 
     // Target service (uses COTargetDouble without channel field, since channel is in service name)
-    handle_set_target_services_[ch] = this->node_->template create_service<canopen_interfaces::srv::COTargetDouble>(
-      service_prefix + "target",
-      [this, ch](const canopen_interfaces::srv::COTargetDouble::Request::SharedPtr request,
-                 canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response) {
-        response->success = this->set_target(request->target, ch);
-      });
+    handle_set_target_services_[ch] =
+      this->node_->template create_service<canopen_interfaces::srv::COTargetDouble>(
+        service_prefix + "target",
+        [this, ch](
+          const canopen_interfaces::srv::COTargetDouble::Request::SharedPtr request,
+          canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response)
+        { response->success = this->set_target(request->target, ch); });
   }
 }
 
@@ -301,7 +303,13 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
 
   // Multi-channel configuration
   num_channels_ = 1;
-  try { num_channels_ = this->config_["num_channels"].as<uint8_t>(); } catch (...) {}
+  try
+  {
+    num_channels_ = this->config_["num_channels"].as<uint8_t>();
+  }
+  catch (...)
+  {
+  }
 
   // Parse channel names
   try
@@ -315,7 +323,9 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
       }
     }
   }
-  catch (...) {}
+  catch (...)
+  {
+  }
 
   // Generate default names if not provided
   if (channel_names_.empty())
@@ -335,28 +345,73 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
       for (size_t i = 0; i < channels_node.size() && i < num_channels_; ++i)
       {
         auto ch = channels_node[i];
-        try { channel_scale_pos_to_dev_.push_back(ch["scale_pos_to_dev"].as<double>()); }
-        catch (...) { channel_scale_pos_to_dev_.push_back(scale_pos_to_dev_); }
-        try { channel_scale_pos_from_dev_.push_back(ch["scale_pos_from_dev"].as<double>()); }
-        catch (...) { channel_scale_pos_from_dev_.push_back(scale_pos_from_dev_); }
-        try { channel_scale_vel_to_dev_.push_back(ch["scale_vel_to_dev"].as<double>()); }
-        catch (...) { channel_scale_vel_to_dev_.push_back(scale_vel_to_dev_); }
-        try { channel_scale_vel_from_dev_.push_back(ch["scale_vel_from_dev"].as<double>()); }
-        catch (...) { channel_scale_vel_from_dev_.push_back(scale_vel_from_dev_); }
-        try { channel_scale_eff_from_dev_.push_back(ch["scale_eff_from_dev"].as<double>()); }
-        catch (...) { channel_scale_eff_from_dev_.push_back(scale_eff_from_dev_); }
-        try { channel_offset_pos_to_dev_.push_back(ch["offset_pos_to_dev"].as<double>()); }
-        catch (...) { channel_offset_pos_to_dev_.push_back(offset_pos_to_dev_); }
-        try { channel_offset_pos_from_dev_.push_back(ch["offset_pos_from_dev"].as<double>()); }
-        catch (...) { channel_offset_pos_from_dev_.push_back(offset_pos_from_dev_); }
+        try
+        {
+          channel_scale_pos_to_dev_.push_back(ch["scale_pos_to_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_pos_to_dev_.push_back(scale_pos_to_dev_);
+        }
+        try
+        {
+          channel_scale_pos_from_dev_.push_back(ch["scale_pos_from_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_pos_from_dev_.push_back(scale_pos_from_dev_);
+        }
+        try
+        {
+          channel_scale_vel_to_dev_.push_back(ch["scale_vel_to_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_vel_to_dev_.push_back(scale_vel_to_dev_);
+        }
+        try
+        {
+          channel_scale_vel_from_dev_.push_back(ch["scale_vel_from_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_vel_from_dev_.push_back(scale_vel_from_dev_);
+        }
+        try
+        {
+          channel_scale_eff_from_dev_.push_back(ch["scale_eff_from_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_eff_from_dev_.push_back(scale_eff_from_dev_);
+        }
+        try
+        {
+          channel_offset_pos_to_dev_.push_back(ch["offset_pos_to_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_offset_pos_to_dev_.push_back(offset_pos_to_dev_);
+        }
+        try
+        {
+          channel_offset_pos_from_dev_.push_back(ch["offset_pos_from_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_offset_pos_from_dev_.push_back(offset_pos_from_dev_);
+        }
       }
     }
   }
-  catch (...) {}
+  catch (...)
+  {
+  }
 
   RCLCPP_INFO(
     this->node_->get_logger(),
-    "num_channels: %u\nscale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
+    "num_channels: %u\nscale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ "
+    "%f\nscale_vel_from_dev_ "
     "%f\nscale_eff_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
     "%f\nhoming_timeout_seconds_ %i\n",
     num_channels_, scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
@@ -458,7 +513,13 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
 
   // Multi-channel configuration
   num_channels_ = 1;
-  try { num_channels_ = this->config_["num_channels"].as<uint8_t>(); } catch (...) {}
+  try
+  {
+    num_channels_ = this->config_["num_channels"].as<uint8_t>();
+  }
+  catch (...)
+  {
+  }
 
   // Parse channel names
   try
@@ -472,7 +533,9 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
       }
     }
   }
-  catch (...) {}
+  catch (...)
+  {
+  }
 
   // Generate default names if not provided
   if (channel_names_.empty())
@@ -492,28 +555,73 @@ void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
       for (size_t i = 0; i < channels_node.size() && i < num_channels_; ++i)
       {
         auto ch = channels_node[i];
-        try { channel_scale_pos_to_dev_.push_back(ch["scale_pos_to_dev"].as<double>()); }
-        catch (...) { channel_scale_pos_to_dev_.push_back(scale_pos_to_dev_); }
-        try { channel_scale_pos_from_dev_.push_back(ch["scale_pos_from_dev"].as<double>()); }
-        catch (...) { channel_scale_pos_from_dev_.push_back(scale_pos_from_dev_); }
-        try { channel_scale_vel_to_dev_.push_back(ch["scale_vel_to_dev"].as<double>()); }
-        catch (...) { channel_scale_vel_to_dev_.push_back(scale_vel_to_dev_); }
-        try { channel_scale_vel_from_dev_.push_back(ch["scale_vel_from_dev"].as<double>()); }
-        catch (...) { channel_scale_vel_from_dev_.push_back(scale_vel_from_dev_); }
-        try { channel_scale_eff_from_dev_.push_back(ch["scale_eff_from_dev"].as<double>()); }
-        catch (...) { channel_scale_eff_from_dev_.push_back(scale_eff_from_dev_); }
-        try { channel_offset_pos_to_dev_.push_back(ch["offset_pos_to_dev"].as<double>()); }
-        catch (...) { channel_offset_pos_to_dev_.push_back(offset_pos_to_dev_); }
-        try { channel_offset_pos_from_dev_.push_back(ch["offset_pos_from_dev"].as<double>()); }
-        catch (...) { channel_offset_pos_from_dev_.push_back(offset_pos_from_dev_); }
+        try
+        {
+          channel_scale_pos_to_dev_.push_back(ch["scale_pos_to_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_pos_to_dev_.push_back(scale_pos_to_dev_);
+        }
+        try
+        {
+          channel_scale_pos_from_dev_.push_back(ch["scale_pos_from_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_pos_from_dev_.push_back(scale_pos_from_dev_);
+        }
+        try
+        {
+          channel_scale_vel_to_dev_.push_back(ch["scale_vel_to_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_vel_to_dev_.push_back(scale_vel_to_dev_);
+        }
+        try
+        {
+          channel_scale_vel_from_dev_.push_back(ch["scale_vel_from_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_vel_from_dev_.push_back(scale_vel_from_dev_);
+        }
+        try
+        {
+          channel_scale_eff_from_dev_.push_back(ch["scale_eff_from_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_scale_eff_from_dev_.push_back(scale_eff_from_dev_);
+        }
+        try
+        {
+          channel_offset_pos_to_dev_.push_back(ch["offset_pos_to_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_offset_pos_to_dev_.push_back(offset_pos_to_dev_);
+        }
+        try
+        {
+          channel_offset_pos_from_dev_.push_back(ch["offset_pos_from_dev"].as<double>());
+        }
+        catch (...)
+        {
+          channel_offset_pos_from_dev_.push_back(offset_pos_from_dev_);
+        }
       }
     }
   }
-  catch (...) {}
+  catch (...)
+  {
+  }
 
   RCLCPP_INFO(
     this->node_->get_logger(),
-    "num_channels: %u\nscale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ %f\nscale_vel_from_dev_ "
+    "num_channels: %u\nscale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ "
+    "%f\nscale_vel_from_dev_ "
     "%f\nscale_eff_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
     "%f\nhoming_timeout_seconds_ %i\n",
     num_channels_, scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
@@ -528,7 +636,7 @@ void NodeCanopen402Driver<NODETYPE>::activate(bool called_from_base)
 {
   NodeCanopenProxyDriver<NODETYPE>::activate(false);
   // Register default modes for all motor instances
-  for (auto& motor : motors_)
+  for (auto & motor : motors_)
   {
     motor->registerDefaultModes();
     motor->set_diagnostic_status_msgs(this->diagnostic_collector_, this->diagnostic_enabled_);
@@ -547,7 +655,7 @@ void NodeCanopen402Driver<NODETYPE>::poll_timer_callback()
 {
   NodeCanopenProxyDriver<NODETYPE>::poll_timer_callback();
   // Handle read/write for all motors
-  for (auto& motor : motors_)
+  for (auto & motor : motors_)
   {
     motor->handleRead();
     motor->handleWrite();
@@ -582,16 +690,21 @@ void NodeCanopen402Driver<NODETYPE>::publish()
       }
     }
 
-    double scale_pos_from_dev = (ch < channel_scale_pos_from_dev_.size()) ?
-                       channel_scale_pos_from_dev_[ch] : scale_pos_from_dev_;
-    double offset_pos_from_dev = (ch < channel_offset_pos_from_dev_.size()) ?
-                        channel_offset_pos_from_dev_[ch] : offset_pos_from_dev_;
-    double scale_vel_from_dev = (ch < channel_scale_vel_from_dev_.size()) ?
-                       channel_scale_vel_from_dev_[ch] : scale_vel_from_dev_;
-    double scale_eff_from_dev = (ch < channel_scale_eff_from_dev_.size()) ?
-                       channel_scale_eff_from_dev_[ch] : scale_eff_from_dev_;
+    double scale_pos_from_dev = (ch < channel_scale_pos_from_dev_.size())
+                                  ? channel_scale_pos_from_dev_[ch]
+                                  : scale_pos_from_dev_;
+    double offset_pos_from_dev = (ch < channel_offset_pos_from_dev_.size())
+                                   ? channel_offset_pos_from_dev_[ch]
+                                   : offset_pos_from_dev_;
+    double scale_vel_from_dev = (ch < channel_scale_vel_from_dev_.size())
+                                  ? channel_scale_vel_from_dev_[ch]
+                                  : scale_vel_from_dev_;
+    double scale_eff_from_dev = (ch < channel_scale_eff_from_dev_.size())
+                                  ? channel_scale_eff_from_dev_[ch]
+                                  : scale_eff_from_dev_;
     js_msg.name.push_back(name);
-    js_msg.position.push_back(motors_[ch]->get_position() * scale_pos_from_dev + offset_pos_from_dev);
+    js_msg.position.push_back(
+      motors_[ch]->get_position() * scale_pos_from_dev + offset_pos_from_dev);
     js_msg.velocity.push_back(motors_[ch]->get_speed() * scale_vel_from_dev);
     js_msg.effort.push_back(motors_[ch]->get_effort() * scale_eff_from_dev);
   }
@@ -606,9 +719,8 @@ void NodeCanopen402Driver<NODETYPE>::add_to_master()
   motors_.clear();
   for (uint8_t ch = 0; ch < num_channels_; ++ch)
   {
-    motors_.push_back(
-      std::make_shared<Motor402>(this->lely_driver_, switching_state_, homing_timeout_seconds_, ch)
-    );
+    motors_.push_back(std::make_shared<Motor402>(
+      this->lely_driver_, switching_state_, homing_timeout_seconds_, ch));
   }
 }
 
@@ -693,7 +805,7 @@ void NodeCanopen402Driver<NODETYPE>::handle_set_target(
   const canopen_interfaces::srv::COTargetDouble::Request::SharedPtr request,
   canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response, const uint8_t channel)
 {
-    response->success = set_target(request->target, channel);
+  response->success = set_target(request->target, channel);
 }
 
 template <class NODETYPE>
@@ -705,7 +817,8 @@ void NodeCanopen402Driver<NODETYPE>::handle_disable(
   {
     response->success = motors_[channel]->handleDisable();
   }
-  else {
+  else
+  {
     response->success = false;
   }
 }
@@ -719,7 +832,8 @@ void NodeCanopen402Driver<NODETYPE>::handle_enable(
   {
     response->success = motors_[channel]->handleEnable();
   }
-  else {
+  else
+  {
     response->success = false;
   }
 }
@@ -731,7 +845,8 @@ bool NodeCanopen402Driver<NODETYPE>::init_motor(uint8_t channel)
   {
     if (channel >= motors_.size())
     {
-      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      RCLCPP_ERROR(
+        this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
       return false;
     }
     return motors_[channel]->handleInit();
@@ -750,7 +865,8 @@ bool NodeCanopen402Driver<NODETYPE>::recover_motor(uint8_t channel)
   {
     if (channel >= motors_.size())
     {
-      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      RCLCPP_ERROR(
+        this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
       return false;
     }
     return motors_[channel]->handleRecover();
@@ -768,7 +884,8 @@ bool NodeCanopen402Driver<NODETYPE>::halt_motor(uint8_t channel)
   {
     if (channel >= motors_.size())
     {
-      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      RCLCPP_ERROR(
+        this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
       return false;
     }
     return motors_[channel]->handleHalt();
@@ -786,7 +903,8 @@ bool NodeCanopen402Driver<NODETYPE>::set_operation_mode(uint16_t mode, uint8_t c
   {
     if (channel >= motors_.size())
     {
-      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      RCLCPP_ERROR(
+        this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
       return false;
     }
 
@@ -809,19 +927,23 @@ bool NodeCanopen402Driver<NODETYPE>::set_target(double target, uint8_t channel)
   {
     if (channel >= motors_.size())
     {
-      RCLCPP_ERROR(this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
+      RCLCPP_ERROR(
+        this->node_->get_logger(), "Invalid channel %u (max %lu)", channel, motors_.size() - 1);
       return false;
     }
 
     auto mode = motors_[channel]->getMode();
 
     // Get per-channel scales/offsets (or use global as fallback)
-    double scale_pos_to_dev = (channel < channel_scale_pos_to_dev_.size()) ?
-                          channel_scale_pos_to_dev_[channel] : scale_pos_to_dev_;
-    double offset_pos_to_dev = (channel < channel_offset_pos_to_dev_.size()) ?
-                           channel_offset_pos_to_dev_[channel] : offset_pos_to_dev_;
-    double scale_vel_to_dev = (channel < channel_scale_vel_to_dev_.size()) ?
-                          channel_scale_vel_to_dev_[channel] : scale_vel_to_dev_;
+    double scale_pos_to_dev = (channel < channel_scale_pos_to_dev_.size())
+                                ? channel_scale_pos_to_dev_[channel]
+                                : scale_pos_to_dev_;
+    double offset_pos_to_dev = (channel < channel_offset_pos_to_dev_.size())
+                                 ? channel_offset_pos_to_dev_[channel]
+                                 : offset_pos_to_dev_;
+    double scale_vel_to_dev = (channel < channel_scale_vel_to_dev_.size())
+                                ? channel_scale_vel_to_dev_[channel]
+                                : scale_vel_to_dev_;
 
     double scaled_target;
     if (
@@ -870,8 +992,12 @@ void NodeCanopen402Driver<NODETYPE>::diagnostic_callback(
   for (size_t ch = 0; ch < motors_.size(); ++ch)
   {
     std::string ch_prefix = "ch" + std::to_string(ch) + "_";
-    stat.add(ch_prefix + "mode", this->diagnostic_collector_->getValue((ch_prefix + "cia402_mode").c_str()));
-    stat.add(ch_prefix + "state", this->diagnostic_collector_->getValue((ch_prefix + "cia402_state").c_str()));
+    stat.add(
+      ch_prefix + "mode",
+      this->diagnostic_collector_->getValue((ch_prefix + "cia402_mode").c_str()));
+    stat.add(
+      ch_prefix + "state",
+      this->diagnostic_collector_->getValue((ch_prefix + "cia402_state").c_str()));
   }
 }
 

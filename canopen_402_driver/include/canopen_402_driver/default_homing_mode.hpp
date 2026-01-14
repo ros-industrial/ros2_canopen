@@ -52,7 +52,9 @@ class DefaultHomingMode : public HomingMode
   }
 
 public:
-  DefaultHomingMode(std::shared_ptr<LelyDriverBridge> driver, int homing_timeout_seconds, uint16_t channel_offset = 0)
+  DefaultHomingMode(
+    std::shared_ptr<LelyDriverBridge> driver, int homing_timeout_seconds,
+    uint16_t channel_offset = 0)
   : homing_timeout_seconds_(homing_timeout_seconds), channel_offset_(channel_offset)
   {
     this->driver = driver;

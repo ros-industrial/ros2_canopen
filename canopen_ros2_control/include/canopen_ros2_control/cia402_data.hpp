@@ -65,13 +65,13 @@ struct Cia402Data
     }
 
     node_id = config["node_id"].as<uint16_t>();
-    
+
     // Get channel parameter (defaults to 0 for backward compatibility)
     if (config["channel"])
     {
       channel = config["channel"].as<uint8_t>();
       RCLCPP_INFO(
-        rclcpp::get_logger(joint_name), "Node id for '%s' is '%u', channel is '%u'", 
+        rclcpp::get_logger(joint_name), "Node id for '%s' is '%u', channel is '%u'",
         joint.name.c_str(), node_id, channel);
     }
     else

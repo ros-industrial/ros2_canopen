@@ -52,7 +52,7 @@ When using ros2_control, the hardware interface must specify the channel for eac
     <param name="can_interface_name">vcan0</param>
     <param name="master_bin"></param>
   </hardware>
-  
+
   <!-- First axis (channel 0) -->
   <joint name="node_2_channel_0">
     <command_interface name="position"/>
@@ -62,7 +62,7 @@ When using ros2_control, the hardware interface must specify the channel for eac
     <param name="node_id">2</param>
     <param name="channel">0</param>  <!-- Channel specification -->
   </joint>
-  
+
   <!-- Second axis (channel 1) -->
   <joint name="node_2_channel_1">
     <command_interface name="position"/>

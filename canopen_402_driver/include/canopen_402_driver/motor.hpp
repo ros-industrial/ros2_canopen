@@ -86,10 +86,7 @@ public:
    * @param base_index The base object dictionary index
    * @return The channel-specific index
    */
-  uint16_t get_channel_index(uint16_t base_index) const
-  {
-    return base_index + channel_offset_;
-  }
+  uint16_t get_channel_index(uint16_t base_index) const { return base_index + channel_offset_; }
 
   uint8_t get_channel() const { return channel_; }
 
@@ -212,11 +209,16 @@ public:
     registerMode<VelocityMode>(MotorBase::Velocity, driver, channel_offset_);
     registerMode<ProfiledVelocityMode>(MotorBase::Profiled_Velocity, driver, channel_offset_);
     registerMode<ProfiledTorqueMode>(MotorBase::Profiled_Torque, driver, channel_offset_);
-    registerMode<DefaultHomingMode>(MotorBase::Homing, driver, homing_timeout_seconds_, channel_offset_);
-    registerMode<InterpolatedPositionMode>(MotorBase::Interpolated_Position, driver, channel_offset_);
-    registerMode<CyclicSynchronousPositionMode>(MotorBase::Cyclic_Synchronous_Position, driver, channel_offset_);
-    registerMode<CyclicSynchronousVelocityMode>(MotorBase::Cyclic_Synchronous_Velocity, driver, channel_offset_);
-    registerMode<CyclicSynchronousTorqueMode>(MotorBase::Cyclic_Synchronous_Torque, driver, channel_offset_);
+    registerMode<DefaultHomingMode>(
+      MotorBase::Homing, driver, homing_timeout_seconds_, channel_offset_);
+    registerMode<InterpolatedPositionMode>(
+      MotorBase::Interpolated_Position, driver, channel_offset_);
+    registerMode<CyclicSynchronousPositionMode>(
+      MotorBase::Cyclic_Synchronous_Position, driver, channel_offset_);
+    registerMode<CyclicSynchronousVelocityMode>(
+      MotorBase::Cyclic_Synchronous_Velocity, driver, channel_offset_);
+    registerMode<CyclicSynchronousTorqueMode>(
+      MotorBase::Cyclic_Synchronous_Torque, driver, channel_offset_);
   }
 
   double get_effort() const

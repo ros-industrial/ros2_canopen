@@ -52,14 +52,21 @@ protected:
   std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_disable_services_;
   std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_halt_services_;
   std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_recover_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_position_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
+    handle_set_mode_position_services_;
   std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_torque_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_velocity_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_cyclic_velocity_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_cyclic_position_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_cyclic_torque_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_interpolated_position_services_;
-  std::vector<rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr> handle_set_target_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
+    handle_set_mode_velocity_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
+    handle_set_mode_cyclic_velocity_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
+    handle_set_mode_cyclic_position_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
+    handle_set_mode_cyclic_torque_services_;
+  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
+    handle_set_mode_interpolated_position_services_;
+  std::vector<rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr>
+    handle_set_target_services_;
 
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr publish_joint_state;
 
@@ -103,26 +110,30 @@ public:
   virtual double get_effort(uint8_t channel = 0)
   {
     if (channel >= motors_.size()) return 0.0;
-    double scale = (channel < channel_scale_eff_from_dev_.size()) ?
-                   channel_scale_eff_from_dev_[channel] : scale_eff_from_dev_;
+    double scale = (channel < channel_scale_eff_from_dev_.size())
+                     ? channel_scale_eff_from_dev_[channel]
+                     : scale_eff_from_dev_;
     return motors_[channel]->get_effort() * scale;
   }
 
   virtual double get_speed(uint8_t channel = 0)
   {
     if (channel >= motors_.size()) return 0.0;
-    double scale = (channel < channel_scale_vel_from_dev_.size()) ?
-                   channel_scale_vel_from_dev_[channel] : scale_vel_from_dev_;
+    double scale = (channel < channel_scale_vel_from_dev_.size())
+                     ? channel_scale_vel_from_dev_[channel]
+                     : scale_vel_from_dev_;
     return motors_[channel]->get_speed() * scale;
   }
 
   virtual double get_position(uint8_t channel = 0)
   {
     if (channel >= motors_.size()) return 0.0;
-    double scale = (channel < channel_scale_pos_from_dev_.size()) ?
-                   channel_scale_pos_from_dev_[channel] : scale_pos_from_dev_;
-    double offset = (channel < channel_offset_pos_from_dev_.size()) ?
-                    channel_offset_pos_from_dev_[channel] : offset_pos_from_dev_;
+    double scale = (channel < channel_scale_pos_from_dev_.size())
+                     ? channel_scale_pos_from_dev_[channel]
+                     : scale_pos_from_dev_;
+    double offset = (channel < channel_offset_pos_from_dev_.size())
+                      ? channel_offset_pos_from_dev_[channel]
+                      : offset_pos_from_dev_;
     return motors_[channel]->get_position() * scale + offset;
   }
 
@@ -358,7 +369,8 @@ public:
    */
   void handle_set_target(
     const canopen_interfaces::srv::COTargetDouble::Request::SharedPtr request,
-    canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response, const uint8_t channel = 0);
+    canopen_interfaces::srv::COTargetDouble::Response::SharedPtr response,
+    const uint8_t channel = 0);
 
   /**
    * @brief Method to set target

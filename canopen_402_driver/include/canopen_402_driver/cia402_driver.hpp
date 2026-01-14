@@ -74,13 +74,22 @@ public:
 
   double get_speed(uint8_t channel = 0) { return node_canopen_402_driver_->get_speed(channel); }
 
-  double get_position(uint8_t channel = 0) { return node_canopen_402_driver_->get_position(channel); }
+  double get_position(uint8_t channel = 0)
+  {
+    return node_canopen_402_driver_->get_position(channel);
+  }
 
-  bool set_target(double target, uint8_t channel = 0) { return node_canopen_402_driver_->set_target(target, channel); }
+  bool set_target(double target, uint8_t channel = 0)
+  {
+    return node_canopen_402_driver_->set_target(target, channel);
+  }
 
   bool init_motor(uint8_t channel = 0) { return node_canopen_402_driver_->init_motor(channel); }
 
-  bool recover_motor(uint8_t channel = 0) { return node_canopen_402_driver_->recover_motor(channel); }
+  bool recover_motor(uint8_t channel = 0)
+  {
+    return node_canopen_402_driver_->recover_motor(channel);
+  }
 
   bool halt_motor(uint8_t channel = 0) { return node_canopen_402_driver_->halt_motor(channel); }
 

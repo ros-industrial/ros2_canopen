@@ -33,8 +33,8 @@ class ModeForwardHelper : public ModeTargetHelper<TYPE>
   uint16_t channel_offset_;  // Channel offset for multi-axis support (CiA 402-2)
 
 public:
-  ModeForwardHelper(std::shared_ptr<LelyDriverBridge> driver, uint16_t channel_offset = 0) 
-    : ModeTargetHelper<TYPE>(ID), channel_offset_(channel_offset)
+  ModeForwardHelper(std::shared_ptr<LelyDriverBridge> driver, uint16_t channel_offset = 0)
+  : ModeTargetHelper<TYPE>(ID), channel_offset_(channel_offset)
   {
     this->driver = driver;
   }
