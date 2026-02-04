@@ -2,8 +2,24 @@
 Changelog for package canopen_ros2_controllers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.2 (2025-12-05)
+------------------
+* Merge pull request `#400 <https://github.com/ros-industrial/ros2_canopen/issues/400>`_ from ros-industrial/fix/proxy_controller
+  Update controllers for ROS Rolling API changes and fix fake slave type handling
+* Enhance command interface error handling and feedback reporting in CanopenProxyController
+* Contributors: Vishnuprasad Prachandabhanu
+
 0.2.9 (2024-04-16)
 ------------------
+
+
+0.3.1 (2025-06-23)
+------------------
+* Add boot timeout and retry
+* Fix command interfaces value missmatch.
+* Fix realtime-tools include header file
+* Include upstream changes from 'master'.
+* Contributors: Gerry Salinas, Marco A. Gutierrez, Vishnuprasad Prachandabhanu
 
 0.3.0 (2024-12-12)
 ------------------

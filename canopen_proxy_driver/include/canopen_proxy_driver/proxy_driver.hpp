@@ -66,6 +66,11 @@ public:
   {
     node_canopen_proxy_driver_->register_rpdo_cb(rpdo_cb);
   }
+
+  void register_emcy_cb(std::function<void(COEmcy, uint8_t)> emcy_cb)
+  {
+    node_canopen_proxy_driver_->register_emcy_cb(emcy_cb);
+  }
 };
 }  // namespace ros2_canopen
 

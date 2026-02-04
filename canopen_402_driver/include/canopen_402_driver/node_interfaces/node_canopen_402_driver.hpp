@@ -42,6 +42,8 @@ protected:
   std::shared_ptr<Motor402> motor_;
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_init_service;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_enable_service;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_disable_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_halt_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_recover_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_position_service;
@@ -57,9 +59,11 @@ protected:
   double scale_pos_from_dev_;
   double scale_vel_to_dev_;
   double scale_vel_from_dev_;
+  double scale_eff_from_dev_;
   double offset_pos_to_dev_;
   double offset_pos_from_dev_;
   ros2_canopen::State402::InternalState switching_state_;
+  int homing_timeout_seconds_;
 
   void publish();
   virtual void poll_timer_callback() override;
@@ -73,6 +77,8 @@ public:
   virtual void activate(bool called_from_base) override;
   virtual void deactivate(bool called_from_base) override;
   virtual void add_to_master() override;
+
+  virtual double get_effort() { return motor_->get_effort() * scale_eff_from_dev_; }
 
   virtual double get_speed() { return motor_->get_speed() * scale_vel_from_dev_; }
 
@@ -93,6 +99,32 @@ public:
    * @param [out] response
    */
   void handle_init(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
+
+  /**
+   * @brief Service Callback to enable device
+   *
+   * Calls Motor402::handleEnable function. Brings motor to enabled
+   * state.
+   *
+   * @param [in] request
+   * @param [out] response
+   */
+  void handle_enable(
+    const std_srvs::srv::Trigger::Request::SharedPtr request,
+    std_srvs::srv::Trigger::Response::SharedPtr response);
+
+  /**
+   * @brief Service Callback to disable device
+   *
+   * Calls Motor402::handleDisable function. Brings motor to switched on
+   * disabled state.
+   *
+   * @param [in] request
+   * @param [out] response
+   */
+  void handle_disable(
     const std_srvs::srv::Trigger::Request::SharedPtr request,
     std_srvs::srv::Trigger::Response::SharedPtr response);
 
