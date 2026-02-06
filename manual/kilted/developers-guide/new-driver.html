@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creating a new device driver &mdash; ros2_canopen 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=efd85694" />
 
@@ -16,8 +16,8 @@
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=d45e8c67"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -199,7 +199,7 @@ use CANopen functionality, these have to be stopped in the deactivate function.<
 </section>
 <section id="ros2-functionality">
 <h4>ROS2 functionality<a class="headerlink" href="#ros2-functionality" title="Link to this heading"></a></h4>
-<p>ROS2 functionlity is available via the <code class="docutils literal notranslate"><span class="pre">node_</span></code> object of the functionality class. This
+<p>ROS2 functionality is available via the <code class="docutils literal notranslate"><span class="pre">node_</span></code> object of the functionality class. This
 object has a templated type and can either be a <code class="docutils literal notranslate"><span class="pre">rclcpp::Node</span></code> or <code class="docutils literal notranslate"><span class="pre">rclcpp_lifecycle::LifecycleNode</span></code>.
 You can use the standard functions like create_timer, create_publisher etc.</p>
 <div class="admonition note">
@@ -309,23 +309,8 @@ The ROS2 wrapper class should always be derived from <code class="docutils liter
 <span class="nb">find_package</span><span class="p">(</span><span class="s">canopen_interfaces</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
 <span class="nb">find_package</span><span class="p">(</span><span class="s">canopen_base_driver</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
 <span class="nb">find_package</span><span class="p">(</span><span class="s">canopen_proxy_driver</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
-<span class="nb">find_package</span><span class="p">(</span><span class="s">lely_core_libraries</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
 <span class="nb">find_package</span><span class="p">(</span><span class="s">std_msgs</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
 <span class="nb">find_package</span><span class="p">(</span><span class="s">std_srvs</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
-
-<span class="nb">set</span><span class="p">(</span><span class="s">dependencies</span>
-<span class="s">rclcpp</span>
-<span class="s">rclcpp_components</span>
-<span class="s">rclcpp_lifecycle</span>
-<span class="s">lifecycle_msgs</span>
-<span class="s">canopen_core</span>
-<span class="s">canopen_interfaces</span>
-<span class="s">canopen_base_driver</span>
-<span class="s">canopen_proxy_driver</span>
-<span class="s">lely_core_libraries</span>
-<span class="s">std_msgs</span>
-<span class="s">std_srvs</span>
-<span class="p">)</span>
 
 <span class="c"># Functionality library</span>
 <span class="nb">add_library</span><span class="p">(</span><span class="s">node_canopen_xxx_driver</span>
@@ -337,9 +322,8 @@ The ROS2 wrapper class should always be derived from <code class="docutils liter
 <span class="o">$&lt;</span><span class="nv">BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include</span><span class="o">&gt;</span>
 <span class="o">$&lt;</span><span class="nv">INSTALL_INTERFACE:include</span><span class="o">&gt;</span><span class="p">)</span>
 
-<span class="nb">ament_target_dependencies</span><span class="p">(</span>
-<span class="s">node_canopen_xxx_driver</span>
-<span class="o">${</span><span class="nv">dependencies</span><span class="o">}</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">node_canopen_xxx_driver</span><span class="w"> </span><span class="s">PUBLIC</span>
+<span class="w">  </span><span class="s">canopen_proxy_driver::node_canopen_proxy_driver</span>
 <span class="p">)</span>
 
 <span class="c"># Lifecycle driver</span>
@@ -352,12 +336,11 @@ The ROS2 wrapper class should always be derived from <code class="docutils liter
 <span class="o">$&lt;</span><span class="nv">BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include</span><span class="o">&gt;</span>
 <span class="o">$&lt;</span><span class="nv">INSTALL_INTERFACE:include</span><span class="o">&gt;</span><span class="p">)</span>
 
-<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">lifecycle_xxx_driver</span>
-<span class="s">node_canopen_xxx_driver</span>
-<span class="p">)</span>
-<span class="nb">ament_target_dependencies</span><span class="p">(</span>
-<span class="s">lifecycle_xxx_driver</span>
-<span class="o">${</span><span class="nv">dependencies</span><span class="o">}</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">lifecycle_xxx_driver</span><span class="w"> </span><span class="s">PUBLIC</span>
+<span class="w">  </span><span class="s">canopen_core::node_canopen_driver</span>
+<span class="w">  </span><span class="s">node_canopen_xxx_driver</span>
+<span class="w">  </span><span class="s">rclcpp_components::component</span>
+<span class="w">  </span><span class="s">rclcpp_lifecycle::rclcpp_lifecycle</span>
 <span class="p">)</span>
 <span class="c"># Causes the visibility macros to use dllexport rather than dllimport,</span>
 <span class="c"># which is appropriate when building the dll but not consuming it.</span>
@@ -376,13 +359,11 @@ The ROS2 wrapper class should always be derived from <code class="docutils liter
 <span class="nb">target_include_directories</span><span class="p">(</span><span class="s">xxx_driver</span><span class="w"> </span><span class="s">PUBLIC</span>
 <span class="o">$&lt;</span><span class="nv">BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include</span><span class="o">&gt;</span>
 <span class="o">$&lt;</span><span class="nv">INSTALL_INTERFACE:include</span><span class="o">&gt;</span><span class="p">)</span>
-<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">xxx_driver</span>
-<span class="s">node_canopen_xxx_driver</span>
-<span class="p">)</span>
 
-<span class="nb">ament_target_dependencies</span><span class="p">(</span>
-<span class="s">xxx_driver</span>
-<span class="o">${</span><span class="nv">dependencies</span><span class="o">}</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">xxx_driver</span><span class="w"> </span><span class="s">PUBLIC</span>
+<span class="w">  </span><span class="s">canopen_core::node_canopen_driver</span>
+<span class="w">  </span><span class="s">node_canopen_xxx_driver</span>
+<span class="w">  </span><span class="s">rclcpp_components::component</span>
 <span class="p">)</span>
 
 <span class="c"># Causes the visibility macros to use dllexport rather than dllimport,</span>
@@ -418,6 +399,17 @@ The ROS2 wrapper class should always be derived from <code class="docutils liter
 <span class="p">)</span>
 <span class="nb">ament_export_targets</span><span class="p">(</span>
 <span class="s">export_</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span>
+<span class="p">)</span>
+<span class="nb">ament_export_dependencies</span><span class="p">(</span>
+<span class="w">  </span><span class="s">canopen_base_driver</span>
+<span class="w">  </span><span class="s">canopen_core</span>
+<span class="w">  </span><span class="s">canopen_interfaces</span>
+<span class="w">  </span><span class="s">canopen_proxy_driver</span>
+<span class="w">  </span><span class="s">rclcpp</span>
+<span class="w">  </span><span class="s">rclcpp_components</span>
+<span class="w">  </span><span class="s">rclcpp_lifecycle</span>
+<span class="w">  </span><span class="s">std_msgs</span>
+<span class="w">  </span><span class="s">std_srvs</span>
 <span class="p">)</span>
 
 <span class="nb">ament_package</span><span class="p">()</span>
