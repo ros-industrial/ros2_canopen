@@ -223,4 +223,4 @@ leveragin ros2_control.
 
 .. code-block:: bash
 
-  ros2 topic pub /joint1/forward_position_controller/command std_msgs/msg/Float64 "data: [1.0, 1.0]"
+  ros2 topic pub /joint_1/forward_position_controller/command std_msgs/msg/Float64 "data: [1.0, 1.0]"
