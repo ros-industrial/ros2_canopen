@@ -16,19 +16,6 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(std_srvs REQUIRED)
-
-set(dependencies
-  canopen_base_driver
-  canopen_core
-  canopen_interfaces
-  canopen_proxy_driver
-  rclcpp
-  rclcpp_lifecycle
-  rclcpp_components
-  sensor_msgs
-  std_srvs
-)
 
 add_library(lely_motion_controller_bridge
   src/motor.cpp
@@ -42,9 +29,9 @@ target_include_directories(lely_motion_controller_bridge PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(
-  lely_motion_controller_bridge
-  ${dependencies}
+target_link_libraries(lely_motion_controller_bridge PUBLIC
+  canopen_base_driver::node_canopen_base_driver
+  rclcpp::rclcpp
 )
 
 
@@ -56,13 +43,11 @@ target_compile_options(node_canopen_cia402_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(node_canopen_cia402_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_link_libraries(node_canopen_cia402_driver
+target_link_libraries(node_canopen_cia402_driver PUBLIC
+  ${canopen_interfaces_TARGETS}
+  ${sensor_msgs_TARGETS}
+  canopen_proxy_driver::node_canopen_proxy_driver
   lely_motion_controller_bridge
-)
-ament_target_dependencies(
-  node_canopen_cia402_driver
-  ${dependencies}
-
 )
 
 add_library(lifecycle_cia402_driver
@@ -74,13 +59,11 @@ target_include_directories(lifecycle_cia402_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(lifecycle_cia402_driver
+target_link_libraries(lifecycle_cia402_driver PUBLIC
+  canopen_core::node_canopen_driver
   node_canopen_cia402_driver
-  lely_motion_controller_bridge
-)
-ament_target_dependencies(
-  lifecycle_cia402_driver
-  ${dependencies}
+  rclcpp_components::component
+  rclcpp_lifecycle::rclcpp_lifecycle
 )
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
@@ -100,14 +83,10 @@ target_compile_options(cia402_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(cia402_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_link_libraries(cia402_driver
+target_link_libraries(cia402_driver PUBLIC
+  canopen_core::node_canopen_driver
   node_canopen_cia402_driver
-  lely_motion_controller_bridge
-)
-
-ament_target_dependencies(
-  cia402_driver
-  ${dependencies}
+  rclcpp_components::component
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,
@@ -148,7 +127,14 @@ ament_export_targets(
   export_${PROJECT_NAME}
 )
 ament_export_dependencies(
-  ${dependencies}
+  canopen_base_driver
+  canopen_core
+  canopen_interfaces
+  canopen_proxy_driver
+  rclcpp
+  rclcpp_components
+  rclcpp_lifecycle
+  sensor_msgs
 )
 
 ament_package()

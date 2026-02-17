@@ -1,9 +1,25 @@
 ament_add_gtest(test_driver_component
 test_driver_component.cpp
 )
-ament_target_dependencies(test_driver_component
-  ${dependencies}
-)
 target_include_directories(test_driver_component PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
+)
+target_link_libraries(test_driver_component
+  ${canopen_interfaces_TARGETS}
+  ${sensor_msgs_TARGETS}
+  canopen_base_driver::base_driver
+  canopen_base_driver::lely_driver_bridge
+  canopen_base_driver::lifecycle_base_driver
+  canopen_base_driver::node_canopen_base_driver
+  canopen_core::device_container
+  canopen_core::node_canopen_driver
+  canopen_core::node_canopen_master
+  canopen_proxy_driver::lifecycle_proxy_driver
+  canopen_proxy_driver::node_canopen_proxy_driver
+  canopen_proxy_driver::proxy_driver
+  rclcpp::rclcpp
+  rclcpp_components::component
+  rclcpp_components::component_manager
+  rclcpp_lifecycle::rclcpp_lifecycle
+  sensor_msgs::sensor_msgs_library
 )

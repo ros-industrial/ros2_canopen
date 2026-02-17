@@ -14,22 +14,6 @@ find_package(canopen_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(std_srvs REQUIRED)
-
-set(dependencies
-  canopen_base_driver
-  canopen_core
-  canopen_interfaces
-  rclcpp
-  rclcpp_components
-  rclcpp_lifecycle
-  std_msgs
-  std_srvs
-)
-
-
-
 
 add_library(node_canopen_proxy_driver
   src/node_interfaces/node_canopen_proxy_driver.cpp
@@ -40,9 +24,8 @@ target_include_directories(node_canopen_proxy_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(
-  node_canopen_proxy_driver
-  ${dependencies}
+target_link_libraries(node_canopen_proxy_driver PUBLIC
+  canopen_base_driver::node_canopen_base_driver
 )
 
 add_library(lifecycle_proxy_driver
@@ -54,12 +37,11 @@ target_include_directories(lifecycle_proxy_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(lifecycle_proxy_driver
+target_link_libraries(lifecycle_proxy_driver PUBLIC
+  canopen_core::node_canopen_driver
   node_canopen_proxy_driver
-)
-ament_target_dependencies(
-  lifecycle_proxy_driver
-  ${dependencies}
+  rclcpp_components::component
+  rclcpp_lifecycle::rclcpp_lifecycle
 )
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
@@ -79,13 +61,10 @@ target_compile_options(proxy_driver PUBLIC -Wl,--no-undefined)
 target_include_directories(proxy_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_link_libraries(proxy_driver
+target_link_libraries(proxy_driver PUBLIC
+  canopen_core::node_canopen_driver
   node_canopen_proxy_driver
-)
-
-ament_target_dependencies(
-  proxy_driver
-  ${dependencies}
+  rclcpp_components::component
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,
@@ -125,7 +104,12 @@ ament_export_targets(
   export_${PROJECT_NAME}
 )
 ament_export_dependencies(
-  ${dependencies}
+  canopen_base_driver
+  canopen_core
+  canopen_interfaces
+  rclcpp
+  rclcpp_components
+  rclcpp_lifecycle
 )
 
 ament_package()
