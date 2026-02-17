@@ -3,7 +3,7 @@
 <package format="3">
   <name>canopen_402_driver</name>
   <version>0.3.2</version>
-  <description>Driiver for devices implementing CIA402 profile</description>
+  <description>Driver for devices implementing CIA402 profile</description>
   <maintainer email="christoph.hellmann.santos@ipa.fraunhofer.de">Christoph Hellmann Santos</maintainer>
   <license>LGPL-v3</license>
 
@@ -18,7 +18,6 @@
   <depend>rclcpp_components</depend>
   <depend>rclcpp_lifecycle</depend>
   <depend>sensor_msgs</depend>
-  <depend>std_srvs</depend>
 
   <test_depend>ament_lint_auto</test_depend>
 
