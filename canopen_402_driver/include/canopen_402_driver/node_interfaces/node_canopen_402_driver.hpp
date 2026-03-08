@@ -20,6 +20,11 @@
 #define NODE_CANOPEN_402_DRIVER
 
 #include <cstdint>
+#include <memory>
+#include <string>
+#include <type_traits>
+#include <vector>
+
 #include "canopen_402_driver/motor.hpp"
 #include "canopen_base_driver/lely_driver_bridge.hpp"
 #include "canopen_interfaces/srv/co_target_double.hpp"
@@ -40,33 +45,40 @@ class NodeCanopen402Driver : public NodeCanopenProxyDriver<NODETYPE>
     "NODETYPE must derive from rclcpp::Node or rclcpp_lifecycle::LifecycleNode");
 
 protected:
-  std::vector<std::shared_ptr<Motor402>> motors_;
+  struct ChannelContext
+  {
+    std::shared_ptr<Motor402> motor;
+
+    // Resolved (effective) per-channel scale/offset values
+    double scale_pos_to_dev{1000.0};
+    double scale_pos_from_dev{0.001};
+    double scale_vel_to_dev{1000.0};
+    double scale_vel_from_dev{0.001};
+    double scale_eff_from_dev{0.001};
+    double offset_pos_to_dev{0.0};
+    double offset_pos_from_dev{0.0};
+
+    // Per-channel service handles (kept alive by owning SharedPtr)
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_init;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_enable;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_disable;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_halt;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_recover;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_position;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_torque;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_velocity;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_velocity;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_position;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_cyclic_torque;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr handle_set_mode_interpolated_position;
+    rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr handle_set_target;
+  };
+
+  std::vector<ChannelContext> channels_;
   uint8_t num_channels_;
   std::vector<std::string> channel_names_;
 
   rclcpp::TimerBase::SharedPtr timer_;
-
-  // Per-channel service handles (Option B: one service per channel)
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_init_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_enable_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_disable_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_halt_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_recover_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
-    handle_set_mode_position_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr> handle_set_mode_torque_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
-    handle_set_mode_velocity_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
-    handle_set_mode_cyclic_velocity_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
-    handle_set_mode_cyclic_position_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
-    handle_set_mode_cyclic_torque_services_;
-  std::vector<rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr>
-    handle_set_mode_interpolated_position_services_;
-  std::vector<rclcpp::Service<canopen_interfaces::srv::COTargetDouble>::SharedPtr>
-    handle_set_target_services_;
 
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr publish_joint_state;
 
@@ -78,15 +90,6 @@ protected:
   double scale_eff_from_dev_;
   double offset_pos_to_dev_;
   double offset_pos_from_dev_;
-
-  // Per-channel scale/offset (optional overrides)
-  std::vector<double> channel_scale_pos_to_dev_;
-  std::vector<double> channel_scale_pos_from_dev_;
-  std::vector<double> channel_scale_vel_to_dev_;
-  std::vector<double> channel_scale_vel_from_dev_;
-  std::vector<double> channel_scale_eff_from_dev_;
-  std::vector<double> channel_offset_pos_to_dev_;
-  std::vector<double> channel_offset_pos_from_dev_;
 
   ros2_canopen::State402::InternalState switching_state_;
   int homing_timeout_seconds_;
@@ -109,38 +112,27 @@ public:
 
   virtual double get_effort(uint8_t channel = 0)
   {
-    if (channel >= motors_.size()) return 0.0;
-    double scale = (channel < channel_scale_eff_from_dev_.size())
-                     ? channel_scale_eff_from_dev_[channel]
-                     : scale_eff_from_dev_;
-    return motors_[channel]->get_effort() * scale;
+    if (channel >= channels_.size() || !channels_[channel].motor) return 0.0;
+    return channels_[channel].motor->get_effort() * channels_[channel].scale_eff_from_dev;
   }
 
   virtual double get_speed(uint8_t channel = 0)
   {
-    if (channel >= motors_.size()) return 0.0;
-    double scale = (channel < channel_scale_vel_from_dev_.size())
-                     ? channel_scale_vel_from_dev_[channel]
-                     : scale_vel_from_dev_;
-    return motors_[channel]->get_speed() * scale;
+    if (channel >= channels_.size() || !channels_[channel].motor) return 0.0;
+    return channels_[channel].motor->get_speed() * channels_[channel].scale_vel_from_dev;
   }
 
   virtual double get_position(uint8_t channel = 0)
   {
-    if (channel >= motors_.size()) return 0.0;
-    double scale = (channel < channel_scale_pos_from_dev_.size())
-                     ? channel_scale_pos_from_dev_[channel]
-                     : scale_pos_from_dev_;
-    double offset = (channel < channel_offset_pos_from_dev_.size())
-                      ? channel_offset_pos_from_dev_[channel]
-                      : offset_pos_from_dev_;
-    return motors_[channel]->get_position() * scale + offset;
+    if (channel >= channels_.size() || !channels_[channel].motor) return 0.0;
+    return channels_[channel].motor->get_position() * channels_[channel].scale_pos_from_dev +
+           channels_[channel].offset_pos_from_dev;
   }
 
   virtual uint16_t get_mode(uint8_t channel = 0)
   {
-    if (channel >= motors_.size()) return 0;
-    return motors_[channel]->getMode();
+    if (channel >= channels_.size() || !channels_[channel].motor) return 0;
+    return channels_[channel].motor->getMode();
   }
 
   /**
