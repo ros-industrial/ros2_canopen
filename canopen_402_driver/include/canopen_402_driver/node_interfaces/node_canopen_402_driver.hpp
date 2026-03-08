@@ -98,6 +98,9 @@ protected:
   virtual void poll_timer_callback() override;
   void diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper & stat) override;
 
+  // Shared configure logic for both rclcpp::Node and rclcpp_lifecycle::LifecycleNode
+  void configure_common();
+
   // Helper to create per-channel services after configure
   void create_per_channel_services();
 

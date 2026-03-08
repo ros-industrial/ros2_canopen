@@ -199,10 +199,10 @@ void NodeCanopen402Driver<NODETYPE>::create_per_channel_services()
   }
 }
 
-template <>
-void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool called_from_base)
+template <class NODETYPE>
+void NodeCanopen402Driver<NODETYPE>::configure_common()
 {
-  NodeCanopenProxyDriver<rclcpp_lifecycle::LifecycleNode>::configure(false);
+  NodeCanopenProxyDriver<NODETYPE>::configure(false);
   std::optional<double> scale_pos_to_dev;
   std::optional<double> scale_pos_from_dev;
   std::optional<double> scale_vel_to_dev;
@@ -214,70 +214,69 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   std::optional<int> homing_timeout_seconds;
   try
   {
-    scale_pos_to_dev = std::optional(this->config_["scale_pos_to_dev"].as<double>());
+    scale_pos_to_dev = std::optional(this->config_["scale_pos_to_dev"].template as<double>());
   }
   catch (...)
   {
   }
   try
   {
-    scale_pos_from_dev = std::optional(this->config_["scale_pos_from_dev"].as<double>());
+    scale_pos_from_dev = std::optional(this->config_["scale_pos_from_dev"].template as<double>());
   }
   catch (...)
   {
   }
   try
   {
-    scale_vel_to_dev = std::optional(this->config_["scale_vel_to_dev"].as<double>());
+    scale_vel_to_dev = std::optional(this->config_["scale_vel_to_dev"].template as<double>());
   }
   catch (...)
   {
   }
   try
   {
-    scale_vel_from_dev = std::optional(this->config_["scale_vel_from_dev"].as<double>());
+    scale_vel_from_dev = std::optional(this->config_["scale_vel_from_dev"].template as<double>());
   }
   catch (...)
   {
   }
   try
   {
-    scale_eff_from_dev = std::optional(this->config_["scale_eff_from_dev"].as<double>());
+    scale_eff_from_dev = std::optional(this->config_["scale_eff_from_dev"].template as<double>());
   }
   catch (...)
   {
   }
   try
   {
-    offset_pos_to_dev = std::optional(this->config_["offset_pos_to_dev"].as<double>());
+    offset_pos_to_dev = std::optional(this->config_["offset_pos_to_dev"].template as<double>());
   }
   catch (...)
   {
   }
   try
   {
-    offset_pos_from_dev = std::optional(this->config_["offset_pos_from_dev"].as<double>());
+    offset_pos_from_dev = std::optional(this->config_["offset_pos_from_dev"].template as<double>());
   }
   catch (...)
   {
   }
   try
   {
-    switching_state = std::optional(this->config_["switching_state"].as<int>());
+    switching_state = std::optional(this->config_["switching_state"].template as<int>());
   }
   catch (...)
   {
   }
   try
   {
-    homing_timeout_seconds = std::optional(this->config_["homing_timeout_seconds"].as<int>());
+    homing_timeout_seconds =
+      std::optional(this->config_["homing_timeout_seconds"].template as<int>());
   }
   catch (...)
   {
   }
 
-  // auto period = this->config_["scale_eff_to_dev"].as<double>();
-  // auto period = this->config_["scale_eff_from_dev"].as<double>();
   scale_pos_to_dev_ = scale_pos_to_dev.value_or(1000.0);
   scale_pos_from_dev_ = scale_pos_from_dev.value_or(0.001);
   scale_vel_to_dev_ = scale_vel_to_dev.value_or(1000.0);
@@ -293,7 +292,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
   num_channels_ = 1;
   try
   {
-    num_channels_ = this->config_["num_channels"].as<uint8_t>();
+    num_channels_ = this->config_["num_channels"].template as<uint8_t>();
   }
   catch (...)
   {
@@ -308,7 +307,7 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
     {
       for (size_t i = 0; i < names_node.size(); ++i)
       {
-        channel_names_.push_back(names_node[i].as<std::string>());
+        channel_names_.push_back(names_node[i].template as<std::string>());
       }
     }
   }
@@ -349,49 +348,49 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
         auto ch = channels_node[i];
         try
         {
-          channels_[i].scale_pos_to_dev = ch["scale_pos_to_dev"].as<double>();
+          channels_[i].scale_pos_to_dev = ch["scale_pos_to_dev"].template as<double>();
         }
         catch (...)
         {
         }
         try
         {
-          channels_[i].scale_pos_from_dev = ch["scale_pos_from_dev"].as<double>();
+          channels_[i].scale_pos_from_dev = ch["scale_pos_from_dev"].template as<double>();
         }
         catch (...)
         {
         }
         try
         {
-          channels_[i].scale_vel_to_dev = ch["scale_vel_to_dev"].as<double>();
+          channels_[i].scale_vel_to_dev = ch["scale_vel_to_dev"].template as<double>();
         }
         catch (...)
         {
         }
         try
         {
-          channels_[i].scale_vel_from_dev = ch["scale_vel_from_dev"].as<double>();
+          channels_[i].scale_vel_from_dev = ch["scale_vel_from_dev"].template as<double>();
         }
         catch (...)
         {
         }
         try
         {
-          channels_[i].scale_eff_from_dev = ch["scale_eff_from_dev"].as<double>();
+          channels_[i].scale_eff_from_dev = ch["scale_eff_from_dev"].template as<double>();
         }
         catch (...)
         {
         }
         try
         {
-          channels_[i].offset_pos_to_dev = ch["offset_pos_to_dev"].as<double>();
+          channels_[i].offset_pos_to_dev = ch["offset_pos_to_dev"].template as<double>();
         }
         catch (...)
         {
         }
         try
         {
-          channels_[i].offset_pos_from_dev = ch["offset_pos_from_dev"].as<double>();
+          channels_[i].offset_pos_from_dev = ch["offset_pos_from_dev"].template as<double>();
         }
         catch (...)
         {
@@ -417,220 +416,15 @@ void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool calle
 }
 
 template <>
+void NodeCanopen402Driver<rclcpp_lifecycle::LifecycleNode>::configure(bool called_from_base)
+{
+  this->configure_common();
+}
+
+template <>
 void NodeCanopen402Driver<rclcpp::Node>::configure(bool called_from_base)
 {
-  NodeCanopenProxyDriver<rclcpp::Node>::configure(false);
-  std::optional<double> scale_pos_to_dev;
-  std::optional<double> scale_pos_from_dev;
-  std::optional<double> scale_vel_to_dev;
-  std::optional<double> scale_vel_from_dev;
-  std::optional<double> scale_eff_from_dev;
-  std::optional<double> offset_pos_to_dev;
-  std::optional<double> offset_pos_from_dev;
-  std::optional<int> switching_state;
-  std::optional<int> homing_timeout_seconds;
-  try
-  {
-    scale_pos_to_dev = std::optional(this->config_["scale_pos_to_dev"].as<double>());
-  }
-  catch (...)
-  {
-  }
-  try
-  {
-    scale_pos_from_dev = std::optional(this->config_["scale_pos_from_dev"].as<double>());
-  }
-  catch (...)
-  {
-  }
-  try
-  {
-    scale_vel_to_dev = std::optional(this->config_["scale_vel_to_dev"].as<double>());
-  }
-  catch (...)
-  {
-  }
-  try
-  {
-    scale_vel_from_dev = std::optional(this->config_["scale_vel_from_dev"].as<double>());
-  }
-  catch (...)
-  {
-  }
-  try
-  {
-    scale_eff_from_dev = std::optional(this->config_["scale_eff_from_dev"].as<double>());
-  }
-  catch (...)
-  {
-  }
-  try
-  {
-    offset_pos_to_dev = std::optional(this->config_["offset_pos_to_dev"].as<double>());
-  }
-  catch (...)
-  {
-  }
-  try
-  {
-    offset_pos_from_dev = std::optional(this->config_["offset_pos_from_dev"].as<double>());
-  }
-  catch (...)
-  {
-  }
-  try
-  {
-    switching_state = std::optional(this->config_["switching_state"].as<int>());
-  }
-  catch (...)
-  {
-  }
-  try
-  {
-    homing_timeout_seconds = std::optional(this->config_["homing_timeout_seconds"].as<int>());
-  }
-  catch (...)
-  {
-  }
-
-  // auto period = this->config_["scale_eff_to_dev"].as<double>();
-  // auto period = this->config_["scale_eff_from_dev"].as<double>();
-  scale_pos_to_dev_ = scale_pos_to_dev.value_or(1000.0);
-  scale_pos_from_dev_ = scale_pos_from_dev.value_or(0.001);
-  scale_vel_to_dev_ = scale_vel_to_dev.value_or(1000.0);
-  scale_vel_from_dev_ = scale_vel_from_dev.value_or(0.001);
-  scale_eff_from_dev_ = scale_eff_from_dev.value_or(0.001);
-  offset_pos_to_dev_ = offset_pos_to_dev.value_or(0.0);
-  offset_pos_from_dev_ = offset_pos_from_dev.value_or(0.0);
-  switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
-    (int)ros2_canopen::State402::InternalState::Operation_Enable);
-  homing_timeout_seconds_ = homing_timeout_seconds.value_or(10);
-
-  // Multi-channel configuration
-  num_channels_ = 1;
-  try
-  {
-    num_channels_ = this->config_["num_channels"].as<uint8_t>();
-  }
-  catch (...)
-  {
-  }
-
-  // Parse channel names
-  channel_names_.clear();
-  try
-  {
-    auto names_node = this->config_["channel_names"];
-    if (names_node.IsDefined() && names_node.IsSequence())
-    {
-      for (size_t i = 0; i < names_node.size(); ++i)
-      {
-        channel_names_.push_back(names_node[i].as<std::string>());
-      }
-    }
-  }
-  catch (...)
-  {
-  }
-
-  // Generate default names if not provided
-  if (channel_names_.empty())
-  {
-    for (uint8_t i = 0; i < num_channels_; ++i)
-    {
-      channel_names_.push_back(std::string(this->node_->get_name()) + "/" + std::to_string(i));
-    }
-  }
-
-  // Resolve per-channel scales/offsets into per-channel contexts
-  channels_.clear();
-  channels_.resize(num_channels_);
-  for (uint8_t i = 0; i < num_channels_; ++i)
-  {
-    channels_[i].scale_pos_to_dev = scale_pos_to_dev_;
-    channels_[i].scale_pos_from_dev = scale_pos_from_dev_;
-    channels_[i].scale_vel_to_dev = scale_vel_to_dev_;
-    channels_[i].scale_vel_from_dev = scale_vel_from_dev_;
-    channels_[i].scale_eff_from_dev = scale_eff_from_dev_;
-    channels_[i].offset_pos_to_dev = offset_pos_to_dev_;
-    channels_[i].offset_pos_from_dev = offset_pos_from_dev_;
-  }
-
-  try
-  {
-    auto channels_node = this->config_["channels"];
-    if (channels_node.IsDefined() && channels_node.IsSequence())
-    {
-      for (size_t i = 0; i < channels_node.size() && i < num_channels_; ++i)
-      {
-        auto ch = channels_node[i];
-        try
-        {
-          channels_[i].scale_pos_to_dev = ch["scale_pos_to_dev"].as<double>();
-        }
-        catch (...)
-        {
-        }
-        try
-        {
-          channels_[i].scale_pos_from_dev = ch["scale_pos_from_dev"].as<double>();
-        }
-        catch (...)
-        {
-        }
-        try
-        {
-          channels_[i].scale_vel_to_dev = ch["scale_vel_to_dev"].as<double>();
-        }
-        catch (...)
-        {
-        }
-        try
-        {
-          channels_[i].scale_vel_from_dev = ch["scale_vel_from_dev"].as<double>();
-        }
-        catch (...)
-        {
-        }
-        try
-        {
-          channels_[i].scale_eff_from_dev = ch["scale_eff_from_dev"].as<double>();
-        }
-        catch (...)
-        {
-        }
-        try
-        {
-          channels_[i].offset_pos_to_dev = ch["offset_pos_to_dev"].as<double>();
-        }
-        catch (...)
-        {
-        }
-        try
-        {
-          channels_[i].offset_pos_from_dev = ch["offset_pos_from_dev"].as<double>();
-        }
-        catch (...)
-        {
-        }
-      }
-    }
-  }
-  catch (...)
-  {
-  }
-
-  RCLCPP_INFO(
-    this->node_->get_logger(),
-    "num_channels: %u\nscale_pos_to_dev_ %f\nscale_pos_from_dev_ %f\nscale_vel_to_dev_ "
-    "%f\nscale_vel_from_dev_ "
-    "%f\nscale_eff_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
-    "%f\nhoming_timeout_seconds_ %i\n",
-    num_channels_, scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
-    scale_eff_from_dev_, offset_pos_to_dev_, offset_pos_from_dev_, homing_timeout_seconds_);
-
-  // Create per-channel services
-  create_per_channel_services();
+  this->configure_common();
 }
 
 template <class NODETYPE>
