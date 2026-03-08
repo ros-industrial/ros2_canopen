@@ -86,8 +86,8 @@ void NodeCanopen402Driver<NODETYPE>::create_per_channel_services()
     std::string service_prefix;
     if (num_channels_ == 1)
     {
-      // Single-channel: no prefix, legacy behavior
-      service_prefix = "";
+      // Single-channel: legacy behavior
+      service_prefix = std::string(this->node_->get_name()) + "/";
     }
     else
     {
