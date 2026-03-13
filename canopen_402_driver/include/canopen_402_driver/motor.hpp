@@ -67,7 +67,8 @@ public:
     monitor_mode_(true),
     state_switch_timeout_(5),
     homing_timeout_seconds_(homing_timeout_seconds),
-    channel_(channel)
+    channel_(channel),
+    effort_support_state_(-1)
   {
     this->driver = driver;
     // Calculate channel offset according to CiA 402-2: base_index + (channel * 0x800)
@@ -223,7 +224,25 @@ public:
 
   double get_effort() const
   {
-    return (double)this->driver->universal_get_value<int16_t>(get_channel_index(0x6077), 0);
+    auto idx = get_channel_index(0x6077);
+    auto state = effort_support_state_.load();
+    if (state <= 0)
+    {
+      if (state == 0)
+      {
+        return 0.0;
+      }
+      bool has_object = this->driver->has_object(idx, 0);
+      effort_support_state_.store(has_object ? 1 : 0);
+      if (!has_object)
+      {
+        RCLCPP_WARN(
+          rclcpp::get_logger("canopen_402_driver"),
+          "Effort interface disabled: object 0x6077:00 not found in EDS/OD.");
+        return 0.0;
+      }
+    }
+    return (double)this->driver->universal_get_value<int16_t>(idx, 0);
   }
   double get_speed() const
   {
@@ -288,6 +307,9 @@ private:
   // Diagnostic components
   std::atomic<bool> enable_diagnostics_;
   std::shared_ptr<DiagnosticsCollector> diag_collector_;
+
+  // -1 unknown, 0 missing, 1 present
+  mutable std::atomic<int> effort_support_state_;
 };
 
 }  // namespace ros2_canopen
