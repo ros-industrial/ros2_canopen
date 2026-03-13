@@ -574,6 +574,14 @@ protected:
 
     if (old_operation_mode.load() != operation_mode.load())
     {
+      // Clear homing-related/ack bits on mode change so new targets are accepted
+      clear_status_bit(SW_Operation_mode_specific0);
+      clear_status_bit(SW_Target_reached);
+      {
+        std::scoped_lock<std::mutex> lock(w_mutex);
+        (*this)[0x6041][0] = status_word;
+        this->TpdoEvent(1);
+      }
       if (profiled_position_mode.joinable())
       {
         RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "Joined profiled_position_mode thread.");
