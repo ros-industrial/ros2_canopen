@@ -1,0 +1,170 @@
+options:
+  dcf_path: "@BUS_CONFIG_PATH@"
+
+master:
+  node_id: 1
+  driver: "ros2_canopen::MasterDriver"
+  package: "canopen_master_driver"
+  sync_period: 10000
+
+# Multi-channel device configuration for CiA 402-2
+# This example shows a device at node_id 2 with two channels (axes)
+nodes:
+  # Single device with two channels
+  cia402_multichannel_device:
+    node_id: 2
+    driver: "ros2_canopen::Cia402Driver"
+    package: "canopen_402_driver"
+    dcf: "cia402_slave_multichannel.eds"
+    period: 10
+    revision_number: 0
+
+    # Multi-channel configuration
+    num_channels: 2  # Number of axes/channels on this device
+
+    # Optional: Custom names for each channel (used in joint_states topic)
+    # If not provided, defaults to <node_name>/0, <node_name>/1, etc.
+    channel_names:
+      - "joint_0"
+      - "joint_1"
+
+    # Global scale factors and offsets (used as defaults for all channels)
+    scale_pos_to_dev: 1000.0       # Convert position from SI units to device units
+    scale_pos_from_dev: 0.001      # Convert position from device units to SI units
+    scale_vel_to_dev: 1000.0       # Convert velocity from SI units to device units
+    scale_vel_from_dev: 0.001      # Convert velocity from device units to SI units
+    offset_pos_to_dev: 0.0         # Offset when converting position to device
+    offset_pos_from_dev: 0.0       # Offset when converting position from device
+
+    # Optional: Per-channel scale factors and offsets (override global settings)
+    # If a channel is not listed, it will use the global values above
+    channels:
+      - # Channel 0 configuration
+        scale_pos_to_dev: 1000.0
+        scale_pos_from_dev: 0.001
+        scale_vel_to_dev: 1000.0
+        scale_vel_from_dev: 0.001
+        offset_pos_to_dev: 0.0
+        offset_pos_from_dev: 0.0
+      - # Channel 1 configuration (different scale for this axis)
+        scale_pos_to_dev: 2000.0
+        scale_pos_from_dev: 0.0005
+        scale_vel_to_dev: 2000.0
+        scale_vel_from_dev: 0.0005
+        offset_pos_to_dev: 10.0
+        offset_pos_from_dev: 5.0
+
+    # Other CIA 402 settings
+    switching_state: 8              # Target state for mode switching (8 = Operation Enable)
+    homing_timeout_seconds: 10      # Timeout for homing operation
+
+
+    # Usage notes:
+    # 1. Service naming depends on num_channels:
+    #    Single-channel (num_channels: 1): /node_name/init, /node_name/target
+    #    Multi-channel (num_channels: 2): /joint_0/init, /joint_1/target, etc.
+    #
+    #    Examples for multi-channel:
+    #    ros2 service call /joint_0/target canopen_interfaces/srv/COTargetDouble "{target: 100.0}"
+    #    ros2 service call /joint_1/target canopen_interfaces/srv/COTargetDouble "{target: 50.0}"
+    #    ros2 service call /joint_0/init std_srvs/srv/Trigger
+    #    ros2 service call /joint_1/enable std_srvs/srv/Trigger
+    #
+    # 2. Joint state publishing:
+    #    Single-channel: name: ["node_name"]
+    #    Multi-channel: name: ["joint_0", "joint_1"]
+    #    Topic: ~/joint_states (sensor_msgs/msg/JointState)
+    #    - position: [pos_ch0, pos_ch1]
+    #    - velocity: [vel_ch0, vel_ch1]
+    #
+    # 3. Multi-channel services use channel_name as prefix:
+    #    - joint_0/init, joint_0/enable, joint_0/target, joint_0/position_mode, etc.
+    #    - joint_1/init, joint_1/enable, joint_1/target, joint_1/position_mode, etc.
+    #
+    # 4. Per-channel diagnostics are available with prefixes: ch0_, ch1_, etc.
+
+    # Example CiA 402-2 Object Dictionary mapping:
+    # Channel 0: Standard indices (0x6040, 0x6041, 0x6060, etc.)
+    # Channel 1: Offset +0x800 (0x6840, 0x6841, 0x6860, etc.)
+    # Channel 2: Offset +0x1000 (0x7040, 0x7041, 0x7060, etc.)
+
+
+    # SDO configuration for both channels
+    # Channel 0 (standard indices 0x6000-0x67FF)
+    # Channel 1 (offset indices 0x6800-0x6FFF)
+    sdo:
+      # Channel 0 configuration
+      - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
+      - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
+      - {index: 0x6081, sub_index: 0, value: 1000}
+      - {index: 0x6083, sub_index: 0, value: 2000}
+
+      # Channel 1 configuration (indices offset by 0x800)
+      - {index: 0x68C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
+      - {index: 0x68C2, sub_index: 2, value: -3} # Set base 10-3s
+      - {index: 0x6881, sub_index: 0, value: 1000}
+      - {index: 0x6883, sub_index: 0, value: 2000}
+
+    # TPDO configuration for both channels
+    tpdo:
+      # Channel 0 TPDOs
+      1:
+        enabled: true
+        cob_id: "auto"
+        transmission: 0x01
+        mapping:
+          - {index: 0x6041, sub_index: 0} # status word channel 0
+          - {index: 0x6061, sub_index: 0} # mode of operation display channel 0
+      2:
+        enabled: true
+        cob_id: "auto"
+        transmission: 0x01
+        mapping:
+          - {index: 0x6064, sub_index: 0} # position actual value channel 0
+          - {index: 0x606c, sub_index: 0} # velocity actual value channel 0
+
+      # Channel 1 TPDOs (indices offset by 0x800)
+      3:
+        enabled: true
+        cob_id: "auto"
+        transmission: 0x01
+        mapping:
+          - {index: 0x6841, sub_index: 0} # status word channel 1
+          - {index: 0x6861, sub_index: 0} # mode of operation display channel 1
+      4:
+        enabled: true
+        cob_id: "auto"
+        transmission: 0x01
+        mapping:
+          - {index: 0x6864, sub_index: 0} # position actual value channel 1
+          - {index: 0x686c, sub_index: 0} # velocity actual value channel 1
+
+    # RPDO configuration for both channels
+    rpdo:
+      # Channel 0 RPDOs
+      1:
+        enabled: true
+        cob_id: "auto"
+        mapping:
+          - {index: 0x6040, sub_index: 0} # controlword channel 0
+          - {index: 0x6060, sub_index: 0} # mode of operation channel 0
+      2:
+        enabled: true
+        cob_id: "auto"
+        mapping:
+          - {index: 0x607A, sub_index: 0} # target position channel 0
+          - {index: 0x60FF, sub_index: 0} # target velocity channel 0
+
+      # Channel 1 RPDOs (indices offset by 0x800)
+      3:
+        enabled: true
+        cob_id: "auto"
+        mapping:
+          - {index: 0x6840, sub_index: 0} # controlword channel 1
+          - {index: 0x6860, sub_index: 0} # mode of operation channel 1
+      4:
+        enabled: true
+        cob_id: "auto"
+        mapping:
+          - {index: 0x687A, sub_index: 0} # target position channel 1
+          - {index: 0x68FF, sub_index: 0} # target velocity channel 1

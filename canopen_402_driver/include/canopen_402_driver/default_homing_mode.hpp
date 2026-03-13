@@ -26,7 +26,8 @@ namespace ros2_canopen
 
 class DefaultHomingMode : public HomingMode
 {
-  const uint16_t index = 0x6098;
+  const uint16_t base_index = 0x6098;
+  uint16_t channel_offset_;  // Channel offset for multi-axis support (CiA 402-2)
   std::shared_ptr<LelyDriverBridge> driver;
 
   std::atomic<bool> execute_;
@@ -51,8 +52,10 @@ class DefaultHomingMode : public HomingMode
   }
 
 public:
-  DefaultHomingMode(std::shared_ptr<LelyDriverBridge> driver, int homing_timeout_seconds)
-  : homing_timeout_seconds_(homing_timeout_seconds)
+  DefaultHomingMode(
+    std::shared_ptr<LelyDriverBridge> driver, int homing_timeout_seconds,
+    uint16_t channel_offset = 0)
+  : homing_timeout_seconds_(homing_timeout_seconds), channel_offset_(channel_offset)
   {
     this->driver = driver;
   }

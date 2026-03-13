@@ -293,7 +293,7 @@ hardware_interface::return_type CanopenSystem::read(
     }
   }
 
-  return hardware_interface::return_type::ERROR;
+  return hardware_interface::return_type::OK;
 }
 
 hardware_interface::return_type CanopenSystem::write(
