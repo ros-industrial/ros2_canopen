@@ -26,9 +26,11 @@
 #include <lely/io2/sys/io.hpp>
 #include <lely/io2/sys/sigset.hpp>
 #include <lely/io2/sys/timer.hpp>
+#include <rclcpp/logging.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
 #include <thread>
+#include "canopen_core/detail/dcf_preprocessor.hpp"
 #include "canopen_core/master_error.hpp"
 #include "canopen_core/node_interfaces/node_canopen_master_interface.hpp"
 
@@ -40,7 +42,7 @@ namespace node_interfaces
  * @brief Node Canopen Master
  *
  * This class implements the NodeCanopenMasterInterface. It provides
- * core functionality and logic for CanopenMaster, indepentently of the
+ * core functionality and logic for CanopenMaster, independently of the
  * ROS node type. Currently rclcpp::Node and rclcpp_lifecycle::LifecycleNode
  * and derived classes are supported. Other node types will lead to compile
  * time error.
@@ -162,6 +164,22 @@ public:
 
     this->config_ = YAML::Load(config);
     this->non_transmit_timeout_ = std::chrono::milliseconds(non_transmit_timeout);
+
+    // Preprocess DCF to resolve relative UploadFile/DownloadFile paths
+    // This enables portable install spaces by converting relative paths to absolute
+    try
+    {
+      std::string preprocessed = detail::preprocess_dcf_to_temp(master_dcf_);
+      RCLCPP_INFO_EXPRESSION(
+        node_->get_logger(), preprocessed != master_dcf_,
+        "Preprocessed DCF file for portable paths: %s -> %s", master_dcf_.c_str(),
+        preprocessed.c_str());
+    }
+    catch (const std::exception & e)
+    {
+      RCLCPP_WARN(
+        node_->get_logger(), "Failed to preprocess DCF file: %s. Using original.", e.what());
+    }
 
     this->configure(true);
     this->configured_.store(true);

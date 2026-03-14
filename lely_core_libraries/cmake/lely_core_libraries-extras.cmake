@@ -16,6 +16,10 @@
 macro(
     generate_dcf
     TARGET)
+    message(DEPRECATION
+        "@BUS_CONFIG_PATH@ in bus.yml is deprecated and might be removed in a future release. "
+        "Use relative paths (e.g., dcf_path: \".\") instead. "
+        "The runtime resolves relative paths to absolute paths automatically.")
     add_custom_target(
         ${TARGET}_prepare ALL
         COMMAND rm -rf ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/*
@@ -29,9 +33,10 @@ macro(
         DEPENDS ${TARGET}_prepare
     )
 
+    # Use relative path "." for portable install spaces
     add_custom_command(
         TARGET ${TARGET} POST_BUILD
-        COMMAND sed 's|@BUS_CONFIG_PATH@|${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}|g'
+        COMMAND sed 's|@BUS_CONFIG_PATH@|.|g'
             ${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}/bus.yml > ${CMAKE_BINARY_DIR}/config/${TARGET}/bus.yml
         COMMAND dcfgen -v -d ${CMAKE_BINARY_DIR}/config/${TARGET}/ -rS ${CMAKE_BINARY_DIR}/config/${TARGET}/bus.yml
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}/
@@ -53,6 +58,10 @@ endmacro()
 macro(
     cogen_dcf
     TARGET)
+    message(DEPRECATION
+        "@BUS_CONFIG_PATH@ in bus.yml is deprecated and might be removed in a future release. "
+        "Use relative paths (e.g., dcf_path: \".\") instead. "
+        "The runtime resolves relative paths to absolute paths automatically.")
     add_custom_target(
         ${TARGET}_prepare ALL
         COMMAND rm -rf ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}/*
@@ -66,10 +75,11 @@ macro(
         DEPENDS ${TARGET}_prepare
     )
 
+    # Use relative path "." for portable install spaces
     add_custom_command(
         TARGET ${TARGET} POST_BUILD
         COMMAND cogen --input-file ${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}/bus.yml --output-file ${CMAKE_BINARY_DIR}/config/${TARGET}/preprocessed_bus.yml
-        COMMAND sed 's|@BUS_CONFIG_PATH@|${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/config/${TARGET}|g'
+        COMMAND sed 's|@BUS_CONFIG_PATH@|.|g'
             ${CMAKE_BINARY_DIR}/config/${TARGET}/preprocessed_bus.yml > ${CMAKE_BINARY_DIR}/config/${TARGET}/bus.yml
         COMMAND dcfgen -v -d ${CMAKE_BINARY_DIR}/config/${TARGET}/ -rS ${CMAKE_BINARY_DIR}/config/${TARGET}/bus.yml
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}/
