@@ -16,6 +16,8 @@
 #include "canopen_core/device_container.hpp"
 #include "canopen_core/device_container_error.hpp"
 
+#include <future>
+
 using namespace ros2_canopen;
 
 void DeviceContainer::set_executor(const std::weak_ptr<rclcpp::Executor> executor)
@@ -212,6 +214,25 @@ void DeviceContainer::configure()
 
 bool DeviceContainer::load_master()
 {
+  // Prove executor is spinning before doing any SDO/lifecycle work.
+  // A zero-delay wall timer fires only when the executor processes it —
+  // if it never fires, the executor thread isn't up yet.
+  {
+    auto promise = std::make_shared<std::promise<void>>();
+    auto future = promise->get_future();
+    auto timer = this->create_wall_timer(
+      std::chrono::milliseconds(0),
+      [promise]() mutable { promise->set_value(); });
+    if (future.wait_for(std::chrono::seconds(5)) == std::future_status::timeout) {
+      timer->cancel();
+      RCLCPP_FATAL(
+        this->get_logger(),
+        "Executor not spinning — timed out after 5s waiting for wall timer to fire");
+      throw DeviceContainerException("Fatal: Executor not spinning before load_master()");
+    }
+    timer->cancel();
+  }
+
   RCLCPP_INFO(this->get_logger(), "Loading Master Configuration.");
   std::vector<std::string> devices;
   uint32_t count = this->config_->get_all_devices(devices);
