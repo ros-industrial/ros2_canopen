@@ -240,7 +240,8 @@ template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::deactivate(bool called_from_base)
 {
   nmt_state_publisher_thread_.join();
-  if (poll_timer_) {
+  if (poll_timer_)
+  {
     poll_timer_->cancel();
   }
   emcy_queue_.reset();
