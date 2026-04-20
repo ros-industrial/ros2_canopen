@@ -514,8 +514,13 @@ void NodeCanopen402Driver<NODETYPE>::add_to_master()
   channels_.resize(num_channels_);
   for (uint8_t ch = 0; ch < num_channels_; ++ch)
   {
+    uint8_t idx = (0 == ch) ? 4 : ch;
+    RCLCPP_INFO(
+            this->node_->get_logger(),
+             "add_to_master() ch %u idx %u"
+             , ch, idx );
     channels_[ch].motor =
-      std::make_shared<Motor402>(this->lely_driver_, switching_state_, homing_timeout_seconds_, ch);
+      std::make_shared<Motor402>(this->lely_driver_, switching_state_, homing_timeout_seconds_, idx);
   }
 }
 
