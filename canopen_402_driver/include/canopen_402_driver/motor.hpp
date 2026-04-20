@@ -68,7 +68,9 @@ public:
     state_switch_timeout_(5),
     homing_timeout_seconds_(homing_timeout_seconds),
     channel_(channel),
-    effort_support_state_(-1)
+    effort_support_state_(-1),
+    speed_support_state_(-1),
+    position_support_idx_(-1)
   {
     this->driver = driver;
     // Calculate channel offset according to CiA 402-2: base_index + (channel * 0x800)
@@ -246,12 +248,59 @@ public:
   }
   double get_speed() const
   {
-    return (double)this->driver->universal_get_value<int32_t>(get_channel_index(0x606C), 0);
+    auto idx = get_channel_index(0x606C);
+    auto state = speed_support_state_.load();
+    if (state <= 0)
+    {
+      if (state == 0)
+      {
+        return 0.0;
+      }
+      bool has_object = this->driver->has_object(idx, 0);
+      speed_support_state_.store(has_object ? 1 : 0);
+      if (!has_object)
+      {
+        RCLCPP_WARN(
+          rclcpp::get_logger("canopen_402_driver"),
+          "speed interface disabled: object 0x%x:00 not found in EDS/OD.", idx);
+        return 0.0;
+      }
+    }
+    return (double)this->driver->universal_get_value<int16_t>(idx, 0);
   }
 
   double get_position() const
   {
-    return (double)this->driver->universal_get_value<int32_t>(get_channel_index(0x6064), 0);
+    auto idx = position_support_idx_.load();
+    if(0 == idx)
+    {
+      return 0.0;
+    }
+    else if(static_cast<uint16_t>(-1) == idx)
+    {
+      auto standard_idx = idx = get_channel_index(0x6064);
+      bool has_object = this->driver->has_object(idx, 0);
+      if(!has_object)
+      {
+         idx = get_channel_index(0x6063);
+         has_object = this->driver->has_object(idx, 0);
+         if(has_object)
+         {
+           RCLCPP_INFO(
+             rclcpp::get_logger("canopen_402_driver"),
+              "position interface: using object 0x%x:00.", idx);
+         }
+      }
+      position_support_idx_.store(has_object ? idx : 0);
+      if(!has_object)
+      {
+        RCLCPP_WARN(
+          rclcpp::get_logger("canopen_402_driver"),
+          "position interface disabled: object 0x%x:00 not found in EDS/OD.", standard_idx);
+        return 0.0;
+      }
+    }
+    return (double)this->driver->universal_get_value<int32_t>(idx, 0);
   }
 
   void set_diagnostic_status_msgs(std::shared_ptr<DiagnosticsCollector> status, bool enable)
@@ -310,6 +359,9 @@ private:
 
   // -1 unknown, 0 missing, 1 present
   mutable std::atomic<int> effort_support_state_;
+  mutable std::atomic<int> speed_support_state_;
+  // -1 unknown, 0 missing, otherwise index
+  mutable std::atomic<uint16_t> position_support_idx_;
 };
 
 }  // namespace ros2_canopen
