@@ -75,6 +75,8 @@ public:
     lifecycle_operation_ = false;
   }
 
+  ~DeviceContainer() override { shutdown(); }
+
   /**
    * @brief Executes the initialisation
    *

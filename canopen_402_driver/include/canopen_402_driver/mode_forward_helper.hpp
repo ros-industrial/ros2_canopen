@@ -30,9 +30,11 @@ template <uint16_t ID, typename TYPE, uint16_t OBJ, uint8_t SUB, uint16_t CW_MAS
 class ModeForwardHelper : public ModeTargetHelper<TYPE>
 {
   std::shared_ptr<LelyDriverBridge> driver;
+  uint16_t channel_offset_;  // Channel offset for multi-axis support (CiA 402-2)
 
 public:
-  ModeForwardHelper(std::shared_ptr<LelyDriverBridge> driver) : ModeTargetHelper<TYPE>(ID)
+  ModeForwardHelper(std::shared_ptr<LelyDriverBridge> driver, uint16_t channel_offset = 0)
+  : ModeTargetHelper<TYPE>(ID), channel_offset_(channel_offset)
   {
     this->driver = driver;
   }
@@ -43,7 +45,8 @@ public:
     {
       cw = cw.get() | CW_MASK;
 
-      driver->universal_set_value<TYPE>(OBJ, SUB, this->getTarget());
+      // Apply channel offset to object dictionary index
+      driver->universal_set_value<TYPE>(OBJ + channel_offset_, SUB, this->getTarget());
       return true;
     }
     else

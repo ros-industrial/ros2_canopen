@@ -33,6 +33,7 @@ namespace canopen_ros2_control
 struct Cia402Data
 {
   uint8_t node_id;
+  uint8_t channel = 0;  // Channel for multi-axis support (0 for single-axis, 1+ for multi-axis)
   std::string joint_name;
   std::shared_ptr<ros2_canopen::Cia402Driver> driver;
   std::map<std::string, ros2_canopen::MotorBase::OperationMode> command_interface_to_operation_mode;
@@ -64,8 +65,20 @@ struct Cia402Data
     }
 
     node_id = config["node_id"].as<uint16_t>();
-    RCLCPP_ERROR(
-      rclcpp::get_logger(joint_name), "Node id for '%s' is '%u'", joint.name.c_str(), node_id);
+
+    // Get channel parameter (defaults to 0 for backward compatibility)
+    if (config["channel"])
+    {
+      channel = config["channel"].as<uint8_t>();
+      RCLCPP_INFO(
+        rclcpp::get_logger(joint_name), "Node id for '%s' is '%u', channel is '%u'",
+        joint.name.c_str(), node_id, channel);
+    }
+    else
+    {
+      RCLCPP_ERROR(
+        rclcpp::get_logger(joint_name), "Node id for '%s' is '%u'", joint.name.c_str(), node_id);
+    }
 
     if (config["position_mode"])
     {
