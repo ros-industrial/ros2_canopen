@@ -33,6 +33,7 @@ namespace canopen_ros2_control
 struct Cia402Data
 {
   uint8_t node_id;
+  uint8_t channel = 0;  // Channel for multi-axis support (0 for single-axis, 1+ for multi-axis)
   std::string joint_name;
   std::shared_ptr<ros2_canopen::Cia402Driver> driver;
   std::map<std::string, ros2_canopen::MotorBase::OperationMode> command_interface_to_operation_mode;
@@ -45,6 +46,7 @@ struct Cia402Data
   // FROM MOTOR
   double actual_position = std::numeric_limits<double>::quiet_NaN();
   double actual_velocity = std::numeric_limits<double>::quiet_NaN();
+  double actual_effort = std::numeric_limits<double>::quiet_NaN();
 
   // TO MOTOR
   double target_position = std::numeric_limits<double>::quiet_NaN();
@@ -63,8 +65,20 @@ struct Cia402Data
     }
 
     node_id = config["node_id"].as<uint16_t>();
-    RCLCPP_ERROR(
-      rclcpp::get_logger(joint_name), "Node id for '%s' is '%u'", joint.name.c_str(), node_id);
+
+    // Get channel parameter (defaults to 0 for backward compatibility)
+    if (config["channel"])
+    {
+      channel = config["channel"].as<uint8_t>();
+      RCLCPP_INFO(
+        rclcpp::get_logger(joint_name), "Node id for '%s' is '%u', channel is '%u'",
+        joint.name.c_str(), node_id, channel);
+    }
+    else
+    {
+      RCLCPP_ERROR(
+        rclcpp::get_logger(joint_name), "Node id for '%s' is '%u'", joint.name.c_str(), node_id);
+    }
 
     if (config["position_mode"])
     {
@@ -107,6 +121,10 @@ struct Cia402Data
     // actual speed
     state_interfaces.emplace_back(hardware_interface::StateInterface(
       joint_name, hardware_interface::HW_IF_VELOCITY, &actual_velocity));
+
+    // actual effort
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      joint_name, hardware_interface::HW_IF_EFFORT, &actual_effort));
   }
 
   void export_command_interface(
@@ -144,6 +162,7 @@ struct Cia402Data
   {
     actual_position = driver->get_position();
     actual_velocity = driver->get_speed();
+    actual_effort = driver->get_effort();
   }
 
   void write_target()

@@ -2,8 +2,39 @@
 Changelog for package canopen_fake_slaves
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.2 (2025-12-05)
+------------------
+* `#400 <https://github.com/ros-industrial/ros2_canopen/issues/400>`_: Update controllers for ROS Rolling API changes and fix fake slave type handling
+* Refactor GetValue method to use std::type_index for type comparisons
+* `motion_generator` as shared library (`#295 <https://github.com/ros-industrial/ros2_canopen/issues/295>`_)
+* Enhance SimpleSlave class with vendor ID parsing and adjust bus configuration timeouts
+* Multiple SDO types for slaves (`#278 <https://github.com/ros-industrial/ros2_canopen/issues/278>`_)
+  Co-authored-by: Kurtis Thrush <kthrush@jlg.com>
+  Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
+* Contributors: Christoph Hellmann Santos, Patrick Roncagliolo, Vishnuprasad Prachandabhanu
+
 0.2.9 (2024-04-16)
 ------------------
+
+0.3.1 (2025-06-23)
+------------------
+* Add boot timeout and retry
+* Add suported modes to `canopen_fake_slaves` README (`#337 <https://github.com/ros-industrial/ros2_canopen/issues/337>`_)
+* Contributors: Gerry Salinas, Patrick Roncagliolo, Vishnuprasad Prachandabhanu
+
+0.3.0 (2024-12-12)
+------------------
+* fix loop timer for run_velocity_mode
+* Fix clang format
+* Add comments for the fake slave function
+* Fix the thread issue.
+* Apply suggestions from code review
+  Co-authored-by: Dr. Denis <denis@stoglrobotics.de>
+* Working version.
+* Periodic messages sent, but not received properly.
+* Working logic. Still have to work on the edf file.
+* Put the periodic messages in OnWrite
+* Extend fake_slaves to publish messages via rpdo
 
 0.2.12 (2024-04-22)
 -------------------
@@ -20,7 +51,6 @@ Changelog for package canopen_fake_slaves
   * Add simple sequence homing emulation
   * Add fake velocity mode
   * Formatting
-  ---------
 * Add simple sequence homing emulation (`#229 <https://github.com/ros-industrial/ros2_canopen/issues/229>`_)
 * Contributors: Christoph Hellmann Santos
 

@@ -12,12 +12,16 @@ find_package(lifecycle_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 
-set(dependencies
-  lely_core_libraries
-  lifecycle_msgs
-  rclcpp
-  rclcpp_lifecycle
+add_library(
+  motion_generator
+  SHARED
+  "src/motion_generator.cpp"
 )
+target_compile_features(motion_generator  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(motion_generator  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
 
 add_executable(
   basic_slave_node
@@ -27,28 +31,37 @@ add_executable(
 target_compile_features(basic_slave_node  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_include_directories(basic_slave_node  PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
-ament_target_dependencies(
-  basic_slave_node
-  ${dependencies}
+  $<INSTALL_INTERFACE:include>
+  ${lely_core_libraries_INCLUDE_DIRS}
+)
+target_link_libraries(basic_slave_node PUBLIC
+  ${lely_core_libraries_LIBRARIES}
+  ${lifecycle_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
 )
 
 
 add_executable(
   cia402_slave_node
   "src/cia402_slave.cpp"
-  "src/motion_generator.cpp"
 )
 target_compile_features(cia402_slave_node  PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_include_directories(cia402_slave_node  PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
-ament_target_dependencies(
-  cia402_slave_node
-  ${dependencies}
+  $<INSTALL_INTERFACE:include>
+  ${lely_core_libraries_INCLUDE_DIRS}
 )
+target_link_libraries(cia402_slave_node PUBLIC
+  ${lely_core_libraries_LIBRARIES}
+  ${lifecycle_msgs_TARGETS}
+  motion_generator
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
+)
+
+install(TARGETS motion_generator
+DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS basic_slave_node
   DESTINATION lib/${PROJECT_NAME})
@@ -88,7 +101,10 @@ ament_export_include_directories(
 )
 
 ament_export_dependencies(
-  ${dependencies}
+  lely_core_libraries
+  lifecycle_msgs
+  rclcpp
+  rclcpp_lifecycle
 )
 
 ament_package()

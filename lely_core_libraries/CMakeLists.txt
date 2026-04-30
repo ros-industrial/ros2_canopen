@@ -11,7 +11,7 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"  # Installation prefix
   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/build
   GIT_REPOSITORY https://gitlab.com/lely_industries/lely-core.git
-  GIT_TAG b63a0b6f79d3ea91dc221724b42dae49894449fc
+  GIT_TAG fb735b79cab5f0cdda45bc5087414d405ef8f3ab
   TIMEOUT 60
   #UPDATE step apply patch to fix dcf-tools install
   UPDATE_COMMAND
@@ -47,7 +47,7 @@ install(
     USE_SOURCE_PERMISSIONS)
 
 ament_export_include_directories(include)
-ament_export_libraries(lely-can lely-co lely-coapp lely-ev lely-io2 lely-io lely-libc lely-tap lely-util)
+ament_export_libraries(lely-can lely-co lely-coapp lely-ev lely-io2 lely-libc lely-tap lely-util)
 ament_package(
   CONFIG_EXTRAS
   "cmake/lely_core_libraries-extras.cmake"

@@ -53,7 +53,8 @@ bool DefaultHomingMode::write(Mode::OpModeAccesser & cw)
 
 bool DefaultHomingMode::executeHoming()
 {
-  int hmode = driver->universal_get_value<int8_t>(index, 0x0);
+  // Apply channel offset to object dictionary index
+  int hmode = driver->universal_get_value<int8_t>(base_index + channel_offset_, 0x0);
   if (hmode == 0)
   {
     return true;
@@ -87,8 +88,11 @@ bool DefaultHomingMode::executeHoming()
     return error("homing error at start");
   }
 
+  //  std::chrono::steady_clock::time_point finish_time =
+  //    std::chrono::steady_clock::now() + std::chrono::seconds(10);  //
+  //
   std::chrono::steady_clock::time_point finish_time =
-    std::chrono::steady_clock::now() + std::chrono::seconds(10);  //
+    std::chrono::steady_clock::now() + std::chrono::seconds(homing_timeout_seconds_);  //
 
   // wait for attained
   if (!cond_.wait_until(

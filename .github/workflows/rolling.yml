@@ -1,4 +1,4 @@
-name: Industrial CI Rolling
+name: Industrial CI
 
 on:
   push:
@@ -10,16 +10,21 @@ on:
 jobs:
   industrial_ci:
     name: ROS ${{ matrix.ROS_DISTRO }} (${{ matrix.ROS_REPO }})
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        ROS_DISTRO: [rolling]
-        ROS_REPO: [testing]
+        include:
+          - ROS_DISTRO: rolling
+            ROS_REPO: testing
+          - ROS_DISTRO: jazzy
+            ROS_REPO: testing
+          - ROS_DISTRO: kilted
+            ROS_REPO: testing
     env:
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/cache@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -27,6 +32,7 @@ jobs:
           restore-keys: |
             ccache-${{ matrix.ROS_DISTRO }}-${{ matrix.ROS_REPO }}-
       - uses: 'ros-industrial/industrial_ci@master'
+        if: ${{ github.event_name != 'pull_request' || matrix.ROS_DISTRO == 'rolling' }}
         env:
           BEFORE_INSTALL_TARGET_DEPENDENCIES: 'sudo apt-get update'
           AFTER_BUILD_TARGET_WORKSPACE: 'set +u && COLCON_TRACE=0 AMENT_TRACE_SETUP_FILES=0 source /root/target_ws/install/setup.bash && set -u'

@@ -92,7 +92,7 @@ class LaunchTestNode(Node):
             process=process, expected_output=expected_output
         )
 
-    def subscribe_and_wait_for_message(self, topic: str, msg_type, msg, timeout: float = 1.0):
+    def subscribe_and_wait_for_message(self, topic: str, msg_type, msg, timeout: float = 2.5):
         condition = Condition()
         self.received = False
 

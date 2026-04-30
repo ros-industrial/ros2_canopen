@@ -28,18 +28,6 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 include(ConfigExtras.cmake)
 
-set(dependencies
-  canopen_interfaces
-  lely_core_libraries
-  lifecycle_msgs
-  rclcpp
-  rclcpp_components
-  rclcpp_lifecycle
-  yaml_cpp_vendor
-  Boost
-)
-
-
 add_library(node_canopen_driver
   SHARED
   src/node_interfaces/node_canopen_driver.cpp
@@ -51,14 +39,14 @@ target_compile_options(node_canopen_driver PUBLIC -fPIC -Wl,--no-undefined)
 target_include_directories(node_canopen_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
+  ${lely_core_libraries_INCLUDE_DIRS}
 )
-ament_target_dependencies(node_canopen_driver
-  rclcpp
-  rclcpp_lifecycle
-  lely_core_libraries
-  yaml_cpp_vendor
-  canopen_interfaces
-  Boost
+target_link_libraries(node_canopen_driver PUBLIC
+  ${canopen_interfaces_TARGETS}
+  ${lely_core_libraries_LIBRARIES}
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
+  yaml-cpp
 )
 
 add_library(node_canopen_master
@@ -72,14 +60,14 @@ target_compile_options(node_canopen_master PUBLIC -fPIC -Wl,--no-undefined)
 target_include_directories(node_canopen_master PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
+  ${lely_core_libraries_INCLUDE_DIRS}
 )
-ament_target_dependencies(node_canopen_master
-  rclcpp
-  rclcpp_lifecycle
-  lely_core_libraries
-  yaml_cpp_vendor
-  canopen_interfaces
-  Boost
+target_link_libraries(node_canopen_master PUBLIC
+  ${canopen_interfaces_TARGETS}
+  ${lely_core_libraries_LIBRARIES}
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
+  yaml-cpp
 )
 
 
@@ -96,30 +84,30 @@ target_include_directories(device_container PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-ament_target_dependencies(device_container
-  rclcpp
-  rclcpp_lifecycle
-  lely_core_libraries
-  yaml_cpp_vendor
-  canopen_interfaces
-  rclcpp_components
-)
-target_link_libraries(device_container
-  node_canopen_master
+target_link_libraries(device_container PUBLIC
+  ${canopen_interfaces_TARGETS}
   node_canopen_driver
+  node_canopen_master
+  rclcpp::rclcpp
+  rclcpp_components::component
+  rclcpp_components::component_manager
+  rclcpp_lifecycle::rclcpp_lifecycle
   yaml-cpp
 )
 
 add_executable(device_container_node
   src/device_container_node.cpp
 )
-target_link_libraries(device_container_node
+target_link_libraries(device_container_node PUBLIC
+  ${canopen_interfaces_TARGETS}
+  ${lifecycle_msgs_TARGETS}
   device_container
-  node_canopen_master
   node_canopen_driver
-)
-ament_target_dependencies(device_container_node
-  ${dependencies}
+  node_canopen_master
+  rclcpp::rclcpp
+  rclcpp_components::component
+  rclcpp_components::component_manager
+  rclcpp_lifecycle::rclcpp_lifecycle
 )
 target_include_directories(device_container_node PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
@@ -171,7 +159,14 @@ ament_export_targets(
 )
 
 ament_export_dependencies(
-  ${dependencies}
+  Boost
+  canopen_interfaces
+  lely_core_libraries
+  lifecycle_msgs
+  rclcpp
+  rclcpp_components
+  rclcpp_lifecycle
+  yaml_cpp_vendor
 )
 
 # https://github.com/ament/ament_cmake/blob/e78ed7e084489c2a48cb91dec9da92c13e9653c9/ament_cmake_core/cmake/core/ament_package.cmake#L24-L32

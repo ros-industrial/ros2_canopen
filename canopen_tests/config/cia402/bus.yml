@@ -13,6 +13,7 @@ defaults:
   package: "canopen_402_driver"
   period: 10
   revision_number: 0
+  boot_timeout_ms: 1000
   sdo:
     - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
     - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s
@@ -54,13 +55,14 @@ defaults:
 nodes:
   cia402_device_1:
     node_id: 2
-  cia402_device_2:
-    node_id: 3
-  cia402_device_3:
-    node_id: 4
-  cia402_device_4:
-    node_id: 5
-  cia402_device_5:
-    node_id: 6
-  cia402_device_6:
-    node_id: 7
+    namespace: "/test1"
+  # cia402_device_2:
+  #   node_id: 3
+  # cia402_device_3:
+  #   node_id: 4
+  # cia402_device_4:
+  #   node_id: 5
+  # cia402_device_5:
+  #   node_id: 6
+  # cia402_device_6:
+  #   node_id: 7

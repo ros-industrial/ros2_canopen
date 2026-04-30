@@ -16,6 +16,7 @@
 
 #ifndef CANOPEN_402_DRIVER__402_DRIVER_HPP_
 #define CANOPEN_402_DRIVER__402_DRIVER_HPP_
+#include <cstdint>
 #include "canopen_402_driver/node_interfaces/node_canopen_402_driver.hpp"
 #include "canopen_core/driver_node.hpp"
 
@@ -69,40 +70,34 @@ public:
     node_canopen_402_driver_->register_rpdo_cb(rpdo_cb);
   }
 
-  double get_speed() { return node_canopen_402_driver_->get_speed(); }
+  double get_effort(uint8_t channel = 0) { return node_canopen_402_driver_->get_effort(channel); }
 
-  double get_position() { return node_canopen_402_driver_->get_position(); }
+  double get_speed(uint8_t channel = 0) { return node_canopen_402_driver_->get_speed(channel); }
 
-  bool set_target(double target) { return node_canopen_402_driver_->set_target(target); }
-
-  bool init_motor() { return node_canopen_402_driver_->init_motor(); }
-
-  bool recover_motor() { return node_canopen_402_driver_->recover_motor(); }
-
-  bool halt_motor() { return node_canopen_402_driver_->halt_motor(); }
-
-  bool set_mode_position() { return node_canopen_402_driver_->set_mode_position(); }
-
-  bool set_mode_velocity() { return node_canopen_402_driver_->set_mode_velocity(); }
-
-  bool set_mode_cyclic_position() { return node_canopen_402_driver_->set_mode_cyclic_position(); }
-
-  bool set_mode_cyclic_velocity() { return node_canopen_402_driver_->set_mode_cyclic_velocity(); }
-
-  bool set_mode_torque() { return node_canopen_402_driver_->set_mode_torque(); }
-
-  bool set_mode_cyclic_torque() { return node_canopen_402_driver_->set_mode_cyclic_torque(); }
-
-  bool set_mode_interpolated_position()
+  double get_position(uint8_t channel = 0)
   {
-    return node_canopen_402_driver_->set_mode_interpolated_position();
+    return node_canopen_402_driver_->get_position(channel);
   }
 
-  uint16_t get_mode() { return node_canopen_402_driver_->get_mode(); }
-
-  bool set_operation_mode(uint16_t mode)
+  bool set_target(double target, uint8_t channel = 0)
   {
-    return node_canopen_402_driver_->set_operation_mode(mode);
+    return node_canopen_402_driver_->set_target(target, channel);
+  }
+
+  bool init_motor(uint8_t channel = 0) { return node_canopen_402_driver_->init_motor(channel); }
+
+  bool recover_motor(uint8_t channel = 0)
+  {
+    return node_canopen_402_driver_->recover_motor(channel);
+  }
+
+  bool halt_motor(uint8_t channel = 0) { return node_canopen_402_driver_->halt_motor(channel); }
+
+  uint16_t get_mode(uint8_t channel = 0) { return node_canopen_402_driver_->get_mode(channel); }
+
+  bool set_operation_mode(uint16_t mode, uint8_t channel = 0)
+  {
+    return node_canopen_402_driver_->set_operation_mode(mode, channel);
   }
 };
 }  // namespace ros2_canopen

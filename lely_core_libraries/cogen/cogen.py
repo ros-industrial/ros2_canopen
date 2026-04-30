@@ -65,7 +65,7 @@ def main():
     for node_name in nodes:
         modified_file[node_name] = nodes[node_name]
 
-    with open(args.output_file, mode="wt") as output:
+    with open(args.output_file, mode="w") as output:
         yaml.dump(modified_file, output)
 
     return

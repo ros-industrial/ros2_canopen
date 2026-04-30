@@ -61,6 +61,7 @@ struct MotorNodeData
   // feedback
   double actual_position;
   double actual_speed;
+  double actual_effort;
 
   // basic control
   MotorTriggerCommand init;
@@ -88,7 +89,8 @@ public:
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
   ~Cia402System() = default;
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo & info);
+  hardware_interface::CallbackReturn on_init(
+    const hardware_interface::HardwareComponentInterfaceParams & params);
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
   hardware_interface::CallbackReturn on_configure(const rclcpp_lifecycle::State & previous_state);
@@ -113,16 +115,28 @@ public:
 
 protected:
   // can stuff
-  std::map<uint, MotorNodeData> motor_data_;
+  // Map from (node_id, channel) to motor data for multi-channel support
+  // channel 0 is used for single-channel devices for backward compatibility
+  std::map<std::pair<uint, uint>, MotorNodeData> motor_data_;
+
+  // Helper to get motor data key
+  std::pair<uint, uint> getMotorKey(uint node_id, uint channel = 0) const
+  {
+    return std::make_pair(node_id, channel);
+  }
 
 private:
-  void switchModes(uint id, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver);
+  void switchModes(
+    uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver);
 
-  void handleInit(uint id, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver);
+  void handleInit(
+    uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver);
 
-  void handleRecover(uint id, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver);
+  void handleRecover(
+    uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver);
 
-  void handleHalt(uint id, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver);
+  void handleHalt(
+    uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver);
 
   void initDeviceContainer();
 };
