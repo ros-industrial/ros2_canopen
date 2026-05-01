@@ -48,7 +48,6 @@ ROS2 Controllers
 ----------------
 This package provides multiple controllers for testing. Mainly the following:
 
-- canopen_ros2_controllers/Cia402RobotController: Works with Robot System Interface
 - canopen_ros2_controllers/Cia402DeviceController: Works with Cia402System
 - canopen_ros2_controllers/CanopenProxyController: Works with CanopenSystem and Cia402System
 

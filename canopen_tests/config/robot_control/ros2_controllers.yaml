@@ -4,19 +4,8 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    robot_controller:
-      type: canopen_ros2_controllers/Cia402RobotController
-
     forward_position_controller:
       type: forward_command_controller/ForwardCommandController
-
-robot_controller:
-  ros__parameters:
-    joints:
-      - joint1
-      - joint2
-    operation_mode: 1
-    command_poll_freq: 5
 
 forward_position_controller:
   ros__parameters:
