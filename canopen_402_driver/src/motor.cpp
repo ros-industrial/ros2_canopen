@@ -383,7 +383,7 @@ bool Motor402::handleInit()
   if (!m)
   {
     std::cout << "Homeing mode not supported" << std::endl;
-     // homing not supported => switch MotorBase::No_Mode
+    // homing not supported => switch MotorBase::No_Mode
   }
   else
   {

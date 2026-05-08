@@ -408,8 +408,9 @@ void NodeCanopen402Driver<NODETYPE>::configure_common()
     "%f\nscale_vel_from_dev_ "
     "%f\nscale_eff_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
     "%f\nhoming_timeout_seconds_ %i\n",
-    num_channels_, scale_pos_to_dev_value, scale_pos_from_dev_value, scale_vel_to_dev_value, scale_vel_from_dev_value,
-    scale_eff_from_dev_value, offset_pos_to_dev_value, offset_pos_from_dev_value, homing_timeout_seconds_);
+    num_channels_, scale_pos_to_dev_value, scale_pos_from_dev_value, scale_vel_to_dev_value,
+    scale_vel_from_dev_value, scale_eff_from_dev_value, offset_pos_to_dev_value,
+    offset_pos_from_dev_value, homing_timeout_seconds_);
 
   // Create per-channel services
   create_per_channel_services();

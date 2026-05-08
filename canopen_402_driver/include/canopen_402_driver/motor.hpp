@@ -272,27 +272,27 @@ public:
   double get_position() const
   {
     auto idx = position_support_idx_.load();
-    if(0 == idx)
+    if (0 == idx)
     {
       return 0.0;
     }
-    else if(static_cast<uint16_t>(-1) == idx)
+    else if (static_cast<uint16_t>(-1) == idx)
     {
       auto standard_idx = idx = get_channel_index(0x6064);
       bool has_object = this->driver->has_object(idx, 0);
-      if(!has_object)
+      if (!has_object)
       {
-         idx = get_channel_index(0x6063);
-         has_object = this->driver->has_object(idx, 0);
-         if(has_object)
-         {
-           RCLCPP_INFO(
-             rclcpp::get_logger("canopen_402_driver"),
-              "position interface: using object 0x%x:00.", idx);
-         }
+        idx = get_channel_index(0x6063);
+        has_object = this->driver->has_object(idx, 0);
+        if (has_object)
+        {
+          RCLCPP_INFO(
+            rclcpp::get_logger("canopen_402_driver"), "position interface: using object 0x%x:00.",
+            idx);
+        }
       }
       position_support_idx_.store(has_object ? idx : 0);
-      if(!has_object)
+      if (!has_object)
       {
         RCLCPP_WARN(
           rclcpp::get_logger("canopen_402_driver"),
