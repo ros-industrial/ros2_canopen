@@ -66,8 +66,20 @@ struct Cia402Data
 
     node_id = config["node_id"].as<uint16_t>();
 
-    // Get channel parameter (defaults to 0 for backward compatibility)
-    if (config["channel"])
+    // Get channel parameter (defaults to 0 for backward compatibility).
+    // URDF joint <param name="channel"> takes precedence so that RobotSystem
+    // can map multiple joints onto a single multi-channel CANopen node — the
+    // same convention Cia402System already uses (see cia402_system.cpp).
+    auto joint_channel_param = joint.parameters.find("channel");
+    if (joint_channel_param != joint.parameters.end())
+    {
+      channel = static_cast<uint8_t>(std::stoi(joint_channel_param->second));
+      RCLCPP_INFO(
+        rclcpp::get_logger(joint_name),
+        "Node id for '%s' is '%u', channel is '%u' (from URDF joint param)",
+        joint.name.c_str(), node_id, channel);
+    }
+    else if (config["channel"])
     {
       channel = config["channel"].as<uint8_t>();
       RCLCPP_INFO(
@@ -160,14 +172,14 @@ struct Cia402Data
 
   void read_state()
   {
-    actual_position = driver->get_position();
-    actual_velocity = driver->get_speed();
-    actual_effort = driver->get_effort();
+    actual_position = driver->get_position(channel);
+    actual_velocity = driver->get_speed(channel);
+    actual_effort = driver->get_effort(channel);
   }
 
   void write_target()
   {
-    const uint16_t & mode = driver->get_mode();
+    const uint16_t & mode = driver->get_mode(channel);
     switch (mode)
     {
       case MotorBase::No_Mode:
@@ -175,15 +187,15 @@ struct Cia402Data
       case MotorBase::Profiled_Position:
       case MotorBase::Cyclic_Synchronous_Position:
       case MotorBase::Interpolated_Position:
-        driver->set_target(target_position);
+        driver->set_target(target_position, channel);
         break;
       case MotorBase::Profiled_Velocity:
       case MotorBase::Cyclic_Synchronous_Velocity:
-        driver->set_target(target_velocity);
+        driver->set_target(target_velocity, channel);
         break;
       case MotorBase::Profiled_Torque:
       case MotorBase::Cyclic_Synchronous_Torque:
-        driver->set_target(target_torque);
+        driver->set_target(target_torque, channel);
         break;
       default:
         RCLCPP_INFO(rclcpp::get_logger("robot_system_interface"), "Mode not supported");
@@ -212,7 +224,7 @@ struct Cia402Data
       rclcpp::get_logger(joint_name),
       "Switching to '%s' command mode with CIA402 operation mode '%u'",
       interfaces_to_running[0].c_str(), mode);
-    return driver->set_operation_mode(mode);
+    return driver->set_operation_mode(mode, channel);
   }
 
   bool check_id(uint8_t id)
