@@ -18,7 +18,7 @@ package_name = "canopen_utils"
 
 setup(
     name=package_name,
-    version="0.3.1",
+    version="0.3.2",
     packages=[package_name],
     data_files=[
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),

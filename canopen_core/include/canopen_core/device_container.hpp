@@ -75,6 +75,8 @@ public:
     lifecycle_operation_ = false;
   }
 
+  ~DeviceContainer() override { shutdown(); }
+
   /**
    * @brief Executes the initialisation
    *
@@ -137,7 +139,7 @@ public:
   virtual bool load_component(
     const std::string package_name, const std::string driver_name, const uint16_t node_id,
     const std::string node_name, std::vector<rclcpp::Parameter> & params,
-    const std::string node_namespace = "");
+    std::map<std::string, std::string> remappings, const std::string node_namespace = "");
 
   /**
    * @brief Shutdown all devices.

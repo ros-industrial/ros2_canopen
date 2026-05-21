@@ -73,9 +73,11 @@ Configuration
         cogen_dcf(single-pd42)
 
         add_executable(position_tick_client src/position_tick_motor.cpp)
-        ament_target_dependencies(position_tick_client
-        rclcpp std_srvs canopen_interfaces)
-
+        target_link_libraries(position_tick_client
+            ${canopen_interfaces_TARGETS}
+            ${std_srvs_TARGETS}
+            rclcpp::rclcpp
+        )
 
         install(TARGETS
         position_tick_client

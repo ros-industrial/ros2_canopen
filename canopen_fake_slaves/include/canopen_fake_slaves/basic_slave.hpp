@@ -14,6 +14,7 @@
 
 #ifndef BASIC_SLAVE_HPP
 #define BASIC_SLAVE_HPP
+#include <lely/coapp/sdo_error.hpp>
 #include <lely/coapp/slave.hpp>
 #include <lely/ev/co_task.hpp>
 #include <lely/ev/loop.hpp>
@@ -23,7 +24,11 @@
 #include <lely/io2/sys/sigset.hpp>
 #include <lely/io2/sys/timer.hpp>
 
+#include <fstream>
+#include <system_error>
 #include <thread>
+#include <typeindex>
+#include <typeinfo>
 
 #include "canopen_fake_slaves/base_slave.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
@@ -35,7 +40,38 @@ namespace ros2_canopen
 class SimpleSlave : public canopen::BasicSlave
 {
 public:
-  using BasicSlave::BasicSlave;
+  SimpleSlave(
+    io::TimerBase & timer, io::CanChannelBase & chan, const std::string & slave_config,
+    const std::string & slave_bin, uint8_t node_id)
+  : canopen::BasicSlave(timer, chan, slave_config, slave_bin, node_id)
+  {
+    const auto vendor_id = parse_vendor_id(slave_config);
+    if (vendor_id != 0)
+    {
+      try
+      {
+        this->OnRead<uint32_t>(
+          0x1018, 0x01,
+          [vendor_id](uint16_t, uint8_t, uint32_t & value) -> std::error_code
+          {
+            value = vendor_id;
+            return {};
+          });
+      }
+      catch (const lely::canopen::SdoError &)
+      {
+        // Leave the dictionary untouched if the callback cannot be registered.
+      }
+    }
+  }
+
+  SimpleSlave(
+    io::TimerBase & timer, io::CanChannelBase & chan, const std::string & slave_config,
+    uint8_t node_id)
+  : SimpleSlave(timer, chan, slave_config, "", node_id)
+  {
+  }
+
   ~SimpleSlave()
   {
     if (message_thread.joinable())
@@ -46,6 +82,89 @@ public:
 
 protected:
   std::thread message_thread;
+  static uint32_t parse_vendor_id(const std::string & slave_config)
+  {
+    std::ifstream stream(slave_config);
+    if (!stream.is_open())
+    {
+      return 0;
+    }
+
+    std::string line;
+    while (std::getline(stream, line))
+    {
+      auto pos = line.find("VendorNumber=");
+      if (pos == std::string::npos)
+      {
+        continue;
+      }
+
+      auto value_part = line.substr(pos + std::string("VendorNumber=").length());
+      try
+      {
+        return static_cast<uint32_t>(std::stoul(value_part, nullptr, 0));
+      }
+      catch (const std::exception &)
+      {
+        return 0;
+      }
+    }
+
+    return 0;
+  }
+  /**
+   * @brief This function gets an object value through the typed interface.
+   * Only supports object types that can fit in a 32-bit container.
+   * @param idx The index of the PDO.
+   * @param subidx The subindex of the PDO.
+   * @return value of object stored in a 32-bit container
+   */
+  uint32_t GetValue(const uint16_t idx, const uint8_t subidx) const noexcept
+  {
+    const std::type_index type((*this)[idx][subidx].Type());
+
+    uint32_t value{0};
+
+    if (type == std::type_index(typeid(bool)))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<bool>());
+    }
+    else if (type == std::type_index(typeid(int8_t)))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<int8_t>());
+    }
+    else if (type == std::type_index(typeid(int16_t)))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<int16_t>());
+    }
+    else if (type == std::type_index(typeid(int32_t)))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<int32_t>());
+    }
+    else if (type == std::type_index(typeid(float)))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<float>());
+    }
+    else if (type == std::type_index(typeid(uint8_t)))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<uint8_t>());
+    }
+    else if (type == std::type_index(typeid(uint16_t)))
+    {
+      value = static_cast<uint32_t>((*this)[idx][subidx].Get<uint16_t>());
+    }
+    else if (type == std::type_index(typeid(uint32_t)))
+    {
+      value = (*this)[idx][subidx].Get<uint32_t>();
+    }
+    else
+    {
+      value = (*this)[idx][subidx].Get<uint32_t>();
+    }
+
+    return value;
+  }
+
   /**
    * @brief This function is called when a value is written to the local object dictionary by an SDO
    * or RPDO. Also copies the RPDO value to TPDO. A function from the class Device
@@ -54,8 +173,7 @@ protected:
    */
   void OnWrite(uint16_t idx, uint8_t subidx) noexcept override
   {
-    uint32_t val = (*this)[idx][subidx];
-    (*this)[0x4001][0] = val;
+    (*this)[0x4001][0] = this->GetValue(idx, subidx);
     this->TpdoEvent(0);
 
     // Publish periodic message
@@ -75,7 +193,7 @@ protected:
     while (rclcpp::ok())
     {
       uint32_t val = 0x1122;
-      (*this)[0x4004][0] = val;
+      (*this)[0x4001][0] = val;  // refresh TPDO-mapped UNSIGNED32 without touching config entries
       this->TpdoEvent(0);
       // 100 ms sleep - 10 Hz
       std::this_thread::sleep_for(std::chrono::milliseconds(100));

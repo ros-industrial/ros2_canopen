@@ -19,7 +19,7 @@ jobs:
     env:
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/cache@v4
         with:
           path: ${{ env.CCACHE_DIR }}

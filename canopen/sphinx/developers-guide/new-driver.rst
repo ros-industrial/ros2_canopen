@@ -75,7 +75,7 @@ provides the following functions you should use in your driver:
 
 ROS2 functionality
 ******************
-ROS2 functionlity is available via the ``node_`` object of the functionality class. This
+ROS2 functionality is available via the ``node_`` object of the functionality class. This
 object has a templated type and can either be a ``rclcpp::Node`` or ``rclcpp_lifecycle::LifecycleNode``.
 You can use the standard functions like create_timer, create_publisher etc.
 
@@ -208,23 +208,8 @@ The CMakeLists.txt file should look like this:
    find_package(canopen_interfaces REQUIRED)
    find_package(canopen_base_driver REQUIRED)
    find_package(canopen_proxy_driver REQUIRED)
-   find_package(lely_core_libraries REQUIRED)
    find_package(std_msgs REQUIRED)
    find_package(std_srvs REQUIRED)
-
-   set(dependencies
-   rclcpp
-   rclcpp_components
-   rclcpp_lifecycle
-   lifecycle_msgs
-   canopen_core
-   canopen_interfaces
-   canopen_base_driver
-   canopen_proxy_driver
-   lely_core_libraries
-   std_msgs
-   std_srvs
-   )
 
    # Functionality library
    add_library(node_canopen_xxx_driver
@@ -236,9 +221,8 @@ The CMakeLists.txt file should look like this:
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
    $<INSTALL_INTERFACE:include>)
 
-   ament_target_dependencies(
-   node_canopen_xxx_driver
-   ${dependencies}
+   target_link_libraries(node_canopen_xxx_driver PUBLIC
+     canopen_proxy_driver::node_canopen_proxy_driver
    )
 
    # Lifecycle driver
@@ -251,12 +235,11 @@ The CMakeLists.txt file should look like this:
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
    $<INSTALL_INTERFACE:include>)
 
-   target_link_libraries(lifecycle_xxx_driver
-   node_canopen_xxx_driver
-   )
-   ament_target_dependencies(
-   lifecycle_xxx_driver
-   ${dependencies}
+   target_link_libraries(lifecycle_xxx_driver PUBLIC
+     canopen_core::node_canopen_driver
+     node_canopen_xxx_driver
+     rclcpp_components::component
+     rclcpp_lifecycle::rclcpp_lifecycle
    )
    # Causes the visibility macros to use dllexport rather than dllimport,
    # which is appropriate when building the dll but not consuming it.
@@ -275,13 +258,11 @@ The CMakeLists.txt file should look like this:
    target_include_directories(xxx_driver PUBLIC
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
    $<INSTALL_INTERFACE:include>)
-   target_link_libraries(xxx_driver
-   node_canopen_xxx_driver
-   )
 
-   ament_target_dependencies(
-   xxx_driver
-   ${dependencies}
+   target_link_libraries(xxx_driver PUBLIC
+     canopen_core::node_canopen_driver
+     node_canopen_xxx_driver
+     rclcpp_components::component
    )
 
    # Causes the visibility macros to use dllexport rather than dllimport,
@@ -317,6 +298,17 @@ The CMakeLists.txt file should look like this:
    )
    ament_export_targets(
    export_${PROJECT_NAME}
+   )
+   ament_export_dependencies(
+     canopen_base_driver
+     canopen_core
+     canopen_interfaces
+     canopen_proxy_driver
+     rclcpp
+     rclcpp_components
+     rclcpp_lifecycle
+     std_msgs
+     std_srvs
    )
 
    ament_package()

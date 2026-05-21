@@ -16,7 +16,7 @@ jobs:
         ROS_DISTRO: [rolling]
         ROS_REPO: [testing]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: 'ros-industrial/industrial_ci@master'
         env:
           BEFORE_INSTALL_TARGET_DEPENDENCIES: 'sudo apt-get update'

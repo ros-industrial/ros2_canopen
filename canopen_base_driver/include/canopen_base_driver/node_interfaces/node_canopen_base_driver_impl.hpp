@@ -117,7 +117,7 @@ void NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>::configure(bool call
   catch (...)
   {
   }
-  boot_timeout_ms_ = boot_timeout_ms.value_or(20);
+  boot_timeout_ms_ = boot_timeout_ms.value_or(1000);
 }
 template <>
 void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
@@ -204,7 +204,7 @@ void NodeCanopenBaseDriver<rclcpp::Node>::configure(bool called_from_base)
   catch (...)
   {
   }
-  boot_timeout_ms_ = boot_timeout_ms.value_or(20);
+  boot_timeout_ms_ = boot_timeout_ms.value_or(1000);
 }
 
 template <class NODETYPE>
@@ -240,7 +240,10 @@ template <class NODETYPE>
 void NodeCanopenBaseDriver<NODETYPE>::deactivate(bool called_from_base)
 {
   nmt_state_publisher_thread_.join();
-  poll_timer_->cancel();
+  if (poll_timer_)
+  {
+    poll_timer_->cancel();
+  }
   emcy_queue_.reset();
   rpdo_queue_.reset();
   if (diagnostic_enabled_.load())

@@ -2,8 +2,20 @@
 Changelog for package canopen_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.2.9 (2024-04-16)
+0.3.2 (2025-12-05)
 ------------------
+* add pdo 6077 torque actual value to the joint state interface as effort (`#316 <https://github.com/ros-industrial/ros2_canopen/issues/316>`_)
+  Co-authored-by: Vishnuprasad Prachandabhanu <32260301+ipa-vsp@users.noreply.github.com>
+* Refactor on_init method for improved readability and consistency
+* Fix deprecated hardware_interface API (`#386 <https://github.com/ros-industrial/ros2_canopen/issues/386>`_)
+* Fix typos in warning messages and comments for clarity
+* `#379 <https://github.com/ros-industrial/ros2_canopen/issues/379>`_: Fix data conversion in the Lely Bridge to enable more data types and proper handling of Emcy in ros2_control
+* Return error on Emcy.
+* Add correct data conversion for Emcy.
+* Fixed types handling in canopen_ros2_control.
+* Optimize debug output.
+* Fixed sending values.
+* Contributors: Christoph Fröhlich, Dr. Denis Stogl, Vishnuprasad Prachandabhanu, synsi23b
 
 0.3.1 (2025-06-23)
 ------------------
@@ -18,7 +30,6 @@ Changelog for package canopen_ros2_control
   * Add base functions for switching to cyclic torque mode
   * Add cyclic torque mode as effort interface to robot_system controller
   * Add documentation about cyclic torque mode.
-  ---------
   Co-authored-by: Christoph Hellmann Santos <christoph.hellmann.santos@ipa.fraunhofer.de>
 * Fix clang format
 * Update canopen_system.hpp
@@ -38,6 +49,9 @@ Changelog for package canopen_ros2_control
 * 0.2.9
 * forthcoming
 * Contributors: ipa-vsp
+
+0.2.9 (2024-04-16)
+------------------
 
 0.2.8 (2024-01-19)
 ------------------
