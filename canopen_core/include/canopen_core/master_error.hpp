@@ -12,8 +12,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-#ifndef MASTER_ERROR_HPP_
-#define MASTER_ERROR_HPP_
+#ifndef CANOPEN_CORE__MASTER_ERROR_HPP_
+#define CANOPEN_CORE__MASTER_ERROR_HPP_
 
 #include <system_error>
 
@@ -38,4 +38,4 @@ public:
 };
 }  // namespace ros2_canopen
 
-#endif
+#endif  // CANOPEN_CORE__MASTER_ERROR_HPP_

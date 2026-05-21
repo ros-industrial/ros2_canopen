@@ -429,6 +429,12 @@ public:
     boot_timeout_ = boot_timeout;
   }
 
+  bool has_object(uint16_t idx, uint8_t subidx)
+  {
+    std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+    return this->dictionary_->find(idx, subidx) != nullptr;
+  }
+
   /**
    * @brief Asynchronous SDO Write
    *

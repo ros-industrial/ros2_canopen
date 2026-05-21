@@ -13,8 +13,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-#ifndef CONFIGURATION_MANAGER_HPP
-#define CONFIGURATION_MANAGER_HPP
+#ifndef CANOPEN_CORE__CONFIGURATION_MANAGER_HPP_
+#define CANOPEN_CORE__CONFIGURATION_MANAGER_HPP_
 
 #include <iostream>
 #include <map>
@@ -108,4 +108,4 @@ public:
 };
 }  // namespace ros2_canopen
 
-#endif
+#endif // CANOPEN_CORE__CONFIGURATION_MANAGER_HPP_

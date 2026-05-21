@@ -27,7 +27,8 @@ namespace ros2_canopen
 {
 class ProfiledPositionMode : public ModeTargetHelper<int32_t>
 {
-  const uint16_t index = 0x607A;
+  const uint16_t base_index = 0x607A;
+  uint16_t channel_offset_;  // Channel offset for multi-axis support (CiA 402-2)
   std::shared_ptr<LelyDriverBridge> driver;
 
   double last_target_;
@@ -46,8 +47,8 @@ public:
     CW_Immediate = Command402::CW_Operation_mode_specific1,
     CW_Blending = Command402::CW_Operation_mode_specific3,
   };
-  ProfiledPositionMode(std::shared_ptr<LelyDriverBridge> driver)
-  : ModeTargetHelper(MotorBase::Profiled_Position)
+  ProfiledPositionMode(std::shared_ptr<LelyDriverBridge> driver, uint16_t channel_offset = 0)
+  : ModeTargetHelper(MotorBase::Profiled_Position), channel_offset_(channel_offset)
   {
     this->driver = driver;
   }
@@ -77,7 +78,8 @@ public:
         }
         else
         {
-          driver->universal_set_value(index, 0x0, target);
+          // Apply channel offset to object dictionary index
+          driver->universal_set_value(base_index + channel_offset_, 0x0, target);
           cw.set(CW_NewPoint);
           last_target_ = target;
         }

@@ -48,7 +48,10 @@ void CanopenSystem::clean()
   device_container_.reset();
   executor_.reset();
 
-  init_thread_->join();
+  if (init_thread_->joinable())
+  {
+    init_thread_->join();
+  }
   init_thread_.reset();
 
   executor_.reset();
@@ -58,9 +61,9 @@ void CanopenSystem::clean()
 CanopenSystem::~CanopenSystem() { clean(); }
 
 hardware_interface::CallbackReturn CanopenSystem::on_init(
-  const hardware_interface::HardwareInfo & info)
+  const hardware_interface::HardwareComponentInterfaceParams & params)
 {
-  if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
+  if (hardware_interface::SystemInterface::on_init(params) != CallbackReturn::SUCCESS)
   {
     return CallbackReturn::ERROR;
   }
@@ -293,7 +296,7 @@ hardware_interface::return_type CanopenSystem::read(
     }
   }
 
-  return hardware_interface::return_type::ERROR;
+  return hardware_interface::return_type::OK;
 }
 
 hardware_interface::return_type CanopenSystem::write(

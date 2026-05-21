@@ -189,6 +189,13 @@ void LelyDriverBridge::OnRpdoWrite(uint16_t idx, uint8_t subidx) noexcept
       std::memcpy(&data, &sub->getVal<CO_DEFTYPE_INTEGER32>(), 4);
       break;
     }
+    case CO_DEFTYPE_REAL32:
+    {
+      std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
+      sub->setVal<CO_DEFTYPE_REAL32>((float)rpdo_mapped[idx][subidx]);
+      std::memcpy(&data, &sub->getVal<CO_DEFTYPE_REAL32>(), 4);
+      break;
+    }
     default:
       std::cerr << "Unsupported CO_DEFTYPE: " << std::hex << (unsigned int)co_def << std::endl;
       break;
@@ -237,40 +244,29 @@ std::future<bool> LelyDriverBridge::async_sdo_write(COData data)
     switch (co_def)
     {
       case CO_DEFTYPE_BOOLEAN:
-      {
         this->submit_write<bool>(data);
         break;
-      }
       case CO_DEFTYPE_UNSIGNED8:
-      {
         this->submit_write<uint8_t>(data);
         break;
-      }
       case CO_DEFTYPE_INTEGER8:
-      {
         this->submit_write<int8_t>(data);
         break;
-      }
       case CO_DEFTYPE_UNSIGNED16:
-      {
         this->submit_write<uint16_t>(data);
         break;
-      }
       case CO_DEFTYPE_INTEGER16:
-      {
         this->submit_write<int16_t>(data);
         break;
-      }
       case CO_DEFTYPE_UNSIGNED32:
-      {
         this->submit_write<uint32_t>(data);
         break;
-      }
       case CO_DEFTYPE_INTEGER32:
-      {
         this->submit_write<int32_t>(data);
         break;
-      }
+      case CO_DEFTYPE_REAL32:
+        this->submit_write<float>(data);
+        break;
       default:
         std::cerr << "Unsupported CO_DEFTYPE: " << std::hex << (unsigned int)co_def << std::endl;
         break;
@@ -318,33 +314,35 @@ std::future<COData> LelyDriverBridge::async_sdo_read(COData data)
   uint8_t co_def = (uint8_t)sub->getType();
   try
   {
-    if (co_def == CO_DEFTYPE_BOOLEAN)
+    switch (co_def)
     {
-      this->submit_read<bool>(data);
-    }
-    if (co_def == CO_DEFTYPE_UNSIGNED8)
-    {
-      this->submit_read<uint8_t>(data);
-    }
-    if (co_def == CO_DEFTYPE_INTEGER8)
-    {
-      this->submit_read<int8_t>(data);
-    }
-    if (co_def == CO_DEFTYPE_UNSIGNED16)
-    {
-      this->submit_read<uint16_t>(data);
-    }
-    if (co_def == CO_DEFTYPE_INTEGER16)
-    {
-      this->submit_read<int16_t>(data);
-    }
-    if (co_def == CO_DEFTYPE_UNSIGNED32)
-    {
-      this->submit_read<uint32_t>(data);
-    }
-    if (co_def == CO_DEFTYPE_INTEGER32)
-    {
-      this->submit_read<int32_t>(data);
+      case CO_DEFTYPE_BOOLEAN:
+        this->submit_read<bool>(data);
+        break;
+      case CO_DEFTYPE_UNSIGNED8:
+        this->submit_read<uint8_t>(data);
+        break;
+      case CO_DEFTYPE_INTEGER8:
+        this->submit_read<int8_t>(data);
+        break;
+      case CO_DEFTYPE_UNSIGNED16:
+        this->submit_read<uint16_t>(data);
+        break;
+      case CO_DEFTYPE_INTEGER16:
+        this->submit_read<int16_t>(data);
+        break;
+      case CO_DEFTYPE_UNSIGNED32:
+        this->submit_read<uint32_t>(data);
+        break;
+      case CO_DEFTYPE_INTEGER32:
+        this->submit_read<int32_t>(data);
+        break;
+      case CO_DEFTYPE_REAL32:
+        this->submit_read<float>(data);
+        break;
+      default:
+        std::cerr << "Unsupported CO_DEFTYPE: " << std::hex << (unsigned int)co_def << std::endl;
+        break;
     }
   }
   catch (lely::canopen::SdoError & e)
