@@ -12,8 +12,8 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
-#ifndef LIFECYCLE_DEVICE_MANAGER_NODE_HPP
-#define LIFECYCLE_DEVICE_MANAGER_NODE_HPP
+#ifndef CANOPEN_CORE__LIFECYCLE_MANAGER_HPP_
+#define CANOPEN_CORE__LIFECYCLE_MANAGER_HPP_
 
 #include <chrono>
 #include <memory>
@@ -163,13 +163,13 @@ protected:
   template <typename FutureT, typename WaitTimeT>
   std::future_status wait_for_result(FutureT & future, WaitTimeT time_to_wait)
   {
-    auto end = std::chrono::steady_clock::now() + time_to_wait;
-    std::chrono::milliseconds wait_period(100);
+    const auto end = std::chrono::steady_clock::now() + time_to_wait;
+    const std::chrono::milliseconds wait_period(100);
     std::future_status status = std::future_status::timeout;
     do
     {
-      auto now = std::chrono::steady_clock::now();
-      auto time_left = end - now;
+      const auto now = std::chrono::steady_clock::now();
+      const auto time_left = end - now;
       if (time_left <= std::chrono::seconds(0))
       {
         break;
@@ -248,8 +248,8 @@ protected:
   /**
    * @brief Brings up the drivers with specified node_id
    *
-   * This function bringsup the CANopen driver for the device with the specified
-   * node_id. The driver is transitioned twice,
+   * This function brings up the CANopen driver for the device with the specified
+   * name. The driver is transitioned twice,
    * first the configure transition is triggered. Once the transition is successfully
    * finished, the activate transition is triggered.
    *
@@ -263,7 +263,7 @@ protected:
    * @brief Brings down the driver with specified node_id
    *
    * This function brings down the CANopen driver for the device with the specified
-   * node_id. The driver is transitioned twice,
+   * name. The driver is transitioned twice,
    * first the deactivate transition is triggered. Once the transition is successfully
    * finished, the cleanup transition is triggered.
    *
@@ -286,4 +286,4 @@ protected:
 };
 }  // namespace ros2_canopen
 
-#endif
+#endif  // CANOPEN_CORE__LIFECYCLE_MANAGER_HPP_

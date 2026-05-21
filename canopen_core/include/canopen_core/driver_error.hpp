@@ -12,8 +12,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-#ifndef DRIVER_ERROR_HPP_
-#define DRIVER_ERROR_HPP_
+#ifndef CANOPEN_CORE__DRIVER_ERROR_HPP_
+#define CANOPEN_CORE__DRIVER_ERROR_HPP_
 
 #include <string>
 #include <system_error>
@@ -40,4 +40,4 @@ public:
 
 }  // namespace ros2_canopen
 
-#endif
+#endif  // CANOPEN_CORE__DRIVER_ERROR_HPP_
