@@ -34,7 +34,7 @@ bool DeviceContainer::init_driver(uint16_t node_id)
 bool DeviceContainer::load_component(
   const std::string package_name, const std::string driver_name, const uint16_t node_id,
   const std::string node_name, std::vector<rclcpp::Parameter> & params,
-  const std::string node_namespace)
+  std::map<std::string, std::string> remappings, const std::string node_namespace)
 {
   ComponentResource component;
   std::string resource_index("rclcpp_components");
@@ -61,6 +61,13 @@ bool DeviceContainer::load_component(
       std::string canopen_ns = node_namespace.empty() ? this->get_namespace() : node_namespace;
       remap_rules.push_back("-r");
       remap_rules.push_back("__ns:=" + canopen_ns);
+
+      // Remappings
+      for (auto it = remappings.begin(); it != remappings.end(); it++)
+      {
+        remap_rules.push_back("-r");
+        remap_rules.push_back(it->first + ":=" + it->second);
+      }
 
       if (node_namespace.empty())
       {
@@ -230,6 +237,8 @@ bool DeviceContainer::load_master()
       auto driver_name = config_->get_entry<std::string>(*it, "driver");
       auto package_name = config_->get_entry<std::string>(*it, "package");
       auto node_namespace = config_->get_entry<std::string>(*it, "namespace").value_or("");
+      auto remappings = config_->get_entry<std::map<std::string, std::string>>
+        (*it, "remappings").value_or(std::map<std::string, std::string>());
       if (!node_id.has_value() || !driver_name.has_value() || !package_name.has_value())
       {
         RCLCPP_ERROR(
@@ -247,7 +256,7 @@ bool DeviceContainer::load_master()
 
       if (!this->load_component(
             package_name.value(), driver_name.value(), node_id.value(), *it, params,
-            node_namespace))
+            remappings, node_namespace))
       {
         RCLCPP_ERROR(this->get_logger(), "Error: Loading master failed.");
         return false;
@@ -287,6 +296,9 @@ bool DeviceContainer::load_drivers()
       auto driver_name = config_->get_entry<std::string>(*it, "driver");
       auto package_name = config_->get_entry<std::string>(*it, "package");
       auto node_namespace = config_->get_entry<std::string>(*it, "namespace").value_or("");
+      auto remappings = config_->get_entry<std::map<std::string, std::string>>
+        (*it, "remappings").value_or(std::map<std::string, std::string>());
+
       if (!node_id.has_value() || !driver_name.has_value() || !package_name.has_value())
       {
         RCLCPP_ERROR(
@@ -323,7 +335,7 @@ bool DeviceContainer::load_drivers()
 
       if (!this->load_component(
             package_name.value(), driver_name.value(), node_id.value(), *it, params,
-            node_namespace))
+            remappings, node_namespace))
       {
         RCLCPP_ERROR(
           this->get_logger(),
