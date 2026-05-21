@@ -96,8 +96,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment">//    See the License for the specific language governing permissions and</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment">//    limitations under the License.</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#ifndef EXCHANGE_HPP</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#define EXCHANGE_HPP</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#ifndef CANOPEN_CORE__EXCHANGE_HPP_</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#define CANOPEN_CORE__EXCHANGE_HPP_</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;boost/lockfree/queue.hpp&gt;</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;boost/optional.hpp&gt;</span></div>
@@ -215,7 +215,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>}  <span class="comment">// namespace ros2_canopen</span></div>
 <div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span> </div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span><span class="preprocessor">#endif  </span><span class="comment">// EXCHANGE_HPP</span></div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span><span class="preprocessor">#endif  </span><span class="comment">// CANOPEN_CORE__EXCHANGE_HPP_</span></div>
 <div class="ttc" id="aclassros2__canopen_1_1SafeQueue_html"><div class="ttname"><a href="classros2__canopen_1_1SafeQueue.html">ros2_canopen::SafeQueue</a></div><div class="ttdoc">Thread Safe Queue for CANOpen Data Exchange.</div><div class="ttdef"><b>Definition</b> exchange.hpp:49</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1SafeQueue_html_a13a515f6b9f89f27e3f4b0c51e4257fa"><div class="ttname"><a href="classros2__canopen_1_1SafeQueue.html#a13a515f6b9f89f27e3f4b0c51e4257fa">ros2_canopen::SafeQueue::try_pop</a></div><div class="ttdeci">bool try_pop(T &amp;value)</div><div class="ttdoc">Try to pop a value from the queue.</div><div class="ttdef"><b>Definition</b> exchange.hpp:85</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1SafeQueue_html_a275b3442c081651657498466a4e88afe"><div class="ttname"><a href="classros2__canopen_1_1SafeQueue.html#a275b3442c081651657498466a4e88afe">ros2_canopen::SafeQueue::wait_and_pop</a></div><div class="ttdeci">void wait_and_pop(T &amp;value)</div><div class="ttdoc">Wait for a value to be available in the queue for a given timeout.</div><div class="ttdef"><b>Definition</b> exchange.hpp:106</div></div>

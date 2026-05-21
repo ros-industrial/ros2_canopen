@@ -104,7 +104,7 @@ Bus configuration creation
     .. code-block:: yaml
 
       options:
-        dcf_path: install/{package_name}/share/{package_name}/config/{bus_config_name}
+        dcf_path: "@BUS_CONFIG_PATH@"
 
     Then you need to define your master.
 
@@ -126,7 +126,7 @@ Bus configuration creation
     .. code-block:: yaml
 
       nodes:
-        - [unique slave name]:
+        [unique slave name]:
           node_id: [node id]
           package: [ros2 package where to find the driver]
           driver: [qualified name of the driver]
@@ -141,8 +141,7 @@ Create a launch folder in your package directory and a launch file.
 
 .. code-block:: console
 
-  mkdir launch
-  touch {...}.launch.py
+  touch launch/{...}.launch.py
 
 Add the following code:
 
@@ -168,12 +167,6 @@ Add the following code:
                     "config",
                     "{bus_config_name}",
                     "master.dcf",
-                ),
-                "master_bin": os.path.join(
-                    get_package_share_directory("{package_name}"),
-                    "config",
-                    "{bus_config_name}",
-                    "master.bin",
                 ),
                 "bus_config": os.path.join(
                     get_package_share_directory("{package_name}"),
@@ -206,36 +199,14 @@ Finally we need to adjust the CMakeLists.txt file to pick everything up correctl
 
   # find dependencies
   find_package(ament_cmake REQUIRED)
-  find_package(canopen_core REQUIRED)
-  find_package(canopen_interfaces REQUIRED)
-  find_package(canopen_base_driver REQUIRED)
-  find_package(canopen_proxy_driver REQUIRED)
   find_package(lely_core_libraries REQUIRED)
 
 
   cogen_dcf({bus_config_name})
 
   install(DIRECTORY
-    launch/
-    DESTINATION share/${PROJECT_NAME}/launch/
+    launch
+    DESTINATION share/${PROJECT_NAME}
   )
-
-  install(DIRECTORY
-    launch_tests/
-    DESTINATION share/${PROJECT_NAME}/launch_tests/
-  )
-
-
-  if(BUILD_TESTING)
-    find_package(ament_lint_auto REQUIRED)
-    # the following line skips the linter which checks for copyrights
-    # comment the line when a copyright and license is added to all source files
-    set(ament_cmake_copyright_FOUND TRUE)
-    # the following line skips cpplint (only works in a git repo)
-    # comment the line when this package is in a git repo and when
-    # a copyright and license is added to all source files
-    set(ament_cmake_cpplint_FOUND TRUE)
-    ament_lint_auto_find_test_dependencies()
-  endif()
 
   ament_package()
