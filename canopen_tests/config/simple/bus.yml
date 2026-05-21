@@ -15,6 +15,8 @@ proxy_device_1:
   period: 10
   boot_timeout_ms: 1000
   # namespace: "/test1"
+  remappings:
+    ~/rpdo: _rpdo
 
 proxy_device_2:
   node_id: 3

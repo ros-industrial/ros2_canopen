@@ -237,8 +237,8 @@ bool DeviceContainer::load_master()
       auto driver_name = config_->get_entry<std::string>(*it, "driver");
       auto package_name = config_->get_entry<std::string>(*it, "package");
       auto node_namespace = config_->get_entry<std::string>(*it, "namespace").value_or("");
-      auto remappings = config_->get_entry<std::map<std::string, std::string>>
-        (*it, "remappings").value_or(std::map<std::string, std::string>());
+      auto remappings = config_->get_entry<std::map<std::string, std::string>>(*it, "remappings")
+                          .value_or(std::map<std::string, std::string>());
       if (!node_id.has_value() || !driver_name.has_value() || !package_name.has_value())
       {
         RCLCPP_ERROR(
@@ -255,8 +255,8 @@ bool DeviceContainer::load_master()
       params.push_back(rclcpp::Parameter("config", config_->dump_device(*it)));
 
       if (!this->load_component(
-            package_name.value(), driver_name.value(), node_id.value(), *it, params,
-            remappings, node_namespace))
+            package_name.value(), driver_name.value(), node_id.value(), *it, params, remappings,
+            node_namespace))
       {
         RCLCPP_ERROR(this->get_logger(), "Error: Loading master failed.");
         return false;
@@ -296,8 +296,8 @@ bool DeviceContainer::load_drivers()
       auto driver_name = config_->get_entry<std::string>(*it, "driver");
       auto package_name = config_->get_entry<std::string>(*it, "package");
       auto node_namespace = config_->get_entry<std::string>(*it, "namespace").value_or("");
-      auto remappings = config_->get_entry<std::map<std::string, std::string>>
-        (*it, "remappings").value_or(std::map<std::string, std::string>());
+      auto remappings = config_->get_entry<std::map<std::string, std::string>>(*it, "remappings")
+                          .value_or(std::map<std::string, std::string>());
 
       if (!node_id.has_value() || !driver_name.has_value() || !package_name.has_value())
       {
@@ -334,8 +334,8 @@ bool DeviceContainer::load_drivers()
       params.push_back(rclcpp::Parameter("non_transmit_timeout", 100));
 
       if (!this->load_component(
-            package_name.value(), driver_name.value(), node_id.value(), *it, params,
-            remappings, node_namespace))
+            package_name.value(), driver_name.value(), node_id.value(), *it, params, remappings,
+            node_namespace))
       {
         RCLCPP_ERROR(
           this->get_logger(),
