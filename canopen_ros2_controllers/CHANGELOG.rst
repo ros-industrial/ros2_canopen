@@ -2,6 +2,11 @@
 Changelog for package canopen_ros2_controllers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#408 <https://github.com/ros-industrial/ros2_canopen/issues/408>`_
+* Contributors: Sven, Tim Clephas, Vishnuprasad Prachandabhanu
+
 0.3.2 (2025-12-05)
 ------------------
 * Merge pull request `#400 <https://github.com/ros-industrial/ros2_canopen/issues/400>`_ from ros-industrial/fix/proxy_controller

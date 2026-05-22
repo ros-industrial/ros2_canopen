@@ -7,6 +7,19 @@ Changelog for package canopen_base_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
+Forthcoming
+-----------
+* Merge pull request `#385 <https://github.com/ros-industrial/ros2_canopen/issues/385>`_
+* Merge pull request `#383 <https://github.com/ros-industrial/ros2_canopen/issues/383>`_ Add REAL32 support
+* Merge pull request `#340 <https://github.com/ros-industrial/ros2_canopen/issues/340>`_ Fix uninitialization issues
+* Merge pull request `#409 <https://github.com/ros-industrial/ros2_canopen/issues/409>`_ Make get_effort optional.
+* Merge pull request `#408 <https://github.com/ros-industrial/ros2_canopen/issues/408>`_
+* Fix issues found while implementing tests caused by improper uninitialization:
+  - `poll_timer\_` not set when polling\_ is disabled
+  - DeviceContainer's `shutdown()` is not called anywhere
+  - `init_thread` is already joined in the contructor. This thread should be removed in the future.
+* Contributors: Krasimir Milchev, Sven, Sven Fabricius, Tim Clephas, Vishnuprasad Prachandabhanu
+
 0.3.2 (2025-12-05)
 ------------------
 * `#379 <https://github.com/ros-industrial/ros2_canopen/issues/379>`_: Fix data conversion in the Lely Bridge to enable more data types and proper handling of Emcy in ros2_control

@@ -2,6 +2,14 @@
 Changelog for package canopen_fake_slaves
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix status word of fake device in profiled position mode. (`#345 <https://github.com/ros-industrial/ros2_canopen/issues/345>`_)
+* Merge pull request `#384 <https://github.com/ros-industrial/ros2_canopen/issues/384>`_
+* Merge pull request `#410 <https://github.com/ros-industrial/ros2_canopen/issues/410>`_ Fix fake slave accept new goal
+* Merge pull request `#408 <https://github.com/ros-industrial/ros2_canopen/issues/408>`_
+* Contributors: Gerry Salinas, Sven, Sven Fabricius, Tim Clephas, Vishnuprasad Prachandabhanu
+
 0.3.2 (2025-12-05)
 ------------------
 * `#400 <https://github.com/ros-industrial/ros2_canopen/issues/400>`_: Update controllers for ROS Rolling API changes and fix fake slave type handling

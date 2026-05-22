@@ -5,6 +5,11 @@ Changelog for package canopen_proxy_driver
 0.2.9 (2024-04-16)
 ------------------
 
+Forthcoming
+-----------
+* Merge pull request `#408 <https://github.com/ros-industrial/ros2_canopen/issues/408>`_
+* Contributors: Sven, Tim Clephas, Vishnuprasad Prachandabhanu
+
 0.3.2 (2025-12-05)
 ------------------
 * `#379 <https://github.com/ros-industrial/ros2_canopen/issues/379>`_: Fix data conversion in the Lely Bridge to enable more data types and proper handling of Emcy in ros2_control
