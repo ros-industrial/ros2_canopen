@@ -2,8 +2,8 @@
 Changelog for package canopen_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.3 (2026-05-22)
+------------------
 * Merge pull request `#385 <https://github.com/ros-industrial/ros2_canopen/issues/385>`_
 * Merge pull request `#340 <https://github.com/ros-industrial/ros2_canopen/issues/340>`_
 * Merge pull request `#404 <https://github.com/ros-industrial/ros2_canopen/issues/404>`_

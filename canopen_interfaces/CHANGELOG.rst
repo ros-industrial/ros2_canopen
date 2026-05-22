@@ -2,8 +2,8 @@
 Changelog for package canopen_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.3 (2026-05-22)
+------------------
 * Contributors: Sven, Tim Clephas, Vishnuprasad Prachandabhanu
 
 0.3.2 (2025-12-05)

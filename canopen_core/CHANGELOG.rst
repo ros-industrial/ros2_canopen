@@ -7,8 +7,8 @@ Changelog for package canopen_core
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
 
-Forthcoming
------------
+0.3.3 (2026-05-22)
+------------------
 * Merge pull request `#385 <https://github.com/ros-industrial/ros2_canopen/issues/385>`_
 * Merge pull request `#374 <https://github.com/ros-industrial/ros2_canopen/issues/374>`_
 * fix(driver): fix lifecycle node deactive crash (`#372 <https://github.com/ros-industrial/ros2_canopen/issues/372>`_)

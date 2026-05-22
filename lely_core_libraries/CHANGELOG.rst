@@ -2,8 +2,8 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.3 (2026-05-22)
+------------------
 * Merge branch 'master' into tutorial-fixes
 * Merge branch 'master' into const_and_other
 * Merge branch 'ros-industrial:master' into support-real32

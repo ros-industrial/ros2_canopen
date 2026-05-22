@@ -5,8 +5,8 @@ Changelog for package canopen_proxy_driver
 0.2.9 (2024-04-16)
 ------------------
 
-Forthcoming
------------
+0.3.3 (2026-05-22)
+------------------
 * Merge pull request `#408 <https://github.com/ros-industrial/ros2_canopen/issues/408>`_
 * Contributors: Sven, Tim Clephas, Vishnuprasad Prachandabhanu
 

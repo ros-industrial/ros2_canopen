@@ -7,8 +7,8 @@ Changelog for package canopen_base_driver
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu
 
-Forthcoming
------------
+0.3.3 (2026-05-22)
+------------------
 * Merge pull request `#385 <https://github.com/ros-industrial/ros2_canopen/issues/385>`_
 * Merge pull request `#383 <https://github.com/ros-industrial/ros2_canopen/issues/383>`_ Add REAL32 support
 * Merge pull request `#340 <https://github.com/ros-industrial/ros2_canopen/issues/340>`_ Fix uninitialization issues

@@ -2,8 +2,8 @@
 Changelog for package canopen_402_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.3 (2026-05-22)
+------------------
 * fix(driver): fix lifecycle node deactive crash (`#372 <https://github.com/ros-industrial/ros2_canopen/issues/372>`_)
 * Merge pull request `#409 <https://github.com/ros-industrial/ros2_canopen/issues/409>`_. Make get_effort optional.
 * Merge pull request `#404 <https://github.com/ros-industrial/ros2_canopen/issues/404>`_. Implement CiA 402-2 multi-channel support for multiple axes per CANopen node
