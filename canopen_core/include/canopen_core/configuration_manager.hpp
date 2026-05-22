@@ -108,4 +108,4 @@ public:
 };
 }  // namespace ros2_canopen
 
-#endif // CANOPEN_CORE__CONFIGURATION_MANAGER_HPP_
+#endif  // CANOPEN_CORE__CONFIGURATION_MANAGER_HPP_
