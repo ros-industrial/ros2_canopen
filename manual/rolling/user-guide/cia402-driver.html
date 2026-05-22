@@ -276,6 +276,69 @@ the drive status, operation mode and sending target values to the motion control
 <section id="bus-configuration-parameters">
 <h2>Bus Configuration Parameters<a class="headerlink" href="#bus-configuration-parameters" title="Link to this heading"></a></h2>
 <p>Additional parameters that can be used in bus.yml for this driver.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 20.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>polling</p></td>
+<td><p>bool</p></td>
+<td><p>Enables polling of the drive status. Default: true. If false, period will be used to run a ros2 timer as update loop. If true, the update loop will be triggered by the sync signal and directly executed in the canopen realtime loop. This requires all data processed in the update loop to be PDO, otherwise the loop will get stuck. This can speed reduce processor load significantly though.</p></td>
+</tr>
+<tr class="row-odd"><td><p>period</p></td>
+<td><p>Milliseconds</p></td>
+<td><p>Refresh period for 402 state machine. Should be similar to sync period of master.</p></td>
+</tr>
+<tr class="row-even"><td><p>switching_state</p></td>
+<td><p>int</p></td>
+<td><p>The state to switch the operation mode in.</p></td>
+</tr>
+<tr class="row-odd"><td><p>scale_pos_to_dev</p></td>
+<td><p>double</p></td>
+<td><p>Scaling factor to convert from SI units to device units for position.</p></td>
+</tr>
+<tr class="row-even"><td><p>offset_pos_to_dev</p></td>
+<td><p>double</p></td>
+<td><p>Offset in device units added to scaled position commands sent to the device.</p></td>
+</tr>
+<tr class="row-odd"><td><p>scale_vel_to_dev</p></td>
+<td><p>double</p></td>
+<td><p>Scaling factor to convert from SI units to device units for velocity.</p></td>
+</tr>
+<tr class="row-even"><td><p>scale_pos_from_dev</p></td>
+<td><p>double</p></td>
+<td><p>Scaling factor to convert from device units to SI units for position.</p></td>
+</tr>
+<tr class="row-odd"><td><p>offset_pos_from_dev</p></td>
+<td><p>double</p></td>
+<td><p>Offset in SI units to added to scaled position reports from the device.</p></td>
+</tr>
+<tr class="row-even"><td><p>scale_vel_from_dev</p></td>
+<td><p>double</p></td>
+<td><p>Scaling factor to convert from device units to SI units for velocity.</p></td>
+</tr>
+<tr class="row-odd"><td><p>position_mode</p></td>
+<td><p>int</p></td>
+<td><p>The drives operation mode to use for the position interface</p></td>
+</tr>
+<tr class="row-even"><td><p>velocity_mode</p></td>
+<td><p>int</p></td>
+<td><p>The drives operation mode to use for the velocity interface</p></td>
+</tr>
+<tr class="row-odd"><td><p>torque_mode</p></td>
+<td><p>int</p></td>
+<td><p>The drives operation mode to use for the torque interface</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 
