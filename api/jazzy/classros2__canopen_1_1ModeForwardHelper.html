@@ -109,8 +109,8 @@ Collaboration diagram for ros2_canopen::ModeForwardHelper&lt; ID, TYPE, OBJ, SUB
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a92beabe921ee2b435a0c3220b62250f0" id="r_a92beabe921ee2b435a0c3220b62250f0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1ModeForwardHelper.html#a92beabe921ee2b435a0c3220b62250f0">ModeForwardHelper</a> (std::shared_ptr&lt; <a class="el" href="classros2__canopen_1_1LelyDriverBridge.html">LelyDriverBridge</a> &gt; driver)</td></tr>
-<tr class="separator:a92beabe921ee2b435a0c3220b62250f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72edb6dd22260f8896d04a826d8b09d7" id="r_a72edb6dd22260f8896d04a826d8b09d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1ModeForwardHelper.html#a72edb6dd22260f8896d04a826d8b09d7">ModeForwardHelper</a> (std::shared_ptr&lt; <a class="el" href="classros2__canopen_1_1LelyDriverBridge.html">LelyDriverBridge</a> &gt; driver, uint16_t channel_offset=0)</td></tr>
+<tr class="separator:a72edb6dd22260f8896d04a826d8b09d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5727e515bf4b6f851e246feb9c9cb4c3" id="r_a5727e515bf4b6f851e246feb9c9cb4c3"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1ModeForwardHelper.html#a5727e515bf4b6f851e246feb9c9cb4c3">read</a> (const uint16_t &amp;sw)</td></tr>
 <tr class="separator:a5727e515bf4b6f851e246feb9c9cb4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4410acdb2b1290c3484a027bab5671b" id="r_ad4410acdb2b1290c3484a027bab5671b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1ModeForwardHelper.html#ad4410acdb2b1290c3484a027bab5671b">write</a> (<a class="el" href="classros2__canopen_1_1Mode.html#abaf1b3b0db372c34b513bfbd1b0580cd">Mode::OpModeAccesser</a> &amp;cw)</td></tr>
@@ -142,8 +142,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a6d8be97242b801830d87e95220ce55c8 inherit pub_attribs_classros2__canopen_1_1Mode"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a92beabe921ee2b435a0c3220b62250f0" name="a92beabe921ee2b435a0c3220b62250f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92beabe921ee2b435a0c3220b62250f0">&#9670;&#160;</a></span>ModeForwardHelper()</h2>
+<a id="a72edb6dd22260f8896d04a826d8b09d7" name="a72edb6dd22260f8896d04a826d8b09d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72edb6dd22260f8896d04a826d8b09d7">&#9670;&#160;</a></span>ModeForwardHelper()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,8 +157,18 @@ template&lt;uint16_t ID, typename TYPE , uint16_t OBJ, uint8_t SUB, uint16_t CW_
           <td class="memname"><a class="el" href="classros2__canopen_1_1ModeForwardHelper.html">ros2_canopen::ModeForwardHelper</a>&lt; ID, TYPE, OBJ, SUB, CW_MASK &gt;::ModeForwardHelper </td>
           <td>(</td>
           <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classros2__canopen_1_1LelyDriverBridge.html">LelyDriverBridge</a> &gt;&#160;</td>
-          <td class="paramname"><em>driver</em></td><td>)</td>
+          <td class="paramname"><em>driver</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>channel_offset</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>

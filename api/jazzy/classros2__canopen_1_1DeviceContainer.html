@@ -113,6 +113,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a14d7d2a9f42fc1f4bd615502e5de4a43" id="r_a14d7d2a9f42fc1f4bd615502e5de4a43"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a14d7d2a9f42fc1f4bd615502e5de4a43">DeviceContainer</a> (std::weak_ptr&lt; rclcpp::Executor &gt; executor=std::weak_ptr&lt; rclcpp::executors::MultiThreadedExecutor &gt;(), std::string node_name=&quot;device_container&quot;, const rclcpp::NodeOptions &amp;node_options=rclcpp::NodeOptions())</td></tr>
 <tr class="memdesc:a14d7d2a9f42fc1f4bd615502e5de4a43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Lifecycle Device Container Node object.  <br /></td></tr>
 <tr class="separator:a14d7d2a9f42fc1f4bd615502e5de4a43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8674c0094e6404b5842671f2fc1875fc" id="r_a8674c0094e6404b5842671f2fc1875fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a8674c0094e6404b5842671f2fc1875fc">~DeviceContainer</a> () override</td></tr>
+<tr class="separator:a8674c0094e6404b5842671f2fc1875fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48a1ce51ba016c39ad6273ba88123388" id="r_a48a1ce51ba016c39ad6273ba88123388"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a48a1ce51ba016c39ad6273ba88123388">init</a> ()</td></tr>
 <tr class="memdesc:a48a1ce51ba016c39ad6273ba88123388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the initialisation.  <br /></td></tr>
 <tr class="separator:a48a1ce51ba016c39ad6273ba88123388"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,9 +132,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a850b08acbc24613926afa015676b534e" id="r_a850b08acbc24613926afa015676b534e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a850b08acbc24613926afa015676b534e">load_manager</a> ()</td></tr>
 <tr class="memdesc:a850b08acbc24613926afa015676b534e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the device manager.  <br /></td></tr>
 <tr class="separator:a850b08acbc24613926afa015676b534e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a259b45ad59ea9ba165750d9ad616fa2c" id="r_a259b45ad59ea9ba165750d9ad616fa2c"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a259b45ad59ea9ba165750d9ad616fa2c">load_component</a> (const std::string package_name, const std::string driver_name, const uint16_t node_id, const std::string node_name, std::vector&lt; rclcpp::Parameter &gt; &amp;params, const std::string node_namespace=&quot;&quot;)</td></tr>
-<tr class="memdesc:a259b45ad59ea9ba165750d9ad616fa2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load a component.  <br /></td></tr>
-<tr class="separator:a259b45ad59ea9ba165750d9ad616fa2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac93c3bc36b7513168e3676c465473811" id="r_ac93c3bc36b7513168e3676c465473811"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#ac93c3bc36b7513168e3676c465473811">load_component</a> (const std::string package_name, const std::string driver_name, const uint16_t node_id, const std::string node_name, std::vector&lt; rclcpp::Parameter &gt; &amp;params, std::map&lt; std::string, std::string &gt; remappings, const std::string node_namespace=&quot;&quot;)</td></tr>
+<tr class="memdesc:ac93c3bc36b7513168e3676c465473811"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load a component.  <br /></td></tr>
+<tr class="separator:ac93c3bc36b7513168e3676c465473811"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2472efb24ac6236f0788bd0eface56a3" id="r_a2472efb24ac6236f0788bd0eface56a3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a2472efb24ac6236f0788bd0eface56a3">shutdown</a> ()</td></tr>
 <tr class="memdesc:a2472efb24ac6236f0788bd0eface56a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shutdown all devices.  <br /></td></tr>
 <tr class="separator:a2472efb24ac6236f0788bd0eface56a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -173,7 +175,7 @@ Protected Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a71f7148b0745821687a74e4c22c51d63" id="r_a71f7148b0745821687a74e4c22c51d63"><td class="memItemLeft" align="right" valign="top">std::map&lt; uint16_t, std::shared_ptr&lt; <a class="el" href="classros2__canopen_1_1CanopenDriverInterface.html">CanopenDriverInterface</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#a71f7148b0745821687a74e4c22c51d63">registered_drivers_</a></td></tr>
-<tr class="memdesc:a71f7148b0745821687a74e4c22c51d63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map of drivers registered in busconfiguration. Name is key.  <br /></td></tr>
+<tr class="memdesc:a71f7148b0745821687a74e4c22c51d63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map of drivers registered in busconfiguration. NodeID is key.  <br /></td></tr>
 <tr class="separator:a71f7148b0745821687a74e4c22c51d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af969169acfdc6a27b2c549a9a7a9b6e9" id="r_af969169acfdc6a27b2c549a9a7a9b6e9"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classros2__canopen_1_1CanopenMasterInterface.html">ros2_canopen::CanopenMasterInterface</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classros2__canopen_1_1DeviceContainer.html#af969169acfdc6a27b2c549a9a7a9b6e9">can_master_</a></td></tr>
 <tr class="memdesc:af969169acfdc6a27b2c549a9a7a9b6e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to can master instance.  <br /></td></tr>
@@ -262,6 +264,31 @@ Protected Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a8674c0094e6404b5842671f2fc1875fc" name="a8674c0094e6404b5842671f2fc1875fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8674c0094e6404b5842671f2fc1875fc">&#9670;&#160;</a></span>~DeviceContainer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ros2_canopen::DeviceContainer::~DeviceContainer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -456,8 +483,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a259b45ad59ea9ba165750d9ad616fa2c" name="a259b45ad59ea9ba165750d9ad616fa2c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a259b45ad59ea9ba165750d9ad616fa2c">&#9670;&#160;</a></span>load_component()</h2>
+<a id="ac93c3bc36b7513168e3676c465473811" name="ac93c3bc36b7513168e3676c465473811"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac93c3bc36b7513168e3676c465473811">&#9670;&#160;</a></span>load_component()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -494,6 +521,12 @@ false </dd></dl>
           <td></td>
           <td class="paramtype">std::vector&lt; rclcpp::Parameter &gt; &amp;&#160;</td>
           <td class="paramname"><em>params</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::map&lt; std::string, std::string &gt;&#160;</td>
+          <td class="paramname"><em>remappings</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -939,7 +972,7 @@ false </dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p>Map of drivers registered in busconfiguration. Name is key. </p>
+<p>Map of drivers registered in busconfiguration. NodeID is key. </p>
 
 </div>
 </div>
