@@ -78,7 +78,8 @@ bool LifecycleManager::load_from_config()
   for (const auto & device_name : device_names)
   {
     uint8_t node_id = config_->get_entry<uint8_t>(device_name, "node_id").value();
-    std::string device_namespace = config_->get_entry<std::string>(device_name, "namespace").value();
+    std::string device_namespace =
+      config_->get_entry<std::string>(device_name, "namespace").value();
     device_namespace += "/";
     device_namespace += device_name;
     std::string change_state_client_name = device_namespace;
