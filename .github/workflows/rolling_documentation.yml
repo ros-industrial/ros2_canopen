@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ROS_DISTRO: [rolling, jazzy, kilted]
+        ROS_DISTRO: [rolling, jazzy, kilted, lyrical]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
