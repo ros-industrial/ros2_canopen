@@ -21,6 +21,8 @@ jobs:
             ROS_REPO: testing
           - ROS_DISTRO: kilted
             ROS_REPO: testing
+          - ROS_DISTRO: lyrical
+            ROS_REPO: testing
     env:
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
     steps:

@@ -80,8 +80,7 @@ bool LifecycleManager::load_from_config()
     auto node_id_opt = config_->get_entry<uint8_t>(device_name, "node_id");
     if (!node_id_opt.has_value())
     {
-      RCLCPP_WARN(
-        this->get_logger(), "Skipping %s: missing node_id entry.", device_name.c_str());
+      RCLCPP_WARN(this->get_logger(), "Skipping %s: missing node_id entry.", device_name.c_str());
       continue;
     }
     uint8_t node_id = node_id_opt.value();

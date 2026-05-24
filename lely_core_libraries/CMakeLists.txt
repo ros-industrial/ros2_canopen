@@ -11,12 +11,13 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"  # Installation prefix
   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/build
   GIT_REPOSITORY https://gitlab.com/lely_industries/lely-core.git
-  GIT_TAG fb735b79cab5f0cdda45bc5087414d405ef8f3ab
+  GIT_TAG 9e3267d26018f6f6babd50786f6ae2af89cc57ea
   TIMEOUT 60
-  #UPDATE step apply patch to fix dcf-tools install
+  #UPDATE step apply patch to fix dcf-tools install and C23/GCC14 compat
   UPDATE_COMMAND
   COMMAND git reset --hard
   COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0001-Fix-dcf-tools.patch
+  COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0002-Fix-C23-compat.patch
   #CONFIGURE step execute autoreconf and configure
   CONFIGURE_COMMAND autoreconf -i <SOURCE_DIR>
   COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-cython --disable-doc --disable-tests --disable-static --disable-diag
