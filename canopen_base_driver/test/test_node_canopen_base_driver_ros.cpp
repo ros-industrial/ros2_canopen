@@ -21,7 +21,7 @@ TEST(NodeCanopenBaseDriver, test_good_sequence_advanced)
 {
   rclcpp::init(0, nullptr);
   rclcpp::Node * node = new rclcpp::Node("Node");
-  auto interface = new ros2_canopen::node_interfaces::NodeCanopenBaseDriver(node);
+  auto interface = new ros2_canopen::node_interfaces::NodeCanopenBaseDriver<rclcpp::Node>(node);
   auto exec = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
   exec->add_node(node->get_node_base_interface());
   std::thread spinner = std::thread([exec] { exec->spin(); });
@@ -51,13 +51,17 @@ TEST(NodeCanopenBaseDriver, test_good_sequence_advanced)
   {
     spinner.join();
   }
+  exec->remove_node(node->get_node_base_interface());
+  delete interface;
+  delete node;
 }
 
 TEST(NodeCanopenBasicLifecycleMaster, test_good_sequence_advanced)
 {
   rclcpp::init(0, nullptr);
   rclcpp_lifecycle::LifecycleNode * node = new rclcpp_lifecycle::LifecycleNode("Node");
-  auto interface = new ros2_canopen::node_interfaces::NodeCanopenBaseDriver(node);
+  auto interface =
+    new ros2_canopen::node_interfaces::NodeCanopenBaseDriver<rclcpp_lifecycle::LifecycleNode>(node);
   auto exec = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
   exec->add_node(node->get_node_base_interface());
   std::thread spinner = std::thread([exec] { exec->spin(); });
@@ -86,4 +90,7 @@ TEST(NodeCanopenBasicLifecycleMaster, test_good_sequence_advanced)
   {
     spinner.join();
   }
+  exec->remove_node(node->get_node_base_interface());
+  delete interface;
+  delete node;
 }
