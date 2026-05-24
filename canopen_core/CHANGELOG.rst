@@ -7,8 +7,8 @@ Changelog for package canopen_core
 * Add timeouts
 * Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
 
-Forthcoming
------------
+0.3.4 (2026-05-24)
+------------------
 * Merge pull request `#433 <https://github.com/ros-industrial/ros2_canopen/issues/433>`_ from ros-industrial/432-lyrical-compatibility
 * Fix Boost package requirement in ConfigExtras.cmake and improve logging format in LifecycleManager
 * Improve error handling in load_from_config by checking for missing node_id and ensuring device_namespace ends with a '/'

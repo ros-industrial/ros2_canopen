@@ -2,8 +2,8 @@
 Changelog for package canopen_402_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.4 (2026-05-24)
+------------------
 * Reorder constructor member initializer list in DefaultHomingMode for consistency
 * Refactor device name handling in LifecycleManager configuration loading
 * Contributors: ipa-vsp
