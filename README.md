@@ -6,9 +6,10 @@
 |---------------|--------|
 | Industrial CI Build | [![Industrial CI](https://github.com/ros-industrial/ros2_canopen/actions/workflows/rolling.yml/badge.svg)](https://github.com/ros-industrial/ros2_canopen/actions/workflows/rolling.yml) |
 | Documentation Build | [![Documentation](https://github.com/ros-industrial/ros2_canopen/actions/workflows/rolling_documentation.yml/badge.svg)](https://github.com/ros-industrial/ros2_canopen/actions/workflows/rolling_documentation.yml) |
-| Buildfarm Build (rolling) | [![Buildfarm Status](https://build.ros2.org/job/Rdev__ros2_canopen__ubuntu_noble_amd64/badge/icon)](https://build.ros2.org/job/Rdev__ros2_canopen__ubuntu_noble_amd64/) |
+| Buildfarm Build (rolling) | [![Buildfarm Status](https://build.ros2.org/job/Rdev__ros2_canopen__ubuntu_resolute_amd64/badge/icon)](https://build.ros2.org/job/Rdev__ros2_canopen__ubuntu_resolute_amd64/) |
 | Buildfarm Build (kilted) | [![Buildfarm Status](https://build.ros2.org/job/Kdev__ros2_canopen__ubuntu_noble_amd64/badge/icon)](https://build.ros2.org/job/Kdev__ros2_canopen__ubuntu_noble_amd64/) |
 | Buildfarm Build (jazzy) | [![Buildfarm Status](https://build.ros2.org/job/Jdev__ros2_canopen__ubuntu_noble_amd64/badge/icon)](https://build.ros2.org/job/Jdev__ros2_canopen__ubuntu_noble_amd64/) |
+| Buildfarm Build (lyrical) | [![Buildfarm Status](https://build.ros2.org/job/Ldev__ros2_canopen__ubuntu_resolute_amd64/badge/icon)](https://build.ros2.org/job/Ldev__ros2_canopen__ubuntu_resolute_amd64/) |
 
 The stack is currently under development and not yet ready for production use.
 
@@ -17,7 +18,7 @@ The documentation consists of two parts: a manual and an api reference.
 The documentation is built for rolling (master), kilted, jazzy, iron and humble and hosted on github pages.
 Older ROS 2 releases are EOL and are not supported anymore.
 
-***Note:** Master branch works with ROS2 **Jazzy**, **Kilted** and **Rolling** distributions. For **Humble** distribution use the `humble` branch.*
+***Note:** Master branch works with ROS2 **Lyrical**, **Jazzy**, **Kilted** and **Rolling** distributions. For **Humble** distribution use the `humble` branch.*
 
 ### Rolling
 * Manual: https://ros-industrial.github.io/ros2_canopen/manual/rolling/

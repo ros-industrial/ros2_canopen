@@ -2,6 +2,12 @@
 Changelog for package lely_core_libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#433 <https://github.com/ros-industrial/ros2_canopen/issues/433>`_ from ros-industrial/432-lyrical-compatibility
+* Update external project lely-core and apply patches for C23/GCC14 compatibility
+* Contributors: Vishnuprasad Prachandabhanu, ipa-vsp
+
 0.3.3 (2026-05-22)
 ------------------
 * Merge branch 'master' into tutorial-fixes

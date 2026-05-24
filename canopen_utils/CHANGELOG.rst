@@ -2,6 +2,9 @@
 Changelog for package canopen_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.3.3 (2026-05-22)
 ------------------
 * Contributors: Sven, Tim Clephas, Vishnuprasad Prachandabhanu

@@ -2,6 +2,9 @@
 Changelog for package canopen_fake_slaves
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.3.3 (2026-05-22)
 ------------------
 * Fix status word of fake device in profiled position mode. (`#345 <https://github.com/ros-industrial/ros2_canopen/issues/345>`_)

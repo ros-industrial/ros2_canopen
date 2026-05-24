@@ -2,6 +2,12 @@
 Changelog for package canopen_402_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Reorder constructor member initializer list in DefaultHomingMode for consistency
+* Refactor device name handling in LifecycleManager configuration loading
+* Contributors: ipa-vsp
+
 0.3.3 (2026-05-22)
 ------------------
 * fix(driver): fix lifecycle node deactive crash (`#372 <https://github.com/ros-industrial/ros2_canopen/issues/372>`_)
