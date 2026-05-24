@@ -1,0 +1,57 @@
+From 0000000000000000000000000000000000000002 Mon Sep 17 00:00:00 2001
+From: Build Fix <noreply@example.com>
+Date: Sat, 24 May 2026 00:00:00 +0000
+Subject: [PATCH] Fix C23/GCC14 build errors
+
+ATOMIC_VAR_INIT was deprecated in C17 and removed in C23; GCC 14 and
+Clang 17 no longer define it. Replace every occurrence in
+SPSCRING_INIT with a plain parenthesised initializer, which is valid
+for _Atomic variables since C11.
+
+char tab[64] initialised with a 65-character string literal (64 chars
++ NUL) causes -Werror=unterminated-string-initialization on GCC 14+.
+Widening the array to 65 silences the diagnostic without changing
+any runtime behaviour.
+---
+ include/lely/util/spscring.h | 8 ++++----
+ src/util/print.c             | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/lely/util/spscring.h b/include/lely/util/spscring.h
+index 849b583f..a0c96e3f 100644
+--- a/include/lely/util/spscring.h
++++ b/include/lely/util/spscring.h
+@@ -99,14 +99,14 @@ struct spscring {
+ 		{ \
+ 			{ (size), 0, 0, 0 }, \
+ 			{ 0 }, \
+-			ATOMIC_VAR_INIT(0), \
++			(0), \
+ 			{ 0 }, \
+-			{ ATOMIC_VAR_INIT(0), NULL, NULL }, \
++			{ (0), NULL, NULL }, \
+ 			{ 0 }, \
+ 		}, \
+ 		{ \
+-			{ (size), 0, 0, 0 }, { 0 }, ATOMIC_VAR_INIT(0), { 0 }, \
+-					{ ATOMIC_VAR_INIT(0), NULL, NULL }, \
++			{ (size), 0, 0, 0 }, { 0 }, (0), { 0 }, \
++					{ (0), NULL, NULL }, \
+ 					{ 0 }, \
+ 		} \
+ 	}
+diff --git a/src/util/print.c b/src/util/print.c
+index 94d8aa59..035c7621 100644
+--- a/src/util/print.c
++++ b/src/util/print.c
+@@ -262,7 +262,7 @@ size_t
+ print_base64(char **pbegin, char *end, const void *ptr, size_t n)
+ {
+ 	// clang-format off
+-	static const char tab[64] =
++	static const char tab[65] =
+ 			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef"
+ 			"ghijklmnopqrstuvwxyz0123456789+/";
+ 	// clang-format on
+--
+2.34.1
