@@ -77,16 +77,16 @@ bool LifecycleManager::load_from_config()
   // Find master in configuration
   for (const auto & device_name : device_names)
   {
-    uint8_t node_id = config_->get_entry<uint8_t>(*it, "node_id").value();
-    std::string device_namespace = config_->get_entry<std::string>(*it, "namespace").value();
+    uint8_t node_id = config_->get_entry<uint8_t>(device_name, "node_id").value();
+    std::string device_namespace = config_->get_entry<std::string>(device_name, "namespace").value();
     device_namespace += "/";
-    device_namespace += *it;
+    device_namespace += device_name;
     std::string change_state_client_name = device_namespace;
     std::string get_state_client_name = device_namespace;
     get_state_client_name += "/get_state";
     change_state_client_name += "/change_state";
     RCLCPP_INFO(this->get_logger(), "Found %s (node_id=%hu)", device_name.c_str(), node_id);
-    device_names_to_ids.emplace(device, node_id);
+    device_names_to_ids.emplace(device_name, node_id);
     rclcpp::Client<lifecycle_msgs::srv::GetState>::SharedPtr get_state_client =
       this->create_client<lifecycle_msgs::srv::GetState>(
         get_state_client_name, rclcpp::QoS(10), cbg_clients);

@@ -448,7 +448,14 @@ void NodeCanopen402Driver<NODETYPE>::deactivate(bool called_from_base)
   {
     timer_->cancel();
   }
-  this->exec_->post([this]() { motor_.reset(); });
+  this->exec_->post(
+    [this]()
+    {
+      for (auto & ch : channels_)
+      {
+        ch.motor.reset();
+      }
+    });
 }
 
 template <class NODETYPE>
