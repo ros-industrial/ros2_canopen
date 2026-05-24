@@ -115,41 +115,44 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1ModeForwardHelper.html">   30</a></span><span class="keyword">class </span><a class="code hl_class" href="classros2__canopen_1_1ModeForwardHelper.html">ModeForwardHelper</a> : <span class="keyword">public</span> <a class="code hl_class" href="classros2__canopen_1_1ModeTargetHelper.html">ModeTargetHelper</a>&lt;TYPE&gt;</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>{</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>  std::shared_ptr&lt;LelyDriverBridge&gt; driver;</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">public</span>:</div>
-<div class="foldopen" id="foldopen00035" data-start="{" data-end="}">
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1ModeForwardHelper.html#a92beabe921ee2b435a0c3220b62250f0">   35</a></span>  <a class="code hl_function" href="classros2__canopen_1_1ModeForwardHelper.html#a92beabe921ee2b435a0c3220b62250f0">ModeForwardHelper</a>(std::shared_ptr&lt;LelyDriverBridge&gt; driver) : <a class="code hl_class" href="classros2__canopen_1_1ModeTargetHelper.html">ModeTargetHelper</a>&lt;TYPE&gt;(ID)</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  {</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    this-&gt;driver = driver;</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  }</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>  uint16_t channel_offset_;  <span class="comment">// Channel offset for multi-axis support (CiA 402-2)</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00036" data-start="{" data-end="}">
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1ModeForwardHelper.html#a72edb6dd22260f8896d04a826d8b09d7">   36</a></span>  <a class="code hl_function" href="classros2__canopen_1_1ModeForwardHelper.html#a72edb6dd22260f8896d04a826d8b09d7">ModeForwardHelper</a>(std::shared_ptr&lt;LelyDriverBridge&gt; driver, uint16_t channel_offset = 0)</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>  : <a class="code hl_class" href="classros2__canopen_1_1ModeTargetHelper.html">ModeTargetHelper</a>&lt;TYPE&gt;(ID), channel_offset_(channel_offset)</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  {</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    this-&gt;driver = driver;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>  }</div>
 </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1ModeForwardHelper.html#a5727e515bf4b6f851e246feb9c9cb4c3">   39</a></span>  <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classros2__canopen_1_1ModeForwardHelper.html#a5727e515bf4b6f851e246feb9c9cb4c3">read</a>(<span class="keyword">const</span> uint16_t &amp; sw) { <span class="keywordflow">return</span> <span class="keyword">true</span>; }</div>
-<div class="foldopen" id="foldopen00040" data-start="{" data-end="}">
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1ModeForwardHelper.html#ad4410acdb2b1290c3484a027bab5671b">   40</a></span>  <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classros2__canopen_1_1ModeForwardHelper.html#ad4410acdb2b1290c3484a027bab5671b">write</a>(<a class="code hl_class" href="classros2__canopen_1_1WordAccessor.html">Mode::OpModeAccesser</a> &amp; cw)</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>  {</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordflow">if</span> (this-&gt;<a class="code hl_function" href="classros2__canopen_1_1ModeTargetHelper.html#ab0c1f0e2a7829998e920de88acd367df">hasTarget</a>())</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    {</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>      cw = cw.<a class="code hl_function" href="classros2__canopen_1_1WordAccessor.html#a358c8ee60777f1d18b046f6e8de06c02">get</a>() | CW_MASK;</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>      driver-&gt;universal_set_value&lt;TYPE&gt;(OBJ, SUB, this-&gt;<a class="code hl_function" href="classros2__canopen_1_1ModeTargetHelper.html#ab0e00f4df6d458f99928627f082967e7">getTarget</a>());</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    }</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    {</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>      cw = cw.<a class="code hl_function" href="classros2__canopen_1_1WordAccessor.html#a358c8ee60777f1d18b046f6e8de06c02">get</a>() &amp; ~CW_MASK;</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    }</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  }</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1ModeForwardHelper.html#a5727e515bf4b6f851e246feb9c9cb4c3">   41</a></span>  <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classros2__canopen_1_1ModeForwardHelper.html#a5727e515bf4b6f851e246feb9c9cb4c3">read</a>(<span class="keyword">const</span> uint16_t &amp; sw) { <span class="keywordflow">return</span> <span class="keyword">true</span>; }</div>
+<div class="foldopen" id="foldopen00042" data-start="{" data-end="}">
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classros2__canopen_1_1ModeForwardHelper.html#ad4410acdb2b1290c3484a027bab5671b">   42</a></span>  <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classros2__canopen_1_1ModeForwardHelper.html#ad4410acdb2b1290c3484a027bab5671b">write</a>(<a class="code hl_class" href="classros2__canopen_1_1WordAccessor.html">Mode::OpModeAccesser</a> &amp; cw)</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>  {</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordflow">if</span> (this-&gt;<a class="code hl_function" href="classros2__canopen_1_1ModeTargetHelper.html#ab0c1f0e2a7829998e920de88acd367df">hasTarget</a>())</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    {</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>      cw = cw.<a class="code hl_function" href="classros2__canopen_1_1WordAccessor.html#a358c8ee60777f1d18b046f6e8de06c02">get</a>() | CW_MASK;</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>      <span class="comment">// Apply channel offset to object dictionary index</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>      driver-&gt;universal_set_value&lt;TYPE&gt;(OBJ + channel_offset_, SUB, this-&gt;<a class="code hl_function" href="classros2__canopen_1_1ModeTargetHelper.html#ab0e00f4df6d458f99928627f082967e7">getTarget</a>());</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    }</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    {</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>      cw = cw.<a class="code hl_function" href="classros2__canopen_1_1WordAccessor.html#a358c8ee60777f1d18b046f6e8de06c02">get</a>() &amp; ~CW_MASK;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    }</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>  }</div>
 </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>};</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>};</div>
 </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>}  <span class="comment">// namespace ros2_canopen</span></div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#endif  </span><span class="comment">// MODE_FORWARD_HELPER_HPP</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>}  <span class="comment">// namespace ros2_canopen</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">#endif  </span><span class="comment">// MODE_FORWARD_HELPER_HPP</span></div>
 <div class="ttc" id="aclassros2__canopen_1_1ModeForwardHelper_html"><div class="ttname"><a href="classros2__canopen_1_1ModeForwardHelper.html">ros2_canopen::ModeForwardHelper</a></div><div class="ttdef"><b>Definition</b> mode_forward_helper.hpp:31</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1ModeForwardHelper_html_a5727e515bf4b6f851e246feb9c9cb4c3"><div class="ttname"><a href="classros2__canopen_1_1ModeForwardHelper.html#a5727e515bf4b6f851e246feb9c9cb4c3">ros2_canopen::ModeForwardHelper::read</a></div><div class="ttdeci">virtual bool read(const uint16_t &amp;sw)</div><div class="ttdef"><b>Definition</b> mode_forward_helper.hpp:39</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1ModeForwardHelper_html_a92beabe921ee2b435a0c3220b62250f0"><div class="ttname"><a href="classros2__canopen_1_1ModeForwardHelper.html#a92beabe921ee2b435a0c3220b62250f0">ros2_canopen::ModeForwardHelper::ModeForwardHelper</a></div><div class="ttdeci">ModeForwardHelper(std::shared_ptr&lt; LelyDriverBridge &gt; driver)</div><div class="ttdef"><b>Definition</b> mode_forward_helper.hpp:35</div></div>
-<div class="ttc" id="aclassros2__canopen_1_1ModeForwardHelper_html_ad4410acdb2b1290c3484a027bab5671b"><div class="ttname"><a href="classros2__canopen_1_1ModeForwardHelper.html#ad4410acdb2b1290c3484a027bab5671b">ros2_canopen::ModeForwardHelper::write</a></div><div class="ttdeci">virtual bool write(Mode::OpModeAccesser &amp;cw)</div><div class="ttdef"><b>Definition</b> mode_forward_helper.hpp:40</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1ModeForwardHelper_html_a5727e515bf4b6f851e246feb9c9cb4c3"><div class="ttname"><a href="classros2__canopen_1_1ModeForwardHelper.html#a5727e515bf4b6f851e246feb9c9cb4c3">ros2_canopen::ModeForwardHelper::read</a></div><div class="ttdeci">virtual bool read(const uint16_t &amp;sw)</div><div class="ttdef"><b>Definition</b> mode_forward_helper.hpp:41</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1ModeForwardHelper_html_a72edb6dd22260f8896d04a826d8b09d7"><div class="ttname"><a href="classros2__canopen_1_1ModeForwardHelper.html#a72edb6dd22260f8896d04a826d8b09d7">ros2_canopen::ModeForwardHelper::ModeForwardHelper</a></div><div class="ttdeci">ModeForwardHelper(std::shared_ptr&lt; LelyDriverBridge &gt; driver, uint16_t channel_offset=0)</div><div class="ttdef"><b>Definition</b> mode_forward_helper.hpp:36</div></div>
+<div class="ttc" id="aclassros2__canopen_1_1ModeForwardHelper_html_ad4410acdb2b1290c3484a027bab5671b"><div class="ttname"><a href="classros2__canopen_1_1ModeForwardHelper.html#ad4410acdb2b1290c3484a027bab5671b">ros2_canopen::ModeForwardHelper::write</a></div><div class="ttdeci">virtual bool write(Mode::OpModeAccesser &amp;cw)</div><div class="ttdef"><b>Definition</b> mode_forward_helper.hpp:42</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1ModeTargetHelper_html"><div class="ttname"><a href="classros2__canopen_1_1ModeTargetHelper.html">ros2_canopen::ModeTargetHelper</a></div><div class="ttdef"><b>Definition</b> mode_target_helper.hpp:37</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1ModeTargetHelper_html_ab0c1f0e2a7829998e920de88acd367df"><div class="ttname"><a href="classros2__canopen_1_1ModeTargetHelper.html#ab0c1f0e2a7829998e920de88acd367df">ros2_canopen::ModeTargetHelper&lt; TYPE &gt;::hasTarget</a></div><div class="ttdeci">bool hasTarget()</div><div class="ttdef"><b>Definition</b> mode_target_helper.hpp:43</div></div>
 <div class="ttc" id="aclassros2__canopen_1_1ModeTargetHelper_html_ab0e00f4df6d458f99928627f082967e7"><div class="ttname"><a href="classros2__canopen_1_1ModeTargetHelper.html#ab0e00f4df6d458f99928627f082967e7">ros2_canopen::ModeTargetHelper&lt; TYPE &gt;::getTarget</a></div><div class="ttdeci">TYPE getTarget()</div><div class="ttdef"><b>Definition</b> mode_target_helper.hpp:44</div></div>
