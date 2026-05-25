@@ -9,7 +9,10 @@
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
 
-  <depend>boost</depend>
+  <build_depend>boost</build_depend>
+
+  <build_export_depend>boost</build_export_depend>
+
   <depend>canopen_base_driver</depend>
   <depend>canopen_core</depend>
   <depend>canopen_interfaces</depend>
