@@ -293,6 +293,7 @@ hardware_interface::return_type CanopenSystem::read(
         canopen_data.emcy_data.original_emcy.msef[0], canopen_data.emcy_data.original_emcy.msef[1],
         canopen_data.emcy_data.original_emcy.msef[2], canopen_data.emcy_data.original_emcy.msef[3],
         canopen_data.emcy_data.original_emcy.msef[4]);
+      return hardware_interface::return_type::ERROR;
     }
   }
 
