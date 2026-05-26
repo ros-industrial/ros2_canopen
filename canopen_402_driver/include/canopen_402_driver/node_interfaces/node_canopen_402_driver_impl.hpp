@@ -277,13 +277,13 @@ void NodeCanopen402Driver<NODETYPE>::configure_common()
   {
   }
 
-  scale_pos_to_dev_ = scale_pos_to_dev.value_or(1000.0);
-  scale_pos_from_dev_ = scale_pos_from_dev.value_or(0.001);
-  scale_vel_to_dev_ = scale_vel_to_dev.value_or(1000.0);
-  scale_vel_from_dev_ = scale_vel_from_dev.value_or(0.001);
-  scale_eff_from_dev_ = scale_eff_from_dev.value_or(0.001);
-  offset_pos_to_dev_ = offset_pos_to_dev.value_or(0.0);
-  offset_pos_from_dev_ = offset_pos_from_dev.value_or(0.0);
+  double scale_pos_to_dev_value = scale_pos_to_dev.value_or(1000.0);
+  double scale_pos_from_dev_value = scale_pos_from_dev.value_or(0.001);
+  double scale_vel_to_dev_value = scale_vel_to_dev.value_or(1000.0);
+  double scale_vel_from_dev_value = scale_vel_from_dev.value_or(0.001);
+  double scale_eff_from_dev_value = scale_eff_from_dev.value_or(0.001);
+  double offset_pos_to_dev_value = offset_pos_to_dev.value_or(0.0);
+  double offset_pos_from_dev_value = offset_pos_from_dev.value_or(0.0);
   switching_state_ = (ros2_canopen::State402::InternalState)switching_state.value_or(
     (int)ros2_canopen::State402::InternalState::Operation_Enable);
   homing_timeout_seconds_ = homing_timeout_seconds.value_or(10);
@@ -320,7 +320,7 @@ void NodeCanopen402Driver<NODETYPE>::configure_common()
   {
     for (uint8_t i = 0; i < num_channels_; ++i)
     {
-      channel_names_.push_back(std::string(this->node_->get_name()) + "/" + std::to_string(i));
+      channel_names_.push_back(std::string(this->node_->get_name()) + "/ch" + std::to_string(i));
     }
   }
 
@@ -329,13 +329,13 @@ void NodeCanopen402Driver<NODETYPE>::configure_common()
   channels_.resize(num_channels_);
   for (uint8_t i = 0; i < num_channels_; ++i)
   {
-    channels_[i].scale_pos_to_dev = scale_pos_to_dev_;
-    channels_[i].scale_pos_from_dev = scale_pos_from_dev_;
-    channels_[i].scale_vel_to_dev = scale_vel_to_dev_;
-    channels_[i].scale_vel_from_dev = scale_vel_from_dev_;
-    channels_[i].scale_eff_from_dev = scale_eff_from_dev_;
-    channels_[i].offset_pos_to_dev = offset_pos_to_dev_;
-    channels_[i].offset_pos_from_dev = offset_pos_from_dev_;
+    channels_[i].scale_pos_to_dev = scale_pos_to_dev_value;
+    channels_[i].scale_pos_from_dev = scale_pos_from_dev_value;
+    channels_[i].scale_vel_to_dev = scale_vel_to_dev_value;
+    channels_[i].scale_vel_from_dev = scale_vel_from_dev_value;
+    channels_[i].scale_eff_from_dev = scale_eff_from_dev_value;
+    channels_[i].offset_pos_to_dev = offset_pos_to_dev_value;
+    channels_[i].offset_pos_from_dev = offset_pos_from_dev_value;
   }
 
   try
@@ -408,8 +408,9 @@ void NodeCanopen402Driver<NODETYPE>::configure_common()
     "%f\nscale_vel_from_dev_ "
     "%f\nscale_eff_from_dev_ %f\noffset_pos_to_dev_ %f\noffset_pos_from_dev_ "
     "%f\nhoming_timeout_seconds_ %i\n",
-    num_channels_, scale_pos_to_dev_, scale_pos_from_dev_, scale_vel_to_dev_, scale_vel_from_dev_,
-    scale_eff_from_dev_, offset_pos_to_dev_, offset_pos_from_dev_, homing_timeout_seconds_);
+    num_channels_, scale_pos_to_dev_value, scale_pos_from_dev_value, scale_vel_to_dev_value,
+    scale_vel_from_dev_value, scale_eff_from_dev_value, offset_pos_to_dev_value,
+    offset_pos_from_dev_value, homing_timeout_seconds_);
 
   // Create per-channel services
   create_per_channel_services();
