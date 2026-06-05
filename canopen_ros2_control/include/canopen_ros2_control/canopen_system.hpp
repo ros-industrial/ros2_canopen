@@ -252,16 +252,16 @@ struct Ros2ControlEmcyData
     std::memcpy(&er_data, &e.er, sizeof(uint8_t));
     error_register = static_cast<double>(er_data);
 
-    uint16_t msef_data;
-    std::memcpy(&msef_data, &e.msef[0], sizeof(uint16_t));
+    uint8_t msef_data;
+    std::memcpy(&msef_data, &e.msef[0], sizeof(uint8_t));
     manufacturer_error_code1 = static_cast<double>(msef_data);
-    std::memcpy(&msef_data, &e.msef[1], sizeof(uint16_t));
+    std::memcpy(&msef_data, &e.msef[1], sizeof(uint8_t));
     manufacturer_error_code2 = static_cast<double>(msef_data);
-    std::memcpy(&msef_data, &e.msef[2], sizeof(uint16_t));
+    std::memcpy(&msef_data, &e.msef[2], sizeof(uint8_t));
     manufacturer_error_code3 = static_cast<double>(msef_data);
-    std::memcpy(&msef_data, &e.msef[3], sizeof(uint16_t));
+    std::memcpy(&msef_data, &e.msef[3], sizeof(uint8_t));
     manufacturer_error_code4 = static_cast<double>(msef_data);
-    std::memcpy(&msef_data, &e.msef[4], sizeof(uint16_t));
+    std::memcpy(&msef_data, &e.msef[4], sizeof(uint8_t));
     manufacturer_error_code5 = static_cast<double>(msef_data);
   }
 
