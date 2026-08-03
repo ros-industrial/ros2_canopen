@@ -20,6 +20,8 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   # Awaiting upstream fix https://gitlab.com/lely_industries/lely-core/-/merge_requests/149
   COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0002-Allow-base16-values-for-SupportedObjects.patch
   COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0002-Fix-C23-compat.patch
+  # Awaiting upstream fix https://gitlab.com/lely_industries/lely-core/-/merge_requests/150
+  COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0003-Fix-deprecated-pkg-resources.patch
   #CONFIGURE step execute autoreconf and configure
   CONFIGURE_COMMAND autoreconf -i <SOURCE_DIR>
   COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-cython --disable-doc --disable-tests --disable-static --disable-diag
