@@ -47,8 +47,8 @@ These are some of the features this stack implements. For further information pl
   * canopen_ros2_control/RobotSystem
 * **CANopen drivers**
   Currently, the following drivers are available:
-    * ProxyDriver
-    * Cia402Driver
+  * ProxyDriver
+  * Cia402Driver
 
 
 ## Post testing
