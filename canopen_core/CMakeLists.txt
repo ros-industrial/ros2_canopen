@@ -49,9 +49,6 @@ target_link_libraries(node_canopen_driver PUBLIC
   rclcpp_lifecycle::rclcpp_lifecycle
   yaml-cpp
 )
-target_link_libraries(node_canopen_driver
-  yaml-cpp::yaml-cpp
-)
 
 add_library(node_canopen_master
   SHARED
@@ -72,9 +69,6 @@ target_link_libraries(node_canopen_master PUBLIC
   rclcpp::rclcpp
   rclcpp_lifecycle::rclcpp_lifecycle
   yaml-cpp
-)
-target_link_libraries(node_canopen_master
-  yaml-cpp::yaml-cpp
 )
 
 add_library(device_container
