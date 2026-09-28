@@ -25,7 +25,6 @@ find_package(lifecycle_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
-find_package(yaml_cpp_vendor REQUIRED)
 find_package(yaml-cpp REQUIRED)
 include(ConfigExtras.cmake)
 
@@ -47,7 +46,7 @@ target_link_libraries(node_canopen_driver PUBLIC
   ${lely_core_libraries_LIBRARIES}
   rclcpp::rclcpp
   rclcpp_lifecycle::rclcpp_lifecycle
-  yaml-cpp
+  yaml-cpp::yaml-cpp
 )
 
 add_library(node_canopen_master
@@ -68,7 +67,7 @@ target_link_libraries(node_canopen_master PUBLIC
   ${lely_core_libraries_LIBRARIES}
   rclcpp::rclcpp
   rclcpp_lifecycle::rclcpp_lifecycle
-  yaml-cpp
+  yaml-cpp::yaml-cpp
 )
 
 add_library(device_container
@@ -92,7 +91,7 @@ target_link_libraries(device_container PUBLIC
   rclcpp_components::component
   rclcpp_components::component_manager
   rclcpp_lifecycle::rclcpp_lifecycle
-  yaml-cpp
+  yaml-cpp::yaml-cpp
 )
 
 add_executable(device_container_node
@@ -166,7 +165,7 @@ ament_export_dependencies(
   rclcpp
   rclcpp_components
   rclcpp_lifecycle
-  yaml_cpp_vendor
+  yaml-cpp
 )
 
 # https://github.com/ament/ament_cmake/blob/e78ed7e084489c2a48cb91dec9da92c13e9653c9/ament_cmake_core/cmake/core/ament_package.cmake#L24-L32

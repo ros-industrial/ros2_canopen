@@ -10,12 +10,16 @@
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <build_depend>git</build_depend>
   <build_depend>autoconf</build_depend>
   <build_depend>automake</build_depend>
+  <build_depend>git</build_depend>
   <build_depend>libtool</build_depend>
+  <build_depend>yaml-cpp</build_depend>
+
   <depend>python3-empy</depend>
   <depend>python3-yaml</depend>
+
+  <build_export_depend>yaml-cpp</build_export_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
