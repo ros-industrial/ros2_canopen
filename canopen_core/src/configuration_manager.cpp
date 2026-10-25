@@ -13,14 +13,22 @@
 //    limitations under the License.
 
 #include "canopen_core/configuration_manager.hpp"
-#include <stdexcept>
+#include "canopen_core/detail/dcf_preprocessor.hpp"
 
 namespace ros2_canopen
 {
 
 void ConfigurationManager::init_config()
 {
-  std::string dcf_path = "";
+  // Get the directory containing the bus config file
+  std::filesystem::path config_dir = std::filesystem::path(file_).parent_path();
+  if (config_dir.empty())
+  {
+    config_dir = std::filesystem::current_path();
+  }
+
+  // Default dcf_path to "." (same directory as bus.yml) for portable install spaces
+  std::string dcf_path = ".";
   for (YAML::const_iterator it = root_.begin(); it != root_.end(); it++)
   {
     std::string driver_name = it->first.as<std::string>();
@@ -29,8 +37,13 @@ void ConfigurationManager::init_config()
     if (config_node["dcf_path"])
     {
       dcf_path = config_node["dcf_path"].as<std::string>();
+      // Resolve the path (handles relative paths and environment variables)
+      dcf_path = detail::resolve_file_path(dcf_path, config_dir);
     }
   }
+
+  // Resolve the dcf_path (handles relative paths and environment variables)
+  dcf_path = detail::resolve_file_path(dcf_path, config_dir);
 
   for (YAML::const_iterator it = root_.begin(); it != root_.end(); it++)
   {
@@ -40,6 +53,12 @@ void ConfigurationManager::init_config()
     if (!config_node["dcf_path"])
     {
       config_node["dcf_path"] = dcf_path;
+    }
+    else
+    {
+      // Also resolve per-device dcf_path if specified
+      std::string device_dcf_path = config_node["dcf_path"].as<std::string>();
+      config_node["dcf_path"] = detail::resolve_file_path(device_dcf_path, config_dir);
     }
     devices_.insert({driver_name, config_node});
   }
