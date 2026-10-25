@@ -61,7 +61,7 @@ target_link_libraries(cia402_slave_node PUBLIC
 )
 
 install(TARGETS motion_generator
-DESTINATION lib/${PROJECT_NAME})
+  DESTINATION lib)
 
 install(TARGETS basic_slave_node
   DESTINATION lib/${PROJECT_NAME})
