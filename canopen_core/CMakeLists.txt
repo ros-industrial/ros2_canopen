@@ -49,7 +49,7 @@ target_link_libraries(node_canopen_driver PUBLIC
   rclcpp_lifecycle::rclcpp_lifecycle
   yaml-cpp
 )
-target_link_libraries(node_canopen_driver
+target_link_libraries(node_canopen_driver PUBLIC
   yaml-cpp::yaml-cpp
 )
 
@@ -73,7 +73,7 @@ target_link_libraries(node_canopen_master PUBLIC
   rclcpp_lifecycle::rclcpp_lifecycle
   yaml-cpp
 )
-target_link_libraries(node_canopen_master
+target_link_libraries(node_canopen_master PUBLIC
   yaml-cpp::yaml-cpp
 )
 
@@ -173,6 +173,7 @@ ament_export_dependencies(
   rclcpp_components
   rclcpp_lifecycle
   yaml_cpp_vendor
+  yaml-cpp
 )
 
 # https://github.com/ament/ament_cmake/blob/e78ed7e084489c2a48cb91dec9da92c13e9653c9/ament_cmake_core/cmake/core/ament_package.cmake#L24-L32
