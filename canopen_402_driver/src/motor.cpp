@@ -273,7 +273,7 @@ void Motor402::handleWrite()
     {
       cwa = 0;
     }
-    if (okay)
+    if (okay || release_halt_without_target_)
     {
       control_word_ &= ~(1 << Command402::CW_Halt);
     }

@@ -260,6 +260,22 @@ public:
     this->diag_collector_ = status;
   }
 
+  /**
+   * @brief Release CW_Halt in Operation Enabled even if the active mode has no target.
+   *
+   * By default the halt bit stays set until the selected mode has received a target.
+   * Some drives refuse to change their mode of operation while the halt bit is set,
+   * which makes the mode switch time out before a target can ever be sent.
+   * Enabling this works around such drives. Note that the drive will then act on the
+   * target value that is currently stored in its object dictionary.
+   *
+   * @param release_halt true to release the halt bit without a target
+   */
+  void set_release_halt_without_target(bool release_halt)
+  {
+    release_halt_without_target_ = release_halt;
+  }
+
 private:
   virtual bool isModeSupportedByDevice(uint16_t mode);
   void registerMode(uint16_t id, const ModeSharedPtr & m);
@@ -290,6 +306,7 @@ private:
   const bool monitor_mode_;
   const std::chrono::seconds state_switch_timeout_;
   const int homing_timeout_seconds_;
+  bool release_halt_without_target_ = false;
 
   std::shared_ptr<LelyDriverBridge> driver;
 

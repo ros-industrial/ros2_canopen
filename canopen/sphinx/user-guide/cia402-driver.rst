@@ -124,6 +124,9 @@ Additional parameters that can be used in bus.yml for this driver.
   * - switching_state
     - int
     - The state to switch the operation mode in.
+  * - release_halt_without_target
+    - bool
+    - Release the halt bit (controlword bit 8) in Operation Enabled even when no target has been set for the active mode. Workaround for drives that refuse to change the mode of operation while halt is set. Caution: the drive will act on the target value currently stored in its object dictionary. Default: false.
   * - scale_pos_to_dev
     - double
     - Scaling factor to convert from SI units to device units for position.
