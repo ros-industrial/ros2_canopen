@@ -276,6 +276,14 @@ void NodeCanopen402Driver<NODETYPE>::configure_common()
   catch (...)
   {
   }
+  try
+  {
+    supported_drive_modes_ =
+      std::optional(this->config_["supported_drive_modes"].template as<uint32_t>());
+  }
+  catch (...)
+  {
+  }
 
   scale_pos_to_dev_ = scale_pos_to_dev.value_or(1000.0);
   scale_pos_from_dev_ = scale_pos_from_dev.value_or(0.001);
@@ -527,6 +535,10 @@ void NodeCanopen402Driver<NODETYPE>::add_to_master()
   {
     channels_[ch].motor =
       std::make_shared<Motor402>(this->lely_driver_, switching_state_, homing_timeout_seconds_, ch);
+    if (supported_drive_modes_)
+    {
+      channels_[ch].motor->set_supported_drive_modes(*supported_drive_modes_);
+    }
   }
 }
 

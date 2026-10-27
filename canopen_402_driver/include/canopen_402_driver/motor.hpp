@@ -26,6 +26,7 @@
 #include <iostream>
 #include <limits>
 #include <mutex>
+#include <optional>
 #include <thread>
 #include "rclcpp/rclcpp.hpp"
 
@@ -260,6 +261,20 @@ public:
     this->diag_collector_ = status;
   }
 
+  /**
+   * @brief Override the supported drive modes (object 0x6502) reported by the device.
+   *
+   * Some drives do not answer SDO uploads of 0x6502 or report a value that does not
+   * match their actual capabilities. When an override is set, the device is not queried
+   * and the given bitmask is used instead. Must be called before the modes are registered.
+   *
+   * @param supported_drive_modes Bitmask in 0x6502 format (bit n set means mode n+1 is supported)
+   */
+  void set_supported_drive_modes(uint32_t supported_drive_modes)
+  {
+    supported_drive_modes_override_ = supported_drive_modes;
+  }
+
 private:
   virtual bool isModeSupportedByDevice(uint16_t mode);
   void registerMode(uint16_t id, const ModeSharedPtr & m);
@@ -303,6 +318,7 @@ private:
   const uint16_t op_mode_display_index = 0x6061;
   const uint16_t op_mode_index = 0x6060;
   const uint16_t supported_drive_modes_index = 0x6502;
+  std::optional<uint32_t> supported_drive_modes_override_;
 
   // Diagnostic components
   std::atomic<bool> enable_diagnostics_;
