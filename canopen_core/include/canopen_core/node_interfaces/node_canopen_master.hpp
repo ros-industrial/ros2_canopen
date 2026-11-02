@@ -174,6 +174,7 @@ public:
         node_->get_logger(), preprocessed != master_dcf_,
         "Preprocessed DCF file for portable paths: %s -> %s", master_dcf_.c_str(),
         preprocessed.c_str());
+      master_dcf_ = preprocessed;
     }
     catch (const std::exception & e)
     {
