@@ -237,10 +237,16 @@ bool Motor402::readState()
     mode_id_ = new_mode;
     mode_cond_.notify_all();
   }
-  if (selected_mode_ && selected_mode_->mode_id_ != new_mode)
+  // Called every period: log a mismatch once when it starts, not on every cycle.
+  const bool mismatch = selected_mode_ && selected_mode_->mode_id_ != new_mode;
+  if (mismatch && !mode_mismatch_logged_)
   {
-    RCLCPP_INFO(rclcpp::get_logger("canopen_402_driver"), "Mode does not match.");
+    RCLCPP_WARN(
+      rclcpp::get_logger("canopen_402_driver"),
+      "Mode does not match (channel %u): selected %u, drive reports %u.", channel_,
+      selected_mode_->mode_id_, new_mode);
   }
+  mode_mismatch_logged_ = mismatch;
   if (sw & (1 << State402::SW_Internal_limit))
   {
     if (old_sw & (1 << State402::SW_Internal_limit))

@@ -284,6 +284,7 @@ private:
 
   ModeSharedPtr selected_mode_;
   uint16_t mode_id_;
+  bool mode_mismatch_logged_ = false;  // guarded by mode_mutex_
   std::condition_variable mode_cond_;
   std::mutex mode_mutex_;
   const State402::InternalState switching_state_;
