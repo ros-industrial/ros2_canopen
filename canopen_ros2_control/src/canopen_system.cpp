@@ -265,19 +265,12 @@ hardware_interface::CallbackReturn CanopenSystem::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   // Refuse while a device is gone, so activation can simply be retried.
-  const auto lost = deactivate_on_heartbeat_timeout_
-                      ? nodes_without_heartbeat(device_container_->get_registered_drivers())
-                      : std::string();
-  if (!lost.empty())
+  if (
+    deactivate_on_heartbeat_timeout_ &&
+    heartbeat_missing(device_container_->get_registered_drivers(), kLogger, "not activating"))
   {
-    if (lost != last_refused_nodes_)
-    {
-      RCLCPP_WARN(kLogger, "Not activating: no heartbeat from node(s) [%s].", lost.c_str());
-    }
-    last_refused_nodes_ = lost;
     return CallbackReturn::FAILURE;
   }
-  last_refused_nodes_.clear();
   return CallbackReturn::SUCCESS;
 }
 
@@ -324,11 +317,8 @@ hardware_interface::return_type CanopenSystem::write(
 
   // A device whose heartbeat timed out cannot be commanded. DEACTIVATE makes the
   // controller_manager stop the controllers using this system and move it to inactive.
-  const auto lost =
-    deactivate_on_heartbeat_timeout_ ? nodes_without_heartbeat(drivers) : std::string();
-  if (!lost.empty())
+  if (deactivate_on_heartbeat_timeout_ && heartbeat_missing(drivers, kLogger, "deactivating"))
   {
-    RCLCPP_ERROR(kLogger, "No heartbeat from node(s) [%s], deactivating.", lost.c_str());
     return hardware_interface::return_type::DEACTIVATE;
   }
 
@@ -372,8 +362,9 @@ hardware_interface::return_type CanopenSystem::write(
   return hardware_interface::return_type::OK;
 }
 
-std::string nodes_without_heartbeat(
-  const std::map<uint16_t, std::shared_ptr<ros2_canopen::CanopenDriverInterface>> & drivers)
+bool heartbeat_missing(
+  const std::map<uint16_t, std::shared_ptr<ros2_canopen::CanopenDriverInterface>> & drivers,
+  const rclcpp::Logger & logger, const char * action)
 {
   std::string lost;
   for (const auto & [node_id, driver] : drivers)
@@ -383,7 +374,11 @@ std::string nodes_without_heartbeat(
       lost += (lost.empty() ? "" : ", ") + std::to_string(node_id);
     }
   }
-  return lost;
+  if (!lost.empty())
+  {
+    RCLCPP_ERROR(logger, "No heartbeat from node(s) [%s], %s.", lost.c_str(), action);
+  }
+  return !lost.empty();
 }
 
 }  // namespace canopen_ros2_control

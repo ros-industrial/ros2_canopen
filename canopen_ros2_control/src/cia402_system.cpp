@@ -293,11 +293,8 @@ hardware_interface::return_type Cia402System::write(
   auto drivers = device_container_->get_registered_drivers();
 
   // Does not call CanopenSystem::write(), so repeat its heartbeat check.
-  const auto lost =
-    deactivate_on_heartbeat_timeout_ ? nodes_without_heartbeat(drivers) : std::string();
-  if (!lost.empty())
+  if (deactivate_on_heartbeat_timeout_ && heartbeat_missing(drivers, kLogger, "deactivating"))
   {
-    RCLCPP_ERROR(kLogger, "No heartbeat from node(s) [%s], deactivating.", lost.c_str());
     return hardware_interface::return_type::DEACTIVATE;
   }
 

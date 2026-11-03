@@ -144,20 +144,12 @@ hardware_interface::CallbackReturn RobotSystem::on_activate(
   const rclcpp_lifecycle::State & previous_state)
 {
   // Refuse while a device is gone, so activation can simply be retried.
-  const auto lost = deactivate_on_heartbeat_timeout_
-                      ? nodes_without_heartbeat(device_container_->get_registered_drivers())
-                      : std::string();
-  if (!lost.empty())
+  if (
+    deactivate_on_heartbeat_timeout_ &&
+    heartbeat_missing(drivers_, robot_system_logger, "not activating"))
   {
-    if (lost != last_refused_nodes_)
-    {
-      RCLCPP_WARN(
-        robot_system_logger, "Not activating: no heartbeat from node(s) [%s].", lost.c_str());
-    }
-    last_refused_nodes_ = lost;
     return CallbackReturn::FAILURE;
   }
-  last_refused_nodes_.clear();
   for (auto & data : robot_motor_data_)
   {
     if (!data.driver->init_motor())
@@ -238,13 +230,10 @@ hardware_interface::return_type RobotSystem::write(
 {
   // A device whose heartbeat timed out cannot be commanded. DEACTIVATE makes the
   // controller_manager stop the controllers using this system and move it to inactive.
-  const auto lost = deactivate_on_heartbeat_timeout_
-                      ? nodes_without_heartbeat(device_container_->get_registered_drivers())
-                      : std::string();
-  if (!lost.empty())
+  if (
+    deactivate_on_heartbeat_timeout_ &&
+    heartbeat_missing(drivers_, robot_system_logger, "deactivating"))
   {
-    RCLCPP_ERROR(
-      robot_system_logger, "No heartbeat from node(s) [%s], deactivating.", lost.c_str());
     return hardware_interface::return_type::DEACTIVATE;
   }
   for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
@@ -310,18 +299,18 @@ void RobotSystem::initDeviceContainer()
     this->can_interface_, this->master_config_, this->bus_config_, this->master_bin_);
 
   // Get all registered drivers.
-  auto drivers = device_container_->get_registered_drivers();
+  drivers_ = device_container_->get_registered_drivers();
 
   // Iterate over all drivers and allocate them to the correct joint.
   for (auto & data : robot_motor_data_)
   {
     // Find correct driver for joint via node id.
     auto driver = std::find_if(
-      drivers.begin(), drivers.end(),
+      drivers_.begin(), drivers_.end(),
       [&data](const std::pair<int, std::shared_ptr<ros2_canopen::CanopenDriverInterface>> & driver)
       { return driver.first == data.node_id; });
 
-    if (driver == drivers.end())
+    if (driver == drivers_.end())
     {
       RCLCPP_ERROR(
         device_container_->get_logger(), "Could not find driver for joint '%s' with node id '%d'",
@@ -354,6 +343,7 @@ void RobotSystem::clean()
   spin_thread_->join();
 
   printf("Reset variables...");
+  drivers_.clear();
   device_container_.reset();
   executor_.reset();
 

@@ -173,7 +173,8 @@ protected:
   rclcpp::Logger robot_system_logger = rclcpp::get_logger("robot_system");
   // Hardware parameter deactivate_on_heartbeat_timeout (default false).
   bool deactivate_on_heartbeat_timeout_ = false;
-  std::string last_refused_nodes_;
+  // Registered drivers, copied once after init so write() does not copy them every cycle.
+  std::map<uint16_t, std::shared_ptr<ros2_canopen::CanopenDriverInterface>> drivers_;
 
 private:
   /**
