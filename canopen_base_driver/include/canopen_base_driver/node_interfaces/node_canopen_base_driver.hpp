@@ -126,6 +126,15 @@ public:
   }
 
   /**
+   * @brief Whether the device's heartbeat timed out (see LelyDriverBridge::heartbeat_lost())
+   */
+  bool heartbeat_lost() override
+  {
+    std::scoped_lock<std::mutex> lock(driver_mutex_);
+    return lely_driver_ && lely_driver_->heartbeat_lost();
+  }
+
+  /**
    * @brief Register a callback for EMCY
    *
    * @param emcy_cb
