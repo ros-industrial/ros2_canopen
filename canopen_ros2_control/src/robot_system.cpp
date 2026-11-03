@@ -15,7 +15,9 @@
 // limitations under the License.
 
 #include "canopen_ros2_control/robot_system.hpp"
+#include <hardware_interface/lexical_casts.hpp>
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
+#include "canopen_ros2_control/canopen_system.hpp"
 
 using namespace canopen_ros2_control;
 
@@ -85,6 +87,10 @@ hardware_interface::CallbackReturn RobotSystem::on_init(
     robot_system_logger, "'%s' has can interface: '%s'", info_.name.c_str(),
     can_interface_.c_str());
 
+  const auto param = info_.hardware_parameters.find("deactivate_on_heartbeat_timeout");
+  deactivate_on_heartbeat_timeout_ =
+    param != info_.hardware_parameters.end() && hardware_interface::parse_bool(param->second);
+
   ros2_canopen::ConfigurationManager config(bus_config_);
   config.init_config();
 
@@ -137,6 +143,21 @@ hardware_interface::CallbackReturn RobotSystem::on_configure(
 hardware_interface::CallbackReturn RobotSystem::on_activate(
   const rclcpp_lifecycle::State & previous_state)
 {
+  // Refuse while a device is gone, so activation can simply be retried.
+  const auto lost = deactivate_on_heartbeat_timeout_
+                      ? nodes_without_heartbeat(device_container_->get_registered_drivers())
+                      : std::string();
+  if (!lost.empty())
+  {
+    if (lost != last_refused_nodes_)
+    {
+      RCLCPP_WARN(
+        robot_system_logger, "Not activating: no heartbeat from node(s) [%s].", lost.c_str());
+    }
+    last_refused_nodes_ = lost;
+    return CallbackReturn::FAILURE;
+  }
+  last_refused_nodes_.clear();
   for (auto & data : robot_motor_data_)
   {
     if (!data.driver->init_motor())
@@ -212,6 +233,17 @@ hardware_interface::return_type RobotSystem::read(
 hardware_interface::return_type RobotSystem::write(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
+  // A device whose heartbeat timed out cannot be commanded. DEACTIVATE makes the
+  // controller_manager stop the controllers using this system and move it to inactive.
+  const auto lost = deactivate_on_heartbeat_timeout_
+                      ? nodes_without_heartbeat(device_container_->get_registered_drivers())
+                      : std::string();
+  if (!lost.empty())
+  {
+    RCLCPP_ERROR(
+      robot_system_logger, "No heartbeat from node(s) [%s], deactivating.", lost.c_str());
+    return hardware_interface::return_type::DEACTIVATE;
+  }
   for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
   {
     data.write_target();

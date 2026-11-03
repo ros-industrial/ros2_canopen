@@ -25,6 +25,7 @@
 
 #include <limits>
 #include <vector>
+#include "hardware_interface/lexical_casts.hpp"
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
@@ -73,6 +74,10 @@ hardware_interface::CallbackReturn CanopenSystem::on_init(
   RCLCPP_INFO(
     kLogger, "can_interface_name: '%s'", info_.hardware_parameters["can_interface_name"].c_str());
   RCLCPP_INFO(kLogger, "master_bin: '%s'", info_.hardware_parameters["master_bin"].c_str());
+
+  const auto param = info_.hardware_parameters.find("deactivate_on_heartbeat_timeout");
+  deactivate_on_heartbeat_timeout_ =
+    param != info_.hardware_parameters.end() && hardware_interface::parse_bool(param->second);
 
   return CallbackReturn::SUCCESS;
 }
@@ -259,8 +264,20 @@ std::vector<hardware_interface::CommandInterface> CanopenSystem::export_command_
 hardware_interface::CallbackReturn CanopenSystem::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  // TODO(anyone): prepare the robot to receive commands
-
+  // Refuse while a device is gone, so activation can simply be retried.
+  const auto lost = deactivate_on_heartbeat_timeout_
+                      ? nodes_without_heartbeat(device_container_->get_registered_drivers())
+                      : std::string();
+  if (!lost.empty())
+  {
+    if (lost != last_refused_nodes_)
+    {
+      RCLCPP_WARN(kLogger, "Not activating: no heartbeat from node(s) [%s].", lost.c_str());
+    }
+    last_refused_nodes_ = lost;
+    return CallbackReturn::FAILURE;
+  }
+  last_refused_nodes_.clear();
   return CallbackReturn::SUCCESS;
 }
 
@@ -305,6 +322,16 @@ hardware_interface::return_type CanopenSystem::write(
   // TODO(anyone): write robot's commands'
   auto drivers = device_container_->get_registered_drivers();
 
+  // A device whose heartbeat timed out cannot be commanded. DEACTIVATE makes the
+  // controller_manager stop the controllers using this system and move it to inactive.
+  const auto lost =
+    deactivate_on_heartbeat_timeout_ ? nodes_without_heartbeat(drivers) : std::string();
+  if (!lost.empty())
+  {
+    RCLCPP_ERROR(kLogger, "No heartbeat from node(s) [%s], deactivating.", lost.c_str());
+    return hardware_interface::return_type::DEACTIVATE;
+  }
+
   for (auto it = canopen_data_.begin(); it != canopen_data_.end(); ++it)
   {
     if (drivers.find(it->first) == drivers.end())
@@ -343,6 +370,20 @@ hardware_interface::return_type CanopenSystem::write(
   }
 
   return hardware_interface::return_type::OK;
+}
+
+std::string nodes_without_heartbeat(
+  const std::map<uint16_t, std::shared_ptr<ros2_canopen::CanopenDriverInterface>> & drivers)
+{
+  std::string lost;
+  for (const auto & [node_id, driver] : drivers)
+  {
+    if (driver->get_node_canopen_driver_interface()->heartbeat_lost())
+    {
+      lost += (lost.empty() ? "" : ", ") + std::to_string(node_id);
+    }
+  }
+  return lost;
 }
 
 }  // namespace canopen_ros2_control

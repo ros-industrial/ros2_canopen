@@ -415,6 +415,10 @@ struct CanopenNodeData
   }
 };
 
+// Comma-separated ids of the drivers' nodes whose heartbeat timed out, empty if none.
+std::string nodes_without_heartbeat(
+  const std::map<uint16_t, std::shared_ptr<ros2_canopen::CanopenDriverInterface>> & drivers);
+
 class CanopenSystem : public hardware_interface::SystemInterface
 {
 public:
@@ -471,6 +475,10 @@ protected:
 
   void spin();
   void clean();
+
+  // Hardware parameter deactivate_on_heartbeat_timeout (default false).
+  bool deactivate_on_heartbeat_timeout_ = false;
+  std::string last_refused_nodes_;
 
 private:
   void initDeviceContainer();

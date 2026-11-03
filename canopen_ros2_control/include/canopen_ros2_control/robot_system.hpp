@@ -171,6 +171,9 @@ protected:
   std::unique_ptr<std::thread> spin_thread_;
   std::unique_ptr<std::thread> init_thread_;
   rclcpp::Logger robot_system_logger = rclcpp::get_logger("robot_system");
+  // Hardware parameter deactivate_on_heartbeat_timeout (default false).
+  bool deactivate_on_heartbeat_timeout_ = false;
+  std::string last_refused_nodes_;
 
 private:
   /**
