@@ -286,24 +286,24 @@ protected:
 
   // NMT synchronisation items
   std::promise<canopen::NmtState> nmt_state_promise;
-  std::atomic<bool> nmt_state_is_set;
+  std::atomic<bool> nmt_state_is_set{false};
   std::mutex nmt_mtex;
 
   // RPDO synchronisation items
   std::promise<COData> rpdo_promise;
-  std::atomic<bool> rpdo_is_set;
+  std::atomic<bool> rpdo_is_set{false};
   std::mutex pdo_mtex;
   std::shared_ptr<SafeQueue<COData>> rpdo_queue;
 
   // EMCY synchronisation items
   std::promise<COEmcy> emcy_promise;
-  std::atomic<bool> emcy_is_set;
+  std::atomic<bool> emcy_is_set{false};
   std::mutex emcy_mtex;
   std::shared_ptr<SafeQueue<COEmcy>> emcy_queue;
 
   // BOOT synchronisation items
-  std::atomic<bool> booted;
-  char boot_status;
+  std::atomic<bool> booted{false};
+  char boot_status = 0;
   std::string boot_what;
   canopen::NmtState boot_state;
   std::condition_variable boot_cond;
