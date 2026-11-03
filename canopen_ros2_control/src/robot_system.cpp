@@ -173,7 +173,10 @@ hardware_interface::CallbackReturn RobotSystem::on_deactivate(
 {
   for (auto & data : robot_motor_data_)
   {
-    if (!data.driver->halt_motor())
+    // A drive without heartbeat cannot be halted; failing here would keep the system active.
+    if (
+      !data.driver->get_node_canopen_driver_interface()->heartbeat_lost() &&
+      !data.driver->halt_motor())
     {
       RCLCPP_ERROR(robot_system_logger, "Failed to deactivate '%s'", data.joint_name.c_str());
       return CallbackReturn::FAILURE;
