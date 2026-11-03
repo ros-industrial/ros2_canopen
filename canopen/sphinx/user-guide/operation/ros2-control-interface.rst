@@ -43,6 +43,28 @@ For each joint in your urdf you can choose the attached CANopen device by using 
 
     You can find an example for the configuration in the ``canopen_tests`` package under robot_control.
 
+Heartbeat monitoring
+''''''''''''''''''''
+
+CanopenSystem, Cia402System and RobotSystem can react to heartbeat timeouts of their nodes
+(off by default):
+
+.. code-block:: xml
+
+    <hardware>
+        <plugin>canopen_ros2_control/Cia402System</plugin>
+        ...
+        <param name="deactivate_on_heartbeat_timeout">true</param>
+    </hardware>
+
+While a node's heartbeat is missing, ``write()`` returns ``DEACTIVATE``, so the
+controller_manager stops the controllers using the system, and activation fails. This is
+cleared when the heartbeat is received again or the node booted again.
+
+Only nodes the master monitors are checked: those with a non-zero ``heartbeat_producer`` in
+the bus.yml, or a non-zero default for object 0x1017 in their EDS. Set ``heartbeat_producer: 0``
+for devices that do not send a heartbeat, otherwise the system cannot stay active.
+
 
 ROS2 Controllers
 ----------------
