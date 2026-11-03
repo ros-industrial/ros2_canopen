@@ -26,7 +26,6 @@
 #include <iostream>
 #include <limits>
 #include <mutex>
-#include <optional>
 #include <thread>
 #include "rclcpp/rclcpp.hpp"
 
@@ -272,7 +271,7 @@ public:
    */
   void set_supported_drive_modes(uint32_t supported_drive_modes)
   {
-    supported_drive_modes_override_ = supported_drive_modes;
+    supported_drive_modes_.store(supported_drive_modes);
   }
 
 private:
@@ -318,7 +317,9 @@ private:
   const uint16_t op_mode_display_index = 0x6061;
   const uint16_t op_mode_index = 0x6060;
   const uint16_t supported_drive_modes_index = 0x6502;
-  std::optional<uint32_t> supported_drive_modes_override_;
+  // -1 until read from the device (or overridden); then the 0x6502 bitmask. Cached so that
+  // mode switches don't repeat a blocking SDO upload on drives that never answer it.
+  std::atomic<int64_t> supported_drive_modes_{-1};
 
   // Diagnostic components
   std::atomic<bool> enable_diagnostics_;
