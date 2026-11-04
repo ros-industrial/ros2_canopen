@@ -275,13 +275,21 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
   this->exec_->post(
     [this, prom]()
     {
-      std::scoped_lock<std::mutex> lock(this->driver_mutex_);
-      this->lely_driver_ = std::make_shared<ros2_canopen::LelyDriverBridge>(
-        *(this->exec_), *(this->master_), this->node_id_, this->node_->get_name(), this->eds_,
-        this->bin_, std::chrono::milliseconds(this->sdo_timeout_ms_),
-        std::chrono::milliseconds(this->boot_timeout_ms_));
-      this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(this->lely_driver_);
-      prom->set_value(lely_driver_);
+      // Lely runs posted tasks as noexcept: an exception escaping here terminates the process.
+      try
+      {
+        std::scoped_lock<std::mutex> lock(this->driver_mutex_);
+        this->lely_driver_ = std::make_shared<ros2_canopen::LelyDriverBridge>(
+          *(this->exec_), *(this->master_), this->node_id_, this->node_->get_name(), this->eds_,
+          this->bin_, std::chrono::milliseconds(this->sdo_timeout_ms_),
+          std::chrono::milliseconds(this->boot_timeout_ms_));
+        this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(this->lely_driver_);
+        prom->set_value(lely_driver_);
+      }
+      catch (...)
+      {
+        prom->set_exception(std::current_exception());
+      }
     });
 
   auto future_status = f.wait_for(this->non_transmit_timeout_);
