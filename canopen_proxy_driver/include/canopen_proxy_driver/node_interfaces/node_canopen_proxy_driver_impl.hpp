@@ -160,8 +160,8 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
         break;
     }
     RCLCPP_INFO(
-      this->node_->get_logger(), "Slave 0x%X: Switched NMT state to %s",
-      this->lely_driver_->get_id(), message.data.c_str());
+      this->node_->get_logger(), "Slave 0x%X: Switched NMT state to %s", this->node_id_,
+      message.data.c_str());
 
     nmt_state_publisher->publish(message);
   }
