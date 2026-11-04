@@ -77,40 +77,15 @@ void Cia402System::initDeviceContainer()
       it->second->get_node_base_interface()->get_name(), it->first);
   }
 
+  // TODO(livanov93): see how to handle configure once LifecycleCia402Driver is introduced
+  /*
+  for (auto it = drivers.begin(); it != drivers.end(); it++) {
+      auto d = std::static_pointer_cast<ros2_canopen::LifecycleCia402Driver>(it->second);
+      d->configure();
+  }
+  */
+
   RCLCPP_INFO(device_container_->get_logger(), "Initialisation successful.");
-}
-
-hardware_interface::CallbackReturn Cia402System::on_configure(
-  const rclcpp_lifecycle::State & previous_state)
-{
-  executor_ = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
-  device_container_ = std::make_shared<ros2_canopen::DeviceContainer>(executor_);
-  executor_->add_node(device_container_);
-
-  // threads
-  spin_thread_ = std::make_unique<std::thread>(&Cia402System::spin, this);
-  init_thread_ = std::make_unique<std::thread>(&Cia402System::initDeviceContainer, this);
-
-  // actually wait for init phase to end
-  if (init_thread_->joinable())
-  {
-    init_thread_->join();
-
-    // TODO(livanov93): see how to handle configure once LifecycleCia402Driver is introduced
-    /*
-    auto drivers = device_container_->get_registered_drivers();
-    for (auto it = drivers.begin(); it != drivers.end(); it++) {
-        auto d = std::static_pointer_cast<ros2_canopen::LifecycleCia402Driver>(it->second);
-        d->configure();
-    }
-    */
-  }
-  else
-  {
-    RCLCPP_ERROR(kLogger, "Could not join init thread!");
-    return CallbackReturn::ERROR;
-  }
-  return CallbackReturn::SUCCESS;
 }
 
 std::vector<hardware_interface::StateInterface> Cia402System::export_state_interfaces()

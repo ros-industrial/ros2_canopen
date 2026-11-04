@@ -40,20 +40,17 @@ CanopenSystem::CanopenSystem() {}
 
 void CanopenSystem::clean()
 {
-  executor_->cancel();
-  printf("Joining...");
-  spin_thread_->join();
-  printf("Joined!");
+  // May run more than once (failed configure, cleanup, destructor).
+  if (executor_)
+  {
+    executor_->cancel();
+  }
+  if (spin_thread_ && spin_thread_->joinable())
+  {
+    spin_thread_->join();
+  }
 
   device_container_.reset();
-  executor_.reset();
-
-  if (init_thread_->joinable())
-  {
-    init_thread_->join();
-  }
-  init_thread_.reset();
-
   executor_.reset();
   spin_thread_.reset();
 }
@@ -86,16 +83,17 @@ hardware_interface::CallbackReturn CanopenSystem::on_configure(
 
   // threads
   spin_thread_ = std::make_unique<std::thread>(&CanopenSystem::spin, this);
-  init_thread_ = std::make_unique<std::thread>(&CanopenSystem::initDeviceContainer, this);
 
-  // actually wait for init phase to end
-  if (init_thread_->joinable())
+  // An exception here would terminate the controller_manager. Fail the transition
+  // instead, so configure can be retried.
+  try
   {
-    init_thread_->join();
+    initDeviceContainer();
   }
-  else
+  catch (const std::exception & e)
   {
-    RCLCPP_ERROR(kLogger, "Could not join init thread!");
+    RCLCPP_ERROR(kLogger, "Initialisation failed: %s", e.what());
+    clean();
     return CallbackReturn::ERROR;
   }
   return CallbackReturn::SUCCESS;

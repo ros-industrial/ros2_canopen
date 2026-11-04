@@ -169,7 +169,6 @@ protected:
   std::string master_bin_;
   std::string can_interface_;
   std::unique_ptr<std::thread> spin_thread_;
-  std::unique_ptr<std::thread> init_thread_;
   rclcpp::Logger robot_system_logger = rclcpp::get_logger("robot_system");
 
 private:
