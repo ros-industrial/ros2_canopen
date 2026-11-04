@@ -335,6 +335,19 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
     }
     if (!boot_success)
     {
+      // The Lely driver must be destroyed on the Lely event loop thread, otherwise
+      // destroying the device container later aborts in ev_fiber_exec_fini().
+      auto removed = std::make_shared<std::promise<void>>();
+      auto removed_future = removed->get_future();
+      this->exec_->post(
+        [this, removed]()
+        {
+          std::scoped_lock<std::mutex> lock(this->driver_mutex_);
+          this->driver_.reset();
+          this->lely_driver_.reset();
+          removed->set_value();
+        });
+      removed_future.wait_for(this->non_transmit_timeout_);
       throw DriverException(
         std::string("Boot failed after ") + std::to_string(boot_attempts) + " attempts");
     }
