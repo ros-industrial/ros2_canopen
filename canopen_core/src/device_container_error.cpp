@@ -13,14 +13,8 @@
 //    limitations under the License.
 
 #include "canopen_core/device_container_error.hpp"
-#include <cstring>
 namespace ros2_canopen
 {
 
-char * DeviceContainerException::what()
-{
-  char * res = new char[1000];
-  strcpy(res, what_.c_str());
-  return res;
-}
+const char * DeviceContainerException::what() const noexcept { return what_.c_str(); }
 }  // namespace ros2_canopen
