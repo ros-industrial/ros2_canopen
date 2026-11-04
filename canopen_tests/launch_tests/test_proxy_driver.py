@@ -29,6 +29,7 @@ from canopen_utils.launch_test_node import LaunchTestNode
 from canopen_interfaces.srv import CORead, COWrite, COReadID, COWriteID
 from canopen_interfaces.msg import COData
 from std_srvs.srv import Trigger
+from std_msgs.msg import String
 import unittest
 
 
@@ -73,11 +74,18 @@ class TestNMT(unittest.TestCase):
         rclpy.shutdown()
 
     def test_reset_nmt(self):
+        thread = threading.Thread(
+            target=self.node.subscribe_and_wait_for_message,
+            args=["proxy_device_2/nmt_state", String, String(data="START")],
+        )
+        thread.start()
+        time.sleep(0.5)  # let the subscription match before the boot-up is published
         request = Trigger.Request()
         response = Trigger.Response()
         response.success = True
         self.node.call_service("proxy_device_2/nmt_reset_node", Trigger, request, response)
-        time.sleep(1)
+        thread.join()
+        self.assertTrue(self.node.received, "No NMT state published after reset")
 
 
 class TestSDO(unittest.TestCase):
