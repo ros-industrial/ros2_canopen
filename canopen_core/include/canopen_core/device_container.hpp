@@ -162,6 +162,7 @@ public:
         std::cerr << e.what() << '\n';
       }
     }
+    if (!can_master_) return;  // init() failed before the master was loaded
     try
     {
       can_master_->shutdown();
