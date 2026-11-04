@@ -13,14 +13,8 @@
 //    limitations under the License.
 
 #include "canopen_core/master_error.hpp"
-#include <cstring>
 namespace ros2_canopen
 {
 
-char * MasterException::what()
-{
-  char * res = new char[1000];
-  strcpy(res, what_.c_str());
-  return res;
-}
+const char * MasterException::what() const noexcept { return what_.c_str(); }
 }  // namespace ros2_canopen
