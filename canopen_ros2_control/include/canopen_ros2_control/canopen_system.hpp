@@ -467,13 +467,12 @@ protected:
   std::map<uint16_t, CanopenNodeData> canopen_data_;
   // threads
   std::unique_ptr<std::thread> spin_thread_;
-  std::unique_ptr<std::thread> init_thread_;
 
   void spin();
   void clean();
 
 private:
-  void initDeviceContainer();
+  virtual void initDeviceContainer();
 };
 
 }  // namespace canopen_ros2_control

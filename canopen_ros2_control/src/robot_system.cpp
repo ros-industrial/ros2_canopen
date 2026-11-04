@@ -121,15 +121,17 @@ hardware_interface::CallbackReturn RobotSystem::on_configure(
   executor_->add_node(device_container_);
 
   spin_thread_ = std::make_unique<std::thread>(&RobotSystem::spin, this);
-  init_thread_ = std::make_unique<std::thread>(&RobotSystem::initDeviceContainer, this);
 
-  if (init_thread_->joinable())
+  // An exception here would terminate the controller_manager. Fail the transition
+  // instead, so configure can be retried.
+  try
   {
-    init_thread_->join();
+    initDeviceContainer();
   }
-  else
+  catch (const std::exception & e)
   {
-    RCLCPP_ERROR(robot_system_logger, "Could not join init thread!");
+    RCLCPP_ERROR(robot_system_logger, "Initialisation failed: %s", e.what());
+    clean();
     return CallbackReturn::ERROR;
   }
   return CallbackReturn::SUCCESS;
@@ -313,21 +315,27 @@ void RobotSystem::spin()
 
 void RobotSystem::clean()
 {
-  printf("Cancel exectutor...");
-  executor_->cancel();
-  printf("Join spin thread...");
-  spin_thread_->join();
+  // May run more than once (failed configure, cleanup, shutdown).
+  if (executor_)
+  {
+    executor_->cancel();
+  }
+  if (spin_thread_ && spin_thread_->joinable())
+  {
+    spin_thread_->join();
+  }
 
-  printf("Reset variables...");
   device_container_.reset();
   executor_.reset();
 
-  init_thread_->join();
-  init_thread_.reset();
-
-  executor_.reset();
   spin_thread_.reset();
-  robot_motor_data_.clear();
+
+  // Keep robot_motor_data_: it is filled in on_init() and backs the exported
+  // interfaces. Only drop the drivers, they belong to the device container.
+  for (auto & data : robot_motor_data_)
+  {
+    data.driver.reset();
+  }
 }
 
 #include "pluginlib/class_list_macros.hpp"
