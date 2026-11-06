@@ -26,7 +26,9 @@
 #include <iostream>
 #include <limits>
 #include <mutex>
+#include <optional>
 #include <thread>
+#include <utility>
 #include "rclcpp/rclcpp.hpp"
 
 #include "canopen_402_driver/default_homing_mode.hpp"
@@ -284,6 +286,8 @@ private:
 
   ModeSharedPtr selected_mode_;
   uint16_t mode_id_;
+  // (selected, reported) mode pair last logged as a mismatch; guarded by mode_mutex_
+  std::optional<std::pair<uint16_t, uint16_t>> logged_mode_mismatch_;
   std::condition_variable mode_cond_;
   std::mutex mode_mutex_;
   const State402::InternalState switching_state_;
