@@ -13,9 +13,11 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   GIT_REPOSITORY https://gitlab.com/lely_industries/lely-core.git
   GIT_TAG 9e3267d26018f6f6babd50786f6ae2af89cc57ea
   TIMEOUT 60
-  #UPDATE step apply patch to fix dcf-tools install and C23/GCC14 compat
-  UPDATE_COMMAND
-  COMMAND git reset --hard
+  # Pinned commit, so never re-run the update step
+  # (it has no stamp and would otherwise trigger patch/configure/build on every invocation)
+  UPDATE_DISCONNECTED TRUE
+  #PATCH step apply patch to fix dcf-tools install and C23/GCC14 compat
+  PATCH_COMMAND git reset --hard
   COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0001-Fix-dcf-tools.patch
   # Awaiting upstream fix https://gitlab.com/lely_industries/lely-core/-/merge_requests/149
   COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0002-Allow-base16-values-for-SupportedObjects.patch
@@ -25,12 +27,9 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-cython --disable-doc --disable-tests --disable-static --disable-diag
   #BUILD STEP execute make
   BUILD_COMMAND $(MAKE) -C ${CMAKE_CURRENT_BINARY_DIR}/build
-  #INSTALL STEP do nothing as we install in main
-  INSTALL_COMMAND ""
+  #INSTALL STEP only re-runs when the build step did, avoiding needless relinks
+  INSTALL_COMMAND $(MAKE) -C ${CMAKE_CURRENT_BINARY_DIR}/build install
 )
-
-#INSTALL lely_core_libraries - execute make install
-install(CODE "execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} install VERBOSE=1 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/build)")
 
 set(lely_core_cmake_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include("cmake/lely_core_libraries-extras.cmake" NO_POLICY_SCOPE)
