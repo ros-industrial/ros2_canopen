@@ -200,7 +200,7 @@ protected:
     RCLCPP_INFO(rclcpp::get_logger("cia402_slave"), "run_profiled_position_mode");
     double profile_speed =
       static_cast<double>(((uint32_t)(*this)[CiaRegister::ProfileVelocity][0])) / 1000;
-    double profile_accerlation =
+    double profile_acceleration =
       static_cast<double>(((uint32_t)(*this)[CiaRegister::ProfileAcceleration][0])) / 1000;
     double actual_position =
       static_cast<double>(((int32_t)(*this)[CiaRegister::ActualPosition][0])) / 1000.0;
@@ -210,7 +210,7 @@ protected:
       static_cast<double>(((int32_t)(*this)[CiaRegister::ActualVelocity][0])) / 1000.0;
     RCLCPP_INFO(
       rclcpp::get_logger("cia402_slave"), "Profile_Speed %f, Profile Acceleration: %f",
-      profile_speed, profile_accerlation);
+      profile_speed, profile_acceleration);
 
     while ((state.load() == InternalState::Operation_Enable) &&
            (operation_mode.load() == Profiled_Position) && (rclcpp::ok()))
@@ -235,7 +235,7 @@ protected:
           rclcpp::get_logger("cia402_slave"), "Move from %f to %f", actual_position,
           target_position);
         {
-          MotionGenerator gen(profile_accerlation, profile_speed, actual_position);
+          MotionGenerator gen(profile_speed, profile_acceleration, actual_position);
 
           while (!gen.getFinished())
           {
