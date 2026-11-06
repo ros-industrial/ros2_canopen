@@ -247,8 +247,8 @@ bool Motor402::readState()
   {
     RCLCPP_WARN(
       rclcpp::get_logger("canopen_402_driver"),
-      "Mode does not match (channel %u): selected %u, drive reports %d.", channel_,
-      mismatch->first, static_cast<int8_t>(mismatch->second));
+      "Mode does not match (channel %u): selected %u, drive reports %d.", channel_, mismatch->first,
+      static_cast<int8_t>(mismatch->second));
   }
   logged_mode_mismatch_ = mismatch;
   if (sw & (1 << State402::SW_Internal_limit))
