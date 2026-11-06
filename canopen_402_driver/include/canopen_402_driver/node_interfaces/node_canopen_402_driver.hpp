@@ -93,6 +93,7 @@ protected:
 
   ros2_canopen::State402::InternalState switching_state_;
   int homing_timeout_seconds_;
+  bool release_halt_without_target_;
 
   void publish();
   virtual void poll_timer_callback() override;
