@@ -16,6 +16,7 @@
               <param name="master_config">${master_config}</param>
               <param name="can_interface_name">${can_interface_name}</param>
               <param name="master_bin">"${master_bin}"</param>
+              <param name="deactivate_on_heartbeat_timeout">true</param>
             </hardware>
             <joint name="${prefix}node_1">
                 <param name="node_id">2</param>

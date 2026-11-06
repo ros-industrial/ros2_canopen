@@ -107,11 +107,31 @@ void LelyDriverBridge::OnBoot(canopen::NmtState st, char es, const ::std::string
   {
     booted.store(true);
   }
+  // Lely restarts heartbeat consumption after a boot without a "resolved" event.
+  // 'L' (slave was already operational) counts as booted, as in wait_for_boot().
+  if (es == 0 || es == 'L')
+  {
+    heartbeat_lost_.store(false);
+  }
   std::unique_lock<std::mutex> lck(boot_mtex);
   this->boot_state = st;
   this->boot_status = es;
   this->boot_what = what;
   boot_cond.notify_all();
+}
+
+void LelyDriverBridge::OnHeartbeat(bool occurred) noexcept
+{
+  FiberDriver::OnHeartbeat(occurred);
+  heartbeat_lost_.store(occurred);
+  if (occurred)
+  {
+    RCLCPP_WARN(rclcpp::get_logger(name_), "Heartbeat timeout.");
+  }
+  else
+  {
+    RCLCPP_INFO(rclcpp::get_logger(name_), "Heartbeat received again.");
+  }
 }
 
 // void LelyDriverBridge::OnConfig(::std::function<void(::std::error_code ec)> res) noexcept
