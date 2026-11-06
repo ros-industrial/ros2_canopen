@@ -124,6 +124,9 @@ Additional parameters that can be used in bus.yml for this driver.
   * - switching_state
     - int
     - The state to switch the operation mode in.
+  * - supported_drive_modes
+    - uint32
+    - Overrides the supported drive modes (object 0x6502) instead of reading them from the device. Use this for drives that do not answer SDO requests for 0x6502 or report incorrect values. Uses the 0x6502 bitmask format, e.g. 0x25 for profiled position, profiled velocity and homing. Applies to all channels. Default: read from device.
   * - scale_pos_to_dev
     - double
     - Scaling factor to convert from SI units to device units for position.
