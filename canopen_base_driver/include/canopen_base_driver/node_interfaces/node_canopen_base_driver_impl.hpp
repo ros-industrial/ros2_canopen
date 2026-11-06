@@ -275,13 +275,21 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
   this->exec_->post(
     [this, prom]()
     {
-      std::scoped_lock<std::mutex> lock(this->driver_mutex_);
-      this->lely_driver_ = std::make_shared<ros2_canopen::LelyDriverBridge>(
-        *(this->exec_), *(this->master_), this->node_id_, this->node_->get_name(), this->eds_,
-        this->bin_, std::chrono::milliseconds(this->sdo_timeout_ms_),
-        std::chrono::milliseconds(this->boot_timeout_ms_));
-      this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(this->lely_driver_);
-      prom->set_value(lely_driver_);
+      // Lely runs posted tasks as noexcept: an exception escaping here terminates the process.
+      try
+      {
+        std::scoped_lock<std::mutex> lock(this->driver_mutex_);
+        this->lely_driver_ = std::make_shared<ros2_canopen::LelyDriverBridge>(
+          *(this->exec_), *(this->master_), this->node_id_, this->node_->get_name(), this->eds_,
+          this->bin_, std::chrono::milliseconds(this->sdo_timeout_ms_),
+          std::chrono::milliseconds(this->boot_timeout_ms_));
+        this->driver_ = std::static_pointer_cast<lely::canopen::BasicDriver>(this->lely_driver_);
+        prom->set_value(lely_driver_);
+      }
+      catch (...)
+      {
+        prom->set_exception(std::current_exception());
+      }
     });
 
   auto future_status = f.wait_for(this->non_transmit_timeout_);
@@ -327,6 +335,19 @@ void NodeCanopenBaseDriver<NODETYPE>::add_to_master()
     }
     if (!boot_success)
     {
+      // The Lely driver must be destroyed on the Lely event loop thread, otherwise
+      // destroying the device container later aborts in ev_fiber_exec_fini().
+      auto removed = std::make_shared<std::promise<void>>();
+      auto removed_future = removed->get_future();
+      this->exec_->post(
+        [this, removed]()
+        {
+          std::scoped_lock<std::mutex> lock(this->driver_mutex_);
+          this->driver_.reset();
+          this->lely_driver_.reset();
+          removed->set_value();
+        });
+      removed_future.wait_for(this->non_transmit_timeout_);
       throw DriverException(
         std::string("Boot failed after ") + std::to_string(boot_attempts) + " attempts");
     }
@@ -347,6 +368,7 @@ void NodeCanopenBaseDriver<NODETYPE>::remove_from_master()
   this->exec_->post(
     [this, prom]()
     {
+      std::scoped_lock<std::mutex> lock(this->driver_mutex_);
       this->driver_.reset();
       this->lely_driver_.reset();
       prom->set_value();
@@ -372,6 +394,10 @@ void NodeCanopenBaseDriver<NODETYPE>::nmt_listener()
     std::future<lely::canopen::NmtState> f;
     {
       std::scoped_lock<std::mutex> lock(this->driver_mutex_);
+      // deactivate() resets lely_driver_ before joining this thread. An NMT event
+      // arriving in between must not bring the loop back here. activated_ is not checked:
+      // activate() starts this thread before it sets activated_.
+      if (!this->lely_driver_) return;
       f = this->lely_driver_->async_request_nmt();
     }
     while (f.wait_for(this->non_transmit_timeout_) != std::future_status::ready)
@@ -383,7 +409,7 @@ void NodeCanopenBaseDriver<NODETYPE>::nmt_listener()
       auto state = f.get();
       if (nmt_state_cb_)
       {
-        nmt_state_cb_(state, this->lely_driver_->get_id());
+        nmt_state_cb_(state, this->node_id_);
       }
       on_nmt(state);
     }
@@ -438,7 +464,7 @@ void NodeCanopenBaseDriver<NODETYPE>::rdpo_listener()
     {
       if (rpdo_cb_)
       {
-        rpdo_cb_(rpdo, this->lely_driver_->get_id());
+        rpdo_cb_(rpdo, this->node_id_);
       }
       on_rpdo(rpdo);
     }
@@ -463,7 +489,7 @@ void NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback()
     {
       if (emcy_cb_)
       {
-        emcy_cb_(opt.value(), this->lely_driver_->get_id());
+        emcy_cb_(opt.value(), this->node_id_);
       }
       on_emcy(opt.value());
     }
@@ -484,7 +510,7 @@ void NodeCanopenBaseDriver<NODETYPE>::poll_timer_callback()
     {
       if (rpdo_cb_)
       {
-        rpdo_cb_(opt.value(), this->lely_driver_->get_id());
+        rpdo_cb_(opt.value(), this->node_id_);
       }
       on_rpdo(opt.value());
     }
@@ -512,7 +538,7 @@ void NodeCanopenBaseDriver<NODETYPE>::emcy_listener()
     {
       if (emcy_cb_)
       {
-        emcy_cb_(emcy, this->lely_driver_->get_id());
+        emcy_cb_(emcy, this->node_id_);
       }
       on_emcy(emcy);
     }

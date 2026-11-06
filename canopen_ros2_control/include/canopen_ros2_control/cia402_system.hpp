@@ -93,9 +93,6 @@ public:
     const hardware_interface::HardwareComponentInterfaceParams & params);
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  hardware_interface::CallbackReturn on_configure(const rclcpp_lifecycle::State & previous_state);
-
-  CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
   std::vector<hardware_interface::StateInterface> export_state_interfaces();
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
@@ -138,7 +135,7 @@ private:
   void handleHalt(
     uint id, uint channel, const std::shared_ptr<ros2_canopen::Cia402Driver> & driver);
 
-  void initDeviceContainer();
+  void initDeviceContainer() override;
 };
 
 }  // namespace canopen_ros2_control

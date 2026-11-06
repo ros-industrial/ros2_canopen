@@ -34,7 +34,7 @@ private:
 public:
   MasterException(std::string what) { what_ = what; }
 
-  char * what();
+  const char * what() const noexcept override;
 };
 }  // namespace ros2_canopen
 
