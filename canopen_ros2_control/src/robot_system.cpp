@@ -91,12 +91,30 @@ hardware_interface::CallbackReturn RobotSystem::on_init(
   // Load joint data
   for (auto joint : info_.joints)
   {
-    auto driver_type =
-      config.get_entry<std::string>(joint.parameters["device_name"], "driver").value();
+    auto device_name = joint.parameters.find("device_name");
+    if (device_name == joint.parameters.end() || device_name->second.empty())
+    {
+      RCLCPP_ERROR(
+        robot_system_logger, "No device_name parameter provided for joint '%s'.",
+        joint.name.c_str());
+      return CallbackReturn::ERROR;
+    }
+
+    auto driver_entry = config.get_entry<std::string>(device_name->second, "driver");
+    if (!driver_entry.has_value())
+    {
+      RCLCPP_ERROR(
+        robot_system_logger,
+        "Cannot read a valid 'driver' entry for device '%s' of joint '%s' in bus config '%s'.",
+        device_name->second.c_str(), joint.name.c_str(), bus_config_.c_str());
+      return CallbackReturn::ERROR;
+    }
+
+    auto driver_type = driver_entry.value();
     if (driver_type == "ros2_canopen::Cia402Driver")
     {
       auto data = Cia402Data();
-      if (data.init_data(joint, config.dump_device(joint.parameters["device_name"])))
+      if (data.init_data(joint, config.dump_device(device_name->second)))
       {
         robot_motor_data_.push_back(data);
       }
