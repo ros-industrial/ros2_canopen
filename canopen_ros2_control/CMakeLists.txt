@@ -65,6 +65,13 @@ install(
 )
 
 if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+
+  ament_add_gtest(test_robot_system test/test_robot_system.cpp)
+  target_compile_definitions(test_robot_system PRIVATE
+    TEST_RESOURCES_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/test")
+  target_link_libraries(test_robot_system canopen_ros2_control)
+
   #find_package(ament_cmake_gmock REQUIRED)
   #find_package(ros2_control_test_assets REQUIRED)
 
