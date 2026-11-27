@@ -40,21 +40,24 @@ CanopenSystem::CanopenSystem() {}
 
 void CanopenSystem::clean()
 {
-  executor_->cancel();
-  printf("Joining...");
-  spin_thread_->join();
-  printf("Joined!");
+  // May run more than once (failed configure, cleanup, destructor).
+  if (executor_)
+  {
+    executor_->cancel();
+  }
+  if (spin_thread_ && spin_thread_->joinable())
+  {
+    spin_thread_->join();
+  }
 
   device_container_.reset();
   executor_.reset();
 
-  if (init_thread_->joinable())
+  if (init_thread_ && init_thread_->joinable())
   {
     init_thread_->join();
   }
   init_thread_.reset();
-
-  executor_.reset();
   spin_thread_.reset();
 }
 
