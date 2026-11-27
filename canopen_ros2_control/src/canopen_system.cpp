@@ -101,6 +101,7 @@ hardware_interface::CallbackReturn CanopenSystem::on_configure(
     RCLCPP_ERROR(kLogger, "Could not join init thread!");
     return CallbackReturn::ERROR;
   }
+  publish_commands();
   return CallbackReturn::SUCCESS;
 }
 
@@ -168,9 +169,9 @@ void CanopenSystem::initDeviceContainer()
   RCLCPP_INFO(device_container_->get_logger(), "Initialisation successful.");
 }
 
-std::vector<hardware_interface::StateInterface> CanopenSystem::export_state_interfaces()
+std::vector<InterfaceBinding> CanopenSystem::export_state_bindings()
 {
-  std::vector<hardware_interface::StateInterface> state_interfaces;
+  std::vector<InterfaceBinding> state_interfaces;
   for (uint i = 0; i < info_.joints.size(); i++)
   {
     if (info_.joints[i].parameters.find("node_id") == info_.joints[i].parameters.end())
@@ -183,46 +184,46 @@ std::vector<hardware_interface::StateInterface> CanopenSystem::export_state_inte
     //      info_.joints[i].name.c_str(), info_.joints[i].parameters["node_id"].c_str());
 
     // rpdo index
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "rpdo/index", &canopen_data_[node_id].rpdo_data.index));
+    state_interfaces.emplace_back(
+      info_.joints[i].name, "rpdo/index", &canopen_data_[node_id].rpdo_data.index);
 
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "rpdo/subindex", &canopen_data_[node_id].rpdo_data.subindex));
+    state_interfaces.emplace_back(
+      info_.joints[i].name, "rpdo/subindex", &canopen_data_[node_id].rpdo_data.subindex);
 
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "rpdo/data", &canopen_data_[node_id].rpdo_data.data));
+    state_interfaces.emplace_back(
+      info_.joints[i].name, "rpdo/data", &canopen_data_[node_id].rpdo_data.data);
 
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "nmt/state", &canopen_data_[node_id].nmt_state.state));
+    state_interfaces.emplace_back(
+      info_.joints[i].name, "nmt/state", &canopen_data_[node_id].nmt_state.state);
 
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, "emcy/error_code", &canopen_data_[node_id].emcy_data.error_code));
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
+    state_interfaces.emplace_back(
+      info_.joints[i].name, "emcy/error_code", &canopen_data_[node_id].emcy_data.error_code);
+    state_interfaces.emplace_back(
       info_.joints[i].name, "emcy/error_register",
-      &canopen_data_[node_id].emcy_data.error_register));
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      &canopen_data_[node_id].emcy_data.error_register);
+    state_interfaces.emplace_back(
       info_.joints[i].name, "emcy/manufacturer_error_code1",
-      &canopen_data_[node_id].emcy_data.manufacturer_error_code1));
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code1);
+    state_interfaces.emplace_back(
       info_.joints[i].name, "emcy/manufacturer_error_code2",
-      &canopen_data_[node_id].emcy_data.manufacturer_error_code2));
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code2);
+    state_interfaces.emplace_back(
       info_.joints[i].name, "emcy/manufacturer_error_code3",
-      &canopen_data_[node_id].emcy_data.manufacturer_error_code3));
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code3);
+    state_interfaces.emplace_back(
       info_.joints[i].name, "emcy/manufacturer_error_code4",
-      &canopen_data_[node_id].emcy_data.manufacturer_error_code4));
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code4);
+    state_interfaces.emplace_back(
       info_.joints[i].name, "emcy/manufacturer_error_code5",
-      &canopen_data_[node_id].emcy_data.manufacturer_error_code5));
+      &canopen_data_[node_id].emcy_data.manufacturer_error_code5);
   }
 
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> CanopenSystem::export_command_interfaces()
+std::vector<InterfaceBinding> CanopenSystem::export_command_bindings()
 {
-  std::vector<hardware_interface::CommandInterface> command_interfaces;
+  std::vector<InterfaceBinding> command_interfaces;
   for (uint i = 0; i < info_.joints.size(); i++)
   {
     if (info_.joints[i].parameters.find("node_id") == info_.joints[i].parameters.end())
@@ -233,30 +234,77 @@ std::vector<hardware_interface::CommandInterface> CanopenSystem::export_command_
 
     const uint8_t node_id = static_cast<uint8_t>(std::stoi(info_.joints[i].parameters["node_id"]));
 
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "tpdo/index", &canopen_data_[node_id].tpdo_data.index));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "tpdo/index", &canopen_data_[node_id].tpdo_data.index);
 
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "tpdo/subindex", &canopen_data_[node_id].tpdo_data.subindex));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "tpdo/subindex", &canopen_data_[node_id].tpdo_data.subindex);
 
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "tpdo/data", &canopen_data_[node_id].tpdo_data.data));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "tpdo/data", &canopen_data_[node_id].tpdo_data.data);
 
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "tpdo/ons", &canopen_data_[node_id].tpdo_data.one_shot));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "tpdo/ons", &canopen_data_[node_id].tpdo_data.one_shot);
 
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "nmt/reset", &canopen_data_[node_id].nmt_state.reset_ons));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "nmt/reset_fbk", &canopen_data_[node_id].nmt_state.reset_fbk));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "nmt/reset", &canopen_data_[node_id].nmt_state.reset_ons);
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "nmt/reset_fbk", &canopen_data_[node_id].nmt_state.reset_fbk);
 
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "nmt/start", &canopen_data_[node_id].nmt_state.start_ons));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "nmt/start_fbk", &canopen_data_[node_id].nmt_state.start_fbk));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "nmt/start", &canopen_data_[node_id].nmt_state.start_ons);
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "nmt/start_fbk", &canopen_data_[node_id].nmt_state.start_fbk);
   }
 
   return command_interfaces;
+}
+
+std::vector<hardware_interface::InterfaceDescription>
+CanopenSystem::export_unlisted_state_interface_descriptions()
+{
+  state_bindings_ = export_state_bindings();
+  return unlisted_descriptions(state_bindings_, joint_state_interfaces_);
+}
+
+std::vector<hardware_interface::InterfaceDescription>
+CanopenSystem::export_unlisted_command_interface_descriptions()
+{
+  command_bindings_ = export_command_bindings();
+  return unlisted_descriptions(command_bindings_, joint_command_interfaces_);
+}
+
+void CanopenSystem::publish_states()
+{
+  for (const auto & binding : state_bindings_)
+  {
+    set_state(binding.description.get_name(), *binding.value);
+  }
+}
+
+void CanopenSystem::fetch_commands()
+{
+  for (auto & binding : command_bindings_)
+  {
+    binding.fetched = get_command(binding.description.get_name());
+    *binding.value = binding.fetched;
+  }
+}
+
+// write back one-shot resets and feedback values produced by write(); unchanged values are skipped
+// so a command a controller service sets meanwhile is not overwritten with the stale fetched one.
+// Reverse order writes each *_fbk (exported right after its command) before the command's reset:
+// the controller services read the feedback as soon as they see the command reset.
+void CanopenSystem::publish_commands()
+{
+  for (auto it = command_bindings_.rbegin(); it != command_bindings_.rend(); ++it)
+  {
+    if (it->changed())
+    {
+      set_command(it->description.get_name(), *it->value);
+      it->fetched = *it->value;
+    }
+  }
 }
 
 hardware_interface::CallbackReturn CanopenSystem::on_activate(
@@ -299,6 +347,7 @@ hardware_interface::return_type CanopenSystem::read(
     }
   }
 
+  publish_states();
   return hardware_interface::return_type::OK;
 }
 
@@ -306,6 +355,7 @@ hardware_interface::return_type CanopenSystem::write(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
   // TODO(anyone): write robot's commands'
+  fetch_commands();
   auto drivers = device_container_->get_registered_drivers();
 
   for (auto it = canopen_data_.begin(); it != canopen_data_.end(); ++it)
@@ -345,6 +395,7 @@ hardware_interface::return_type CanopenSystem::write(
     }
   }
 
+  publish_commands();
   return hardware_interface::return_type::OK;
 }
 

@@ -21,6 +21,11 @@
 #include <cstdint>
 #include <functional>
 #include <limits>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+#include "hardware_interface/hardware_info.hpp"
 
 namespace canopen_ros2_control
 {
@@ -58,5 +63,58 @@ struct TriggerCommand
   }
 };
 
+/**
+ * @brief Internal double exposed as a ros2_control interface.
+ *
+ * ros2_control owns the interface values, so the hardware copies *value to the state handle in
+ * read() and syncs command handles to and from *value around its write() logic. `fetched` holds
+ * the command value seen at the start of write(), so only values the hardware changed are written
+ * back and concurrent writes from controller service threads are not overwritten.
+ */
+struct InterfaceBinding
+{
+  InterfaceBinding(
+    const std::string & prefix, const std::string & interface_name, double * value_ptr)
+  : description(prefix, make_info(interface_name)), value(value_ptr)
+  {
+  }
+
+  hardware_interface::InterfaceDescription description;
+  double * value;
+  double fetched = std::numeric_limits<double>::quiet_NaN();
+
+  bool changed() const
+  {
+    return !(*value == fetched || (std::isnan(*value) && std::isnan(fetched)));
+  }
+
+private:
+  static hardware_interface::InterfaceInfo make_info(const std::string & interface_name)
+  {
+    hardware_interface::InterfaceInfo info;
+    info.name = interface_name;
+    return info;
+  }
+};
+
+/**
+ * @brief Descriptions of the bindings not declared in the URDF.
+ *
+ * URDF-declared (listed) interfaces are already exported by ros2_control itself.
+ */
+inline std::vector<hardware_interface::InterfaceDescription> unlisted_descriptions(
+  const std::vector<InterfaceBinding> & bindings,
+  const std::unordered_map<std::string, hardware_interface::InterfaceDescription> & listed)
+{
+  std::vector<hardware_interface::InterfaceDescription> descriptions;
+  for (const auto & binding : bindings)
+  {
+    if (listed.find(binding.description.get_name()) == listed.end())
+    {
+      descriptions.push_back(binding.description);
+    }
+  }
+  return descriptions;
+}
 }  // namespace canopen_ros2_control
 #endif

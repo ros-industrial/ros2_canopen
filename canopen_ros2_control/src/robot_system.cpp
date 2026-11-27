@@ -173,28 +173,30 @@ hardware_interface::CallbackReturn RobotSystem::on_shutdown(
   return CallbackReturn::SUCCESS;
 }
 
-std::vector<hardware_interface::StateInterface> RobotSystem::export_state_interfaces()
+std::vector<hardware_interface::InterfaceDescription>
+RobotSystem::export_unlisted_state_interface_descriptions()
 {
-  std::vector<hardware_interface::StateInterface> state_interfaces;
+  state_bindings_.clear();
 
   // Iterate over joints in xacro
   for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
   {
-    data.export_state_interface(state_interfaces);
+    data.export_state_interface(state_bindings_);
   }
-  return state_interfaces;
+  return unlisted_descriptions(state_bindings_, joint_state_interfaces_);
 }
 
-std::vector<hardware_interface::CommandInterface> RobotSystem::export_command_interfaces()
+std::vector<hardware_interface::InterfaceDescription>
+RobotSystem::export_unlisted_command_interface_descriptions()
 {
-  std::vector<hardware_interface::CommandInterface> command_interfaces;
+  command_bindings_.clear();
 
   // Iterate over joints in xacro
   for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
   {
-    data.export_command_interface(command_interfaces);
+    data.export_command_interface(command_bindings_);
   }
-  return command_interfaces;
+  return unlisted_descriptions(command_bindings_, joint_command_interfaces_);
 }
 
 hardware_interface::return_type RobotSystem::read(
@@ -205,6 +207,10 @@ hardware_interface::return_type RobotSystem::read(
   {
     data.read_state();
   }
+  for (const auto & binding : state_bindings_)
+  {
+    set_state(binding.description.get_name(), *binding.value);
+  }
 
   return hardware_interface::return_type::OK;
 }
@@ -212,6 +218,10 @@ hardware_interface::return_type RobotSystem::read(
 hardware_interface::return_type RobotSystem::write(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
+  for (const auto & binding : command_bindings_)
+  {
+    *binding.value = get_command(binding.description.get_name());
+  }
   for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
   {
     data.write_target();
@@ -235,8 +245,7 @@ hardware_interface::return_type RobotSystem::perform_command_mode_switch(
       });
     if (it != robot_motor_data_.end())
     {
-      it->interfaces_to_start.push_back(
-        hardware_interface::CommandInterface(interface).get_interface_name());
+      it->interfaces_to_start.push_back(interface);
     }
   }
 
@@ -252,8 +261,7 @@ hardware_interface::return_type RobotSystem::perform_command_mode_switch(
       });
     if (it != robot_motor_data_.end())
     {
-      it->interfaces_to_stop.push_back(
-        hardware_interface::CommandInterface(interface).get_interface_name());
+      it->interfaces_to_stop.push_back(interface);
     }
   }
 
