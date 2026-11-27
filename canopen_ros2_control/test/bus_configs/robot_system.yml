@@ -1,0 +1,19 @@
+master:
+  node_id: 1
+  driver: "ros2_canopen::MasterDriver"
+  package: "canopen_master_driver"
+
+motor_1:
+  node_id: 2
+  driver: "ros2_canopen::Cia402Driver"
+  package: "canopen_402_driver"
+  position_mode: 1
+
+no_driver_device:
+  node_id: 3
+  package: "canopen_402_driver"
+
+sequence_driver_device:
+  node_id: 4
+  driver: ["ros2_canopen::Cia402Driver"]
+  package: "canopen_402_driver"
