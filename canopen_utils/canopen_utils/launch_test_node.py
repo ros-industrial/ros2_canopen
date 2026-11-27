@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import threading
 import time
+import unittest
 import re
 
 import launch_testing
@@ -22,12 +24,16 @@ import launch_testing.util
 import launch_testing.tools
 from launch_testing.asserts import assertSequentialStdout
 
+import rclpy
+import rclpy.executors
+from controller_manager_msgs.srv import ListControllers
 from rclpy.node import Node
 from rclpy.publisher import Publisher
 from rclpy.subscription import Subscription
 from rclpy.client import Client
 from rclpy.qos import QoSProfile
 from threading import Condition
+from sensor_msgs.msg import JointState
 
 
 class Ros2ActiveIoHandler:
@@ -137,3 +143,90 @@ class LaunchTestNode(Node):
         publisher = self.create_publisher(topic_type, topic_name, 10)
         publisher.publish(msg)
         self.destroy_publisher(publisher)
+
+    def call(self, service_name: str, srv_type, request, timeout: float = 5.0):
+        """Call a service and return its response; fails the test on timeout."""
+        client: Client = self.create_client(srv_type, service_name)
+        try:
+            assert client.wait_for_service(timeout_sec=timeout), f"{service_name} not available"
+            future = client.call_async(request)
+            deadline = time.monotonic() + timeout
+            while not future.done() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            assert future.done(), f"{service_name} call timed out"
+            return future.result()
+        finally:
+            self.destroy_client(client)
+
+    def wait_for_message(
+        self, topic: str, msg_type, predicate, timeout: float = 5.0, on_tick=None
+    ):
+        """Return the first message on topic satisfying predicate, or None after timeout.
+
+        on_tick is called every 100 ms while waiting, e.g. to keep publishing a command.
+        """
+        condition = Condition()
+        matched = []
+
+        def callback(msg):
+            if not matched and predicate(msg):
+                with condition:
+                    matched.append(msg)
+                    condition.notify()
+
+        subscription: Subscription = self.create_subscription(msg_type, topic, callback, 10)
+        try:
+            deadline = time.monotonic() + timeout
+            with condition:
+                while not matched and time.monotonic() < deadline:
+                    if on_tick:
+                        on_tick()
+                    condition.wait(timeout=0.1)
+            return matched[0] if matched else None
+        finally:
+            self.destroy_subscription(subscription)
+
+    def wait_for_active_controllers(self, names, timeout: float = 30.0):
+        """Wait until all named controllers are active in /controller_manager."""
+        deadline = time.monotonic() + timeout
+        active = set()
+        while time.monotonic() < deadline:
+            response = self.call(
+                "/controller_manager/list_controllers", ListControllers, ListControllers.Request()
+            )
+            active = {c.name for c in response.controller if c.state == "active"}
+            if set(names) <= active:
+                return
+            time.sleep(0.5)
+        assert False, f"controllers not active: {set(names) - active}"
+
+    def joint_position(self, joint: str, timeout: float = 5.0, predicate=None, on_tick=None):
+        """Wait for /joint_states with joint's position satisfying predicate; return it."""
+
+        def matches(msg):
+            if joint not in msg.name:
+                return False
+            position = msg.position[msg.name.index(joint)]
+            return predicate is None or predicate(position)
+
+        msg = self.wait_for_message("/joint_states", JointState, matches, timeout, on_tick)
+        return None if msg is None else msg.position[msg.name.index(joint)]
+
+
+class LaunchTestCase(unittest.TestCase):
+    """Test case with one LaunchTestNode spun in a background thread for the whole class."""
+
+    @classmethod
+    def setUpClass(cls):
+        rclpy.init()
+        cls.node = LaunchTestNode()
+        cls.executor = rclpy.executors.SingleThreadedExecutor()
+        cls.executor.add_node(cls.node)
+        cls.thread = threading.Thread(target=cls.executor.spin, daemon=True)
+        cls.thread.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.executor.shutdown()
+        cls.node.destroy_node()
+        rclpy.shutdown()

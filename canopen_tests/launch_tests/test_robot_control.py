@@ -14,7 +14,6 @@
 
 import os
 from time import sleep
-import time
 import pytest
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
@@ -22,15 +21,12 @@ import launch
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 import launch_testing
-import threading
-import rclpy
 from rclpy.node import Node
-from canopen_utils.launch_test_node import LaunchTestNode
+from canopen_utils.launch_test_node import LaunchTestCase
 from canopen_interfaces.srv import CORead, COWrite, COReadID, COWriteID, COTargetDouble
 from canopen_interfaces.msg import COData
 from std_srvs.srv import Trigger
 from std_msgs.msg import Float64MultiArray
-import unittest
 
 
 @pytest.mark.rostest
@@ -53,26 +49,7 @@ def generate_test_description():
     return (LaunchDescription([launch_desc, ready_to_test]), {})
 
 
-class TestSDO(unittest.TestCase):
-    def run_node(self):
-        while self.ok:
-            rclpy.spin_once(self.node, timeout_sec=0.1)
-
-    @classmethod
-    def setUp(cls):
-        cls.ok = True
-        rclpy.init()
-        cls.node = LaunchTestNode()
-        cls.thread = threading.Thread(target=cls.run_node, args=[cls])
-        cls.thread.start()
-
-    @classmethod
-    def tearDown(cls):
-        cls.ok = False
-        cls.thread.join()
-        cls.node.destroy_node()
-        rclpy.shutdown()
-
+class TestSDO(LaunchTestCase):
     def test_sdo_read(self):
         req = CORead.Request()
         req.index = 0x1000
@@ -85,8 +62,21 @@ class TestSDO(unittest.TestCase):
         self.node.call_service("joint_1/sdo_read", CORead, req, res)
 
     def test_forward_control(self):
-        message = Float64MultiArray()
-        message.data = [1.0, 0.0]
-
-        self.node.publish_message("forward_position_controller", Float64MultiArray, message)
-        time.sleep(1.0)
+        self.node.wait_for_active_controllers(
+            ["joint_state_broadcaster", "forward_position_controller"]
+        )
+        publisher = self.node.create_publisher(
+            Float64MultiArray, "/forward_position_controller/commands", 10
+        )
+        try:
+            for target in ([1.0, 0.5], [-0.5, 0.0]):
+                for joint, position in zip(["joint1", "joint2"], target):
+                    reached = self.node.joint_position(
+                        joint,
+                        timeout=20.0,
+                        predicate=lambda p, position=position: abs(p - position) < 0.01,
+                        on_tick=lambda: publisher.publish(Float64MultiArray(data=target)),
+                    )
+                    self.assertIsNotNone(reached, f"{joint} did not reach {position}")
+        finally:
+            self.node.destroy_publisher(publisher)

@@ -10,6 +10,8 @@
   <depend>canopen_interfaces</depend>
   <depend>lifecycle_msgs</depend>
   <depend>std_msgs</depend>
+  <exec_depend>controller_manager_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
   <test_depend>ament_lint_auto</test_depend>
   <export>
     <build_type>ament_python</build_type>
