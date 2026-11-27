@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.10)
 project(lely_core_libraries)
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
