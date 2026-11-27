@@ -96,12 +96,6 @@ public:
   hardware_interface::CallbackReturn on_configure(const rclcpp_lifecycle::State & previous_state);
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  std::vector<hardware_interface::StateInterface> export_state_interfaces();
-
-  CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  std::vector<hardware_interface::CommandInterface> export_command_interfaces();
-
-  CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
   hardware_interface::CallbackReturn on_activate(const rclcpp_lifecycle::State & previous_state);
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
@@ -124,6 +118,9 @@ protected:
   {
     return std::make_pair(node_id, channel);
   }
+
+  std::vector<InterfaceBinding> export_state_bindings() override;
+  std::vector<InterfaceBinding> export_command_bindings() override;
 
 private:
   void switchModes(

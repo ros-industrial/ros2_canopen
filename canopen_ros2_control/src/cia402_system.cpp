@@ -110,15 +110,16 @@ hardware_interface::CallbackReturn Cia402System::on_configure(
     RCLCPP_ERROR(kLogger, "Could not join init thread!");
     return CallbackReturn::ERROR;
   }
+  publish_commands();
   return CallbackReturn::SUCCESS;
 }
 
-std::vector<hardware_interface::StateInterface> Cia402System::export_state_interfaces()
+std::vector<InterfaceBinding> Cia402System::export_state_bindings()
 {
-  std::vector<hardware_interface::StateInterface> state_interfaces;
+  std::vector<InterfaceBinding> state_interfaces;
 
   // underlying base class export first
-  state_interfaces = CanopenSystem::export_state_interfaces();
+  state_interfaces = CanopenSystem::export_state_bindings();
 
   for (uint i = 0; i < info_.joints.size(); i++)
   {
@@ -139,28 +140,28 @@ std::vector<hardware_interface::StateInterface> Cia402System::export_state_inter
     auto motor_key = getMotorKey(node_id, channel);
 
     // actual position
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
+    state_interfaces.emplace_back(
       info_.joints[i].name, hardware_interface::HW_IF_POSITION,
-      &motor_data_[motor_key].actual_position));
+      &motor_data_[motor_key].actual_position);
     // actual speed
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
+    state_interfaces.emplace_back(
       info_.joints[i].name, hardware_interface::HW_IF_VELOCITY,
-      &motor_data_[motor_key].actual_speed));
+      &motor_data_[motor_key].actual_speed);
     // actual effort
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
+    state_interfaces.emplace_back(
       info_.joints[i].name, hardware_interface::HW_IF_EFFORT,
-      &motor_data_[motor_key].actual_effort));
+      &motor_data_[motor_key].actual_effort);
   }
 
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> Cia402System::export_command_interfaces()
+std::vector<InterfaceBinding> Cia402System::export_command_bindings()
 {
-  std::vector<hardware_interface::CommandInterface> command_interfaces;
+  std::vector<InterfaceBinding> command_interfaces;
 
   // underlying base class export first
-  command_interfaces = CanopenSystem::export_command_interfaces();
+  command_interfaces = CanopenSystem::export_command_bindings();
 
   for (uint i = 0; i < info_.joints.size(); i++)
   {
@@ -182,66 +183,66 @@ std::vector<hardware_interface::CommandInterface> Cia402System::export_command_i
     auto motor_key = getMotorKey(node_id, channel);
 
     // target
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+    command_interfaces.emplace_back(
       info_.joints[i].name, hardware_interface::HW_IF_POSITION,
-      &motor_data_[motor_key].target.position_value));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+      &motor_data_[motor_key].target.position_value);
+    command_interfaces.emplace_back(
       info_.joints[i].name, hardware_interface::HW_IF_VELOCITY,
-      &motor_data_[motor_key].target.velocity_value));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+      &motor_data_[motor_key].target.velocity_value);
+    command_interfaces.emplace_back(
       info_.joints[i].name, hardware_interface::HW_IF_EFFORT,
-      &motor_data_[motor_key].target.torque_value));
+      &motor_data_[motor_key].target.torque_value);
     // init
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "init_cmd", &motor_data_[motor_key].init.ons_cmd));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "init_fbk", &motor_data_[motor_key].init.resp));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "init_cmd", &motor_data_[motor_key].init.ons_cmd);
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "init_fbk", &motor_data_[motor_key].init.resp);
 
     // halt
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "halt_cmd", &motor_data_[motor_key].halt.ons_cmd));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "halt_fbk", &motor_data_[motor_key].halt.resp));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "halt_cmd", &motor_data_[motor_key].halt.ons_cmd);
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "halt_fbk", &motor_data_[motor_key].halt.resp);
 
     // recover
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "recover_cmd", &motor_data_[motor_key].recover.ons_cmd));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "recover_fbk", &motor_data_[motor_key].recover.resp));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "recover_cmd", &motor_data_[motor_key].recover.ons_cmd);
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "recover_fbk", &motor_data_[motor_key].recover.resp);
 
     // set position mode
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "position_mode_cmd", &motor_data_[motor_key].position_mode.ons_cmd));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "position_mode_fbk", &motor_data_[motor_key].position_mode.resp));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "position_mode_cmd", &motor_data_[motor_key].position_mode.ons_cmd);
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "position_mode_fbk", &motor_data_[motor_key].position_mode.resp);
 
     // set velocity mode
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "velocity_mode_cmd", &motor_data_[motor_key].velocity_mode.ons_cmd));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, "velocity_mode_fbk", &motor_data_[motor_key].velocity_mode.resp));
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "velocity_mode_cmd", &motor_data_[motor_key].velocity_mode.ons_cmd);
+    command_interfaces.emplace_back(
+      info_.joints[i].name, "velocity_mode_fbk", &motor_data_[motor_key].velocity_mode.resp);
 
     // set cyclic velocity mode
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+    command_interfaces.emplace_back(
       info_.joints[i].name, "cyclic_velocity_mode_cmd",
-      &motor_data_[motor_key].cyclic_velocity_mode.ons_cmd));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+      &motor_data_[motor_key].cyclic_velocity_mode.ons_cmd);
+    command_interfaces.emplace_back(
       info_.joints[i].name, "cyclic_velocity_mode_fbk",
-      &motor_data_[motor_key].cyclic_velocity_mode.resp));
+      &motor_data_[motor_key].cyclic_velocity_mode.resp);
     // set cyclic position mode
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+    command_interfaces.emplace_back(
       info_.joints[i].name, "cyclic_position_mode_cmd",
-      &motor_data_[motor_key].cyclic_position_mode.ons_cmd));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+      &motor_data_[motor_key].cyclic_position_mode.ons_cmd);
+    command_interfaces.emplace_back(
       info_.joints[i].name, "cyclic_position_mode_fbk",
-      &motor_data_[motor_key].cyclic_position_mode.resp));
+      &motor_data_[motor_key].cyclic_position_mode.resp);
     // set interpolated position mode
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+    command_interfaces.emplace_back(
       info_.joints[i].name, "interpolated_position_mode_cmd",
-      &motor_data_[motor_key].interpolated_position_mode.ons_cmd));
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+      &motor_data_[motor_key].interpolated_position_mode.ons_cmd);
+    command_interfaces.emplace_back(
       info_.joints[i].name, "interpolated_position_mode_fbk",
-      &motor_data_[motor_key].interpolated_position_mode.resp));
+      &motor_data_[motor_key].interpolated_position_mode.resp);
   }
 
   return command_interfaces;
@@ -264,8 +265,6 @@ hardware_interface::return_type Cia402System::read(
 {
   // TODO(anyone): read robot states
 
-  auto ret_val = CanopenSystem::read(time, period);
-
   auto drivers = device_container_->get_registered_drivers();
 
   // Iterate through all motor data entries which now include channel info
@@ -284,12 +283,14 @@ hardware_interface::return_type Cia402System::read(
     motor_data_[it->first].actual_effort = motion_controller_driver->get_effort(channel);
   }
 
-  return ret_val;
+  // base class read last: it publishes all state interfaces, including the motor data above
+  return CanopenSystem::read(time, period);
 }
 
 hardware_interface::return_type Cia402System::write(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
+  fetch_commands();
   auto drivers = device_container_->get_registered_drivers();
 
   // Process NMT commands per node (not per channel)
@@ -362,6 +363,7 @@ hardware_interface::return_type Cia402System::write(
     }
   }
 
+  publish_commands();
   return hardware_interface::return_type::OK;
 }
 

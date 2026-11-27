@@ -129,7 +129,13 @@ def launch_setup(context, *args, **kwargs):
     canopen_proxy_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["node_1_controller", "--controller-manager", "/controller_manager"],
+        arguments=[
+            "node_1_controller",
+            "--controller-manager",
+            "/controller_manager",
+            "--param-file",
+            ros2_control_config,
+        ],
     )
 
     robot_state_publisher_node = Node(

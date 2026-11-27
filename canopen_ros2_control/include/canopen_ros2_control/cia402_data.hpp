@@ -112,23 +112,19 @@ struct Cia402Data
     return true;
   }
 
-  void export_state_interface(std::vector<hardware_interface::StateInterface> & state_interfaces)
+  void export_state_interface(std::vector<InterfaceBinding> & state_interfaces)
   {
     // actual position
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      joint_name, hardware_interface::HW_IF_POSITION, &actual_position));
+    state_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_POSITION, &actual_position);
 
     // actual speed
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      joint_name, hardware_interface::HW_IF_VELOCITY, &actual_velocity));
+    state_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_VELOCITY, &actual_velocity);
 
     // actual effort
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      joint_name, hardware_interface::HW_IF_EFFORT, &actual_effort));
+    state_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_EFFORT, &actual_effort);
   }
 
-  void export_command_interface(
-    std::vector<hardware_interface::CommandInterface> & command_interfaces)
+  void export_command_interface(std::vector<InterfaceBinding> & command_interfaces)
   {
     if (
       command_interface_to_operation_mode.find(joint_name + "/" + "position") !=

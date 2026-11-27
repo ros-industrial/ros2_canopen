@@ -33,6 +33,7 @@
 
 #include "canopen_core/device_container.hpp"
 #include "canopen_proxy_driver/proxy_driver.hpp"
+#include "canopen_ros2_control/helpers.hpp"
 #include "canopen_ros2_control/visibility_control.h"
 #include "hardware_interface/handle.hpp"
 #include "hardware_interface/hardware_info.hpp"
@@ -427,10 +428,12 @@ public:
     const hardware_interface::HardwareComponentInterfaceParams & params) override;
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
+  std::vector<hardware_interface::InterfaceDescription>
+  export_unlisted_state_interface_descriptions() override;
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
+  std::vector<hardware_interface::InterfaceDescription>
+  export_unlisted_command_interface_descriptions() override;
 
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
   hardware_interface::CallbackReturn on_configure(
@@ -463,6 +466,15 @@ public:
 protected:
   std::shared_ptr<ros2_canopen::DeviceContainer> device_container_;
   std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> executor_;
+  // canopen data exposed as interfaces, synced with the ros2_control handles in read()/write()
+  std::vector<InterfaceBinding> state_bindings_;
+  std::vector<InterfaceBinding> command_bindings_;
+  virtual std::vector<InterfaceBinding> export_state_bindings();
+  virtual std::vector<InterfaceBinding> export_command_bindings();
+  void publish_states();
+  void fetch_commands();
+  void publish_commands();
+
   // can stuff
   std::map<uint16_t, CanopenNodeData> canopen_data_;
   // threads

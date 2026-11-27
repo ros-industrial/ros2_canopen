@@ -28,11 +28,13 @@ TEST(TestLoadCanopenProxyController, load_controller)
   std::shared_ptr<rclcpp::Executor> executor =
     std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
 
-  controller_manager::ControllerManager cm(
-    std::make_unique<hardware_interface::ResourceManager>(), executor, "test_controller_manager");
+  controller_manager::ControllerManager cm(executor, "test_controller_manager");
 
-  ASSERT_NO_THROW(cm.load_controller(
-    "test_canopen_ros2_controllers", "canopen_ros2_controllers/CanopenProxyController"));
+  // load_controller() reports a missing or broken plugin by returning nullptr, not by throwing
+  EXPECT_NE(
+    cm.load_controller(
+      "test_canopen_ros2_controllers", "canopen_ros2_controllers/CanopenProxyController"),
+    nullptr);
 
   rclcpp::shutdown();
 }

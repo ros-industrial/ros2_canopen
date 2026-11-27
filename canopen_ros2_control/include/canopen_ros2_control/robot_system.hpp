@@ -75,10 +75,11 @@ public:
    * - Position
    * - Velocity
    *
-   * @return std::vector<hardware_interface::StateInterface>
+   * @return std::vector<hardware_interface::InterfaceDescription> not declared in the URDF
    */
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
+  std::vector<hardware_interface::InterfaceDescription>
+  export_unlisted_state_interface_descriptions() override;
 
   /**
    * @brief Export the command interfaces for this system.
@@ -92,10 +93,11 @@ public:
    * - Halt Command
    * - Recover Command
    *
-   * @return std::vector<hardware_interface::CommandInterface>
+   * @return std::vector<hardware_interface::InterfaceDescription> not declared in the URDF
    */
   CANOPEN_ROS2_CONTROL__VISIBILITY_PUBLIC
-  std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
+  std::vector<hardware_interface::InterfaceDescription>
+  export_unlisted_command_interface_descriptions() override;
 
   /**
    * @brief Cleanup the hardware interface
@@ -164,6 +166,8 @@ protected:
   std::shared_ptr<ros2_canopen::DeviceContainer> device_container_;
   std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> executor_;
   std::vector<Cia402Data> robot_motor_data_;
+  std::vector<InterfaceBinding> state_bindings_;
+  std::vector<InterfaceBinding> command_bindings_;
   std::string bus_config_;
   std::string master_config_;
   std::string master_bin_;
