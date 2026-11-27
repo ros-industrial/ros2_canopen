@@ -171,6 +171,10 @@ protected:
   std::unique_ptr<std::thread> spin_thread_;
   std::unique_ptr<std::thread> init_thread_;
   rclcpp::Logger robot_system_logger = rclcpp::get_logger("robot_system");
+  // Hardware parameter deactivate_on_heartbeat_timeout (default false).
+  bool deactivate_on_heartbeat_timeout_ = false;
+  // Registered drivers, copied once after init so write() does not copy them every cycle.
+  std::map<uint16_t, std::shared_ptr<ros2_canopen::CanopenDriverInterface>> drivers_;
 
 private:
   /**

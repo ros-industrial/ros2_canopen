@@ -118,6 +118,13 @@ public:
    *
    */
   virtual void remove_from_master() = 0;
+
+  /**
+   * @brief Whether the master reports a heartbeat timeout for the device
+   *
+   * Always false for devices whose heartbeat is not monitored (no heartbeat_producer).
+   */
+  virtual bool heartbeat_lost() { return false; }
 };
 }  // namespace node_interfaces
 }  // namespace ros2_canopen

@@ -310,6 +310,9 @@ protected:
   std::mutex boot_mtex;
   std::chrono::milliseconds boot_timeout_;
 
+  // Set while the master's heartbeat consumer reports a timeout for this device.
+  std::atomic<bool> heartbeat_lost_{false};
+
   uint8_t nodeid;
   std::string name_;
 
@@ -362,6 +365,14 @@ protected:
    * @param what
    */
   virtual void OnBoot(canopen::NmtState st, char es, const ::std::string & what) noexcept override;
+
+  /**
+   * @brief OnHeartbeat Callback
+   *
+   * Called when the heartbeat consumer of the master detects a timeout for
+   * this device (occurred = true) or receives its heartbeat again (false).
+   */
+  void OnHeartbeat(bool occurred) noexcept override;
 
   /**
    * @brief OnRpdoWrite Callback
@@ -424,6 +435,15 @@ public:
     sdo_timeout = timeout;
     boot_timeout_ = boot_timeout;
   }
+
+  /**
+   * @brief Whether the device's heartbeat timed out
+   *
+   * Only meaningful if the device produces a heartbeat (heartbeat_producer in
+   * the bus configuration). Cleared when it is received again or the device
+   * booted successfully.
+   */
+  bool heartbeat_lost() const { return heartbeat_lost_.load(); }
 
   bool has_object(uint16_t idx, uint8_t subidx)
   {

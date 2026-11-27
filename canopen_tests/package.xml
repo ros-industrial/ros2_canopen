@@ -27,6 +27,8 @@
   <exec_depend>canopen_ros2_controllers</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
+  <test_depend>controller_manager_msgs</test_depend>
+  <test_depend>launch_testing_ament_cmake</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

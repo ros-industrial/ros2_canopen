@@ -13,6 +13,8 @@ defaults:
   package: "canopen_402_driver"
   period: 10
   revision_number: 0
+  heartbeat_producer: 100
+  boot_timeout_ms: 5000 # the fake slave delays its boot-up message by 1 s
   sdo:
     - {index: 0x60C2, sub_index: 1, value: 50} # Set interpolation time for cyclic modes to 50 ms
     - {index: 0x60C2, sub_index: 2, value: -3} # Set base 10-3s

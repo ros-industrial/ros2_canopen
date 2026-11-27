@@ -15,7 +15,9 @@
 // limitations under the License.
 
 #include "canopen_ros2_control/robot_system.hpp"
+#include <hardware_interface/lexical_casts.hpp>
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
+#include "canopen_ros2_control/canopen_system.hpp"
 
 using namespace canopen_ros2_control;
 
@@ -85,6 +87,10 @@ hardware_interface::CallbackReturn RobotSystem::on_init(
     robot_system_logger, "'%s' has can interface: '%s'", info_.name.c_str(),
     can_interface_.c_str());
 
+  const auto param = info_.hardware_parameters.find("deactivate_on_heartbeat_timeout");
+  deactivate_on_heartbeat_timeout_ =
+    param != info_.hardware_parameters.end() && hardware_interface::parse_bool(param->second);
+
   ros2_canopen::ConfigurationManager config(bus_config_);
   config.init_config();
 
@@ -137,6 +143,13 @@ hardware_interface::CallbackReturn RobotSystem::on_configure(
 hardware_interface::CallbackReturn RobotSystem::on_activate(
   const rclcpp_lifecycle::State & previous_state)
 {
+  // Refuse while a device is gone, so activation can simply be retried.
+  if (
+    deactivate_on_heartbeat_timeout_ &&
+    heartbeat_missing(drivers_, robot_system_logger, "not activating"))
+  {
+    return CallbackReturn::FAILURE;
+  }
   for (auto & data : robot_motor_data_)
   {
     if (!data.driver->init_motor())
@@ -152,7 +165,10 @@ hardware_interface::CallbackReturn RobotSystem::on_deactivate(
 {
   for (auto & data : robot_motor_data_)
   {
-    if (!data.driver->halt_motor())
+    // A drive without heartbeat cannot be halted; failing here would keep the system active.
+    if (
+      !data.driver->get_node_canopen_driver_interface()->heartbeat_lost() &&
+      !data.driver->halt_motor())
     {
       RCLCPP_ERROR(robot_system_logger, "Failed to deactivate '%s'", data.joint_name.c_str());
       return CallbackReturn::FAILURE;
@@ -212,6 +228,14 @@ hardware_interface::return_type RobotSystem::read(
 hardware_interface::return_type RobotSystem::write(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
+  // A device whose heartbeat timed out cannot be commanded. DEACTIVATE makes the
+  // controller_manager stop the controllers using this system and move it to inactive.
+  if (
+    deactivate_on_heartbeat_timeout_ &&
+    heartbeat_missing(drivers_, robot_system_logger, "deactivating"))
+  {
+    return hardware_interface::return_type::DEACTIVATE;
+  }
   for (canopen_ros2_control::Cia402Data & data : robot_motor_data_)
   {
     data.write_target();
@@ -275,18 +299,18 @@ void RobotSystem::initDeviceContainer()
     this->can_interface_, this->master_config_, this->bus_config_, this->master_bin_);
 
   // Get all registered drivers.
-  auto drivers = device_container_->get_registered_drivers();
+  drivers_ = device_container_->get_registered_drivers();
 
   // Iterate over all drivers and allocate them to the correct joint.
   for (auto & data : robot_motor_data_)
   {
     // Find correct driver for joint via node id.
     auto driver = std::find_if(
-      drivers.begin(), drivers.end(),
+      drivers_.begin(), drivers_.end(),
       [&data](const std::pair<int, std::shared_ptr<ros2_canopen::CanopenDriverInterface>> & driver)
       { return driver.first == data.node_id; });
 
-    if (driver == drivers.end())
+    if (driver == drivers_.end())
     {
       RCLCPP_ERROR(
         device_container_->get_logger(), "Could not find driver for joint '%s' with node id '%d'",
@@ -319,6 +343,7 @@ void RobotSystem::clean()
   spin_thread_->join();
 
   printf("Reset variables...");
+  drivers_.clear();
   device_container_.reset();
   executor_.reset();
 

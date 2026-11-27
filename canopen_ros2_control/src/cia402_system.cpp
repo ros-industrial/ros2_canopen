@@ -292,6 +292,12 @@ hardware_interface::return_type Cia402System::write(
 {
   auto drivers = device_container_->get_registered_drivers();
 
+  // Does not call CanopenSystem::write(), so repeat its heartbeat check.
+  if (deactivate_on_heartbeat_timeout_ && heartbeat_missing(drivers, kLogger, "deactivating"))
+  {
+    return hardware_interface::return_type::DEACTIVATE;
+  }
+
   // Process NMT commands per node (not per channel)
   for (auto it = canopen_data_.begin(); it != canopen_data_.end(); ++it)
   {
