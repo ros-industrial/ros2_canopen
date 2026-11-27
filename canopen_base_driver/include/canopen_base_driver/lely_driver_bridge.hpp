@@ -104,64 +104,52 @@ public:
     // return pdo_map;
   }
 
-  void fetchRPDO(std::shared_ptr<PDOMap> map)
-  {
-    for (int index = 0; index < 256; index++)
-    {
-      for (int subindex = 1; subindex < 9; subindex++)
-      {
-        auto obj = find(0x1600 + index, subindex);
-        if (obj == nullptr)
-        {
-          continue;
-        }
-        uint32_t data;
-        {
-          data = obj->getVal<CO_DEFTYPE_UNSIGNED32>();
-        }
-        uint8_t tmps = (data >> 8) & 0xFF;
-        uint16_t tmpi = (data >> 16) & 0xFFFF;
-        if (tmpi == 0U)
-        {
-          continue;
-        }
-        pdo_mapping mapping;
-        mapping.is_rpdo = true;
-        mapping.is_tpdo = false;
-        (*map)[tmpi][tmps] = mapping;
-        std::cout << "Found rpdo mapped object: index=" << std::hex << (int)tmpi
-                  << " subindex=" << (int)tmps << std::endl;
-      }
-    }
-  }
-  void fetchTPDO(std::shared_ptr<PDOMap> map)
-  {
-    for (int index = 0; index < 256; index++)
-    {
-      for (int subindex = 1; subindex < 9; subindex++)
-      {
-        auto obj = find(0x1A00 + index, subindex);
-        if (obj == nullptr)
-        {
-          continue;
-        }
-        uint32_t data;
-        {
-          data = obj->getVal<CO_DEFTYPE_UNSIGNED32>();
-        }
-        uint8_t tmps = (data >> 8) & 0xFF;
-        uint16_t tmpi = (data >> 16) & 0xFFFF;
-        if (tmpi == 0U)
-        {
-          continue;
-        }
+  void fetchRPDO(std::shared_ptr<PDOMap> map) { fetchPDO(map, 0x1400, 0x1600, true); }
+  void fetchTPDO(std::shared_ptr<PDOMap> map) { fetchPDO(map, 0x1800, 0x1A00, false); }
 
+  /**
+   * @brief Add the objects mapped into the valid PDOs to the map.
+   *
+   * Only the number of entries given by sub-index 0 of the mapping parameter is used, and
+   * PDOs whose COB-ID has the "not valid" bit (31) set are skipped. Otherwise entries left
+   * over from the EDS defaults would be reported as mapped.
+   */
+  void fetchPDO(
+    std::shared_ptr<PDOMap> map, uint16_t comm_base, uint16_t mapping_base, bool is_rpdo)
+  {
+    for (int index = 0; index < 256; index++)
+    {
+      auto cob_id = find(comm_base + index, 1);
+      auto count = find(mapping_base + index, 0);
+      if (cob_id == nullptr || count == nullptr)
+      {
+        continue;
+      }
+      if (cob_id->getVal<CO_DEFTYPE_UNSIGNED32>() & 0x80000000)
+      {
+        continue;
+      }
+      uint8_t num_entries = count->getVal<CO_DEFTYPE_UNSIGNED8>();
+      for (int subindex = 1; subindex <= num_entries; subindex++)
+      {
+        auto obj = find(mapping_base + index, subindex);
+        if (obj == nullptr)
+        {
+          continue;
+        }
+        uint32_t data = obj->getVal<CO_DEFTYPE_UNSIGNED32>();
+        uint8_t tmps = (data >> 8) & 0xFF;
+        uint16_t tmpi = (data >> 16) & 0xFFFF;
+        if (tmpi == 0U)
+        {
+          continue;
+        }
         pdo_mapping mapping;
-        mapping.is_rpdo = false;
-        mapping.is_tpdo = true;
+        mapping.is_rpdo = is_rpdo;
+        mapping.is_tpdo = !is_rpdo;
         (*map)[tmpi][tmps] = mapping;
-        std::cout << "Found tpdo mapped object: index=" << std::hex << (int)tmpi
-                  << " subindex=" << (int)tmps << std::endl;
+        std::cout << "Found " << (is_rpdo ? "rpdo" : "tpdo") << " mapped object: index=" << std::hex
+                  << (int)tmpi << " subindex=" << (int)tmps << std::endl;
       }
     }
   }
