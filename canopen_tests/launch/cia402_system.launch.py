@@ -129,13 +129,25 @@ def launch_setup(context, *args, **kwargs):
     cia402_device_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["cia402_device_1_controller", "--controller-manager", "/controller_manager"],
+        arguments=[
+            "cia402_device_1_controller",
+            "--controller-manager",
+            "/controller_manager",
+            "--param-file",
+            ros2_control_config,
+        ],
     )
 
     forward_position_controller = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["forward_position_controller", "--controller-manager", "/controller_manager"],
+        arguments=[
+            "forward_position_controller",
+            "--controller-manager",
+            "/controller_manager",
+            "--param-file",
+            ros2_control_config,
+        ],
     )
 
     robot_state_publisher_node = Node(

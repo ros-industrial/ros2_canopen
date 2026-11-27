@@ -67,7 +67,13 @@ def generate_launch_description():
     forward_position_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["forward_position_controller", "--controller-manager", "/controller_manager"],
+        arguments=[
+            "forward_position_controller",
+            "--controller-manager",
+            "/controller_manager",
+            "--param-file",
+            robot_control_config,
+        ],
     )
 
     robot_state_publisher_node = Node(
