@@ -68,10 +68,12 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gmock REQUIRED)
   find_package(ros2_control_test_assets REQUIRED)
 
-  ament_add_gmock(test_canopen_system test/test_canopen_system.cpp)
-  target_link_libraries(test_canopen_system
-    hardware_interface::hardware_interface
-    ros2_control_test_assets::ros2_control_test_assets)
+  foreach(test test_canopen_system test_cia402_system test_robot_system)
+    ament_add_gmock(${test} test/${test}.cpp)
+    target_link_libraries(${test}
+      hardware_interface::hardware_interface
+      ros2_control_test_assets::ros2_control_test_assets)
+  endforeach()
 endif()
 
 ament_export_include_directories(
