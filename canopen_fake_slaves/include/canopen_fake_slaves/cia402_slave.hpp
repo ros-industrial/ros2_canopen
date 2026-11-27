@@ -24,6 +24,7 @@
 #include <lely/io2/sys/timer.hpp>
 
 #include <atomic>
+#include <cmath>
 #include <mutex>
 #include <thread>
 
