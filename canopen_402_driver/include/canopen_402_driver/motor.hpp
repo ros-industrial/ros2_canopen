@@ -279,11 +279,12 @@ private:
   bool switchMode(uint16_t mode);
   bool switchState(const State402::InternalState & target);
 
-  std::atomic<uint16_t> status_word_;
-  uint16_t control_word_;
+  std::atomic<uint16_t> status_word_{0};
+  // handleWrite() sends this before handleInit() runs, so start with "Disable voltage".
+  uint16_t control_word_{0};
   std::mutex cw_mutex_;
-  std::atomic<bool> start_fault_reset_;
-  std::atomic<State402::InternalState> target_state_;
+  std::atomic<bool> start_fault_reset_{false};
+  std::atomic<State402::InternalState> target_state_{State402::Unknown};
 
   State402 state_handler_;
 
@@ -293,7 +294,7 @@ private:
   std::unordered_map<uint16_t, AllocFuncType> mode_allocators_;
 
   ModeSharedPtr selected_mode_;
-  uint16_t mode_id_;
+  uint16_t mode_id_{MotorBase::No_Mode};
   std::condition_variable mode_cond_;
   std::mutex mode_mutex_;
   const State402::InternalState switching_state_;
@@ -315,7 +316,7 @@ private:
   const uint16_t supported_drive_modes_index = 0x6502;
 
   // Diagnostic components
-  std::atomic<bool> enable_diagnostics_;
+  std::atomic<bool> enable_diagnostics_{false};
   std::shared_ptr<DiagnosticsCollector> diag_collector_;
 
   // -1 unknown, 0 missing, 1 present

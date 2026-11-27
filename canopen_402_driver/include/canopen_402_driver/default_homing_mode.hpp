@@ -30,11 +30,11 @@ class DefaultHomingMode : public HomingMode
   uint16_t channel_offset_;  // Channel offset for multi-axis support (CiA 402-2)
   std::shared_ptr<LelyDriverBridge> driver;
 
-  std::atomic<bool> execute_;
+  std::atomic<bool> execute_{false};
 
   std::mutex mutex_;
   std::condition_variable cond_;
-  uint16_t status_;
+  uint16_t status_{0};
 
   const int homing_timeout_seconds_;
 
