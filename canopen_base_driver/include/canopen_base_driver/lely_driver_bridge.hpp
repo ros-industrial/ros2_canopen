@@ -432,6 +432,23 @@ public:
   }
 
   /**
+   * @brief Check whether an object is mapped into one of the device's TPDOs.
+   *
+   * Values of TPDO-mapped objects are updated cyclically, so @ref universal_get_value
+   * reads them from the local dictionary instead of doing a blocking SDO upload.
+   */
+  bool is_tpdo_mapped(uint16_t idx, uint8_t subidx) const
+  {
+    auto object = this->pdo_map_->find(idx);
+    if (object == this->pdo_map_->end())
+    {
+      return false;
+    }
+    auto entry = object->second.find(subidx);
+    return entry != object->second.end() && entry->second.is_tpdo;
+  }
+
+  /**
    * @brief Asynchronous SDO Write
    *
    * Writes the data passed to the function via SDO to
@@ -784,17 +801,7 @@ public:
   const T universal_get_value(uint16_t index, uint8_t subindex)
   {
     T value = 0;
-    bool is_tpdo = false;
-    if (this->pdo_map_->find(index) != this->pdo_map_->end())
-    {
-      auto object = this->pdo_map_->at(index);
-      if (object.find(subindex) != object.end())
-      {
-        auto entry = object.at(subindex);
-        is_tpdo = entry.is_tpdo;
-      }
-    }
-    if (!is_tpdo)
+    if (!is_tpdo_mapped(index, subindex))
     {
       if (sync_sdo_read_typed<T>(index, subindex, value, this->sdo_timeout))
       {

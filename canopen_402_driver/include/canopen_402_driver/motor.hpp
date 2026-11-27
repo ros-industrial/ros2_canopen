@@ -232,15 +232,25 @@ public:
       {
         return 0.0;
       }
-      bool has_object = this->driver->has_object(idx, 0);
-      effort_support_state_.store(has_object ? 1 : 0);
-      if (!has_object)
+      if (!this->driver->has_object(idx, 0))
       {
+        effort_support_state_.store(0);
         RCLCPP_WARN(
           rclcpp::get_logger("canopen_402_driver"),
           "Effort interface disabled: object 0x6077:00 not found in EDS/OD.");
         return 0.0;
       }
+      // Effort is read every control cycle, so only support it when it arrives by TPDO.
+      // Polling it via SDO would block the read loop for up to sdo_timeout per cycle.
+      if (!this->driver->is_tpdo_mapped(idx, 0))
+      {
+        effort_support_state_.store(0);
+        RCLCPP_WARN(
+          rclcpp::get_logger("canopen_402_driver"),
+          "Effort interface disabled: object 0x6077:00 is not mapped into a TPDO.");
+        return 0.0;
+      }
+      effort_support_state_.store(1);
     }
     return (double)this->driver->universal_get_value<int16_t>(idx, 0);
   }
