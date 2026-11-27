@@ -24,45 +24,94 @@
 
 #include <gmock/gmock.h>
 
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "hardware_interface/resource_manager.hpp"
-#include "ros2_control_test_assets/components_urdfs.hpp"
 #include "ros2_control_test_assets/descriptions.hpp"
+
+namespace
+{
+const std::vector<std::string> kStateInterfaces = {
+  "rpdo/index",
+  "rpdo/subindex",
+  "rpdo/data",
+  "nmt/state",
+  "emcy/error_code",
+  "emcy/error_register",
+  "emcy/manufacturer_error_code1",
+  "emcy/manufacturer_error_code2",
+  "emcy/manufacturer_error_code3",
+  "emcy/manufacturer_error_code4",
+  "emcy/manufacturer_error_code5"};
+
+const std::vector<std::string> kCommandInterfaces = {"tpdo/index", "tpdo/subindex", "tpdo/data",
+                                                     "tpdo/ons",   "nmt/reset",     "nmt/reset_fbk",
+                                                     "nmt/start",  "nmt/start_fbk"};
+
+std::vector<std::string> prefixed(
+  const std::vector<std::string> & joints, const std::vector<std::string> & interfaces)
+{
+  std::vector<std::string> names;
+  for (const auto & joint : joints)
+  {
+    for (const auto & interface : interfaces)
+    {
+      names.push_back(joint + "/" + interface);
+    }
+  }
+  return names;
+}
+}  // namespace
 
 class TestCanopenSystem : public ::testing::Test
 {
 protected:
-  void SetUp() override
-  {
-    // TODO(anyone): Extend this description to your robot
-    canopen_system_2dof_ =
-      R"(
-        <ros2_control name="CanopenSystem2dof" type="system">
-          <hardware>
-            <plugin>canopen_ros2_control/CanopenSystem</plugin>
-          </hardware>
-          <joint name="joint1">
-            <command_interface name="position"/>
-            <state_interface name="position"/>
-            <param name="initial_position">1.57</param>
-          </joint>
-          <joint name="joint2">
-            <command_interface name="position"/>
-            <state_interface name="position"/>
-            <param name="initial_position">0.7854</param>
-          </joint>
-        </ros2_control>
-    )";
-  }
+  // joint1 declares some interfaces in the URDF, joint2 none, joint3 has no node_id
+  const std::string canopen_system_ = R"(
+    <ros2_control name="CanopenSystem" type="system">
+      <hardware>
+        <plugin>canopen_ros2_control/CanopenSystem</plugin>
+      </hardware>
+      <joint name="joint1">
+        <param name="node_id">2</param>
+        <state_interface name="nmt/state"/>
+        <command_interface name="tpdo/data"/>
+      </joint>
+      <joint name="joint2">
+        <param name="node_id">3</param>
+      </joint>
+      <joint name="joint3">
+        <state_interface name="position"/>
+      </joint>
+    </ros2_control>
+  )";
 
-  std::string canopen_system_2dof_;
+  std::unique_ptr<hardware_interface::ResourceManager> load()
+  {
+    return std::make_unique<hardware_interface::ResourceManager>(
+      ros2_control_test_assets::urdf_head + canopen_system_ + ros2_control_test_assets::urdf_tail,
+      std::make_shared<rclcpp::Clock>(), rclcpp::get_logger("test_canopen_system"));
+  }
 };
 
-TEST_F(TestCanopenSystem, load_canopen_system_2dof)
+// Every CANopen interface is exported exactly once, whether or not the URDF declares it.
+TEST_F(TestCanopenSystem, exports_canopen_interfaces_once_per_node)
 {
-  auto urdf = ros2_control_test_assets::urdf_head + canopen_system_2dof_ +
-              ros2_control_test_assets::urdf_tail;
-  ASSERT_NO_THROW(hardware_interface::ResourceManager rm(
-    urdf, std::make_shared<rclcpp::Clock>(), rclcpp::get_logger("test_canopen_system")));
+  auto rm = load();
+
+  auto expected_states = prefixed({"joint1", "joint2"}, kStateInterfaces);
+  expected_states.push_back("joint3/position");
+  EXPECT_THAT(rm->state_interface_keys(), ::testing::UnorderedElementsAreArray(expected_states));
+  EXPECT_THAT(
+    rm->command_interface_keys(),
+    ::testing::UnorderedElementsAreArray(prefixed({"joint1", "joint2"}, kCommandInterfaces)));
+}
+
+// Destroying a never-configured system must not crash.
+TEST_F(TestCanopenSystem, destroy_without_configure)
+{
+  auto rm = load();
+  EXPECT_NO_THROW(rm.reset());
 }
