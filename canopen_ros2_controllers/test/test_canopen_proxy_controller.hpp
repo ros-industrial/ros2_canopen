@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "canopen_ros2_controllers/canopen_proxy_controller.hpp"
+#include "controller_interface/controller_interface_params.hpp"
 #include "gmock/gmock.h"
 #include "hardware_interface/loaned_command_interface.hpp"
 #include "hardware_interface/loaned_state_interface.hpp"
@@ -130,7 +131,9 @@ protected:
   void SetUpController(
     bool set_parameters = true, std::string controller_name = "test_canopen_ros2_controllers")
   {
-    ASSERT_EQ(controller_->init(controller_name), controller_interface::return_type::OK);
+    controller_interface::ControllerInterfaceParams params;
+    params.controller_name = controller_name;
+    ASSERT_EQ(controller_->init(params), controller_interface::return_type::OK);
 
     std::vector<hardware_interface::LoanedCommandInterface> command_ifs;
     command_itfs_.reserve(joint_command_values_.size());
@@ -138,9 +141,10 @@ protected:
 
     for (size_t i = 0; i < joint_command_values_.size(); ++i)
     {
-      command_itfs_.emplace_back(hardware_interface::CommandInterface(
-        joint_name_, command_interface_names_[i], &joint_command_values_[i]));
-      command_ifs.emplace_back(command_itfs_.back());
+      command_itfs_.push_back(std::make_shared<hardware_interface::CommandInterface>(
+        make_description(command_interface_names_[i], joint_command_values_[i])));
+      // (SharedPtr, Deleter) is the only constructor jazzy shares with newer distros
+      command_ifs.emplace_back(command_itfs_.back(), nullptr);
     }
 
     std::vector<hardware_interface::LoanedStateInterface> state_ifs;
@@ -149,8 +153,8 @@ protected:
 
     for (size_t i = 0; i < joint_state_values_.size(); ++i)
     {
-      state_itfs_.emplace_back(hardware_interface::StateInterface(
-        joint_name_, state_interface_names_[i], &joint_state_values_[i]));
+      state_itfs_.push_back(std::make_shared<hardware_interface::StateInterface>(
+        make_description(state_interface_names_[i], joint_state_values_[i])));
       state_ifs.emplace_back(state_itfs_.back());
     }
 
@@ -244,8 +248,17 @@ protected:
   std::array<double, 8> joint_command_values_ = {101.101, 101.101, 101.101, 101.101,
                                                  101.101, 101.101, 101.101, 101.101};
 
-  std::vector<hardware_interface::StateInterface> state_itfs_;
-  std::vector<hardware_interface::CommandInterface> command_itfs_;
+  std::vector<hardware_interface::StateInterface::SharedPtr> state_itfs_;
+  std::vector<hardware_interface::CommandInterface::SharedPtr> command_itfs_;
+
+  hardware_interface::InterfaceDescription make_description(
+    const std::string & interface_name, double initial_value) const
+  {
+    hardware_interface::InterfaceInfo info;
+    info.name = interface_name;
+    info.initial_value = std::to_string(initial_value);
+    return hardware_interface::InterfaceDescription(joint_name_, info);
+  }
 
   // Test related parameters
   std::unique_ptr<TestableCanopenProxyController> controller_;

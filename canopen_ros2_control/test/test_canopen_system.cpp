@@ -63,5 +63,6 @@ TEST_F(TestCanopenSystem, load_canopen_system_2dof)
 {
   auto urdf = ros2_control_test_assets::urdf_head + canopen_system_2dof_ +
               ros2_control_test_assets::urdf_tail;
-  ASSERT_NO_THROW(hardware_interface::ResourceManager rm(urdf));
+  ASSERT_NO_THROW(hardware_interface::ResourceManager rm(
+    urdf, std::make_shared<rclcpp::Clock>(), rclcpp::get_logger("test_canopen_system")));
 }
