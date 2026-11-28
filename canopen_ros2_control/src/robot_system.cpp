@@ -139,7 +139,7 @@ hardware_interface::CallbackReturn RobotSystem::on_activate(
 {
   for (auto & data : robot_motor_data_)
   {
-    if (!data.driver->init_motor())
+    if (!data.driver->init_motor(data.channel))
     {
       RCLCPP_ERROR(robot_system_logger, "Failed to activate '%s'", data.joint_name.c_str());
       return CallbackReturn::FAILURE;
@@ -152,7 +152,7 @@ hardware_interface::CallbackReturn RobotSystem::on_deactivate(
 {
   for (auto & data : robot_motor_data_)
   {
-    if (!data.driver->halt_motor())
+    if (!data.driver->halt_motor(data.channel))
     {
       RCLCPP_ERROR(robot_system_logger, "Failed to deactivate '%s'", data.joint_name.c_str());
       return CallbackReturn::FAILURE;
